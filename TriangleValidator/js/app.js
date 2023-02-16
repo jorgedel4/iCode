@@ -1,5 +1,12 @@
+particlesJS.load('particles-js', 'particles.json', function() {
+    console.log('callback - particles.js config loaded');
+  });
+
 function valida(a, b, c) {
     if (a <= 0 || b <= 0 || c <= 0) {
+        return 'Eso no es un triangulo';
+    }
+    if ( ((a + b) < c) || ((b + c) < a) || ((c + a) < b)){
         return 'Eso no es un triangulo';
     }
     if (a == b && b == c) {
