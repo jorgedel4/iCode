@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #000000;
+}
+
+.contenedor_formulario {
+    vertical-align: middle;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.contenedor_formulario form div {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.mensaje {
+    color: aliceblue;
+    text-align: center;
+    margin-top: 60px;
+}
