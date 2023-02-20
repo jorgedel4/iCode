@@ -13,13 +13,13 @@ function valida(a, b, c) {
         return 'Eso no es un triangulo';
     }
     if (a + b < c || b + c < a || c + a < b) {
-        return 'Eso no es un triangulo';
+        return 'Eso no es un triangulo porque la suma de las longitudes de cualesquiera dos lados debe ser mayor o igual que la longitud del lado restante';
     }
     if (a == b && b == c) {
         return 'Triángulo equilátero';
     }
     if (a == b || b == c || c == a) {
-        return 'Triángulo isóceles';
+        return 'Triángulo isósceles';
     } else {
         return 'Triangulo escaleno';
     }
