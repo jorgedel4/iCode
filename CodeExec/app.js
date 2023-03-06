@@ -49,21 +49,22 @@ app.listen(appPort, () => {
 
 function runPython(problemData, code) {
     const fileName = `${uuid.v4().replaceAll('-', '_')}.py`;
-    const path = `Generated/Python/${fileName}`;
-    //code = injectPythonTests(problemData, code);
+    const path = 'Generated/Python';
+
+    fs.writeFileSync(`${path}/${fileName}`, code);
 
     const options = {
         mode: 'text',
-        // pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: path,
     };
 
-    fs.writeFileSync(path, code);
-
-    console.log(path);
-
-    PythonShell.run(path, null, function (err, results) {
-        console.log('waefoihjaewufsenuojfnseufjnosfnews');
-    });
+    PythonShell.run(fileName, options)
+        .then((messages) => {
+            console.log(messages);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 
     // fs.unlinkSync(`./Generated/Python/${fileName}`);
 }
@@ -73,7 +74,6 @@ function runCode(language, problemID, code) {
         .then((data) => {
             switch (language) {
                 case 'python':
-                    console.log(data);
                     return runPython(data, code);
             }
         })
