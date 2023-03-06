@@ -1,23 +1,93 @@
+const bodyParser = require('body-parser');
+const exp = require('constants');
 const express = require('express');
+const fs = require('fs');
+const mongoose = require('mongoose');
+const { PythonShell } = require('python-shell');
+const uuid = require('uuid');
 
 const app = express();
-const port = 3001;
+const appPort = 3001;
+const mdbPort = 27017;
+const dbName = 'test';
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.post('/:language', (req, res) => {
-    const { code, problemID } = req.body;
-    const { language } = req.params;
+mongoose
+    .connect(`mongodb://localhost:${mdbPort}/${dbName}`, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => {
+        console.log('Connected to mongodb succesfully');
+    })
+    .catch((err) => {
+        console.log(
+            `An error ocurred while trying to connect to mongodb: ${err}`
+        );
+    });
 
-    console.log('\nReceived request');
-    console.log(`Code ${code}`);
-    console.log(`ID ${problemID}`);
-    console.log(`Language ${language}`);
-
-    res.sendStatus(200);
+const codingExerciseSchema = new mongoose.Schema({
+    id: String,
+    description: String,
+    language: String,
+    nTests: Number,
+    inputs: [String],
+    outputs: [String],
 });
 
-app.listen(port, () => {
-    console.log(`Code Exec running on port ${port}`);
+const CodingExercise = new mongoose.model(
+    'CodingExercise',
+    codingExerciseSchema
+);
+
+app.listen(appPort, () => {
+    console.log(`Code Exec running on port ${appPort}`);
+});
+
+function runPython(problemData, code) {
+    const fileName = `${uuid.v4().replaceAll('-', '_')}.py`;
+    const path = `Generated/Python/${fileName}`;
+    //code = injectPythonTests(problemData, code);
+
+    const options = {
+        mode: 'text',
+        // pythonOptions: ['-u'], // get print results in real-time
+    };
+
+    fs.writeFileSync(path, code);
+
+    console.log(path);
+
+    PythonShell.run(path, null, function (err, results) {
+        console.log('waefoihjaewufsenuojfnseufjnosfnews');
+    });
+
+    // fs.unlinkSync(`./Generated/Python/${fileName}`);
+}
+
+function runCode(language, problemID, code) {
+    CodingExercise.find({ id: problemID })
+        .then((data) => {
+            switch (language) {
+                case 'python':
+                    console.log(data);
+                    return runPython(data, code);
+            }
+        })
+        .catch((err) => {});
+}
+
+app.post('/:language', (req, res) => {
+    const { problemID, code } = req.body;
+    const { language } = req.params;
+
+    const result = runCode(language, problemID, code);
+
+    // res.send(result.execution);
+    // res.sendStatus(result.status);
+
+    res.sendStatus(200);
 });
