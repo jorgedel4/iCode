@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -52,49 +53,51 @@ func runCode(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Parsing request body into a struct
 		body, err := io.ReadAll(r.Body)
-		// TODO: Handle empty body
 		if err != nil {
-			fmt.Println(err)
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			return
 		}
 
 		var reqBody RequestBody
 		err = json.Unmarshal(body, &reqBody)
-
-		// TODO: Handle bad request body
 		if err != nil {
-			fmt.Println("Error decoding request body:", err)
+			http.Error(w, "Error decoding request body", http.StatusBadRequest)
 			return
 		}
 
 		// Query to get problem document
-		// Setting codingExercises collection
 		ceCollection := client.Database(DB_NAME).Collection(CE_COLLECTION)
-		// Query to get document by ID
 		filter := bson.M{"id": reqBody.ID}
-		// Var that stores query result
 		var problem CodingExercise
-		// Executing query
 		err = ceCollection.FindOne(context.Background(), filter).Decode(&problem)
 		if err != nil {
-			log.Fatal("Error while executing query:", err)
+			http.Error(w, "Error executing query", http.StatusInternalServerError)
+			return
 		}
 
-		fmt.Println("Succesfully got problem from mongodb")
+		// TODO: Implement the remaining functionality
+		fmt.Println("Successfully got problem from MongoDB")
 		fmt.Println(problem)
 	}
 }
 
 func main() {
-	// mongoDB connection
+	// MongoDB connection
 	clientOptions := options.Client().ApplyURI(MONGO_URI)
-	client, err := mongo.Connect(context.Background(), clientOptions)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		fmt.Println("Error connecting to MongoDB:", err)
-		return
+		log.Fatal("Error connecting to MongoDB:", err)
 	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			log.Fatal("Error disconnecting from MongoDB:", err)
+		}
+	}()
 	fmt.Println("Connected to MongoDB!")
 
-	// creating router and defining routing functions
+	// Creating router and defining routing functions
 	r := mux.NewRouter()
 	r.HandleFunc("/exec", runCode(client)).Methods("POST")
 
