@@ -7,6 +7,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -16,8 +18,6 @@ import (
 )
 
 // TODO
-// Connect to DB to get codingExercise by ID
-// Turn result into a go struct
 // (For python only)
 // Function to purge code
 // Function to inject test cases
@@ -26,13 +26,10 @@ import (
 // Check result for response status code
 // Return info to client
 // Move code into packages
+// Test functions
 
-// IMPORTANT
-// Move this to .env before pushing to prod
-const PORT string = ":8001"
-const MONGO_URI = "mongodb+srv://jdel4:uwu1234.@icode.zoaqta4.mongodb.net/?retryWrites=true&w=majority"
-const DB_NAME = "iCode"
-const CE_COLLECTION = "CodingExercises"
+// Not important
+// maybe change python code funcs to modify params instead of returning another variable
 
 type CodingExercise struct {
 	ID              string       `json:"id"`
@@ -49,15 +46,61 @@ type RequestBody struct {
 	Code string `json:"code"`
 }
 
+type CodeResult struct {
+}
+
+func cleanPython(pythonCode string, notAllowedFuncs []string) string{
+	lines := strings.Split(pythonCode, "\n")
+	var filteredLines []string
+	for _, line := range lines {
+		isDisallowed := false
+		for _, funcName := range notAllowedFuncs {
+			if strings.Contains(line, funcName) {
+				isDisallowed = true
+				break
+			}
+		}
+		if !isDisallowed {
+			filteredLines = append(filteredLines, line)
+		}
+	}
+	return strings.Join(filteredLines, "\n")
+}
+
+func injectTestsPython(pythonCode string, notAllowedFuncs []string) string{
+	
+}
+
+// TODO
+// Implement functionality
+// Pipeline:
+// 1. Clean code
+// 2. Inject tests to code
+// 3. Run code in container
+// 4. Parse execution result
+
+func runPython(problem CodingExercise, reqBody RequestBody) (CodeResult, error) {
+	// Cleaning code
+	reqBody.Code = cleanPython(reqBody.Code, problem.NotAllowedFuncs)
+	// Injecting test cases
+	reqBody.Code = injectTestsPython(reqBody.Code, problem.NotAllowedFuncs)
+
+	var cr CodeResult
+	return cr, nil
+
+
+}
+
 func runCode(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Parsing request body into a struct
+		// Reading request's body (returns a slice of bytes, not usable yet)
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
 
+		// Parsing request body into a struct (unmarshaling)
 		var reqBody RequestBody
 		err = json.Unmarshal(body, &reqBody)
 		if err != nil {
@@ -66,7 +109,7 @@ func runCode(client *mongo.Client) http.HandlerFunc {
 		}
 
 		// Query to get problem document
-		ceCollection := client.Database(DB_NAME).Collection(CE_COLLECTION)
+		ceCollection := client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("CE_COLLECTION"))
 		filter := bson.M{"id": reqBody.ID}
 		var problem CodingExercise
 		err = ceCollection.FindOne(context.Background(), filter).Decode(&problem)
@@ -75,21 +118,32 @@ func runCode(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		// TODO: Implement the remaining functionality
-		fmt.Println("Successfully got problem from MongoDB")
-		fmt.Println(problem)
+		var _ CodeResult
+
+		switch problem.Language {
+		case "Python":
+			_, err = runPython(problem, reqBody)
+		}
+
+		if err != nil {
+			http.Error(w, "Error executing code ", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
 func main() {
 	// MongoDB connection
-	clientOptions := options.Client().ApplyURI(MONGO_URI)
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
+	// Throw timeout error after 10 seconds
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
+		fmt.Println(os.Getenv("MONGO_URI"))
 		log.Fatal("Error connecting to MongoDB:", err)
 	}
+	// Function will be called after program is exited in order to safely disconnect from DB
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			log.Fatal("Error disconnecting from MongoDB:", err)
@@ -101,6 +155,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/exec", runCode(client)).Methods("POST")
 
-	fmt.Println("Starting CodeExec on", PORT)
-	log.Fatal(http.ListenAndServe(PORT, r))
+	fmt.Println("Starting CodeExec on", os.Getenv("PORT"))
+	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), r))
 }
