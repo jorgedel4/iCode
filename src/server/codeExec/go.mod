@@ -1,4 +1,4 @@
-module github.com/jorgedel4/iCode/packages
+module github.com/jorgedel4/iCode
 
 go 1.20
 
