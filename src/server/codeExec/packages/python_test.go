@@ -1,71 +1,72 @@
 package packages
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestCleanPython1(t *testing.T) {
+// Utility function to check if 2 slices are equal
+func equalSlices(a, b []string) bool {
+    if len(a) != len(b) {
+        return false
+    }
+    for i, v := range a {
+        if v != b[i] {
+            return false
+        }
+    }
+    return true
+}
+
+func TestDisallowedFs1(t *testing.T) {
 	arg1 := "print('hello world')\nexec(x=4)\nprint('it works :)')"
 	arg2 := []string{"exec"}
-	output1 := "print('hello world')\nprint('it works :)')"
+	output := []string{"exec"}
 
-	result := cleanPython(arg1, arg2)
+	result := disallowedFuncs(arg1, arg2)
 
-	if result != output1 {
+	if !equalSlices(output, result) {
 		t.Errorf("FAILED")
 	} else {
 		t.Logf("PASSED")
 	}
 }
 
-func TestCleanPython2(t *testing.T) {
-	arg1 := "def sumOfTwo(a, b):\n\treturn sum()"
-	arg2 := []string{"exec"}
-	output1 := "print('hello world')\nprint('it works :)')"
+func TestDisallowedFs2(t *testing.T) {
+	arg1 := "def sumOfTwo(a, b):\n\treturn sum(a, b)\n\tprint('PASSED')"
+	arg2 := []string{"sum", "print"}
+	output := []string{"sum", "print"}
 
-	result := cleanPython(arg1, arg2)
+	result := disallowedFuncs(arg1, arg2)
 
-	if result != output1 {
+	if !equalSlices(output, result) {
 		t.Errorf("FAILED")
 	} else {
 		t.Logf("PASSED")
 	}
 }
 
-func TestCleanPython3(t *testing.T) {
-	arg1 := "print('hello world')\nexec(x=4)\nprint('it works :)')"
-	arg2 := []string{"exec"}
-	output1 := "print('hello world')\nprint('it works :)')"
+func TestDisallowedFs3(t *testing.T) {
+	arg1 := "def sumOfTwo(a, b):\n\treturn a + b"
+	arg2 := []string{}
+	output := []string{}
 
-	result := cleanPython(arg1, arg2)
+	result := disallowedFuncs(arg1, arg2)
 
-	if result != output1 {
+	if !equalSlices(output, result) {
 		t.Errorf("FAILED")
 	} else {
 		t.Logf("PASSED")
 	}
 }
 
-func TestCleanPython4(t *testing.T) {
-	arg1 := "print('hello world')\nexec(x=4)\nprint('it works :)')"
-	arg2 := []string{"exec"}
-	output1 := "print('hello world')\nprint('it works :)')"
+func TestDisallowedFs4(t *testing.T) {
+	arg1 := "def sumOfTwo(a, b):\n\tres = sum(a, b)\n\texec(a=23)\n\tprint('PASSED')\n\texec(c=8)"
+	arg2 := []string{"sum", "input", "exec"}
+	output := []string{"sum", "exec"}
 
-	result := cleanPython(arg1, arg2)
+	result := disallowedFuncs(arg1, arg2)
 
-	if result != output1 {
-		t.Errorf("FAILED")
-	} else {
-		t.Logf("PASSED")
-	}
-}
-
-func TestCleanPython5(t *testing.T) {
-	arg1 := "print('hello world')\nexec(x=4)\nprint('it works :)')"
-	arg2 := []string{"exec"}
-	output1 := "print('hello world')\nprint('it works :)')"
-
-	result := cleanPython(arg1, arg2)
-
-	if result != output1 {
+	if !equalSlices(output, result) {
 		t.Errorf("FAILED")
 	} else {
 		t.Logf("PASSED")

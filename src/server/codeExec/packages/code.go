@@ -3,22 +3,25 @@ package packages
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type CodingExercise struct {
-	ID              string       `json:"id"`
-	Description     string       `json:"description"`
-	Language        string       `json:"language"`
-	Inputs          [][][]string `json:"inputs"`
-	Outputs         [][][]string `json:"outputs"`
-	DriverFunc      string       `json:"driverFunction"`
-	NotAllowedFuncs []string     `json:"notAllowedFunctions"`
+	ID              string       `json:"id" bson:"id"`
+	Description     string       `json:"description" bson:"description"`
+	Language        string       `json:"language" bson:"language"`
+	Inputs          [][][]string `json:"inputs" bson:"inputs"`
+	Outputs         [][][]string `json:"outputs" bson:"outputs"`
+	DriverFunc      string       `json:"driverFunction" bson:"driverFunction"`
+	NotAllowedFuncs []string     `json:"notAllowedFunctions" bson:"notAllowedFunctions"`
 }
 
 type RequestBody struct {
@@ -29,6 +32,29 @@ type RequestBody struct {
 type CodeResult struct {
 }
 
+// Utility function to check if a slice contains a value
+func contains(sl []string, s string) bool {
+	for _, v := range sl {
+		if v == s {
+			return true
+		}
+	}
+	return false
+}
+
+// Function that takes code and a slice of disallowed functions
+// Returns a slice of strings containing all the disallowed functions that were found (non-repeating, first found first added to the slice)
+func disallowedFuncs(pythonCode string, notAllowedFuncs []string) []string {
+	disallowedFuncsFound := []string{}
+	for _, function := range notAllowedFuncs {
+		if strings.Contains(pythonCode, function) {
+			if !contains(disallowedFuncsFound, function) {
+				disallowedFuncsFound = append(disallowedFuncsFound, function)
+			}
+		}
+	}
+	return disallowedFuncsFound
+}
 
 func RunCode(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +81,13 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
 			return
+		}
+
+		disallowedFuncs := disallowedFuncs(reqBody.Code, problem.NotAllowedFuncs)
+		if len(disallowedFuncs) != 0 {
+			http.Error(w,
+				fmt.Sprintf("Found disallowed functions in code (%s)", strings.Join(disallowedFuncs, ", ")),
+				http.StatusForbidden)
 		}
 
 		var _ CodeResult
