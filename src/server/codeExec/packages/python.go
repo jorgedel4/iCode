@@ -1,6 +1,8 @@
 package packages
 
-import "strings"
+import (
+	"strings"
+)
 
 // TODO
 // (For python only)
@@ -31,10 +33,6 @@ func cleanPython(pythonCode string, notAllowedFuncs []string) string {
 	return strings.Join(filteredLines, "\n")
 }
 
-func injectTestsPython(pythonCode string, notAllowedFuncs []string) string {
-	return ""
-}
-
 // TODO
 // Implement functionality
 // Pipeline:
@@ -46,8 +44,6 @@ func injectTestsPython(pythonCode string, notAllowedFuncs []string) string {
 func runPython(problem CodingExercise, reqBody RequestBody) (CodeResult, error) {
 	// Cleaning code
 	reqBody.Code = cleanPython(reqBody.Code, problem.NotAllowedFuncs)
-	// Injecting test cases
-	reqBody.Code = injectTestsPython(reqBody.Code, problem.NotAllowedFuncs)
 
 	var cr CodeResult
 	return cr, nil
