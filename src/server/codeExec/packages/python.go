@@ -67,6 +67,9 @@ func generateTesLine(inputs [][]string, output []string, driverF string) string 
 	}
 	expression += ")"
 
+	// TODO URGENT
+	// Store result in another line, in case of failure, print wont evaluate expression
+
 	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
 
 	return line
