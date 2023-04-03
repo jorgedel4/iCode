@@ -1,8 +1,11 @@
 package packages
 
+import (
+	"fmt"
+)
+
 // TODO
 // (For python only)
-// Function to purge code
 // Function to inject test cases
 // Function to run code (posibly in docker container)
 // Function to parse result
@@ -11,10 +14,43 @@ package packages
 // Move code into packages
 // Test functions
 
+func generateTesLine(inputs [][]string, output []string, driverF string) string {
+	expression := fmt.Sprintf("%s(", driverF)
 
-func runPython(problem CodingExercise, reqBody RequestBody) (CodeResult, error) {
+	for i, input := range inputs {
+		expression += input[1]
+		if i != len(inputs)-1 {
+			expression += ","
+		}
+	}
+	expression += ")"
+
+	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression + "== " + output[1], output[1], expression)
+
+	return line
+}
+
+func injectTestsPython(problem *CodingExercise, code *string) error {
+	nTests := len(problem.Inputs)
+
+	for i := 0; i < nTests; i++ {
+		*code += generateTesLine(problem.Inputs[i], problem.Outputs[i], problem.DriverFunc)
+	}
+
+	fmt.Println(*code)
+
+	return nil
+}
+
+func runPython(problem *CodingExercise, code *string) (CodeResult, error) {
 	var cr CodeResult
 
-	return cr, nil
+	// TODO
+	// Properly handle error here
+	err := injectTestsPython(problem, code)
+	if err != nil {
+		return cr, nil
+	}
 
+	return cr, nil
 }
