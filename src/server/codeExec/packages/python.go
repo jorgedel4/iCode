@@ -1,7 +1,9 @@
 package packages
 
 import (
+	"bytes"
 	"fmt"
+	"os/exec"
 )
 
 // TODO
@@ -14,6 +16,46 @@ import (
 // Move code into packages
 // Test functions
 
+// func runPythonInDocker(pythonCode string) (string, error) {
+// 	// Define the Docker command to run
+// 	cmd := exec.Command("docker", "run", "--rm", "-i", "python:latest", "python", "-c", pythonCode)
+
+// 	// Create a buffer to store the output
+// 	var output bytes.Buffer
+
+// 	// Redirect the output to the buffer
+// 	cmd.Stdout = &output
+
+// 	// Run the command and wait for it to complete
+// 	err := cmd.Run()
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to run Docker command: %v", err)
+// 	}
+
+// 	// Return the output as a string
+// 	return output.String(), nil
+// }
+
+func runPythonInDocker(pythonCode string) (string, error) {
+	// Define the Docker command to run
+	cmd := exec.Command("docker", "run", "--rm", "-i", "python:latest", "python", "-c", pythonCode)
+
+	// Create a buffer to store the output
+	var output bytes.Buffer
+
+	// Redirect the output to the buffer
+	cmd.Stdout = &output
+
+	// Run the command and wait for it to complete
+	err := cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("failed to run Docker command: %v", err)
+	}
+
+	// Return the output as a string
+	return output.String(), nil
+}
+
 func generateTesLine(inputs [][]string, output []string, driverF string) string {
 	expression := fmt.Sprintf("%s(", driverF)
 
@@ -25,31 +67,27 @@ func generateTesLine(inputs [][]string, output []string, driverF string) string 
 	}
 	expression += ")"
 
-	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression + "== " + output[1], output[1], expression)
+	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
 
 	return line
 }
 
-func injectTestsPython(problem *CodingExercise, code *string) error {
-	nTests := len(problem.Inputs)
-
-	for i := 0; i < nTests; i++ {
+func injectTestsPython(problem *CodingExercise, code *string) {
+	for i := 0; i < len(problem.Inputs); i++ {
 		*code += generateTesLine(problem.Inputs[i], problem.Outputs[i], problem.DriverFunc)
 	}
-
-	fmt.Println(*code)
-
-	return nil
 }
 
 func runPython(problem *CodingExercise, code *string) (CodeResult, error) {
 	var cr CodeResult
 
-	// TODO
-	// Properly handle error here
-	err := injectTestsPython(problem, code)
+	injectTestsPython(problem, code)
+
+	result, err := runPythonInDocker(*code)
 	if err != nil {
-		return cr, nil
+		fmt.Println(err)
+	} else {
+		fmt.Println(result)
 	}
 
 	return cr, nil
