@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -95,7 +94,7 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 
 		switch problem.Language {
 		case "Python":
-			log.Println("Made it to python")
+			_, err = runPython(&problem, &reqBody.Code)
 		}
 
 		if err != nil {
