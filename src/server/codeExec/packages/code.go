@@ -19,7 +19,7 @@ type CodingExercise struct {
 	Description     string       `json:"description" bson:"description"`
 	Language        string       `json:"language" bson:"language"`
 	Inputs          [][][]string `json:"inputs" bson:"inputs"`
-	Outputs         [][][]string `json:"outputs" bson:"outputs"`
+	Outputs         [][]string   `json:"outputs" bson:"outputs"`
 	DriverFunc      string       `json:"driverFunction" bson:"driverFunction"`
 	NotAllowedFuncs []string     `json:"notAllowedFunctions" bson:"notAllowedFunctions"`
 }
@@ -47,7 +47,7 @@ func contains(sl []string, s string) bool {
 func disallowedFuncs(pythonCode string, notAllowedFuncs []string) []string {
 	disallowedFuncsFound := []string{}
 	for _, function := range notAllowedFuncs {
-		if strings.Contains(pythonCode, function) {
+		if strings.Contains(pythonCode, fmt.Sprintf(" %s(", function)) {
 			if !contains(disallowedFuncsFound, function) {
 				disallowedFuncsFound = append(disallowedFuncsFound, function)
 			}
@@ -88,13 +88,14 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 			http.Error(w,
 				fmt.Sprintf("Found disallowed functions in code (%s)", strings.Join(disallowedFuncs, ", ")),
 				http.StatusForbidden)
+			return
 		}
 
 		var _ CodeResult
 
 		switch problem.Language {
 		case "Python":
-			_, err = runPython(problem, reqBody)
+			log.Println("Made it to python")
 		}
 
 		if err != nil {

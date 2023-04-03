@@ -11,10 +11,14 @@ package packages
 // Move code into packages
 // Test functions
 
+func injectTestsPython(problem CodingExercise, reqBody RequestBody) (string, error) {
+	return "", nil
+}
 
 func runPython(problem CodingExercise, reqBody RequestBody) (CodeResult, error) {
 	var cr CodeResult
 
-	return cr, nil
 
+
+	return cr, nil
 }
