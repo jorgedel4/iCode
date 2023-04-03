@@ -14,22 +14,24 @@ import (
 // Move code into packages
 // Test functions
 
-func generateTesLine(inputs [][]string, output []string, driverF string) string{
-	expression := fmt.Sprintf("\n%s(", driverF)
+func generateTesLine(inputs [][]string, output []string, driverF string) string {
+	expression := fmt.Sprintf("%s(", driverF)
 
 	for i, input := range inputs {
 		expression += input[1]
-		if i != len(inputs) - 1 {
+		if i != len(inputs)-1 {
 			expression += ","
 		}
 	}
-	expression += ") == " + output[1] 
+	expression += ")"
 
-	return expression
+	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression + "== " + output[1], output[1], expression)
+
+	return line
 }
 
 func injectTestsPython(problem *CodingExercise, code *string) error {
-	nTests :=  len(problem.Inputs)
+	nTests := len(problem.Inputs)
 
 	for i := 0; i < nTests; i++ {
 		*code += generateTesLine(problem.Inputs[i], problem.Outputs[i], problem.DriverFunc)
