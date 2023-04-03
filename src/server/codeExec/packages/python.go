@@ -8,33 +8,12 @@ import (
 
 // TODO
 // (For python only)
-// Function to inject test cases
-// Function to run code (posibly in docker container)
 // Function to parse result
 // Check result for response status code
 // Return info to client
 // Move code into packages
 // Test functions
-
-// func runPythonInDocker(pythonCode string) (string, error) {
-// 	// Define the Docker command to run
-// 	cmd := exec.Command("docker", "run", "--rm", "-i", "python:latest", "python", "-c", pythonCode)
-
-// 	// Create a buffer to store the output
-// 	var output bytes.Buffer
-
-// 	// Redirect the output to the buffer
-// 	cmd.Stdout = &output
-
-// 	// Run the command and wait for it to complete
-// 	err := cmd.Run()
-// 	if err != nil {
-// 		return "", fmt.Errorf("failed to run Docker command: %v", err)
-// 	}
-
-// 	// Return the output as a string
-// 	return output.String(), nil
-// }
+// Timeout for code
 
 func runPythonInDocker(pythonCode string) (string, error) {
 	// Define the Docker command to run
@@ -43,14 +22,12 @@ func runPythonInDocker(pythonCode string) (string, error) {
 	// Create a buffer to store the output
 	var output bytes.Buffer
 
-	// Redirect the output to the buffer
+	// Redirect both stdout and stderr to the buffer
 	cmd.Stdout = &output
+	cmd.Stderr = &output
 
 	// Run the command and wait for it to complete
-	err := cmd.Run()
-	if err != nil {
-		return "", fmt.Errorf("failed to run Docker command: %v", err)
-	}
+	cmd.Run()
 
 	// Return the output as a string
 	return output.String(), nil
@@ -67,10 +44,9 @@ func generateTesLine(inputs [][]string, output []string, driverF string) string 
 	}
 	expression += ")"
 
-	// TODO URGENT
-	// Store result in another line, in case of failure, print wont evaluate expression
-
-	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else \"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
+	// TODO UNIMPORTANT
+	// Mofidy string to just run function once
+	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else f\"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
 
 	return line
 }
