@@ -6,15 +6,6 @@ import (
 	"os/exec"
 )
 
-// TODO
-// (For python only)
-// Function to parse result
-// Check result for response status code
-// Return info to client
-// Move code into packages
-// Test functions
-// Timeout for code
-
 func runPythonInDocker(pythonCode string) (string, error) {
 	// Define the Docker command to run
 	cmd := exec.Command("docker", "run", "--rm", "-i", "python:latest", "python", "-c", pythonCode)

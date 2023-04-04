@@ -14,16 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
-// TODO
-// Important
-// Function to clean code (python)
-// Function to inject test cases (python)
-// Function to run code in container (python)
-// Function to parse results
-// Unimportant
-// Move python related files to their own package
-
 func main() {
 		// MongoDB connection
 		clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
