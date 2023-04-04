@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/jorgedel4/iCode/packages"
+	"github.com/jorgedel4/iCode/util"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -23,6 +23,7 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
+		return
 	}
 
 	// MongoDB connection
@@ -33,6 +34,7 @@ func main() {
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
+		return
 	}
 	// Function will be called after program is exited in order to safely disconnect from DB
 	defer func() {
@@ -44,11 +46,12 @@ func main() {
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
-	r.HandleFunc("/exec", packages.RunCode(client)).Methods("POST")
+	r.HandleFunc("/exec", util.RunCode(client)).Methods("POST")
 
 	log.Println("Starting CodeExec on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 }
