@@ -14,18 +14,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	mongoTimeOut = 10
+)
+
 func main() {
 	// Loading env variables (.env file)
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
-	
 
 	// MongoDB connection
 	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
 	// Throw timeout error after 10 seconds
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), mongoTimeOut*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
@@ -38,7 +41,6 @@ func main() {
 		}
 	}()
 	log.Println("Connected to MongoDB!")
-
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
