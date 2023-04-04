@@ -16,5 +16,5 @@ func injectTests(code string, problem structs.CodingExercise) (string, error) {
 	case "Python":
 		return python.InjectTestsPython(code, problem)
 	}
-	return "", errors.New("Language not supported")
+	return "", errors.New("language not supported")
 }
