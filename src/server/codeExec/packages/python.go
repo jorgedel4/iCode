@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 // TODO
@@ -27,10 +28,10 @@ func runPythonInDocker(pythonCode string) (string, error) {
 	cmd.Stderr = &output
 
 	// Run the command and wait for it to complete
-	cmd.Run()
+	err := cmd.Run()
 
 	// Return the output as a string
-	return output.String(), nil
+	return output.String(), err
 }
 
 func generateTesLine(inputs [][]string, output []string, driverF string) string {
@@ -46,7 +47,7 @@ func generateTesLine(inputs [][]string, output []string, driverF string) string 
 
 	// TODO UNIMPORTANT
 	// Mofidy string to just run function once
-	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else f\"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
+	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else f\"FAILED\", f\"(Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
 
 	return line
 }
@@ -57,17 +58,37 @@ func injectTestsPython(problem *CodingExercise, code *string) {
 	}
 }
 
+func parseOutput(out string, codeResult *CodeResult, err error) error {
+	if err != nil {
+		codeResult.Error = out
+		fmt.Println(out)
+		return nil
+	}
+
+	lines := strings.Split(out, "\n")
+	lines = lines[:len(lines) - 1]
+
+	for _, line := range lines {
+		test := make(map[string] string)
+		if line[:6] == "PASSED" {
+			test["status"] = "passed"
+		}
+		if line[:6] == "FAILED" {
+			test["status"] = "failed"
+		}
+		
+	}
+	return nil
+}
+
 func runPython(problem *CodingExercise, code *string) (CodeResult, error) {
 	var cr CodeResult
 
 	injectTestsPython(problem, code)
 
 	result, err := runPythonInDocker(*code)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(result)
-	}
+
+	parseOutput(result, &cr, err)
 
 	return cr, nil
 }

@@ -29,6 +29,8 @@ type RequestBody struct {
 }
 
 type CodeResult struct {
+	Error string
+	TestCases []map[string]string
 }
 
 // Utility function to check if a slice contains a value
