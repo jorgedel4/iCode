@@ -17,6 +17,6 @@ type RequestBody struct {
 
 type CodeResult struct {
 	Error string
-	ShowTests []map[string]string
-	HiddenTests map[string]string
+	ShownTests []map[string]string
+	HiddenTests map[string]int
 }
