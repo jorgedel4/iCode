@@ -11,21 +11,28 @@ print("PASSED" if sumOfTwo(1,3) == 4 else "FAILED", "expected")
 
 {
     "error": "",
-    "testCases": [
+    "shownTests": [
         {
             "passed": True,
+            "input": "2, 3",
             "expected": "4",
             "got": "4"
         },
         {
             "passed": True,
+            "input": "2, 3",
             "expected": "4",
             "got": "4"
         },
         {
             "passed": True,
+            "input": "2, 3",
             "expected": "4",
             "got": "4"
         }
-    ]
+    ],
+    "hiddenTests": {
+        "passed": 4,
+        "failed": 2,
+    }
 }
