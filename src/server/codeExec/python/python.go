@@ -6,30 +6,41 @@ import (
 	"github.com/jorgedel4/iCode/structs"
 )
 
-func testLine(inputs [][]string, output []string, driverF string) (string, error) {
-	expression := fmt.Sprintf("%s(", driverF)
-
-	for i, input := range inputs {
-		expression += input[1]
-		if i != len(inputs)-1 {
-			expression += ","
+func testLine(test structs.Test, driverFunction string) (string, error) {
+	inputStr := ""
+	var line, outputStr, visibility string
+	for i, input := range test.Inputs {
+		inputStr += input[1]
+		if i != len(test.Inputs) - 1 {
+			inputStr += ","
 		}
 	}
-	expression += ")"
+	outputStr = test.Output[1]
+	functionCall := fmt.Sprintf("%s(%s)", driverFunction, inputStr)
 
-	line := fmt.Sprintf("\nprint(f\"PASSED\" if %s else f\"FAILED (Expected %s, got {%s})\")", expression+"== "+output[1], output[1], expression)
+	if test.Hidden {
+		visibility = "-"
+	} else {
+		visibility += "+"
+	}
 
+	resultVar := fmt.Sprintf("result = %s", functionCall)
+	printStatement := fmt.Sprintf("print(\"%s|passed\" if result == %s else f\"%s|failed|%s|%s|{result}\")", visibility, outputStr, visibility, inputStr, outputStr)
+
+	line = fmt.Sprintf("\n%s\n%s", resultVar, printStatement)
 	return line, nil
 }
 
 func InjectTestsPython(code string, problem structs.CodingExercise) (string, error) {
 	var resultCode = ""
-	for i := 0; i < len(problem.Inputs); i++ {
-		testLine, err := testLine(problem.Inputs[i], problem.Outputs[i], problem.DriverFunc)
+	
+	for _, test := range problem.Tests {
+		test, err := testLine(test, problem.DriverFunction)
 		if err != nil {
-			return "", nil
+			return "", err
 		}
-		resultCode += testLine
+		resultCode += test
 	}
+
 	return code + resultCode, nil
 }

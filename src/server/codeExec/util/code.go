@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jorgedel4/iCode/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"github.com/jorgedel4/iCode/structs"
 )
 
 func RunCode(client *mongo.Client) http.HandlerFunc {
@@ -42,7 +42,7 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 		}
 
 		// Check if the given code contains forbidden functions
-		disallowedFuncs := disallowedFuncs(reqBody.Code, problem.NotAllowedFuncs)
+		disallowedFuncs := disallowedFuncs(reqBody.Code, problem.ForbiddenFunctions)
 		if len(disallowedFuncs) != 0 {
 			http.Error(w,
 				fmt.Sprintf("Found disallowed functions in code (%s)", strings.Join(disallowedFuncs, ", ")),
