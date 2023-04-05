@@ -54,6 +54,7 @@ func parseIntoResult(result *structs.Result, output string) error {
 
 		if visibility == "+" {
 			m := make(map[string]string)
+			m["status"] = status
 			m["input"] = parsedLine[2]
 			m["expected"] = parsedLine[3]
 			m["got"] = parsedLine[4]
