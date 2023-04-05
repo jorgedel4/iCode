@@ -21,8 +21,8 @@ type RequestBody struct {
 	Code string `json:"code"`
 }
 
-type CodeResult struct {
-	Error string
-	ShownTests []map[string]string
-	HiddenTests map[string]int
+type Result struct {
+	Error 		string 				`json:"error"`
+	ShownTests 	[]map[string]string `json:"shownTests"`
+	HiddenTests map[string]int 		`json:"hiddenTests"`
 }

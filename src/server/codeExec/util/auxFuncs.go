@@ -3,6 +3,8 @@ package util
 import (
 	"fmt"
 	"strings"
+
+	"github.com/jorgedel4/iCode/structs"
 )
 
 // Utility function to check if a slice contains a value
@@ -27,4 +29,38 @@ func disallowedFuncs(pythonCode string, notAllowedFuncs []string) []string {
 		}
 	}
 	return disallowedFuncsFound
+}
+
+// Function that takes the output from running code into a Result struct
+func parseIntoResult(result *structs.Result, output string) error {
+	if output[0] != '+' && output[0] != '-' {
+		result.Error = output
+		return nil
+	}
+
+	result.Error = ""
+	lines := strings.Split(output, "\n")
+	lines = lines[:len(lines)-1]
+	shownTests := make(map[string]int)
+	result.HiddenTests = shownTests
+	hiddenTests := make(map[string]int)
+	hiddenTests["failed"] = 0
+	hiddenTests["passed"] = 0
+	result.HiddenTests = hiddenTests
+	for _, line := range lines {
+		parsedLine := strings.Split(line, "|")
+		visibility := parsedLine[0]
+		status := parsedLine[1]
+
+		if visibility == "+" {
+			m := make(map[string]string)
+			m["input"] = parsedLine[2]
+			m["expected"] = parsedLine[3]
+			m["got"] = parsedLine[4]
+			result.ShownTests = append(result.ShownTests, m)
+		} else if visibility == "-"{
+			result.HiddenTests[status]++
+		}
+	}
+	return nil
 }

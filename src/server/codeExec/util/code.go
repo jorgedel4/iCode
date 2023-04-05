@@ -58,22 +58,30 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 		}
 
 		// Run code
-		result, err := execute(code, problem.Language)
+		output, err := execute(code, problem.Language)
 		if err != nil {
 			http.Error(w, "Error executing code", http.StatusInternalServerError)
 			return
 		}
 
-		lines := strings.Split(result, "\n")
-		lines = lines[:len(lines) - 1]
-		for _, line := range lines {
-			fmt.Println(line)
+		// Parse result
+		var codeResult structs.Result
+		err = parseIntoResult(&codeResult, output)
+		if err != nil {
+			http.Error(w, "Error parsing result", http.StatusInternalServerError)
+			return
 		}
 
-		// Parse result
-		// var codeResult structs.CodeResult
-		// err = parseIntoCodeResult(result, problem.Language)
+		// Marshalling struct into json
+		codeResultJson, err := json.Marshal(codeResult)
+		if err != nil {
+			http.Error(w, "Error encoding response", http.StatusInternalServerError)
+			return
+		}
 
-		// Turn object into a json and return it
+		// Returning data
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(codeResultJson)
 	}
 }
