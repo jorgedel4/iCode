@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jorgedel4/iCode/structs"
+	"github.com/jorgedel4/iCode/packages/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )

@@ -3,7 +3,7 @@ package python
 import (
 	"fmt"
 
-	"github.com/jorgedel4/iCode/structs"
+	"github.com/jorgedel4/iCode/packages/structs"
 )
 
 func testLine(test structs.Test, driverFunction string) (string, error) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jorgedel4/iCode/structs"
+	"github.com/jorgedel4/iCode/packages/structs"
 )
 
 // Utility function to check if a slice contains a value

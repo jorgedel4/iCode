@@ -3,8 +3,8 @@ package util
 import (
 	"errors"
 
-	"github.com/jorgedel4/iCode/python"
-	"github.com/jorgedel4/iCode/structs"
+	"github.com/jorgedel4/iCode/packages/python"
+	"github.com/jorgedel4/iCode/packages/structs"
 )
 
 // "switch" functions that determine which function will be called
