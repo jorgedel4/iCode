@@ -65,10 +65,12 @@ CREATE TABLE grupos (
     id_group        VARCHAR(30) NOT NULL,
     id_course       VARCHAR(10) NOT NULL,
     main_professor  CHAR(9)     NOT NULL,
+    term            VARCHAR(25) NOT NULL,
 
     PRIMARY KEY (id_group),
     FOREIGN KEY (id_course) REFERENCES courses(id_course),
-    FOREIGN KEY (main_professor) REFERENCES professors(nomina)
+    FOREIGN KEY (main_professor) REFERENCES professors(nomina),
+    FOREIGN KEY (term) REFERENCES terms(id_term)
 );
 
 CREATE TABLE enrollments (
@@ -192,8 +194,8 @@ INSERT INTO courses VALUES
     ("TC1028", "Pensamiento computacional");
 
 INSERT INTO grupos VALUES
-    ("G001", "TC1028", "L01922384"),
-    ("G002", "TC1028", "L01922235");
+    ("G001", "TC1028", "L01922384", "FJ23"),
+    ("G002", "TC1028", "L01922235", "FJ23");
 
 INSERT INTO enrollments VALUES
     ("G001", "A01551955"),
