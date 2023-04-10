@@ -12,6 +12,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/jorgedel4/iCode/packages/create"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -43,13 +44,7 @@ func main() {
 	log.Println("Connected to MongoDB")
 
 	// MySQL connection
-	mysqlDB, err := sql.Open("mysql",
-		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", 
-		os.Getenv("MYSQL_USER"), 
-		os.Getenv("MYSQL_PASSWORD"), 
-		os.Getenv("MYSQL_IP"), 
-		os.Getenv("MYSQL_PORT"), 
-		os.Getenv("MYSQL_DBNAME")))
+	mysqlDB, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_IP"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
 	if err != nil {
 		log.Fatal("Error connecting to MySQL:", err)
 	}
@@ -62,6 +57,7 @@ func main() {
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
+	r.HandleFunc("/register/{category}", create.Handler(mongoDB, mysqlDB)).Methods("POST")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
