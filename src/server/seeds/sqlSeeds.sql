@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS test_db;
-CREATE DATABASE test_db;
+DROP DATABASE IF EXISTS iCode;
+CREATE DATABASE iCode;
 
-USE test_db;
+USE iCode;
 
 -- Creacion de tablas
 CREATE TABLE campus (
