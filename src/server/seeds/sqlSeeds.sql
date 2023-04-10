@@ -138,7 +138,7 @@ CREATE TABLE hw_questions (
 
 CREATE TABLE questionAttempts (
     student     CHAR(9)     NOT NULL,
-    grupo      VARCHAR(30) NOT NULL,
+    grupo       VARCHAR(30) NOT NULL,
     question    VARCHAR(20) NOT NULL,
     attempt_status  CHAR(3) NOT NULL,
     attempt_date  TIMESTAMP NOT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE questionAttempts (
 
 CREATE TABLE hw_questionAttempts (
     student     CHAR(9)     NOT NULL,
-    grupo      VARCHAR(30) NOT NULL,
+    grupo       VARCHAR(30) NOT NULL,
     question    VARCHAR(20) NOT NULL,
     attempt_status  CHAR(3) NOT NULL,
     attempt_date  TIMESTAMP NOT NULL,
