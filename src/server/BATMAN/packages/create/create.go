@@ -9,8 +9,19 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/jorgedel4/iCode/packages/util"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+type Campus struct {
+	ID   string `json:"id" db:"id_campus"`
+	Name string `json:"name" db:"name_campus"`
+}
+
+type Term struct {
+	ID   string `json:"id" db:"id_term"`
+	Name string `json:"name" db:"term"`
+}
 
 func Handler(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -21,85 +32,43 @@ func Handler(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		switch mux.Vars(r)["category"] {
+		category := mux.Vars(r)["category"]
+		switch category {
 		case "campus":
-			{
-				campus(w, r, mongoDB, mysqlDB, body)
+			var campus Campus
+			if err := json.Unmarshal(body, &campus); err != nil {
+				http.Error(w, "Error decoding request body", http.StatusBadRequest)
 				return
+			}
+			if err := util.InsertRow(mysqlDB, "campus", campus); err != nil {
+				if strings.Contains(err.Error(), "Error 1062") {
+					http.Error(w, fmt.Sprintf("Record with id '%s' already exists in table 'campus'", campus.ID), http.StatusConflict)
+					return
+				} else {
+					http.Error(w, fmt.Sprintf("Error creating %s record: %v", category, err), http.StatusInternalServerError)
+					return
+				}
 			}
 		case "term":
-			{
-				term(w, r, mongoDB, mysqlDB, body)
+			var term Term
+			if err := json.Unmarshal(body, &term); err != nil {
+				http.Error(w, "Error decoding request body", http.StatusBadRequest)
 				return
 			}
-		}
-	}
-}
-
-type Campus struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-func campus(w http.ResponseWriter, r *http.Request, mongoDB *mongo.Client, mysqlDB *sql.DB, body []byte) {
-	var campus Campus
-	err := json.Unmarshal(body, &campus)
-	if err != nil {
-		http.Error(w, "Error decoding request body", http.StatusBadRequest)
-		return
-	}
-
-	insertQuery := fmt.Sprintf("INSERT INTO campus VALUES ('%s', '%s')", campus.ID, campus.Name)
-	stmt, err := mysqlDB.Prepare(insertQuery)
-	if err != nil {
-		http.Error(w, "Internal error with DB", http.StatusInternalServerError)
-		return
-	}
-	defer stmt.Close()
-
-	// Execute the query with the values
-	_, err = stmt.Exec()
-	if err != nil {
-		if strings.Contains(err.Error(), "Error 1062") {
-			http.Error(w, fmt.Sprintf("Campus with id '%s' already exists", campus.ID), http.StatusConflict)
-			return
-		} else {
-			http.Error(w, "Internal error with DB", http.StatusInternalServerError)
+			if err := util.InsertRow(mysqlDB, "terms", term); err != nil {
+				if strings.Contains(err.Error(), "Error 1062") {
+					http.Error(w, fmt.Sprintf("Record with id '%s' already exists in table 'terms'", term.ID), http.StatusConflict)
+					return
+				} else {
+					http.Error(w, fmt.Sprintf("Error creating %s record: %v", category, err), http.StatusInternalServerError)
+					return
+				}
+			}
+		default:
+			http.Error(w, "Invalid category", http.StatusBadRequest)
 			return
 		}
-	}
-}
 
-type Term struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-func term(w http.ResponseWriter, r *http.Request, mongoDB *mongo.Client, mysqlDB *sql.DB, body []byte) {
-	var term Term
-	err := json.Unmarshal(body, &term)
-	if err != nil {
-		http.Error(w, "Error decoding request body", http.StatusBadRequest)
-		return
-	}
-
-	insertQuery := fmt.Sprintf("INSERT INTO terms VALUES ('%s', '%s')", term.ID, term.Name)
-	stmt, err := mysqlDB.Prepare(insertQuery)
-	if err != nil {
-		http.Error(w, "Internal error with DB", http.StatusInternalServerError)
-		return
-	}
-	defer stmt.Close()
-
-	// Execute the query with the values
-	_, err = stmt.Exec()
-	if err != nil {
-		if strings.Contains(err.Error(), "Error 1062") {
-			http.Error(w, fmt.Sprintf("Term with id '%s' already exists", term.ID), http.StatusConflict)
-			return
-		} else {
-			http.Error(w, "Internal error with DB", http.StatusInternalServerError)
-			return
-		}
+		w.WriteHeader(http.StatusCreated)
 	}
 }

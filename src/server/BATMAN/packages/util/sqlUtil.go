@@ -3,15 +3,31 @@ package util
 import (
 	"database/sql"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
-// Function that checks if a given key exists
-func KeyExists(db *sql.DB, tableName string, keyName interface{}, keyValue interface{}) (bool, error) {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE %v = '%v'", tableName, keyName, keyValue)
-	var count int
-	err := db.QueryRow(query, keyValue).Scan(&count)
-	if err != nil {
-		return false, err
+func InsertRow(db *sql.DB, tableName string, data interface{}) error {
+	// Get the reflect.Type and reflect.Value of the data argument.
+	dataType := reflect.TypeOf(data)
+	dataValue := reflect.ValueOf(data)
+
+	// Build the SQL statement for inserting a row.
+	var values []interface{}
+	for i := 0; i < dataType.NumField(); i++ {
+		field := dataType.Field(i)
+		if field.Tag.Get("db") == "-" {
+			continue // skip fields marked with db:"-"
+		}
+		values = append(values, dataValue.Field(i).Interface())
 	}
-	return count > 0, nil
+	sqlStatement := fmt.Sprintf("INSERT INTO %s VALUES (%s)", tableName, strings.TrimRight(strings.Repeat("?,", len(values)), ","))
+
+	// Execute the SQL statement.
+	_, err := db.Exec(sqlStatement, values...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
