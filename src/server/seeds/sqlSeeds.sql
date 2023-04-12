@@ -14,6 +14,8 @@ CREATE TABLE campus (
 CREATE TABLE terms (
     id_term     CHAR(4)         NOT NULL,
     term        VARCHAR(25)     NOT NULL,
+    startDate   TIMESTAMP       NOT NULL,
+    endDate     TIMESTAMP       NOT NULL,
 
     PRIMARY KEY (id_term)
 );
@@ -168,14 +170,14 @@ INSERT INTO campus VALUES
     ("HID", "Hidalgo");
 
 INSERT INTO terms VALUES
-    ("IV22", "Invierno 2022"), 
-    ("FJ22", "Febrero-Junio 2022"),
-    ("VE22", "Verano 2022"),
-    ("AD22", "Agosto-Diciembre 2022"),
-    ("IV23", "Invierno 2023"), 
-    ("FJ23", "Febrero-Junio 2023"),
-    ("VE23", "Verano 2023"),
-    ("AD23", "Agosto-Diciembre 2023");
+    ("IV22", "Invierno 2022", '2022-01-5 00:00:00', '2022-02-12 00:00:00'), 
+    ("FJ22", "Febrero-Junio 2022", '2022-02-15 00:00:00', '2022-06-26 00:00:00'),
+    ("VE22", "Verano 2022", '2022-07-5 00:00:00', '2022-08-25 00:00:00'),
+    ("AD22", "Agosto-Diciembre 2022", '2022-08-28 00:00:00', '2022-12-12 00:00:00'),
+    ("IV23", "Invierno 2023", '2023-01-5 00:00:00', '2023-02-12 00:00:00'), 
+    ("FJ23", "Febrero-Junio 2023", '2023-02-15 00:00:00', '2023-06-26 00:00:00'),
+    ("VE23", "Verano 2023", '2023-07-5 00:00:00', '2023-08-25 00:00:00'),
+    ("AD23", "Agosto-Diciembre 2023", '2023-08-28 00:00:00', '2023-12-12 00:00:00');
 
 INSERT INTO admins VALUES
     ("S04912941", "PUE", "Sam", "Sepiol", NULL),

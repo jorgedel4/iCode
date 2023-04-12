@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/jorgedel4/iCode/packages/create"
+	"github.com/jorgedel4/iCode/packages/read"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -57,7 +58,10 @@ func main() {
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
+	// Create operations
 	r.HandleFunc("/register/{category}", create.Handler(mongoDB, mysqlDB)).Methods("POST")
+	// Read operations
+	r.HandleFunc("/courses", read.Courses(mongoDB, mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
