@@ -47,5 +47,6 @@ func Courses(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
 				query = fmt.Sprintf("")
 			}
 		}
+		fmt.Println(query)
 	}
 }
