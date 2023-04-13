@@ -45,7 +45,7 @@ func main() {
 	log.Println("Connected to MongoDB")
 
 	// MySQL connection
-	mysqlDB, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_IP"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
+	mysqlDB, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_IP"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
 	if err != nil {
 		log.Fatal("Error connecting to MySQL:", err)
 	}
@@ -61,7 +61,7 @@ func main() {
 	// Create operations
 	r.HandleFunc("/register/{category}", create.Handler(mongoDB, mysqlDB)).Methods("POST")
 	// Read operations
-	r.HandleFunc("/courses", read.Courses(mongoDB, mysqlDB)).Methods("GET")
+	r.HandleFunc("/groups", read.Groups(mongoDB, mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
