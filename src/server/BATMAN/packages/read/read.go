@@ -32,6 +32,7 @@ func Groups(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
 		var accountTypes = make(map[byte]string)
 		accountTypes['L'] = "professor"
 		accountTypes['A'] = "student"
+		accountTypes['S'] = "admin"
 
 		// Reading request's body (returns a slice of bytes, not usable yet)
 		body, err := io.ReadAll(r.Body)
@@ -59,15 +60,30 @@ func Groups(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
 		} else if accountType == "student" {
 			baseQuery += "\nJOIN enrollments e ON g.id_group = e.grupo"
 			personSelector = fmt.Sprintf("e.student = '%s", rBody.ID)
+		} else if accountType == "admin" {
+			personSelector = ""
 		}
 
 		if rBody.Term == "current" {
 			termSelector = "CURRENT_TIMESTAMP BETWEEN t.startDate and t.endDate"
+		} else if rBody.Term == "all" {
+			termSelector = ""
 		} else {
 			termSelector = fmt.Sprintf("g.term = '%s'", rBody.Term)
 		}
 
-		query := fmt.Sprintf("%s WHERE %s AND %s", baseQuery, personSelector, termSelector)
+		// not proud of this block, refactor later pls
+		var query string
+		if personSelector == "" && termSelector == "" {
+			query = baseQuery
+		} else if personSelector != "" && termSelector != "" {
+			query = fmt.Sprintf("%s WHERE %s AND %s", baseQuery, personSelector, termSelector)
+		} else if personSelector != "" && termSelector == "" {
+			query = fmt.Sprintf("%s WHERE %s", baseQuery, personSelector)
+		} else if personSelector == "" && termSelector != "" {
+			query = fmt.Sprintf("%s WHERE %s", baseQuery, termSelector)
+		}
+
 		// Execute the query and get the result set
 		rows, err := mysqlDB.Query(query)
 		if err != nil {
