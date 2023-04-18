@@ -58,7 +58,7 @@ CREATE TABLE professors (
 
 CREATE TABLE courses (
     id_course   VARCHAR(10)     NOT NULL,
-    course_name VARCHAR(30)     NOT NULL,
+    course_name VARCHAR(50)     NOT NULL,
 
     PRIMARY KEY (id_course)
 );
@@ -106,7 +106,7 @@ CREATE TABLE moduleConfigs (
 CREATE TABLE questions (
     id_question     VARCHAR(20)     NOT NULL,
     module          VARCHAR(20)     NOT NULL,
-    mongo_id        VARCHAR(20)     NOT NULL,
+    mongo_id        VARCHAR(30)     NOT NULL,
     created_by      CHAR(9)         NOT NULL,
     submittedOn     TIMESTAMP       NOT NULL,
     current_status  CHAR(3)         NOT NULL,
@@ -182,39 +182,129 @@ INSERT INTO terms VALUES
 
 INSERT INTO admins VALUES
     ("S04912941", "PUE", "Sam", "Sepiol", NULL),
+    ("S03248671", "GDL", "Sam", "Sepiol", "Qwerty"),
     ("S02351234", "MTY", "Galactus", "Lider", "Supremo");
 
 INSERT INTO students VALUES
-    ("A01551955", "PUE", "FJ23", "Jorge", "Delgado", "Morales"),
-    ("A01730545", "MTY", "FJ23", "Karla", "Sanchez", "Olivares"),
-    ("A01633525", "PUE", "FJ23", "Israel", "Perez", "Ontiveros");
+    ("A0664301", "PUE", "FJ23", "Jorge", "Delgado", "Morales"),
+    ("A0790712", "MTY", "FJ23", "Karla", "Sanchez", "Olivares"),
+    ("A0552934", "PUE", "FJ23", "Jose", "Cardoza", "Mendez"),
+    ("A0204356", "CSF", "FJ23", "Maria", "Ortiz", "Reyes"),
+    ("A0132179", "PUE", "FJ23", "Adriana", "Fernandez", "Rojas"),
+    ("A0227648", "HID", "FJ23", "Juan", "Ortega", "Vasquez"),
+    ("A0379510", "GDL", "IV23", "Aldo", "Pacheco", "Morales"),
+    ("A0701258", "GDL", "FJ23", "Carlos", "Villasenor", "Pacheco"),
+    ("A0829254", "PUE", "FJ23", "Carolina", "Martinez", "Gutierrez"),
+    ("A0916872", "MTY", "FJ23", "Patricio", "Ramirez", "Sandoval"),
+    ("A0192836", "PUE", "IV23", "Mauricio", "Oropeza", "Ruiz"),
+    ("A0932487", "GDL", "FJ23", "Ramiro", "Hernandez", "Villasenor"),
+    ("A0738291", "CSF", "FJ23", "Ana", "Lopez", "Garcia"),
+    ("A0857412", "MTY", "FJ23", "Sofia", "Garcia", "Jimenez"),
+    ("A0314692", "PUE", "FJ23", "Fernando", "Gonzalez", "Cortes"),
+    ("A0478236", "HID", "FJ23", "Julio", "Castillo", "Sanchez"),
+    ("A0256413", "GDL", "IV23", "Paulina", "Rojas", "Torres"),
+    ("A0541368", "MTY", "FJ23", "Diego", "Valle", "Gutierrez"),
+    ("A0806291", "PUE", "FJ23", "Luis", "Mendez", "Hernandez"),
+    ("A0428159", "GDL", "FJ23", "Mariana", "Alvarez", "Torres"),
+    ("A0975314", "PUE", "IV23", "Rafael", "Diaz", "Castillo"),
+    ("A0614923", "HID", "FJ23", "Miguel", "Ramirez", "Martinez");
 
 INSERT INTO professors VALUES
     ("L01922384", "PUE", "Daniel", "Perez", "Rojas"),
-    ("L01922235", "MTY", "Paola", "Samora", "Mendoza");
+    ("L08294325", "MTY", "Claudia", "Perez", "Lezama"),
+    ("L03243512", "GDL", "Rosa", "Paredes", "Juarez"),
+    ("L00234328", "CSF", "Alba", "Romero", "Garcia");
+
 
 INSERT INTO courses VALUES
-    ("TC1028", "Pensamiento computacional");
+    ("TC1028", "Pensamiento computacional"),
+    ("TC1030", "Programacion orientada a objetos"),
+    ("TC1031", "Estructuras de datos y algoritmos");
 
 INSERT INTO grupos VALUES
-    ("G001", "TC1028", "L01922384", "FJ23"),
-    ("G002", "TC1028", "L01922235", "FJ23");
+    ("G00000001", "TC1028", "L01922384", "FJ23"),
+    ("G00000002", "TC1028", "L01922384", "FJ23"),
+    ("G00000003", "TC1031", "L01922384", "IV23"),
+    ("G00000004", "TC1028", "L08294325", "FJ23"),
+    ("G00000005", "TC1030", "L08294325", "FJ23"),
+    ("G00000006", "TC1031", "L03243512", "IV23"),
+    ("G00000007", "TC1028", "L00234328", "FJ23");
 
 INSERT INTO enrollments VALUES
-    ("G001", "A01551955"),
-    ("G001", "A01633525"),
-    ("G002", "A01730545");
+    ("G00000001", "A0664301"),
+    ("G00000001", "A0552934"),
+    ("G00000001", "A0132179"),
+    ("G00000001", "A0829254"),
+    ("G00000001", "A0192836"),
+    ("G00000002", "A0975314"),
+    ("G00000002", "A0806291"),
+    ("G00000002", "A0314692"),
+    ("G00000003", "A0664301"),
+    ("G00000003", "A0192836"),
+    ("G00000003", "A0806291"),
+    ("G00000004", "A0916872"),
+    ("G00000004", "A0857412"),
+    ("G00000004", "A0541368"),
+    ("G00000004", "A0790712"),
+    ("G00000005", "A0916872"),
+    ("G00000005", "A0790712"),
+    ("G00000006", "A0379510"),
+    ("G00000006", "A0701258"),
+    ("G00000006", "A0256413"),
+    ("G00000006", "A0428159"),
+    ("G00000007", "A0204356"),
+    ("G00000007", "A0738291");
 
 INSERT INTO modules VALUES
-    ("1", "TC1028", "Conditionals"),
-    ("2", "TC1028", "For loops"),
-    ("3", "TC1028", "While loops");
+    ("M00000001", "TC1028", "Conditionals"),
+    ("M00000002", "TC1028", "For loops"),
+    ("M00000003", "TC1028", "While loops"),
+    ("M00000004", "TC1030", "Atributos"),
+    ("M00000005", "TC1030", "Metodos"),
+    ("M00000006", "TC1030", "Polimorfismo"),
+    ("M00000008", "TC1031", "Complejidades"),
+    ("M00000007", "TC1031", "Busqueda binaria"),
+    ("M00000009", "TC1031", "Arbol binario");
 
 INSERT INTO moduleConfigs VALUES
-    ("1", "G001", 3, '2023-11-15 00:00:00', '2023-11-20 00:00:00'),
-    ("2", "G001", 2, '2023-11-21 00:00:00', '2023-11-25 00:00:00');
+    ("M00000001", "G00000001", 3, '2023-04-20 00:00:00', '2023-04-30 00:00:00'),
+    ("M00000002", "G00000001", 3, '2023-05-01 00:00:00', '2023-05-10 00:00:00'),
+    ("M00000003", "G00000001", 3, '2023-05-11 00:00:00', '2023-05-20 00:00:00');
 
 INSERT INTO questions VALUES
-    ("23jkalkiawd", "1", "test/test/1", "L01922384", '2023-11-25 00:00:00', "PEN", "code"),
-    ("3wr93qwnd32", "1", "test/test/2", "L01922384", '2023-11-25 00:00:00', "PEN", "code"),
-    ("92nead9002s", "1", "test/test/3", "L01922384", '2023-11-25 00:00:00', "PEN", "code");
+    ("23jkalkiawd", "M00000001", "TC1028/Conditionals/1", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("3wr93qwnd32", "M00000001", "TC1028/Conditionals/2", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("92nead9002s", "M00000001", "TC1028/Conditionals/3", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("53721346fdg", "M00000002", "TC1028/For_loops/1", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("se0cn8272jd", "M00000002", "TC1028/For_loops/2", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("2898n73fn7s", "M00000002", "TC1028/For_loops/3", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("189n73nf7sd", "M00000003", "TC1028/While_loops/1", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("29n0sanf826", "M00000003", "TC1028/While_loops/2", "L01922384", '2023-04-15 00:00:00', "APP", "code"),
+    ("10n8aw62b9a", "M00000003", "TC1028/While_loops/3", "L01922384", '2023-04-15 00:00:00', "APP", "code");
+
+INSERT INTO homework VALUES
+    ("289081hnadg", "G00000001", "Tarea 1: Condicionales", 2, '2023-04-15 00:00:00', '2023-04-20 00:00:00'),
+    ("c82495n0p10", "G00000001", "Tarea 2: Condicionales", 2, '2023-04-21 00:00:00', '2023-04-30 00:00:00');
+
+INSERT INTO hw_questions VALUES
+    ("12094nc190a", "289081hnadg", "TC1028/G00000001/1", "codee"),
+    ("n7awd7aw623", "289081hnadg", "TC1028/G00000001/2", "codee"),
+    ("1761biasj1d", "289081hnadg", "TC1028/G00000001/3", "codee"),
+    ("19nm7a9s71g", "c82495n0p10", "TC1028/G00000001/4", "codee"),
+    ("91028ajhcb1", "c82495n0p10", "TC1028/G00000001/5", "codee"),
+    ("4a6n54rt4t2", "c82495n0p10", "TC1028/G00000001/6", "codee");
+
+INSERT INTO hw_questionAttempts VALUES
+    ("A0664301", "G00000001", "12094nc190a", "PAS", '2023-04-14 12:43:23');
+
+-- DECLARE FUNCTION correct_hw_submits (student CHAR(9), homework VARCHAR(20))
+-- RETURNS INT
+-- AS
+-- BEGIN
+--     DECLARE n_attempts INT;
+--     SELECT COUNT(*) INTO n_attempts
+--     FROM hw_questionAttempts
+--     WHERE student = student
+--     AND 
+-- END;
+

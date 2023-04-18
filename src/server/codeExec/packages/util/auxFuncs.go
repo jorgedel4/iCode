@@ -59,7 +59,7 @@ func parseIntoResult(result *structs.Result, output string) error {
 			m["expected"] = parsedLine[3]
 			m["got"] = parsedLine[4]
 			result.ShownTests = append(result.ShownTests, m)
-		} else if visibility == "-"{
+		} else if visibility == "-" {
 			result.HiddenTests[status]++
 		}
 	}

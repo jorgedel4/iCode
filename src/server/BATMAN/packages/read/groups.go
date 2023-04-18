@@ -7,8 +7,6 @@ import (
 	"io"
 	"net/http"
 	"time"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type CourseRBody struct {
@@ -27,7 +25,7 @@ type Group struct {
 	ProfSLastName string    `json:"slast_name"`
 }
 
-func Groups(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
+func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var accountTypes = make(map[byte]string)
 		accountTypes['L'] = "professor"

@@ -25,7 +25,7 @@ func testLine(test structs.Test, driverFunction string) (string, error) {
 	}
 
 	resultVar := fmt.Sprintf("result = %s", functionCall)
-	printStatement := fmt.Sprintf("print(\"%s|passed\" if result == %s else f\"%s|failed|%s|%s|{result}\")", visibility, outputStr, visibility, inputStr, outputStr)
+	printStatement := fmt.Sprintf("print(f\"%s|passed|%s|%s|{result}\" if result == %s else f\"%s|failed|%s|%s|{result}\")", visibility, inputStr, outputStr, outputStr, visibility, inputStr, outputStr)
 
 	line = fmt.Sprintf("\n%s\n%s", resultVar, printStatement)
 	return line, nil
