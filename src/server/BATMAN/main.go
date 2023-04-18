@@ -61,7 +61,8 @@ func main() {
 	// Create operations
 	r.HandleFunc("/register/{category}", create.Handler(mongoDB, mysqlDB)).Methods("POST")
 	// Read operations
-	r.HandleFunc("/groups", read.Groups(mongoDB, mysqlDB)).Methods("GET")
+	r.HandleFunc("/groups", read.Groups(mysqlDB)).Methods("GET")
+	r.HandleFunc("/homework/", read.Homework(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
