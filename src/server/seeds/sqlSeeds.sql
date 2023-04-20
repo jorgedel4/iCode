@@ -3,6 +3,8 @@ CREATE DATABASE iCode;
 
 USE iCode;
 
+SET sql_mode = '';
+
 -- Creacion de tablas
 CREATE TABLE campus (
     id_campus   CHAR(3)         NOT NULL,

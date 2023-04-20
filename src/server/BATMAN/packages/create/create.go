@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jorgedel4/iCode/packages/util"
-	"go.mongodb.org/mongo-driver/mongo"
+	// "go.mongodb.org/mongo-driver/mongo"
 )
 
 type Campus struct {
@@ -23,7 +23,7 @@ type Term struct {
 	Name string `json:"name" db:"term"`
 }
 
-func Handler(mongoDB *mongo.Client, mysqlDB *sql.DB) http.HandlerFunc {
+func Handler(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Reading request's body (returns a slice of bytes, not usable yet)
 		body, err := io.ReadAll(r.Body)

@@ -99,7 +99,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 		// Execute the query and get the result set
 		rows, err := mysqlDB.Query(query)
 		if err != nil {
-			http.Error(w, "Error executing query", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()

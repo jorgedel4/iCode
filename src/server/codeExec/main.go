@@ -46,7 +46,15 @@ func main() {
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
-	r.HandleFunc("/exec", util.RunCode(client)).Methods("GET")
+	r.HandleFunc("/exec", util.RunCode(client)).Methods("POST")
+	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request){
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Hola mundo"))
+	}).Methods("GET")
 
 	log.Println("Starting CodeExec on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
