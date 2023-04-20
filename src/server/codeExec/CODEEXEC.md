@@ -12,7 +12,7 @@ CodeExec es una REST API implementada en Go. Permite ejecutar y evaluar código 
 
 #### Method
 
-`GET`
+`POST`
 
 #### Parametros
 (Mediante el body de la peticion)
