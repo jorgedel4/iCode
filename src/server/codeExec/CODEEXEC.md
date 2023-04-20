@@ -71,7 +71,7 @@ En caso de que se presente un error no relacionado con la ejecucion del código,
 | HTTP Status | Error Message                                    | Description                                                                                                 |
 | ----------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | 400         | Error reading request body                       | No se proporcionaron todos los atributos necesarios, o nose cumple con el formato                           |
-| 403         | Found disallowed functions in code ({functions}) | El código recivido contiene funciones no permitidas, no se ejecutará                                        |   
+| 403         | Found disallowed functions in code ({functions}) | El código recibido contiene funciones no permitidas, no se ejecutará                                        |   
 | 500         | Error executing query                            | Problema al hacer la consulta a MongoDB, probablemente no exista un documento con el ID dado                |
 | 500         | Error creating tests                             | Problema interno del servidor para generar casos de prueba, indica que el problema en la BBDD no es correcto|
 | 500         | Error executing code                             | Error al ejecutar código no relacionado directamente con este, probablemente le falta algo al ambiente en el que se ejecuto|
