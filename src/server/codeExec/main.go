@@ -46,7 +46,7 @@ func main() {
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
-	r.HandleFunc("/exec", util.RunCode(client)).Methods("POST")
+	r.HandleFunc("/exec", util.RunCode(client)).Methods("GET")
 
 	log.Println("Starting CodeExec on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

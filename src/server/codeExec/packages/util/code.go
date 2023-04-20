@@ -83,5 +83,7 @@ func RunCode(client *mongo.Client) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(codeResultJson)
+		w.(http.Flusher).Flush()
+		w.(http.CloseNotifier).CloseNotify()
 	}
 }

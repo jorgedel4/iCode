@@ -162,6 +162,20 @@ CREATE TABLE hw_questionAttempts (
     FOREIGN KEY (grupo) REFERENCES grupos(id_group),
     FOREIGN KEY (question) REFERENCES hw_questions(id_hwquestion)
 );
+
+-- Functiones
+DELIMITER $$
+CREATE FUNCTION successful_hw_attempts(matricula CHAR(9), hw_id VARCHAR(20))
+RETURNS INT
+BEGIN
+    DECLARE successful_attempts INT;
+    SELECT COUNT(*) INTO successful_attempts FROM hw_questionAttempts hqa
+    JOIN hw_questions hq ON hqa.question = hq.id_hwquestion
+    WHERE student = matricula AND homework = hw_id AND attempt_status = 'PAS';
+    RETURN successful_attempts;
+END$$
+DELIMITER ;
+
 -- Insercion de datos (falsos)
 INSERT INTO campus VALUES
     ("PUE", "Puebla"),
@@ -283,8 +297,8 @@ INSERT INTO questions VALUES
     ("10n8aw62b9a", "M00000003", "TC1028/While_loops/3", "L01922384", '2023-04-15 00:00:00', "APP", "code");
 
 INSERT INTO homework VALUES
-    ("289081hnadg", "G00000001", "Tarea 1: Condicionales", 2, '2023-04-15 00:00:00', '2023-04-20 00:00:00'),
-    ("c82495n0p10", "G00000001", "Tarea 2: Condicionales", 2, '2023-04-21 00:00:00', '2023-04-30 00:00:00');
+    ("289081hnadg", "G00000001", "Tarea 1: Condicionales", 2, '2023-04-20 00:00:00', '2023-04-25 00:00:00'),
+    ("c82495n0p10", "G00000001", "Tarea 2: Condicionales", 2, '2023-04-25 00:00:00', '2023-04-30 00:00:00');
 
 INSERT INTO hw_questions VALUES
     ("12094nc190a", "289081hnadg", "TC1028/G00000001/1", "codee"),
@@ -296,15 +310,3 @@ INSERT INTO hw_questions VALUES
 
 INSERT INTO hw_questionAttempts VALUES
     ("A0664301", "G00000001", "12094nc190a", "PAS", '2023-04-14 12:43:23');
-
--- DECLARE FUNCTION correct_hw_submits (student CHAR(9), homework VARCHAR(20))
--- RETURNS INT
--- AS
--- BEGIN
---     DECLARE n_attempts INT;
---     SELECT COUNT(*) INTO n_attempts
---     FROM hw_questionAttempts
---     WHERE student = student
---     AND 
--- END;
-

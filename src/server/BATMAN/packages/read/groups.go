@@ -57,7 +57,7 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 			personSelector = fmt.Sprintf("g.main_professor = '%s'", rBody.ID)
 		} else if accountType == "student" {
 			baseQuery += "\nJOIN enrollments e ON g.id_group = e.grupo"
-			personSelector = fmt.Sprintf("e.student = '%s", rBody.ID)
+			personSelector = fmt.Sprintf("e.student = '%s'", rBody.ID)
 		} else if accountType == "admin" {
 			personSelector = ""
 		}
@@ -106,7 +106,10 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(groupsJSON)
+		w.(http.Flusher).Flush()
+		w.(http.CloseNotifier).CloseNotify()
 	}
 }
