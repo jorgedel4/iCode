@@ -1,21 +1,16 @@
 package main
 
 import (
-	"context"
+	"database/sql"
 	"log"
 	"net/http"
+	"fmt"
 	"os"
-	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/jorgedel4/iCode/packages/util"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-)
-
-const (
-	mongoTimeOut = 10
 )
 
 func main() {
@@ -26,40 +21,25 @@ func main() {
 		return
 	}
 
-	// MongoDB connection
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
-	// Throw timeout error after 10 seconds
-	ctx, cancel := context.WithTimeout(context.Background(), mongoTimeOut*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, clientOptions)
+	// Connection to MySQL
+	db, err := sql.Open("mysql", fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_IP"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
 	if err != nil {
-		log.Fatal("Error connecting to MongoDB:", err)
-		return
+		log.Fatal("Error connecting to MySQL:", err)
 	}
-	// Function will be called after program is exited in order to safely disconnect from DB
 	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			log.Fatal("Error disconnecting from MongoDB:", err)
+		if err = db.Close(); err != nil {
+			log.Fatal("Error disconnecting from MySQL:", err)
 		}
 	}()
-	log.Println("Connected to MongoDB!")
 
-	// Creating router and defining routing functions
 	r := mux.NewRouter()
-	r.HandleFunc("/exec", util.RunCode(client)).Methods("POST")
-	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request){
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Hola mundo"))
-	}).Methods("GET")
+	r.HandleFunc("/exec", util.RunCode(db)).Methods("POST")
 
-	log.Println("Starting CodeExec on", os.Getenv("PORT"))
-	err = http.ListenAndServe(os.Getenv("PORT"), r)
-	if err != nil {
-		log.Fatal(err)
+	log.Println("Starting CodeExec on port", os.Getenv("PORT"))
+
+	if err = http.ListenAndServe(os.Getenv("PORT"), r); err != nil {
+		log.Fatalf("Error listening to port:", err.Error())
 		return
 	}
 }
