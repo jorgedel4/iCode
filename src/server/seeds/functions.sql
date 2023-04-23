@@ -1,3 +1,5 @@
+USE iCode;
+
 DELIMITER $$
 CREATE FUNCTION successful_hw_attempts(matricula CHAR(9), hw_id VARCHAR(20))
 RETURNS INT

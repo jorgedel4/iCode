@@ -10,7 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/jorgedel4/iCode/packages/util"
+	"github.com/jorgedel4/iCode/packages/exec"
 )
 
 func main() {
@@ -33,13 +33,15 @@ func main() {
 		}
 	}()
 
+	// Creating router and defining routes
 	r := mux.NewRouter()
-	r.HandleFunc("/exec", util.RunCode(db)).Methods("POST")
+	r.HandleFunc("/exec", exec.Code(db)).Methods("POST")
 
 	log.Println("Starting CodeExec on port", os.Getenv("PORT"))
 
+	// Start listening
 	if err = http.ListenAndServe(os.Getenv("PORT"), r); err != nil {
-		log.Fatalf("Error listening to port:", err.Error())
+		log.Fatalf("Error listening to port. %s", err.Error())
 		return
 	}
 }
