@@ -43,7 +43,15 @@ func Execute(code string, inputs []string) (string, error) {
 
 	// Wait for the command to complete
 	if err := cmd.Wait(); err != nil {
-		return "", err
+		// Get the error message from the output buffer
+		outputStr := strings.TrimRight(output.String(), "\n")
+		if outputStr == "" {
+			// If there is no output, return the exit status as the error
+			return "", fmt.Errorf("command failed with exit status %d", cmd.ProcessState.ExitCode())
+		} else {
+			// Otherwise, return the output as the error message
+			return "", fmt.Errorf("%s", outputStr)
+		}
 	}
 
 	// Remove any trailing newline characters from the output
