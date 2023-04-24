@@ -1,11 +1,19 @@
 [
 {
     "description": "create a function that returns the biggest number",
-    "inputs": [
+    "hinputs": [
         ["4", "3", "1", "9", "2"],
         ["2", "0", "7"]
     ],
-    "outputs": [
+    "houtputs": [
+        "9",
+        "7"
+    ],
+    "sinputs": [
+        ["4", "3", "1", "9", "2"],
+        ["2", "0", "7"]
+    ],
+    "soutputs": [
         "9",
         "7"
     ],
