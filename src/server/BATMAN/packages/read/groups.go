@@ -6,24 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
+
+	"github.com/jorgedel4/iCode/packages/structs"
 )
-
-type GroupsReq struct {
-	ID   string `json:"id"`
-	Term string `json:"term"`
-}
-
-type Group struct {
-	GroupID       string    `json:"id_group"`
-	CourseID      string    `json:"id_course"`
-	CourseName    string    `json:"course_name"`
-	StartDate     time.Time `json:"start_date"`
-	EndDate       time.Time `json:"end_date"`
-	ProfName      string    `json:"first_name"`
-	ProfFLastName string    `json:"flast_name"`
-	ProfSLastName string    `json:"slast_name"`
-}
 
 func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +26,7 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		var req GroupsReq
+		var req structs.GroupsReq
 		if err := json.Unmarshal(body, &req); err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
@@ -115,9 +100,9 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 
-		var results []Group = make([]Group, 0)
+		var results []structs.Group = make([]structs.Group, 0)
 		for rows.Next() {
-			var result Group
+			var result structs.Group
 			if err := rows.Scan(&result.GroupID, &result.CourseID, &result.CourseName, &result.StartDate, &result.EndDate, &result.ProfName, &result.ProfFLastName, &result.ProfSLastName); err != nil {
 				http.Error(w, "Error reading results", http.StatusInternalServerError)
 				return

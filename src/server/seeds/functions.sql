@@ -1,5 +1,7 @@
 USE iCode;
 
+SET GLOBAL log_bin_trust_function_creators = 1;
+
 DELIMITER $$
 CREATE FUNCTION successful_hw_attempts(matricula CHAR(9), hw_id VARCHAR(20))
 RETURNS INT
