@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type CourseRBody struct {
+type GroupsReq struct {
 	ID   string `json:"id"`
 	Term string `json:"term"`
 }
@@ -27,50 +27,76 @@ type Group struct {
 
 func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Setting up headers for CORS (not needed after full deployment)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		var accountTypes = make(map[byte]string)
 		accountTypes['L'] = "professor"
 		accountTypes['A'] = "student"
 		accountTypes['S'] = "admin"
 
-		// Reading request's body (returns a slice of bytes, not usable yet)
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
 
-		var rBody CourseRBody
-		if err := json.Unmarshal(body, &rBody); err != nil {
+		var req GroupsReq
+		if err := json.Unmarshal(body, &req); err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
 
-		accountType := accountTypes[rBody.ID[0]]
-		baseQuery := `SELECT g.id_group, c.id_course, c.course_name, t.startDate, t.endDate, p.first_name, p.flast_name, p.slast_name 
+		// Determine account type
+		accountType, ok := accountTypes[req.ID[0]]
+		if !ok {
+			http.Error(w, "Invalid account type", http.StatusBadRequest)
+			return
+		}
+
+		baseQuery := `SELECT g.id_group, c.id_course, c.course_name, t.date_start, t.date_end, p.first_name, p.flast_name, p.slast_name 
 		FROM grupos g
 		JOIN terms t ON g.term = t.id_term
 		JOIN courses c ON g.course = c.id_course
 		JOIN professors p ON g.main_professor = p.nomina`
 
+		var values []interface{}
+
 		var personSelector, termSelector string
-		if accountType == "professor" {
-			personSelector = fmt.Sprintf("g.main_professor = '%s'", rBody.ID)
-		} else if accountType == "student" {
-			baseQuery += "\nJOIN enrollments e ON g.id_group = e.grupo"
-			personSelector = fmt.Sprintf("e.student = '%s'", rBody.ID)
-		} else if accountType == "admin" {
-			personSelector = ""
+		switch accountType {
+		case "professor":
+			{
+				personSelector = "g.main_professor = ?"
+				values = append(values, req.ID)
+			}
+		case "student":
+			{
+				baseQuery += "\nJOIN enrollments e ON g.id_group = e.grupo"
+				personSelector = "e.student = ?"
+				values = append(values, req.ID)
+			}
+		case "admin":
+			{
+				personSelector = ""
+			}
 		}
 
-		if rBody.Term == "current" {
-			termSelector = "CURRENT_TIMESTAMP BETWEEN t.startDate and t.endDate"
-		} else if rBody.Term == "all" {
-			termSelector = ""
-		} else {
-			termSelector = fmt.Sprintf("g.term = '%s'", rBody.Term)
+		switch req.Term {
+		case "current":
+			{
+				termSelector = "CURRENT_TIMESTAMP BETWEEN t.date_start and t.date_end"
+			}
+		case "all":
+			{
+				termSelector = ""
+			}
+		default:
+			{
+				termSelector = "g.term = ?"
+				values = append(values, req.ID)
+			}
 		}
 
-		// not proud of this block, refactor later pls
 		var query string
 		if personSelector == "" && termSelector == "" {
 			query = baseQuery
@@ -82,15 +108,14 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 			query = fmt.Sprintf("%s WHERE %s", baseQuery, termSelector)
 		}
 
-		// Execute the query and get the result set
-		rows, err := mysqlDB.Query(query)
+		rows, err := mysqlDB.Query(query, values...)
 		if err != nil {
-			http.Error(w, "Error executing query", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
 
-		var results []Group
+		var results []Group = make([]Group, 0)
 		for rows.Next() {
 			var result Group
 			if err := rows.Scan(&result.GroupID, &result.CourseID, &result.CourseName, &result.StartDate, &result.EndDate, &result.ProfName, &result.ProfFLastName, &result.ProfSLastName); err != nil {
@@ -106,7 +131,6 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(groupsJSON)
 		w.(http.Flusher).Flush()

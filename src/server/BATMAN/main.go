@@ -32,7 +32,6 @@ func main() {
 			log.Fatal("Error disconnecting from MySQL:", err)
 		}
 	}()
-	log.Println("Connected to MySQL")
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()
