@@ -45,6 +45,7 @@ func main() {
 	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("POST")
 	r.HandleFunc("/questionrequests", read.QuestionReqs(mysqlDB)).Methods("POST")
 	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("POST")
+	r.HandleFunc("/enrolledstudents/{groupID}", read.EnrolledStudents(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
