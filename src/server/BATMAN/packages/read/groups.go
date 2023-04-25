@@ -113,6 +113,7 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		groupsJSON, err := json.Marshal(results)
 		if err != nil {
 			http.Error(w, "Error parsing response", http.StatusInternalServerError)
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")

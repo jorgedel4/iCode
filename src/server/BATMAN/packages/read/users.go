@@ -82,6 +82,7 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 		usersJSON, err := json.Marshal(users)
 		if err != nil {
 			http.Error(w, "Error parsing response", http.StatusInternalServerError)
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")

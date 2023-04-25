@@ -13,3 +13,13 @@ BEGIN
     RETURN successful_attempts;
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION count_modules(course_id CHAR(10))
+RETURNS INT
+BEGIN
+    DECLARE count INT;
+    SELECT COUNT(*) INTO count FROM modules WHERE course = course_id;
+    RETURN count;
+END$$
+DELIMITER ;
