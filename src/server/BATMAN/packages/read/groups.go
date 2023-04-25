@@ -95,7 +95,7 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 
 		rows, err := mysqlDB.Query(query, values...)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Error executing query", http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
