@@ -41,11 +41,11 @@ func main() {
 	r.HandleFunc("/enrollstudent", create.Enrollment(mysqlDB)).Methods("POST")
 
 	// Read operations
-	r.HandleFunc("/groups", read.Groups(mysqlDB)).Methods("POST")
-	r.HandleFunc("/homework", read.Homework(mysqlDB)).Methods("POST")
-	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("POST")
-	r.HandleFunc("/questionrequests", read.QuestionReqs(mysqlDB)).Methods("POST")
-	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("POST")
+	r.HandleFunc("/groups", read.Groups(mysqlDB)).Methods("GET")
+	r.HandleFunc("/homework", read.Homework(mysqlDB)).Methods("GET")
+	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("GET")
+	r.HandleFunc("/questionrequests", read.QuestionReqs(mysqlDB)).Methods("GET")
+	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("GET")
 	r.HandleFunc("/enrolledstudents/{groupID}", read.EnrolledStudents(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
