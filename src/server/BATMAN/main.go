@@ -38,6 +38,7 @@ func main() {
 
 	// Create operations
 	r.HandleFunc("/register/{category}", create.Handler(mysqlDB)).Methods("POST")
+	r.HandleFunc("/enrollstudent", create.Enrollment(mysqlDB)).Methods("POST")
 
 	// Read operations
 	r.HandleFunc("/groups", read.Groups(mysqlDB)).Methods("POST")

@@ -76,9 +76,10 @@ CREATE TABLE grupos (
 );
 
 CREATE TABLE enrollments (
-    grupo       CHAR(10)     NOT NULL,
-    student     CHAR(9)         NOT NULL,
+    grupo       CHAR(10)    NOT NULL,
+    student     CHAR(9)     NOT NULL,
 
+    PRIMARY KEY (grupo, student),
     FOREIGN KEY (grupo) REFERENCES grupos(id_group),
     FOREIGN KEY (student) REFERENCES students(matricula)
 );
