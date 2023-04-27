@@ -8,9 +8,9 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
             <NavBar />
 
             <Grid item xs={12} sx={{mt:4, height: '24px'}}>
-                <Link href={home} fontWeight={900} fontSize={15} sx={{ color: 'appDark.link' }}>
+                <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
                     {'< Cursos'}
-                </Link>
+                </Button>
             </Grid>
 
             <Grid item xs={12}>

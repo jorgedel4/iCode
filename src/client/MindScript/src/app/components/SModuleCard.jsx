@@ -34,7 +34,7 @@ export const SModuleCard = ({ module, index }) => {
                         ]}
                     >
                         <Grid item sx={{ mr: 1 }}>
-                            <Typography fontSize={ 12 } sx={{ color: 'appDark.text' }} >Bloqueado el: { module.closeDate }</Typography>
+                            {/* <Typography fontSize={ 12 } sx={{ color: 'appDark.text' }} >Bloqueado el: { module.closeDate }</Typography> */}
                         </Grid>
                     </Grid>
 
