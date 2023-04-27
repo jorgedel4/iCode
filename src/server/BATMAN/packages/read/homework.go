@@ -2,12 +2,10 @@ package read
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
 
-	"io"
 	"net/http"
 
 	"github.com/jorgedel4/iCode/packages/structs"
@@ -24,15 +22,14 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 		accountTypes['A'] = "student"
 		accountTypes['S'] = "admin"
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
-			return
-		}
-
 		var hwReq structs.HWReq
-		if err := json.Unmarshal(body, &hwReq); err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
+		hwReq.ID = r.URL.Query().Get("id")
+		hwReq.Time = r.URL.Query().Get("time")
+		hwReq.Group = r.URL.Query().Get("group")
+		hwReq.GroupBy = r.URL.Query().Get("group_by")
+
+		if hwReq.ID == "" || hwReq.Time == "" || hwReq.Group == "" || hwReq.GroupBy == "" {
+			http.Error(w, "Error reading parameters from url", http.StatusBadRequest)
 			return
 		}
 
@@ -111,6 +108,10 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 
 			hwJSON, err = util.FormatHomework(results, "professor", hwReq.GroupBy)
+			if err != nil {
+				http.Error(w, "Error formatting results", http.StatusInternalServerError)
+				return
+			}
 		} else if accountType == "student" {
 			for rows.Next() {
 				var result structs.HWStudent
@@ -122,6 +123,10 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 
 			hwJSON, err = util.FormatHomework(results, "student", hwReq.GroupBy)
+			if err != nil {
+				http.Error(w, "Error formatting results", http.StatusInternalServerError)
+				return
+			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")
