@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
@@ -16,17 +15,11 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 		// Setting up headers for CORS (not needed after full deployment)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
-			return
-		}
-
 		var req structs.UsersReq
-		if err := json.Unmarshal(body, &req); err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
-			return
-		}
+		req.UserType = r.URL.Query().Get("user_type")
+		req.Campus = r.URL.Query().Get("campus")
+		req.ID = r.URL.Query().Get("id")
+		req.Name = r.URL.Query().Get("name")
 
 		baseQuery := fmt.Sprintf("SELECT * FROM %ss", req.UserType)
 		var selectors []string

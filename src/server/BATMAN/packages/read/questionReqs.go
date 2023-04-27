@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
@@ -15,15 +14,14 @@ func QuestionReqs(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
-			return
-		}
-
 		var req structs.QuestionReqsReq
-		if err := json.Unmarshal(body, &req); err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
+		req.QuestionsType = r.URL.Query().Get("question_type")
+		req.RequestedBy = r.URL.Query().Get("requested_by")
+		req.Course = r.URL.Query().Get("course")
+		req.Status = r.URL.Query().Get("status")
+
+		if req.QuestionsType == "" || req.RequestedBy == "" || req.Course == "" || req.Status == "" {
+			http.Error(w, "Error reading parameters from url", http.StatusBadRequest)
 			return
 		}
 

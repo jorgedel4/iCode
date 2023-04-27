@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/jorgedel4/iCode/packages/structs"
@@ -20,15 +19,11 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		accountTypes['A'] = "student"
 		accountTypes['S'] = "admin"
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
-			return
-		}
-
 		var req structs.GroupsReq
-		if err := json.Unmarshal(body, &req); err != nil {
-			http.Error(w, "Error reading request body", http.StatusBadRequest)
+		req.ID = r.URL.Query().Get("id")
+		req.Term = r.URL.Query().Get("term")
+		if req.ID == "" || req.Term == "" {
+			http.Error(w, "Error reading parameters from url", http.StatusBadRequest)
 			return
 		}
 
