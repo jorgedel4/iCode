@@ -14,7 +14,7 @@ export const PHomePage = () => {
         setCount(0)
         setOpen(false);
     }
-   
+
     //Funciones para abrir la modal de Crear Curso
     const [openCreateHomework, setOpenCreateHomework] = useState(false);
     const showModalCreateHomework = () => { setOpenCreateHomework(true); }
@@ -35,17 +35,21 @@ export const PHomePage = () => {
             closeDate: "26 de Abril", //Cuando cierra
             professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
         },
-        { 
+        {
             name: "Curso B",
             openDate: "27 de Marzo",
             closeDate: "27 de Abril",
             professor: "Daniel Perez Rojas"
         },
         {
-            name: "Curso C",
-            openDate: "28 de Marzo",
-            closeDate: "28 de Abril",
-            professor: "Daniel Perez Rojas"
+            id_group: "G000000001",
+            id_course: "TC1028",
+            course_name: "Pensamiento computacional",
+            start_date: "2023-02-15T00:00:00Z",
+            end_date: "2023-06-26T23:59:59Z",
+            first_name: "Daniel",
+            flast_name: "Perez",
+            slast_name: "Rojas"
         }
     ]
 
@@ -105,7 +109,7 @@ export const PHomePage = () => {
     return (
         <Grid container justifyContent='center' alignItems='center'>
 
-            <HomeLayout  groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home}>
+            <HomeLayout groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home}>
 
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />
@@ -166,7 +170,7 @@ export const PHomePage = () => {
 
                     {groupsData.map((group, index) => (
                         <Grid key={index} item xs={12} md={4} sx={{ pb: 5, pl: 5 }}>
-                            <CoursesCard group={group} index={index} modules={modules}/>
+                            <CoursesCard group={group} index={index} modules={modules} />
                         </Grid>
                     ))}
                 </Grid>

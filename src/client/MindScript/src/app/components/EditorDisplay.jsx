@@ -11,7 +11,7 @@ export const EditorDisplay = () => {
   //Objeto para codeExec
   const hwData = {
     code: content,
-    id: 'test/test/2',
+    id: 'HQ000000000000000001',
   }
   const editorRef = useRef(null);
 
@@ -49,7 +49,7 @@ export const EditorDisplay = () => {
   return (
 
     <>
-      {/* <Button onClick={handleEditorDidMount}>Submit</Button> */}
+      <Button onClick={handleEditorDidMount}>Submit</Button>
 
       <Editor
         // height='60vh'
