@@ -2,10 +2,36 @@ import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/ma
 import { HomeLayout } from '../../layout/HomeLayout';
 import { CoursesCard, ActionButton, CreateGroup, CreateHomework } from '../../components'
 import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const PHomePage = () => {
     const theme = useTheme();
+
+    const [groupsData, setGroup] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        let userID = "A01551955"
+        let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                const responseData = await response.json();
+                setGroup(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     //Funciones para abrir la modal de Crear Curso
     const [open, setOpen] = useState(false);
@@ -28,30 +54,30 @@ export const PHomePage = () => {
     const modules = '/professor/modules' //El nombren se debe de sacar desde la pagina home
 
 
-    const groupsData = [ //Se queda este
-        {
-            name: "Curso A", //Nombre del grupo (nombre del curso)
-            openDate: "26 de Marzo", //Cuando abre
-            closeDate: "26 de Abril", //Cuando cierra
-            professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
-        },
-        {
-            name: "Curso B",
-            openDate: "27 de Marzo",
-            closeDate: "27 de Abril",
-            professor: "Daniel Perez Rojas"
-        },
-        {
-            id_group: "G000000001",
-            id_course: "TC1028",
-            course_name: "Pensamiento computacional",
-            start_date: "2023-02-15T00:00:00Z",
-            end_date: "2023-06-26T23:59:59Z",
-            first_name: "Daniel",
-            flast_name: "Perez",
-            slast_name: "Rojas"
-        }
-    ]
+    // const groupsData = [ 
+    // {
+    //     name: "Curso A", //Nombre del grupo (nombre del curso)
+    //     openDate: "26 de Marzo", //Cuando abre
+    //     closeDate: "26 de Abril", //Cuando cierra
+    //     professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
+    // },
+    // {
+    //     name: "Curso B",
+    //     openDate: "27 de Marzo",
+    //     closeDate: "27 de Abril",
+    //     professor: "Daniel Perez Rojas"
+    // },
+    // {
+    //     id_group: "G000000001",
+    //     id_course: "TC1028",
+    //     course_name: "Pensamiento computacional",
+    //     start_date: "2023-02-15T00:00:00Z",
+    //     end_date: "2023-06-26T23:59:59Z",
+    //     first_name: "Daniel",
+    //     flast_name: "Perez",
+    //     slast_name: "Rojas"
+    // }
+    // ]
 
     const homeworkData = [
         {
@@ -102,6 +128,9 @@ export const PHomePage = () => {
         'TC1030',
         'TC10030B',
     ]
+    const request = handleEditorDidMount()
+    console.log(groupsData)
+
 
 
 
@@ -167,7 +196,6 @@ export const PHomePage = () => {
                         <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
                     </Grid>
 
-
                     {groupsData.map((group, index) => (
                         <Grid key={index} item xs={12} md={4} sx={{ pb: 5, pl: 5 }}>
                             <CoursesCard group={group} index={index} modules={modules} />
@@ -179,3 +207,28 @@ export const PHomePage = () => {
         </Grid>
     )
 }
+
+
+const handleEditorDidMount = async () => {
+
+    // const options = {
+    //   method: 'GET',
+    //   headers: {
+    //     'Accept': 'application/json',
+
+    //   },
+    //   mode: 'cors',
+    // }
+
+    // let userID = "A01551955"
+    // let term = "current"
+
+    // fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options)
+    // .then(response => response.json())
+    // // .then(data => console.log("aqui\n", data))
+    // .then(data => setGroup(data))
+    // .catch(error => console.error(error));
+
+
+
+};

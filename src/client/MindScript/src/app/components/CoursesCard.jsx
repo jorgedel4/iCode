@@ -18,13 +18,13 @@ export const CoursesCard = ({ group, index, modules}) => {
                     <Grid sx={{ backgroundColor: `${colors[color]}`, height: 40 }} />
                     <CardContent sx={{ pt: 4, pb: 6 }}>
                         <Typography sx={{ color: 'appDark.text', fontSize: 26, fontWeight: 405 }} >
-                            {group.name}
+                            {group.id_course} {group.course_name} ({group.id_group})
                         </Typography>
                         <Typography sx={{ color: 'appDark.text', fontSize: 18, fontWeight: 405 }}>
-                            {group.openDate} - {group.closeDate}
+                            {group.start_date} - {group.end_date}
                         </Typography>
                         <Typography sx={{ color: 'appDark.text', fontSize: 14, fontWeight: 405 }}>
-                            {group.professor}
+                            {group.first_name} {group.flast_name} {group.slast_name}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
