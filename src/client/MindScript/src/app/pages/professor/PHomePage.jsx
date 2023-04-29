@@ -26,7 +26,7 @@ export const PHomePage = () => {
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
-                console.error(error);
+                // console.error(error);
             }
         };
 
