@@ -4,7 +4,7 @@ Funciona como un conector entre la BBDD en MySQL y el cliente, incorporando la l
 
 ## URL Base
 
-`34.125.0.99:8082`
+`34.125.0.99:8002`
 
 ## Endpoints de creacion
 
@@ -29,7 +29,7 @@ No se necesitan parametros
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8082/courses
+GET 34.125.0.99:8002/courses
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -73,7 +73,7 @@ Estudiantes inscritos en un grupo
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8082/enrolledstudents/G000000001
+GET 34.125.0.99:8002/enrolledstudents/G000000001
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -127,7 +127,7 @@ Grupos que impate e/o impatio un profesor. O en los que esta/estaba inscrito un 
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8082/groups?id=A01551955&term=current
+GET 34.125.0.99:8002/groups?id=A01551955&term=current
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -190,7 +190,7 @@ Tareas que un estudiante tiene asignadas. O tareas que un profesor ha asignado a
 
 #### Ejemplo (group_by=group)
 **Peticion**
-GET 34.125.0.99:8082/homework?id=A01551955&time=week&group=all&group_by=group
+GET 34.125.0.99:8002/homework?id=A01551955&time=week&group=all&group_by=group
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -215,7 +215,7 @@ Content-Type: application/json
 
 #### Ejemplo (group_by=week)
 **Peticion**
-GET 34.125.0.99:8082/homework?id=A01551955&time=week&group=all&group_by=week
+GET 34.125.0.99:8002/homework?id=A01551955&time=week&group=all&group_by=week
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -271,7 +271,7 @@ Listado de preguntas que han sido solicitadas para ser agregadas al banco de pre
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8082/questionrequests?question_type=all&requested_by=all&course=all&status=all
+GET 34.125.0.99:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -344,7 +344,7 @@ Usarios que estan dados de alta en la plataforma
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8082/users?user_type=student&campus=all&id=all&name=all
+GET 34.125.0.99:8002/users?user_type=student&campus=all&id=all&name=all
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -374,90 +374,53 @@ Content-Type: application/json
         "id": "A01112341",
         "campus": "GDL",
         "email": "A01112341@tec.mx"
+    }
+]
+```
+
+
+
+### `/terms`
+#### Descripcion
+Periodos academicos registrados
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante parametros de url)
+* `has_started` (opcional): 'true' para periodos que ya empezaron. 'false' para periodos que aun no empiezan. No dar este parametro regresa todos los periodos sin importar sus fechas. Los periodos se regresan en orden descendiente de acuerdo a sus fechas.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de periodos. Cada periodo tiene los siguientes campos
+| Campo            | Tipo                  | Descripcion                |
+| ---------------- | --------------------- | -------------------------- |
+| id               | string                | ID del periodo             |
+| name             | string                | Nombre entero del periodo  |
+| start_date       | string                | Campus del usuario         |
+| end_date         | string                | Correo del usuario         |
+
+
+#### Ejemplo
+**Peticion**
+GET 34.125.0.99:8002/terms?has_started=false
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "id": "AD23",
+        "name": "Agosto-Diciembre 2023",
+        "start_date": "2023-08-28T00:00:00Z",
+        "end_date": "2023-12-12T23:59:59Z"
     },
     {
-        "name": "Patricio Ramirez Sandoval",
-        "id": "A01212121",
-        "campus": "MTY",
-        "email": "A01212121@tec.mx"
-    },
-    {
-        "name": "Carolina Martinez Gutierrez",
-        "id": "A01212321",
-        "campus": "MTY",
-        "email": "A01212321@tec.mx"
-    },
-    {
-        "name": "Jorge Delgado Morales",
-        "id": "A01551955",
-        "campus": "PUE",
-        "email": "A01551955@tec.mx"
-    },
-    {
-        "name": "Ramiro Hernandez Villasenor",
-        "id": "A01552812",
-        "campus": "MTY",
-        "email": "A01552812@tec.mx"
-    },
-    {
-        "name": "Adriana Fernandez Rojas",
-        "id": "A01712734",
-        "campus": "PUE",
-        "email": "A01712734@tec.mx"
-    },
-    {
-        "name": "Ana Lopez Garcia",
-        "id": "A01730092",
-        "campus": "MTY",
-        "email": "A01730092@tec.mx"
-    },
-    {
-        "name": "Karla Sanchez Olivares",
-        "id": "A01731511",
-        "campus": "PUE",
-        "email": "A01731511@tec.mx"
-    },
-    {
-        "name": "Mariana Alvarez Torres",
-        "id": "A04281593",
-        "campus": "HID",
-        "email": "A04281593@tec.mx"
-    },
-    {
-        "name": "Miguel Ramirez Martinez",
-        "id": "A06149233",
-        "campus": "HID",
-        "email": "A06149233@tec.mx"
-    },
-    {
-        "name": "Juan Ortega Vasquez",
-        "id": "A06615812",
-        "campus": "CSF",
-        "email": "A06615812@tec.mx"
-    },
-    {
-        "name": "Fernando Gonzalez Cortes",
-        "id": "A07136662",
-        "campus": "GDL",
-        "email": "A07136662@tec.mx"
-    },
-    {
-        "name": "Luis Mendez Hernandez",
-        "id": "A08062912",
-        "campus": "GDL",
-        "email": "A08062912@tec.mx"
-    },
-    {
-        "name": "Maria Ortiz Reyes",
-        "id": "A08787803",
-        "campus": "PUE",
-        "email": "A08787803@tec.mx"
-    },
-    {
-        "name": "Julio Castillo Sanchez",
-        "id": "A09123312",
-        "campus": "GDL",
-        "email": "A09123312@tec.mx"
+        "id": "VE23",
+        "name": "Verano 2023",
+        "start_date": "2023-07-05T00:00:00Z",
+        "end_date": "2023-08-25T23:59:59Z"
     }
 ]
 ```
