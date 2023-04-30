@@ -47,6 +47,7 @@ func main() {
 	r.HandleFunc("/homework", read.Homework(mysqlDB)).Methods("GET")
 	r.HandleFunc("/questionrequests", read.QuestionReqs(mysqlDB)).Methods("GET")
 	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("GET")
+	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
