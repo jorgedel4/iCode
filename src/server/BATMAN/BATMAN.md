@@ -425,6 +425,78 @@ Content-Type: application/json
 ]
 ```
 
+
+### `/groupmodules/{groupID}`
+#### Descripcion
+Modulos de un grupo
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante variables de url)
+* `groupID` (obligatorio): ID del grupo del cual se desean ver los modulos.
+
+(Mediante parametros de url)
+* `user_id` (opcional): ID del estudiante del cual se quieren ver los modulos. Para profesores no es necesario dar este parametro.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de modulos. Cada modulo tiene los siguientes campos
+| Campo            | Tipo                  | Descripcion                   |
+| ---------------- | --------------------- | ----------------------------- |
+| id               | string                | ID del modulo                 |
+| name             | string                | Nombre del modulo             |
+| status           | string                | Estatus (abierto o bloqueado) |
+| open_date        | string                | Fecha de inicio del modulo    |
+| close_date       | string                | Fecha de cierre del modulo    |
+| n_questions      | int                   | Numero de preguntas requeridas|
+| n_answered       | int                   | Numero de preguntas resueltas (solo para estudiantes) |
+| progress         | int                   | Porcentaje de progreso del modulo (solo para estudiantes) |
+
+
+#### Ejemplo
+**Peticion**
+GET 34.125.0.99:8002/groupmodules/G000000001?user_id=A01551955
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "id": "M0000000000000000001",
+        "name": "Basics",
+        "status": "closed",
+        "open_date": "2023-04-20T00:00:00Z",
+        "close_date": "2023-04-30T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 1,
+        "progress": 33
+    },
+    {
+        "id": "M0000000000000000002",
+        "name": "Conditionals",
+        "status": "open",
+        "open_date": "2023-05-01T00:00:00Z",
+        "close_date": "2023-05-10T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 0,
+        "progress": 0
+    },
+    {
+        "id": "M0000000000000000003",
+        "name": "For loops",
+        "status": "closed",
+        "open_date": "2023-05-11T00:00:00Z",
+        "close_date": "2023-05-20T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 0,
+        "progress": 0
+    }
+]
+```
+
+
 ## Endpoints de actualizacion
 
 ## Endpoints de eliminacion
