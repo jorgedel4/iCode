@@ -21,3 +21,8 @@ type ModuleStudent struct {
 	NAnswered  int       `json:"n_answered"`
 	Progress   int       `json:"progress"`
 }
+
+type CourseModule struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
