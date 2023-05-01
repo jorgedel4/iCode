@@ -6,7 +6,6 @@ export * from './PHHomeworkCard';
 export * from './SMHomeworkCard';
 export * from './SHHomeworkCard';
 export * from './SearchBar';
-export * from './EditorDisplay';
 export * from './QuestionsDropdown';
 export * from './SModuleCard';
 export * from './PModuleCard';

@@ -10,10 +10,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { useState } from 'react';
-import {CounterCell} from './CounterCell';
+import { useState, useEffect } from 'react';
+
+import { CounterCell } from './CounterCell';
 
 export const CreateGroup = ({ open, close }) => {
+
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
@@ -21,17 +23,120 @@ export const CreateGroup = ({ open, close }) => {
     const containerWidth = isXLargeScreen ? '35vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
     const [count, setCount] = useState(0);
 
-    const [course, setCourse] = useState('');
-    const handleSelection = (event) => {
+    /*API region */
+
+    //GET term information
+    const [termsData, setTerm] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/terms?has_started=false`, options);
+                const responseData = await response.json();
+                setTerm(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    //GET course information
+    const [coursesData, setCourse] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const responseData = await response.json();
+                setCourse(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    //POST Create Group
+
+    const data = {
+        courseName: coursesData.name,
+        modEx: [
+            {
+                moduleName: "For",
+                moduleNum: 3,
+            },
+            {
+                moduleName: "While",
+                moduleNum: 5,
+            }
+        ],
+        term: "chance"
+    }
+    // console.log(coursesData)
+    const createGroupRequest = async () => {
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+                // "id": "test/test/2",
+                // "code": "def smallest(a, b):\n\treturn a if a < b else b"
+
+                "coursename": data.id,
+                "modEx": data.modEx,
+                "term": data.term
+
+            })
+        }
+
+        fetch('http://34.125.0.99:8001/exec', options)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+    };
+
+
+
+    /*end API region */
+
+    //Estados
+    const handleCourseSelection = (event) => {
         setCourse(event.target.value);
     };
-    const [exCounter, setExCounter] = useState(0);
-    const coursesList = [
-        'TC1028',
-        'TC1030',
-        'TC10030B',
-    ]
-   
+
+    const handleTermSelection = (event) => {
+        setTerm(event.target.value);
+    };
 
     const handleCountChange = (index, newCount) => {
         setModules(prevData => {
@@ -75,7 +180,7 @@ export const CreateGroup = ({ open, close }) => {
             exNum: 0
         },
     ]
-    
+
 
     //State date picker
     const [date, setDate] = useState(null);
@@ -124,12 +229,12 @@ export const CreateGroup = ({ open, close }) => {
                                     color: 'appDark.text' //change label color
                                 }
                             }}
-                        >Matrícula del curso</InputLabel>
+                        >ID del curso</InputLabel>
 
                         <Select
                             id="courseSelector"
-                            value={course}
-                            onChange={handleSelection}
+                            value={coursesData.id}
+                            onChange={handleCourseSelection}
                             sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
                             MenuProps={{
                                 PaperProps: {
@@ -139,7 +244,7 @@ export const CreateGroup = ({ open, close }) => {
                                 },
                             }}
                         >
-                            {coursesList.map((course) => (
+                            {coursesData.map((course) => (
                                 <MenuItem
                                     sx={{
                                         color: "appDark.text",
@@ -148,10 +253,10 @@ export const CreateGroup = ({ open, close }) => {
                                             bgcolor: 'appDark.selectHover' //change label color
                                         },
                                     }}
-                                    key={course}
-                                    value={course}
+                                    key={course.name}
+                                    value={course.name}
                                 >
-                                    {course}
+                                    {course.id} {course.name}
                                 </MenuItem>
                             ))}
 
@@ -160,51 +265,57 @@ export const CreateGroup = ({ open, close }) => {
                 </Grid>
 
                 <Grid item xs={10}>
-                    
-                    <CounterCell data = {modules}/>
+
+                    <CounterCell data={coursesData} />
 
                 </Grid>
 
+
+                {/* Term Selector */}
                 <Grid item xs={10}>
-                    {/* Date picker */}
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Fecha de Cierre"
+                    <FormControl fullWidth variant="filled" sx={{ mt: 3 }}>
+                        <InputLabel id="courseSelectorInputLabel"
                             sx={{
-                                mt: 3,
-                                width: '100%',
-                                bgcolor: "appDark.bgBox",
-                                borderRadius: 2,
-
-
-                                '& .MuiInputLabel-root': {
-                                    color: 'appDark.text',
-                                    '&.Mui-focused ': {
-                                        color: 'appDark.text'
-                                    }
+                                color: 'appDark.text',
+                                '&:hover': {
+                                    color: 'appDark.text' //change label color
                                 },
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: 'transparent',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: 'appDark.box',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: 'appDark.box',
-                                    },
-                                },
-                                '& .MuiOutlinedInput-input': {
-                                    color: 'appDark.text',
-                                },
-
-
-                                svg: { color: 'appDark.text' },
+                                '&.Mui-focused': {
+                                    color: 'appDark.text' //change label color
+                                }
                             }}
+                        >Periodo Académico</InputLabel>
 
-                            value={date} onChange={(newValue) => setDate(newValue)} />
-                    </LocalizationProvider>
+                        <Select
+                            id="termSelector"
+                            onChange={handleTermSelection}
+                            sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        bgcolor: 'appDark.bgBox',
+                                    },
+                                },
+                            }}
+                        >
+                            {termsData.map((term) => (
+                                <MenuItem
+                                    sx={{
+                                        color: "appDark.text",
+                                        bgcolor: 'appDark.bgBox',
+                                        '&:hover': {
+                                            bgcolor: 'appDark.selectHover' //change label color
+                                        },
+                                    }}
+                                    key={term.name}
+                                // value={term.name}
+                                >
+                                    {term.name}
+                                </MenuItem>
+                            ))}
 
+                        </Select>
+                    </FormControl>
                 </Grid>
 
                 <Grid item xs={10}>

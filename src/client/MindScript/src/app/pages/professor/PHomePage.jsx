@@ -33,6 +33,9 @@ export const PHomePage = () => {
         fetchData();
     }, []);
 
+
+    
+
     //Funciones para abrir la modal de Crear Curso
     const [open, setOpen] = useState(false);
     const showModal = () => { setOpen(true); }

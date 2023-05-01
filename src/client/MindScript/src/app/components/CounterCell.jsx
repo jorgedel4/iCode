@@ -87,14 +87,14 @@ export function CounterCell({ data }) {
         </TableHead>
         <TableBody>
           {data.map((module) => (
-            <TableRow key={module.courseName}>
+            <TableRow key={module.name}>
               <TableCell
                 align="left"
                 sx={{ color: "appDark.text", paddingRight: 0 }}
                 component="th"
                 scope="row"
               >
-                {module.courseName}
+                {module.name}
               </TableCell>
               <TableCell sx={{ color: "appDark.text" }}>
                 <ToggleButtonGroup
@@ -107,12 +107,12 @@ export function CounterCell({ data }) {
                     columnGap: 1,
 
                   }}
-                  value={counts[module.courseName] || 0}
+                  value={counts[module.name] || 0}
                   exclusive
                   onChange={(event, value) => handleToggle(module, value)}
                 >
                   <Typography sx={{ mb: "2px" }}>
-                    {counts[module.courseName] || 0}
+                    {counts[module.name] || 0}
                   </Typography>
                   <ToggleButtonGroup
                     sx={{
@@ -125,7 +125,7 @@ export function CounterCell({ data }) {
                       flexDirection: 'column',
 
                     }}
-                    value={counts[module.courseName] || 0}
+                    value={counts[module.name] || 0}
                     exclusive
                     onChange={(event, value) => handleToggle(module, value)}
                   >
