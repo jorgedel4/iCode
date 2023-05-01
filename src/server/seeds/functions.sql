@@ -15,6 +15,18 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE FUNCTION successful_mod_attempts(matricula CHAR(9), mod_id VARCHAR(20))
+RETURNS INT
+BEGIN
+    DECLARE successful_attempts INT;
+    SELECT COUNT(*) INTO successful_attempts FROM questionAttempts qa
+    JOIN questions q ON qa.question = q.id_question
+    WHERE student = matricula AND module = mod_id AND attempt_status = 'PAS';
+    RETURN successful_attempts;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE FUNCTION count_modules(course_id CHAR(10))
 RETURNS INT
 BEGIN
