@@ -1,4 +1,7 @@
 import { singInWithGoogle, registerUserWithEmailPassword, loginWithEmailPassword} from "../../firebase/providers";
+// import firebase from 'firebase/app';
+// import 'firebase/auth';
+import {getAuth, browserSessionPersistence } from "firebase/auth";
 import { checkingCredentials, logout, login } from "./authSlice"
 
 //Esta función va a cambiar el estado checking 
@@ -44,6 +47,7 @@ export const startCreatingUserWithEmailPassword = ({ id, email, password, displa
 
 //Login CON EMAIL Y PASSWORD
 export const startLoginWithEmailPassword = ({ email, password }) => {
+    const auth = getAuth();
     return async (dispatch) => {
 
         //Se hace este dispatch para controlar el estado de non auth checkin auth
@@ -51,11 +55,12 @@ export const startLoginWithEmailPassword = ({ email, password }) => {
 
         const result = await loginWithEmailPassword({email,password});
 
-        console.log({ result })
+        console.log({ result }) 
 
         if (!result.ok) {
             dispatch(logout(result));
         } else {
+            setPersistence(auth,browserSessionPersistence)
             dispatch(login(result))
         }
 

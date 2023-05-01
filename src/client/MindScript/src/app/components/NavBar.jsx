@@ -2,9 +2,12 @@ import { Brightness6, LogoutOutlined } from '@mui/icons-material'
 import { AppBar, Button, Toolbar, IconButton, Grid, Typography, Menu, MenuItem } from '@mui/material';
 
 // const pages = ['Home', 'Profile']
+// {count === 0 && (
+//     // aqiu va el resultado
+// )}
 const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
 
-export const NavBar = ({ drawerWidth = 240 }) => {
+export const NavBar = ({}) => {
     return (
         <AppBar 
             position='fixed'

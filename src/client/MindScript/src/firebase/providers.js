@@ -60,7 +60,7 @@ export const loginWithEmailPassword = async ({email, password}) => {
         const { displayName, photoURL, uid } = resp.user;
         return {
             ok: true,
-            uid, photoURL, displayName
+            uid, photoURL, displayName, email, type
         }
     }
     catch (error) {

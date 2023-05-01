@@ -1,15 +1,17 @@
 import React from 'react'
 import { useMemo } from 'react'
 import { AuthLayout } from '../layout/AuthLayout'
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useNavigate } from "react-router-dom"
 import { Button, Checkbox, Alert, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkingAuthentication } from '../../store/auth/thunks';
 import { startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -20,23 +22,31 @@ export const LoginPage = () => {
 
   //To avoid double authentication
   const { status, errorMessage } = useSelector(state => state.auth);
-  console.log(status);
 
   //Authentication Redux Hook useForm
   const dispatch = useDispatch();
 
   const { email, password, onInputChange } = useForm({
     email: '',
-    password: '123123'
+    password: ''
   });
 
   const isAuthenticated = useMemo(() => status === 'checking', [status])
 
   //Esta es la función que hace el submit de las credenciales
   const onSubmit = (event) => {
-    event.preventDefault();
-    // console.log({ email, password })
+    event.preventDefault(); //para que no se chequen credenciales sin haber hecho click
+    
     dispatch(startLoginWithEmailPassword({ email, password }));
+    if(email.substring(0,1).toUpperCase() == "A" && status === "authenticated"){
+      // console.log("Redirigir a estudiante")
+      navigate("/student/home")
+    }
+    else if(email.substring(0,1).toUpperCase() == "L" && status === "authenticated"){
+      // console.log("Redirigir a profesor")
+      navigate('/professor/home');      
+    }
+    
   }
 
   const onGoogleSignIn = () => {
@@ -123,7 +133,7 @@ export const LoginPage = () => {
 
           {/* Esta es la alerta del inicio de sesión con Firebase */}
           <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
-          sx={{mt:1}}>
+            sx={{ mt: 1 }}>
             <Alert severity='error'>{errorMessage}</Alert>
           </Grid>
 
