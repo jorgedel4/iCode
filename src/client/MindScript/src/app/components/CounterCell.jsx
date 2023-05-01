@@ -27,7 +27,7 @@ export function CounterCell({ data }) {
         return {
           ...prevCounts,
           [module.name]: currentCount - 1,
-          [module.name]: currentCount - 1,
+          // [module.name]: currentCount - 1,
 
         };
       } else {

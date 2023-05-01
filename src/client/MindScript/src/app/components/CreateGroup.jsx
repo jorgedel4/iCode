@@ -15,13 +15,14 @@ import { useState, useEffect } from 'react';
 import { CounterCell } from './CounterCell';
 
 export const CreateGroup = ({ open, close }) => {
-
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '35vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
     const [count, setCount] = useState(0);
+    const [selectedCourse, setSelectedCourse] = useState('');
+    const [selectedTerm, setSelectedTerm] = useState('');
 
     /*API region */
 
@@ -93,16 +94,18 @@ export const CreateGroup = ({ open, close }) => {
         // let term = "current"
 
         const fetchData = async () => {
-            try {
-                const response = await fetch(`http://34.125.0.99:8002/coursemodules/TC1028`, options);
-                const responseData = await response.json();
-                setModule(responseData);
-            } catch (error) {
-                // console.error(error);
+            if(selectedCourse){
+                try {
+                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${selectedCourse}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    // console.error(error);
+                }
             }
         };
         fetchData();
-    }, []);
+    }, [selectedCourse]);
 
     //POST Create Group
 
@@ -157,11 +160,12 @@ export const CreateGroup = ({ open, close }) => {
 
     //Estados
     const handleCourseSelection = (event) => {
-        setCourse(event.target.value);
+        setSelectedCourse(event.target.value);
+        // console.log(event.target.value)
     };
 
     const handleTermSelection = (event) => {
-        setTerm(event.target.value);
+        setSelectedTerm(event.target.value);
     };
 
     const handleCountChange = (index, newCount) => {
@@ -280,7 +284,7 @@ export const CreateGroup = ({ open, close }) => {
                                         },
                                     }}
                                     key={course.name}
-                                    value={course.name}
+                                    value={course.id}
                                 >
                                     {course.id} {course.name}
                                 </MenuItem>
@@ -291,8 +295,10 @@ export const CreateGroup = ({ open, close }) => {
                 </Grid>
 
                 <Grid item xs={10}>
+                    {modulesData != null && (
+                        <CounterCell data={modulesData} />
+                    )}
 
-                    <CounterCell data={modulesData} />
 
                 </Grid>
 
@@ -334,7 +340,7 @@ export const CreateGroup = ({ open, close }) => {
                                         },
                                     }}
                                     key={term.name}
-                                // value={term.name}
+                                    value={term.id}
                                 >
                                     {term.name}
                                 </MenuItem>
