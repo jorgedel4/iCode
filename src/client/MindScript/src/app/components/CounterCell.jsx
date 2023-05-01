@@ -17,17 +17,17 @@ export function CounterCell({ data }) {
 
   const handleToggle = (module, value) => {
     setCounts((prevCounts) => {
-      const currentCount = prevCounts[module.courseName] || 0;
+      const currentCount = prevCounts[module.name] || 0;
       if (value === "up") {
         return {
           ...prevCounts,
-          [module.courseName]: currentCount + 1,
+          [module.name]: currentCount + 1,
         };
       } else if (value === "down" && currentCount > 0) {
         return {
           ...prevCounts,
-          [module.courseName]: currentCount - 1,
-          [module.exNum]: currentCount - 1,
+          [module.name]: currentCount - 1,
+          [module.name]: currentCount - 1,
 
         };
       } else {

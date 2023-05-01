@@ -78,52 +78,78 @@ export const CreateGroup = ({ open, close }) => {
         fetchData();
     }, []);
 
-    //POST Create Group
-
-    const data = {
-        courseName: coursesData.name,
-        modEx: [
-            {
-                moduleName: "For",
-                moduleNum: 3,
-            },
-            {
-                moduleName: "While",
-                moduleNum: 5,
-            }
-        ],
-        term: "chance"
-    }
-    // console.log(coursesData)
-    const createGroupRequest = async () => {
-
+    //GET modules information
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
         const options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-
+                'Accept': 'application/json',
             },
-            mode: 'no-cors',
-            body: JSON.stringify({
-                // "id": "test/test/2",
-                // "code": "def smallest(a, b):\n\treturn a if a < b else b"
-
-                "coursename": data.id,
-                "modEx": data.modEx,
-                "term": data.term
-
-            })
+            mode: 'cors',
         }
 
-        fetch('http://34.125.0.99:8001/exec', options)
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        // let userID = "A01551955"
+        // let term = "current"
 
-    };
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/coursemodules/TC1028`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    //POST Create Group
+
+    // const data = {
+    //     courseName: coursesData.name,
+    //     modEx: [
+    //         {
+    //             moduleName: "For",
+    //             moduleNum: 3,
+    //         },
+    //         {
+    //             moduleName: "While",
+    //             moduleNum: 5,
+    //         }
+    //     ],
+    //     term: "chance"
+    // }
+    // console.log(coursesData)
+    // const createGroupRequest = async () => {
+
+    //     const options = {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+
+    //         },
+    //         mode: 'no-cors',
+    //         body: JSON.stringify({
+    //             // "id": "test/test/2",
+    //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
+
+    //             "coursename": data.id,
+    //             "modEx": data.modEx,
+    //             "term": data.term
+
+    //         })
+    //     }
+
+    //     fetch('http://34.125.0.99:8001/exec', options)
+    //         .then(response => {
+    //             console.log(response)
+    //         })
+    //         .catch(error => {
+    //             console.log(error)
+    //         })
+
+    // };
 
 
 
@@ -139,47 +165,47 @@ export const CreateGroup = ({ open, close }) => {
     };
 
     const handleCountChange = (index, newCount) => {
-        setModules(prevData => {
+        setModule(prevData => {
             const newData = [...prevData];
             newData[index].exNum = newCount;
             return newData;
         });
     };
 
-    const modules = [
-        {
-            courseName: "Variables",
-            exNum: 0
-        },
-        {
-            courseName: "Condicionales",
-            exNum: 0
-        },
-        {
-            courseName: "Ciclos For",
-            exNum: 0
-        },
-        {
-            courseName: "Ciclos While",
-            exNum: 0
-        },
-        {
-            courseName: "Manejo de Strings",
-            exNum: 0
-        },
-        {
-            courseName: "Tipo de variables",
-            exNum: 0
-        },
-        {
-            courseName: "Funciones",
-            exNum: 0
-        },
-        {
-            courseName: "Imports",
-            exNum: 0
-        },
-    ]
+    // const modules = [
+    //     {
+    //         courseName: "Variables",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Condicionales",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Ciclos For",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Ciclos While",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Manejo de Strings",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Tipo de variables",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Funciones",
+    //         exNum: 0
+    //     },
+    //     {
+    //         courseName: "Imports",
+    //         exNum: 0
+    //     },
+    // ]
 
 
     //State date picker
@@ -266,7 +292,7 @@ export const CreateGroup = ({ open, close }) => {
 
                 <Grid item xs={10}>
 
-                    <CounterCell data={coursesData} />
+                    <CounterCell data={modulesData} />
 
                 </Grid>
 

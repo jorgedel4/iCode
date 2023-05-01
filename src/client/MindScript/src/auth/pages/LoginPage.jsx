@@ -36,10 +36,11 @@ export const LoginPage = () => {
   //Esta es la función que hace el submit de las credenciales
   const onSubmit = (event) => {
     event.preventDefault(); //para que no se chequen credenciales sin haber hecho click
-    
+    console.log(status)
     dispatch(startLoginWithEmailPassword({ email, password }));
     if(email.substring(0,1).toUpperCase() == "A" && status === "authenticated"){
       // console.log("Redirigir a estudiante")
+      console.log("in")
       navigate("/student/home")
     }
     else if(email.substring(0,1).toUpperCase() == "L" && status === "authenticated"){

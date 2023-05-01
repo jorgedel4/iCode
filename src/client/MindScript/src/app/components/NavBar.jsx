@@ -1,13 +1,38 @@
 import { Brightness6, LogoutOutlined } from '@mui/icons-material'
 import { AppBar, Button, Toolbar, IconButton, Grid, Typography, Menu, MenuItem } from '@mui/material';
+import { getAuth } from "firebase/auth";
+import { useDispatch } from 'react-redux';
+import { startLogout } from '../../store/auth/thunks';
 
 // const pages = ['Home', 'Profile']
 // {count === 0 && (
 //     // aqiu va el resultado
 // )}
-const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
 
 export const NavBar = ({}) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const pages= ['Home', 'Profile']
+    
+
+    const dispatch = useDispatch();
+    const onLogout = () => {
+        dispatch( startLogout() );
+    }
+    
+    // if((user.email).substring(0,1).toUpperCase == "A" || (user.email).substring(0,1).toUpperCase == "L"){
+    //     pages.push('Home')
+    //     pages.push('Profile')
+        
+    // }
+    // else if((user.email).substring(0,1).toUpperCase == "A"){
+    //     pages.push('Gestion de Usuarios')
+    //     pages.push('Solicitudes')
+    //     pages.push('Plan de Estudios')
+    // }
+
+    console.log(pages)
+    
     return (
         <AppBar 
             position='fixed'
@@ -42,7 +67,7 @@ export const NavBar = ({}) => {
                                 <Brightness6 />
                             </IconButton>
 
-                            <IconButton sx={{ color: 'appDark.icon', ml: 1 }}>
+                            <IconButton onClick = {onLogout} sx={{ color: 'appDark.icon', ml: 1 }}>
                                 <LogoutOutlined />
                             </IconButton>
 
