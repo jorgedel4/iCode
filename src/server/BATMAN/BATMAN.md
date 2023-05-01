@@ -425,6 +425,56 @@ Content-Type: application/json
 ]
 ```
 
+
+### `/groupmodules/{groupID}`
+#### Descripcion
+Modulos de un grupo
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante variables de url)
+* `groupID` (obligatorio): 'true' para periodos que ya empezaron. 'false' para periodos que aun no empiezan. No dar este parametro regresa todos los periodos sin importar sus fechas. Los periodos se regresan en orden descendiente de acuerdo a sus fechas.
+
+(Mediante parametros de url)
+* `user_id` (obligatorio): ID del usuario del que se quieren obtener los modulos.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de periodos. Cada periodo tiene los siguientes campos
+| Campo            | Tipo                  | Descripcion                |
+| ---------------- | --------------------- | -------------------------- |
+| id               | string                | ID del periodo             |
+| name             | string                | Nombre entero del periodo  |
+| start_date       | string                | Campus del usuario         |
+| end_date         | string                | Correo del usuario         |
+
+
+#### Ejemplo
+**Peticion**
+GET 34.125.0.99:8002/terms?has_started=false
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "id": "AD23",
+        "name": "Agosto-Diciembre 2023",
+        "start_date": "2023-08-28T00:00:00Z",
+        "end_date": "2023-12-12T23:59:59Z"
+    },
+    {
+        "id": "VE23",
+        "name": "Verano 2023",
+        "start_date": "2023-07-05T00:00:00Z",
+        "end_date": "2023-08-25T23:59:59Z"
+    }
+]
+```
+
+
 ## Endpoints de actualizacion
 
 ## Endpoints de eliminacion

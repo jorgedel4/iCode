@@ -17,54 +17,11 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 		groupID := mux.Vars(r)["groupID"]
 		userID := r.URL.Query().Get("user_id")
 
-		accountTypes := make(map[byte]string)
-		accountTypes['L'] = "professor"
-		accountTypes['A'] = "student"
-
-		accountType, ok := accountTypes[userID[0]]
-		if !ok {
-			http.Error(w, "Invalid account type", http.StatusBadRequest)
-			return
-		}
-
 		var baseQuery string
 		var results []interface{}
 		var values []interface{}
 
-		if accountType == "professor" {
-			baseQuery = `SELECT id_module, nombre, open_date, close_date, n_question
-			FROM modules m JOIN grupos g on m.course = g.course 
-			JOIN moduleConfigs mc on m.id_module = mc.module 
-			WHERE g.id_group = ?
-			ORDER BY mc.open_date ASC`
-
-			values = append(values, groupID)
-
-			rows, err := mysqlDB.Query(baseQuery, values...)
-			if err != nil {
-				http.Error(w, "Error executing query", http.StatusInternalServerError)
-				return
-			}
-			defer rows.Close()
-
-			for rows.Next() {
-				var result structs.Module
-				err = rows.Scan(&result.ID, &result.Name, &result.OpenDate, &result.CloseDate, &result.NQuestions)
-
-				if time.Now().After(result.OpenDate) && time.Now().Before(result.CloseDate) {
-					result.Status = "open"
-				} else {
-					result.Status = "closed"
-				}
-
-				if err != nil {
-					http.Error(w, "Error reading results", http.StatusInternalServerError)
-					return
-				}
-
-				results = append(results, result)
-			}
-		} else if accountType == "student" {
+		if len(userID) > 0 && userID[0] == 'A' {
 			baseQuery = `SELECT id_module, nombre, open_date, close_date, n_question, successful_mod_attempts(?, id_module) AS answered 
 			FROM modules m JOIN grupos g on m.course = g.course 
 			JOIN moduleConfigs mc on m.id_module = mc.module 
@@ -101,8 +58,38 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 				results = append(results, result)
 			}
 		} else {
-			http.Error(w, "Invalid user", http.StatusBadRequest)
-			return
+			baseQuery = `SELECT id_module, nombre, open_date, close_date, n_question
+			FROM modules m JOIN grupos g on m.course = g.course 
+			JOIN moduleConfigs mc on m.id_module = mc.module 
+			WHERE g.id_group = ?
+			ORDER BY mc.open_date ASC`
+
+			values = append(values, groupID)
+
+			rows, err := mysqlDB.Query(baseQuery, values...)
+			if err != nil {
+				http.Error(w, "Error executing query", http.StatusInternalServerError)
+				return
+			}
+			defer rows.Close()
+
+			for rows.Next() {
+				var result structs.Module
+				err = rows.Scan(&result.ID, &result.Name, &result.OpenDate, &result.CloseDate, &result.NQuestions)
+
+				if time.Now().After(result.OpenDate) && time.Now().Before(result.CloseDate) {
+					result.Status = "open"
+				} else {
+					result.Status = "closed"
+				}
+
+				if err != nil {
+					http.Error(w, "Error reading results", http.StatusInternalServerError)
+					return
+				}
+
+				results = append(results, result)
+			}
 		}
 
 		modulesJSON, err := json.Marshal(results)
