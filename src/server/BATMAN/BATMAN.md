@@ -519,7 +519,7 @@ Modulos de un grupo
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/modules/TC1028
+GET 34.125.0.99:8002/coursemodules/TC1028
 
 **Respuesta**
 HTTP/1.1 200 OK
