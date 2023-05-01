@@ -497,6 +497,51 @@ Content-Type: application/json
 ```
 
 
+
+### `/coursemodules/{courseID}`
+#### Descripcion
+Modulos de un grupo
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante variables de url)
+* `courseID` (obligatorio): ID del curso del cual se desean ver los modulos.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de modulos. Cada modulo tiene los siguientes campos
+| Campo            | Tipo                  | Descripcion                   |
+| ---------------- | --------------------- | ----------------------------- |
+| id               | string                | ID del modulo                 |
+| name             | string                | Nombre del modulo             |
+
+
+#### Ejemplo
+**Peticion**
+GET 34.125.0.99:8002/modules/TC1028
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "id": "M0000000000000000001",
+        "name": "Basics"
+    },
+    {
+        "id": "M0000000000000000002",
+        "name": "Conditionals"
+    },
+    {
+        "id": "M0000000000000000003",
+        "name": "For loops"
+    }
+]
+```
+
+
 ## Endpoints de actualizacion
 
 ## Endpoints de eliminacion

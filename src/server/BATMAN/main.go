@@ -49,7 +49,7 @@ func main() {
 	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("GET")
 	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
 	r.HandleFunc("/groupmodules/{groupID}", read.GroupModules(mysqlDB)).Methods("GET")
-	r.HandleFunc("/modules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
+	r.HandleFunc("/coursemodules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
