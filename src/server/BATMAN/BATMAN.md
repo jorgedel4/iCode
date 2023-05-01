@@ -435,24 +435,28 @@ Modulos de un grupo
 
 #### Parametros
 (Mediante variables de url)
-* `groupID` (obligatorio): 'true' para periodos que ya empezaron. 'false' para periodos que aun no empiezan. No dar este parametro regresa todos los periodos sin importar sus fechas. Los periodos se regresan en orden descendiente de acuerdo a sus fechas.
+* `groupID` (obligatorio): ID del grupo del cual se desean ver los modulos.
 
 (Mediante parametros de url)
-* `user_id` (obligatorio): ID del usuario del que se quieren obtener los modulos.
+* `user_id` (opcional): ID del estudiante del cual se quieren ver los modulos. Para profesores no es necesario dar este parametro.
 
 #### Respuestas
-(En formato JSON) Se regresa un arreglo de periodos. Cada periodo tiene los siguientes campos
-| Campo            | Tipo                  | Descripcion                |
-| ---------------- | --------------------- | -------------------------- |
-| id               | string                | ID del periodo             |
-| name             | string                | Nombre entero del periodo  |
-| start_date       | string                | Campus del usuario         |
-| end_date         | string                | Correo del usuario         |
+(En formato JSON) Se regresa un arreglo de modulos. Cada modulo tiene los siguientes campos
+| Campo            | Tipo                  | Descripcion                   |
+| ---------------- | --------------------- | ----------------------------- |
+| id               | string                | ID del modulo                 |
+| name             | string                | Nombre del modulo             |
+| status           | string                | Estatus (abierto o bloqueado) |
+| open_date        | string                | Fecha de inicio del modulo    |
+| close_date       | string                | Fecha de cierre del modulo    |
+| n_questions      | int                   | Numero de preguntas requeridas|
+| n_answered       | int                   | Numero de preguntas resueltas (solo para estudiantes) |
+| progress         | int                   | Porcentaje de progreso del modulo (solo para estudiantes) |
 
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/terms?has_started=false
+GET 34.125.0.99:8002/groupmodules/G000000001?user_id=A01551955
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -460,16 +464,34 @@ Content-Type: application/json
 ``` json
 [
     {
-        "id": "AD23",
-        "name": "Agosto-Diciembre 2023",
-        "start_date": "2023-08-28T00:00:00Z",
-        "end_date": "2023-12-12T23:59:59Z"
+        "id": "M0000000000000000001",
+        "name": "Basics",
+        "status": "closed",
+        "open_date": "2023-04-20T00:00:00Z",
+        "close_date": "2023-04-30T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 1,
+        "progress": 33
     },
     {
-        "id": "VE23",
-        "name": "Verano 2023",
-        "start_date": "2023-07-05T00:00:00Z",
-        "end_date": "2023-08-25T23:59:59Z"
+        "id": "M0000000000000000002",
+        "name": "Conditionals",
+        "status": "open",
+        "open_date": "2023-05-01T00:00:00Z",
+        "close_date": "2023-05-10T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 0,
+        "progress": 0
+    },
+    {
+        "id": "M0000000000000000003",
+        "name": "For loops",
+        "status": "closed",
+        "open_date": "2023-05-11T00:00:00Z",
+        "close_date": "2023-05-20T00:00:00Z",
+        "n_questions": 3,
+        "n_answered": 0,
+        "progress": 0
     }
 ]
 ```
