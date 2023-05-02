@@ -31,7 +31,7 @@ export const NavBar = ({}) => {
     //     pages.push('Plan de Estudios')
     // }
 
-    console.log(pages)
+    // console.log(pages)
     
     return (
         <AppBar 

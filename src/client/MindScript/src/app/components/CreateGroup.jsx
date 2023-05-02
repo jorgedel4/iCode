@@ -21,8 +21,8 @@ export const CreateGroup = ({ open, close }) => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '35vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
     const [count, setCount] = useState(0);
-    const [selectedCourse, setSelectedCourse] = useState('');
-    const [selectedTerm, setSelectedTerm] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [selectedTerm, setSelectedTerm] = useState(null);
 
     /*API region */
 
@@ -263,7 +263,8 @@ export const CreateGroup = ({ open, close }) => {
 
                         <Select
                             id="courseSelector"
-                            value={coursesData.id}
+                            // value={coursesData.id}
+                            value={selectedCourse || ''}
                             onChange={handleCourseSelection}
                             sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
                             MenuProps={{
@@ -320,6 +321,7 @@ export const CreateGroup = ({ open, close }) => {
 
                         <Select
                             id="termSelector"
+                            value={selectedTerm || ''}
                             onChange={handleTermSelection}
                             sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
                             MenuProps={{

@@ -132,7 +132,7 @@ export const PHomePage = () => {
         'TC10030B',
     ]
     const request = handleEditorDidMount()
-    console.log(groupsData)
+    // console.log(groupsData)
 
 
 
