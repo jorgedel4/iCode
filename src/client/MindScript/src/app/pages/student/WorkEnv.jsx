@@ -1,7 +1,9 @@
 import { Grid, Button, Typography } from '@mui/material'
-import { QuestionsDropdown } from '../../components';
+import * as React from 'react';
+import { QuestionsDropdown, TestsTabs } from '../../components';
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
+  
 
 export const WorkEnv = ({ onPrueba }) => {
     const questions = [
@@ -51,6 +53,22 @@ export const WorkEnv = ({ onPrueba }) => {
 
     };
 
+    //Objeto para test
+    const tests = [
+        {
+            status: true,
+            feed: "djchdjdjds"
+        },
+        {
+            status: true,
+            feed: "djdkjdidweifujsd"
+        },
+        {
+            status: false,
+            feed: "djkdjsldjdkendjcs"
+        }
+
+    ]
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -97,7 +115,13 @@ export const WorkEnv = ({ onPrueba }) => {
                     </Grid>
                     {/* Terminal*/}
                     <Grid item xs={12}
-                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh' }}>
+                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
+                    >
+
+                        <Typography sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
+
+                        <TestsTabs tests={ tests }/>
+
                     </Grid>
                 </Grid>
             </Grid>
