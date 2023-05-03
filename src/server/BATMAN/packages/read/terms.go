@@ -22,7 +22,7 @@ func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 		if hasStarted == "false" {
 			selectors = append(selectors, "CURRENT_TIMESTAMP < date_start")
 		} else if hasStarted == "true" {
-			selectors = append(selectors, "CURRENT_TIMESTAMO > date_start")
+			selectors = append(selectors, "CURRENT_TIMESTAMP > date_start")
 		}
 
 		orderBy := "ORDER BY date_start DESC"
