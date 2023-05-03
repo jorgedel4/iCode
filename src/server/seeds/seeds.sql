@@ -17,6 +17,18 @@ INSERT INTO terms VALUES
     ("VE23", "Verano 2023", '2023-07-5 00:00:00', '2023-08-25 23:59:59'),
     ("AD23", "Agosto-Diciembre 2023", '2023-08-28 00:00:00', '2023-12-12 23:59:59');
 
+INSERT INTO professors VALUES
+    ("L00000001", "PUE", "Daniel", "Perez", "Rojas"),
+    ("L00000002", "MTY", "Claudia", "Perez", "Lezama"),
+    ("L00000003", "GDL", "Rosa", "Paredes", "Juarez"),
+    ("L00000004", "CSF", "Alba", "Romero", "Garcia");
+
+
+INSERT INTO courses VALUES
+    ("TC1028", "Pensamiento computacional"),
+    ("TC1030", "Programacion orientada a objetos"),
+    ("TC1031", "Estructuras de datos y algoritmos");
+
 INSERT INTO admins VALUES
     ("S00000001", "PUE", "Sam", "Sepiol", NULL),
     ("S00000002", "GDL", "Kanye", "Omari", "West"),
@@ -45,18 +57,6 @@ INSERT INTO students VALUES
     ("A04281593", "HID", "Mariana", "Alvarez", "Torres"),
     ("A09753149", "HID", "Rafael", "Diaz", "Castillo"),
     ("A06149233", "HID", "Miguel", "Ramirez", "Martinez");
-
-INSERT INTO professors VALUES
-    ("L00000001", "PUE", "Daniel", "Perez", "Rojas"),
-    ("L00000002", "MTY", "Claudia", "Perez", "Lezama"),
-    ("L00000003", "GDL", "Rosa", "Paredes", "Juarez"),
-    ("L00000004", "CSF", "Alba", "Romero", "Garcia");
-
-
-INSERT INTO courses VALUES
-    ("TC1028", "Pensamiento computacional"),
-    ("TC1030", "Programacion orientada a objetos"),
-    ("TC1031", "Estructuras de datos y algoritmos");
 
 INSERT INTO grupos VALUES
     ("G000000001", "TC1028", "L00000001", "FJ23"),
@@ -104,9 +104,9 @@ INSERT INTO modules VALUES
     ("M0000000000000000009", "TC1031", "Arbol binario");
 
 INSERT INTO moduleConfigs VALUES
-    ("M0000000000000000001", "G000000001", 3, '2023-04-20 00:00:00', '2023-04-30 00:00:00'),
-    ("M0000000000000000002", "G000000001", 3, '2023-05-01 00:00:00', '2023-05-10 00:00:00'),
-    ("M0000000000000000003", "G000000001", 3, '2023-05-11 00:00:00', '2023-05-20 00:00:00');
+    ("M0000000000000000001", "G000000001", 3, TRUE),
+    ("M0000000000000000002", "G000000001", 3, TRUE),
+    ("M0000000000000000003", "G000000001", 3, TRUE);
 
 INSERT INTO questions VALUES
     ("CQ000000000000000001", "M0000000000000000001", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
