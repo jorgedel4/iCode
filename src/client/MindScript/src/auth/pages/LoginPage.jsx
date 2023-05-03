@@ -1,50 +1,44 @@
 import React from 'react'
 import { useMemo } from 'react'
-import { AuthLayout } from '../layout/AuthLayout'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from "react-router-dom"
+import { AuthLayout } from '../layout/AuthLayout'
 import { Button, Checkbox, Alert, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
-import { useDispatch, useSelector } from 'react-redux';
+import { checkGridRowIdIsValid } from '@mui/x-data-grid';
 import { checkingAuthentication } from '../../store/auth/thunks';
-import { startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth';
+
+// import { checkingAuthentication, startLoginWithEmailPassword } from '../../store/auth';
 
 export const LoginPage = () => {
+  //Funciones para oculatar y revelar la contraseña
   const [showPassword, setShowPassword] = React.useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  //To avoid double authentication
-  const { status, errorMessage } = useSelector(state => state.auth);
-  console.log(status);
-
-  //Authentication Redux Hook useForm
   const dispatch = useDispatch();
-
+  //Primer argumento de useForm es Como luce el formulario
   const { email, password, onInputChange } = useForm({
     email: '',
     password: '123123'
   });
 
+  //To avoid double authentication
+  const { status, errorMessage } = useSelector(state => state.auth);
   const isAuthenticated = useMemo(() => status === 'checking', [status])
-
-  //Esta es la función que hace el submit de las credenciales
+  // console.log(status);
+  
+  //Esta es la función que hace el submit de email y contraseña
   const onSubmit = (event) => {
-    event.preventDefault();
     // console.log({ email, password })
-    dispatch(startLoginWithEmailPassword({ email, password }));
+    event.preventDefault();
+    dispatch(checkingAuthentication());
+    // dispatch(startLoginWithEmailPassword({ email, password }));
   }
-
-  const onGoogleSignIn = () => {
-    console.log('onGoogleSignIn');
-    dispatch(startGoogleSignIn());
-  }
-
-
+  
   return (
     <AuthLayout title='LoginPage'>
       <form onSubmit={onSubmit}>
@@ -71,8 +65,9 @@ export const LoginPage = () => {
                   },
                 }}
 
-                //AUTH
-                name='email'
+                //AUTH 
+                //name se necesita para que el onChange funcione
+                name='email' 
                 value={email}
                 onChange={onInputChange}
               />
@@ -113,7 +108,7 @@ export const LoginPage = () => {
                   },
                 }}
 
-                //AUTH
+                // AUTH
                 name='password'
                 value={password}
                 onChange={onInputChange}
@@ -122,10 +117,10 @@ export const LoginPage = () => {
           </Grid>
 
           {/* Esta es la alerta del inicio de sesión con Firebase */}
-          <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
+          {/* <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
           sx={{mt:1}}>
             <Alert severity='error'>{errorMessage}</Alert>
-          </Grid>
+          </Grid> */}
 
           <Grid item sx={{ mt: 1 }}>
             <FormGroup>

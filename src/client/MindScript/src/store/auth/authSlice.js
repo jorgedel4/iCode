@@ -4,16 +4,17 @@ import { createSlice } from '@reduxjs/toolkit'
 export const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        status: 'checking', //states: 'checking', 'not-authenticated', 'auth'
+        status: 'not-authenticated', //states: 'checking', 'not-authenticated', 'auth'
         uid: null,
         email: null,
         displayName: null,
         photoURL: null,
         errorMessage: null,
+        //Información que esta fluyendo en el Store
     },
 
     reducers: {
-        login: (state, {payload}) => {
+        login: (state, { payload }) => {
             state.status = 'authenticated',
             state.uid = payload.uid;
             state.email = payload.email;
@@ -30,15 +31,17 @@ export const authSlice = createSlice({
             state.photoURL = null;
             state.errorMessage = payload?.errorMessage;
         },
-        //Verifica si sigue autenticado (Loading state, evita dobles submits)
+
+        //         //Verifica si sigue autenticado (Loading state, evita dobles submits)
         checkingCredentials: (state) => {
             state.status = 'checking';
         },
 
     },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { login, logout, checkingCredentials } = authSlice.actions
+//Estas son las funciones que vamos a disparar
+export const { login, logout, checkingCredentials } = authSlice.actions;
 
-export default authSlice.reducer
+// export default authSlice.reducer

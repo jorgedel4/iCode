@@ -1,16 +1,16 @@
 import { Route, Routes, Navigate } from "react-router-dom"
 import { AuthRoutes } from "../auth/routes/AuthRoutes"
 import { AppRoutes } from "../app/routes/AppRoutes"
-import { CheckingAuth } from "../ui/components/CheckingAuth"
-import { useCheckAuth } from "../hooks"
+// import { CheckingAuth } from "../ui/components/CheckingAuth"
+// import { useCheckAuth } from "../hooks"
 
 export const AppRouter = () => {
 
-  const {status} = useCheckAuth();
+  // const { status } = useCheckAuth();
 
-  if (status === 'checking') {
-    return <CheckingAuth />
-  }
+  // if (status === 'checking') {
+  //   return <CheckingAuth />
+  // }
 
   return (
     <Routes>

@@ -6,7 +6,7 @@ import { FormatUnderlined, Visibility, VisibilityOff } from "@mui/icons-material
 import { useForm } from '../../hooks/useForm';
 import { AuthLayout } from "../layout/AuthLayout"
 import { useDispatch, useSelector } from 'react-redux';
-import { startCreatingUserWithEmailPassword } from '../../store/auth';
+// import { startCreatingUserWithEmailPassword } from '../../store/auth';
 
 export const RegisterPage = () => {
 
@@ -62,7 +62,7 @@ export const RegisterPage = () => {
     setFormSubmitted(true);
     // console.log(formState);
     if (!isFormValid) return;
-    dispatch(startCreatingUserWithEmailPassword(formState));
+    // dispatch(startCreatingUserWithEmailPassword(formState));
   }
 
 
