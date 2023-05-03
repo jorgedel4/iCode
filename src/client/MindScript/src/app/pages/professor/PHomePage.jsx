@@ -17,7 +17,7 @@ export const PHomePage = () => {
             mode: 'cors',
         }
 
-        let userID = "A01551955"
+        let userID = "L00000001"
         let term = "current"
 
         const fetchData = async () => {

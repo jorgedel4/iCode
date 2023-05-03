@@ -39,7 +39,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
                 if (response.status === 400) {
                     throw new Error('El curso ingresado no existe');
                 }
-                if (response.status === 204) {
+                if (response.status === 201) {
                     // throw new Error('Network response was not ok');
                     setCount(1)
                 }
