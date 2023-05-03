@@ -10,17 +10,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export const RegisterPage = () => {
 
+  //Functions for covering password
   const [showPassword, setShowPassword] = React.useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   }
 
-  
+  /*----------- AUTH region ------*/
+  //formData es el objeto que estamos esperando (se rellena con los inputs)
   const formData = {
     displayName: '',
+    firstLastName: '',
+    secondLastName: '',
     id: '',
     email: '',
     campus: '',
@@ -50,8 +52,16 @@ export const RegisterPage = () => {
   //Para que no puedan dar submit mientras esta en estado checking se bloquean los botones
   const isCheckingAuthentication = useMemo(() => status === 'checking', [status]);
 
-  const { displayName, id, email, campus, password, confirmation, onInputChange, formState,
-    isFormValid, campusValid, emailValid, passwordValid, displayNameValid, idValid, confirmationValid } = useForm(formData, formValidations);
+
+
+  const {
+    //Campos del registro
+    displayName, firstLastName, secondLastName, id, email, campus, password, confirmation,
+    //Funciones que trackean el estadio (cambio en input)
+    onInputChange, formState, isFormValid,
+    //Variables que tienen el error de validación
+    displayNameValid, firstLastNameValid, secondLastNameValid, idValid, emailValid, campusValid, passwordValid, confirmationValid
+  } = useForm(formData, formValidations);
 
   //Validación bien: null mal:mensaje de error del arreglo
   // console.log(displayNameValid);
@@ -59,11 +69,12 @@ export const RegisterPage = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    setFormSubmitted(true);
-    // console.log(formState);
+    // setFormSubmitted(true);
+    console.log(formState);
     if (!isFormValid) return;
     // dispatch(startCreatingUserWithEmailPassword(formState));
   }
+  /*----------- end AUTH region ------*/
 
 
   return (
@@ -87,7 +98,7 @@ export const RegisterPage = () => {
                 required
                 type="text"
                 label="Nombre"
-                placeholder="Dan Perez"
+                placeholder="Ej. Daniel"
                 sx={{
                   color: 'appDark.text',
                   '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -102,6 +113,82 @@ export const RegisterPage = () => {
                 value={displayName}
                 onChange={onInputChange}
                 error={!!displayNameValid && formSubmitted}
+
+              />
+            </FormControl>
+            <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
+              {formSubmitted && <FormHelperText error>{displayNameValid}</FormHelperText>}
+            </Grid>
+          </Grid>
+
+          {/* First Lastname*/}
+          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }}>
+              <InputLabel
+                required
+                sx={{
+                  color: 'appDark.text',
+                  '&.Mui-focused': {
+                    color: 'appDark.text' //change label color
+                  }
+                }}>Apellido Paterno</InputLabel>
+              <OutlinedInput
+                required
+                type="text"
+                label="FirstLastName"
+                placeholder="Ej. González"
+                sx={{
+                  color: 'appDark.text',
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color when focused
+                  },
+                }}
+                //Validation
+                name="firstLastName"
+                value={firstLastName}
+                onChange={onInputChange}
+                error={false}
+
+              />
+            </FormControl>
+            <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
+              {formSubmitted && <FormHelperText error>{displayNameValid}</FormHelperText>}
+            </Grid>
+          </Grid>
+
+          {/* Second Lastname*/}
+          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }}>
+              <InputLabel
+                required
+                sx={{
+                  color: 'appDark.text',
+                  '&.Mui-focused': {
+                    color: 'appDark.text' //change label color
+                  }
+                }}>Apellido Materno</InputLabel>
+              <OutlinedInput
+                required
+                type="text"
+                label="SecondLastName"
+                placeholder="Ej. Perez"
+                sx={{
+                  color: 'appDark.text',
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color when focused
+                  },
+                }}
+                //Validation
+                name="secondLastName"
+                value={secondLastName}
+                onChange={onInputChange}
+              // error={!!displayNameValid && formSubmitted}
 
               />
             </FormControl>
@@ -343,7 +430,12 @@ export const RegisterPage = () => {
 
           <Grid container direction="column" alignContent="center" sx={{ mt: 1 }}>
             <Grid item>
-              <Button disabled={isCheckingAuthentication} type='submit' variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+              <Button
+                disabled={isCheckingAuthentication}
+                type='submit'
+                variant="contained"
+                fullWidth
+                sx={{ backgroundColor: 'appDark.button' }}>
                 Regístrate
               </Button>
             </Grid>
