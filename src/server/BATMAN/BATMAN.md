@@ -74,6 +74,44 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/registerterm`
+#### Descripcion
+Registrar un nuevo periodo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                |
+|-------------- | ----------- | ----------- | -------------------------- |
+| id            | string      | si          | ID del periodo a crear     |
+| name          | string      | si          | Nombre del periodo         |
+| start_date    | string      | si          | Fecha de inicio (ISO 8601) |
+| end_date      | string      | si          | Fecha de fin (ISO 8601)    |
+
+
+#### Respuesta
+En caso de que se haya registrado el periodo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/registerterm
+Content-Type: application/json
+``` json
+{
+    "id": "IV25",
+    "name": "Invierno 2024",
+    "start_date": "2023-01-05T13:30:00+03:00",
+    "end_date": "2023-02-12T13:30:00+03:00"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/registergroup`
 #### Descripcion
 Crear un nuevo grupo
