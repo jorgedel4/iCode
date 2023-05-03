@@ -37,7 +37,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// Create operations
-	r.HandleFunc("/register/{category}", create.Handler(mysqlDB)).Methods("POST")
+	r.HandleFunc("/registercampus", create.Campus(mysqlDB)).Methods("POST")
 	r.HandleFunc("/enrollstudent", create.Enrollment(mysqlDB)).Methods("POST")
 	r.HandleFunc("/registergroup", create.Group(mysqlDB)).Methods("POST")
 

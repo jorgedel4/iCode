@@ -41,6 +41,39 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/registercampus`
+#### Descripcion
+Registrar un nuevo campus
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro   | Tipo        | Obligatorio | Descripcion            |
+|------------ | ----------- | ----------- | ---------------------- |
+| campus_id   | string      | si          | ID del campus a crear  |
+| campus_name | string      | si          | Nombre del campus      |
+
+#### Respuesta
+En caso de que se haya enrolado al estudiante de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/registercampus
+Content-Type: application/json
+``` json
+{
+    "campus_id": "OAX",
+    "campus_name": "Oaxaca"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/registergroup`
 #### Descripcion
 Crear un nuevo grupo
