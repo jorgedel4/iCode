@@ -52,7 +52,7 @@ func Enrollment(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		}
 
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusCreated)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()
 	}

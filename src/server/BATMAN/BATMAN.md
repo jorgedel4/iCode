@@ -8,6 +8,95 @@ Funciona como un conector entre la BBDD en MySQL y el cliente, incorporando la l
 
 ## Endpoints de creacion
 
+### `/enrollstudent`
+#### Descripcion
+Enrolar un estudiante a un grupo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro   | Tipo        | Obligatorio | Descripcion                                   |
+|------------ | ----------- | ----------- | --------------------------------------------- |
+| student     | string      | si          | ID del estudiante a enrolar                   |
+| group       | string      | si          | ID del grupo al que se enrolara al estudiante |
+
+#### Respuesta
+En caso de que se haya enrolado al estudiante de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/enrollstudent
+Content-Type: application/json
+``` json
+{
+    "student": "A01551955",
+    "group": "G000000000"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
+### `/registergroup`
+#### Descripcion
+Crear un nuevo grupo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                                    |
+|-------------- | ----------- | ----------- | ---------------------------------------------- |
+| course_id     | string      | si          | ID del curso al que pertenece el grupo a crear |
+| term_id       | string      | si          | ID del periodo del grupo                       |
+| professor_id  | string      | si          | Nomina del profesor que imparte el grupo       |
+| modules_confs | [ configs ] | si          | Configuraciones de los modulos del grupo       |
+
+El arreglo `modules_confs` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                     |
+|-------------- | ----------- | ----------- | ----------------------------------------------- |
+| module_id     | string      | si          | ID del modulo a configurar                      |
+| n_questions   | int         | si          | Numero de preguntas requeridas para el modulo   |
+
+#### Respuesta
+En caso de que se haya creado el grupo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/registergroup
+Content-Type: application/json
+``` json
+{
+    "course_id": "TC1028",
+    "term_id": "FJ23",
+    "professor_id": "L00000001",
+    "modules_confs": [
+        {
+            "module_id": "M0000000000000000001",
+            "n_questions": 3
+        },
+        {
+            "module_id": "M0000000000000000002",
+            "n_questions": 3
+        },
+        {
+            "module_id": "M0000000000000000003",
+            "n_questions": 3
+        }
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ## Endpoints de lectura
 ### `/courses`
 #### Descripcion
@@ -54,6 +143,8 @@ Content-Type: application/json
 ]
 ```
 
+---
+
 ### `/enrolledstudents/{groupID}`
 #### Descripcion
 Estudiantes inscritos en un grupo
@@ -98,6 +189,8 @@ Content-Type: application/json
     }
 ]
 ```
+
+---
 
 ### `/groups`
 #### Descripcion
@@ -157,7 +250,7 @@ Content-Type: application/json
 ]
 ```
 
-
+---
 
 ### `/homework`
 #### Descripcion
@@ -186,7 +279,6 @@ Tareas que un estudiante tiene asignadas. O tareas que un profesor ha asignado a
 | closing        | string                | Fecha de cierre de la tarea                  |
 | needed         | int                   | Numero de preguntas necesitadas para terminar|
 | done           | int                   | Numero de preguntas hechas por el alumno     |
-
 
 #### Ejemplo (group_by=group)
 **Peticion**
@@ -238,6 +330,7 @@ Content-Type: application/json
 }
 ```
 
+---
 
 ### `/questionrequests`
 #### Descripcion
@@ -317,6 +410,7 @@ Content-Type: application/json
 ]
 ```
 
+---
 
 ### `/users`
 #### Descripcion
@@ -378,7 +472,7 @@ Content-Type: application/json
 ]
 ```
 
-
+---
 
 ### `/terms`
 #### Descripcion
@@ -425,6 +519,7 @@ Content-Type: application/json
 ]
 ```
 
+---
 
 ### `/groupmodules/{groupID}`
 #### Descripcion
@@ -496,7 +591,7 @@ Content-Type: application/json
 ]
 ```
 
-
+---
 
 ### `/coursemodules/{courseID}`
 #### Descripcion

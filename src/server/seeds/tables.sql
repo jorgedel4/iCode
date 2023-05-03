@@ -33,15 +33,6 @@ CREATE TABLE admins (
     FOREIGN KEY (campus) REFERENCES campus(id_campus)
 );
 
-DELIMITER //
-CREATE TRIGGER admins_before_insert
-BEFORE INSERT ON admins
-FOR EACH ROW
-BEGIN
-  SET NEW.id_admin = CONCAT('S', LPAD(FLOOR(RAND() * 9999999999), 8, '0'));
-END//
-DELIMITER ;
-
 CREATE TABLE students (
     matricula   CHAR(9)         NOT NULL,
     campus      CHAR(3)         NOT NULL,
@@ -52,15 +43,6 @@ CREATE TABLE students (
     PRIMARY KEY (matricula),
     FOREIGN KEY (campus) REFERENCES campus(id_campus)
 );
-
-DELIMITER //
-CREATE TRIGGER students_before_insert
-BEFORE INSERT ON students
-FOR EACH ROW
-BEGIN
-  SET NEW.matricula = CONCAT('A', LPAD(FLOOR(RAND() * 9999999999), 8, '0'));
-END//
-DELIMITER ;
 
 CREATE TABLE professors (
     nomina          CHAR(9)         NOT NULL,
@@ -73,30 +55,12 @@ CREATE TABLE professors (
     FOREIGN KEY (campus) REFERENCES campus(id_campus)
 );
 
-DELIMITER //
-CREATE TRIGGER professors_before_insert
-BEFORE INSERT ON professors
-FOR EACH ROW
-BEGIN
-  SET NEW.nomina = CONCAT('L', LPAD(FLOOR(RAND() * 9999999999), 8, '0'));
-END//
-DELIMITER ;
-
 CREATE TABLE courses (
     id_course   CHAR(10)    NOT NULL,
     course_name VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (id_course)
 );
-
-DELIMITER //
-CREATE TRIGGER courses_before_insert
-BEFORE INSERT ON courses
-FOR EACH ROW
-BEGIN
-  SET NEW.id_course = CONCAT('C', LPAD(FLOOR(RAND() * 9999999999), 9, '0'));
-END//
-DELIMITER ;
 
 CREATE TABLE grupos (
     id_group        CHAR(10)    NOT NULL,
@@ -109,15 +73,6 @@ CREATE TABLE grupos (
     FOREIGN KEY (main_professor) REFERENCES professors(nomina),
     FOREIGN KEY (term) REFERENCES terms(id_term)
 );
-
-DELIMITER //
-CREATE TRIGGER grupos_before_insert
-BEFORE INSERT ON grupos
-FOR EACH ROW
-BEGIN
-  SET NEW.id_group = CONCAT('G', LPAD(FLOOR(RAND() * 9999999999), 9, '0'));
-END//
-DELIMITER ;
 
 CREATE TABLE enrollments (
     grupo       CHAR(10)    NOT NULL,
@@ -137,21 +92,11 @@ CREATE TABLE modules (
     FOREIGN KEY (course) REFERENCES courses(id_course)
 );
 
-DELIMITER //
-CREATE TRIGGER modules_before_insert
-BEFORE INSERT ON modules
-FOR EACH ROW
-BEGIN
-  SET NEW.id_module = CONCAT('M', LPAD(FLOOR(RAND() * 9999999999), 19, '0'));
-END//
-DELIMITER ;
-
 CREATE TABLE moduleConfigs (
     module      CHAR(20)    NOT NULL,
     grupo       CHAR(10)    NOT NULL,
     n_question  INT         NOT NULL,
-    open_date   TIMESTAMP   NOT NULL,
-    close_date  TIMESTAMP   NOT NULL,
+    locked      boolean     NOT NULL,
 
     PRIMARY KEY (module, grupo),
     FOREIGN KEY (module) REFERENCES modules(id_module),
@@ -172,15 +117,6 @@ CREATE TABLE questions (
     FOREIGN KEY (created_by) REFERENCES professors(nomina)
 );
 
-DELIMITER //
-CREATE TRIGGER questions_before_insert
-BEFORE INSERT ON questions
-FOR EACH ROW
-BEGIN
-  SET NEW.id_question = CONCAT('CQ', LPAD(FLOOR(RAND() * 9999999999), 18, '0'));
-END//
-DELIMITER ;
-
 CREATE TABLE homework (
     id_homework CHAR(20)        NOT NULL,
     grupo       CHAR(10)        NOT NULL,
@@ -193,15 +129,6 @@ CREATE TABLE homework (
     FOREIGN KEY (grupo) REFERENCES grupos(id_group)
 );
 
-DELIMITER //
-CREATE TRIGGER homework_before_insert
-BEFORE INSERT ON homework
-FOR EACH ROW
-BEGIN
-  SET NEW.id_homework = CONCAT('H', LPAD(FLOOR(RAND() * 9999999999), 19, '0'));
-END//
-DELIMITER ;
-
 CREATE TABLE hw_questions (
     id_hwquestion   VARCHAR(20) NOT NULL,
     homework        CHAR(20)    NOT NULL,
@@ -211,15 +138,6 @@ CREATE TABLE hw_questions (
     PRIMARY KEY (id_hwquestion),
     FOREIGN KEY (homework) REFERENCES homework(id_homework)
 );
-
-DELIMITER //
-CREATE TRIGGER hw_questions_before_insert
-BEFORE INSERT ON hw_questions
-FOR EACH ROW
-BEGIN
-  SET NEW.id_hwquestion = CONCAT('HQ', LPAD(FLOOR(RAND() * 9999999999), 18, '0'));
-END//
-DELIMITER ;
 
 CREATE TABLE questionAttempts (
     student         CHAR(9)     NOT NULL,
