@@ -1,4 +1,4 @@
-import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem } from '@mui/material'
+import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -49,11 +49,18 @@ export const CreateHomework = ({ open, close }) => {
     const modules = [
         {
             courseName: "Variables",
-            exNum: 0
+            exNum: 0,
+            checked: false
         },
         {
             courseName: "Condicionales",
-            exNum: 0
+            exNum: 0,
+            checked: true
+        },
+        {
+            courseName: "Ciclo for",
+            exNum: 0,
+            checked: true
         },
 
     ]
@@ -316,7 +323,64 @@ export const CreateHomework = ({ open, close }) => {
                     }}>
 
                         <Grid item xs={10} >
-                            <AddModuleHomework data={modules} />
+
+                            {/* Tabla de ejercicios de modulos */}
+                            <TableContainer sx={{
+                                    height: "49vh", //to do no me pegues
+                                    my: 2,
+                                    borderRadius: 2,
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}
+                            >
+                                <Table sx={{ width: 1 }} aria-label="simple table">
+                                    <TableHead sx={{ overflowX: "initial" }}>
+                                        <TableRow>
+                                            <TableCell
+                                                align="left"
+                                                sx={{
+                                                    color: "appDark.text",
+                                                    position: "sticky",
+                                                    top: 0,
+                                                    bgcolor: "primary.main",
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                Módulos
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                sx={{
+                                                    color: "appDark.text",
+                                                    position: "sticky",
+                                                    top: 0,
+                                                    bgcolor: "primary.main",
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                Ejercicios
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+
+                                    <TableBody>
+                                        {modules.map((module, index) => (
+                                            <AddModuleHomework key={ index } module={module} />
+                                        ))}
+                                    </TableBody>
+
+                                </Table>
+                            </TableContainer>
+
                             <Grid item id="cancelar" align="right">
 
                                 <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
