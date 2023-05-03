@@ -18,7 +18,7 @@ export const PHomePage = () => {
         }
 
         let userID = "L00000001"
-        let term = "current"
+        let term = "all"
 
         const fetchData = async () => {
             try {

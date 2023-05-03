@@ -47,7 +47,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/terms?has_started=false`, options);
+                const response = await fetch(`http://34.125.0.99:8002/terms`, options);
                 const responseData = await response.json();
                 setTerm(responseData);
             } catch (error) {
