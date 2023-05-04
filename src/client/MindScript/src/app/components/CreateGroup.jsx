@@ -20,7 +20,6 @@ export const CreateGroup = ({ open, close }) => {
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '35vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
-    const [count, setCount] = useState(0);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [rows, setRows] = useState([]);
@@ -146,8 +145,10 @@ export const CreateGroup = ({ open, close }) => {
             .then(response => {
                 console.log(response)
                 if (response.status === 201) {
+                    close()
                     throw new Error('Grupo creado');
                 }
+
             })
             .catch(error => {
                 console.log(error)
@@ -327,21 +328,21 @@ export const CreateGroup = ({ open, close }) => {
                         </Grid>
                         <Grid item id="crearGrupo" >
                             <Button
-                            // Lo de abajo estaba en onclick pero no se para que era
-                            // () => {setCount(count + 1)}
-                            onClick={createGroupRequest}
-                            type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                            Crear Grupo
-                        </Button>
+                                // Lo de abajo estaba en onclick pero no se para que era
+                                // () => {setCount(count + 1)}
+                                onClick={createGroupRequest}
+                                type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                                Crear Grupo
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Grid>
+
+                {/* end first view */}
+
+
             </Grid>
-
-            {/* end first view */}
-
-
-        </Grid>
-            {/* <HomeworkCard key={ 1 }  data={ data } student={ student }></HomeworkCard> */ }
+            {/* <HomeworkCard key={ 1 }  data={ data } student={ student }></HomeworkCard> */}
 
         </Modal >
     )

@@ -6,7 +6,7 @@ import { useForm } from '../../hooks/useForm';
 
 export const CourseRegister = ({ open, close, setCount, count }) => {
     const [requestVal, setValue] = useState('')
-    
+
     const [error, setError] = useState(null);
     const enrollData = {
         group: requestVal,
@@ -14,10 +14,10 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
     }
     const handleInputChange = (event) => {
         setValue(event.target.value);
-      };
-    
-    
-    
+    };
+
+
+
     const enrollButton = async () => {
         const options = {
             method: 'POST',
@@ -53,7 +53,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             });
     };
 
-console.log(requestVal)
+    console.log(requestVal)
 
     //Course Key input state and validations
     // const formData = {
@@ -107,7 +107,6 @@ console.log(requestVal)
                 {count === 0 && (
                     //Este parent solo es para no tener containers por cada cambio de vista */}
                     <>
-                        {error && (<FormHelperText>{error}</FormHelperText>)}
                         <form onSubmit={onSubmit} id="form">
                             <Grid container justifyContent="center">
 
@@ -146,10 +145,12 @@ console.log(requestVal)
                                             // name='courseKey'
                                             value={requestVal}
                                             onChange={handleInputChange}
-                                            // error={!!courseKeyValid && formSubmitted}
+                                        // error={!!courseKeyValid && formSubmitted}
 
                                         />
                                     </FormControl>
+                                    {error && (<FormHelperText sx={{color:'error.main', padding:1}}>{error}</FormHelperText>)}
+
                                     <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
                                         {/* {formSubmitted && <FormHelperText error>{courseKeyValid}</FormHelperText>} */}
                                     </Grid>
