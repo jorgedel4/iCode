@@ -1,4 +1,4 @@
-import { Grid, Tab, Tabs, Typography} from '@mui/material'
+import { FormHelperText, Grid, Tab, Tabs, Typography} from '@mui/material'
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { CheckCircleOutlineRounded, HighlightOffRounded } from '@mui/icons-material'
@@ -42,6 +42,7 @@ function a11yProps(index) {
 export const TestsTabs = ({ tests }) => {
     //Datos para tabs
     const [value, setValue] = React.useState(0);
+    const shownTests = tests.shownTests
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -63,10 +64,10 @@ export const TestsTabs = ({ tests }) => {
                         },
                     }}                                
                 >
-                    {tests.map((test, index) => (
+                    {shownTests.map((test, index) => (
                         <Tab
                             key= {index}
-                            icon={test.status? <CheckCircleOutlineRounded color='success' />: <HighlightOffRounded color='error'/>}
+                            icon={test.passed? <CheckCircleOutlineRounded color='success' />: <HighlightOffRounded color='error'/>}
                             iconPosition="start"
                             label={"Test " + (index+1) }
                             {...a11yProps({index})} 
@@ -83,9 +84,13 @@ export const TestsTabs = ({ tests }) => {
             </Grid>
 
             <Grid sx={{ height: '25vh', bgcolor: 'appDark.bgBox', borderRadius: 1, color: 'appDark.text' }}>
-                {tests.map((test, index) => (
+                {tests.error.length > 0 && (
+                    <FormHelperText sx={{padding:3, color:'error.main'}}>{tests.error}</FormHelperText>
+                )}
+                {shownTests.map((test, index) => (
+
                     <TabPanel key={index} value={value} index={index}>
-                        {test.feed}
+                        This tests was expecting {test.expected} and got {test.got}
                     </TabPanel>
                 ))}    
             </Grid>

@@ -20,6 +20,8 @@ export const WorkEnv = ({ onPrueba }) => {
     ];
 
     const [content, setContent] = useState('');
+    const [fetchResponse, setResponse] = useState([]);
+    const [showComponent, setShowComponent] = useState(false);
     //Objeto para codeExec
     const hwData = {
         code: content,
@@ -45,13 +47,20 @@ export const WorkEnv = ({ onPrueba }) => {
 
         fetch('http://34.125.0.99:8001/exec', options)
             .then(response => {
-                console.log(response)
+                // console.log(response)
+                return response.json()
+            })
+            .then(json => {
+                setResponse(json)
+                setShowComponent(true)
             })
             .catch(error => {
                 console.log(error)
             })
 
     };
+
+    console.log(fetchResponse)
 
     //Objeto para test
     const tests = [
@@ -118,9 +127,10 @@ export const WorkEnv = ({ onPrueba }) => {
                         sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
                     >
 
-                        <Typography sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
-
-                        <TestsTabs tests={ tests }/>
+                        <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
+                        {showComponent && (
+                            <TestsTabs tests={ fetchResponse }/>
+                        )}
 
                     </Grid>
                 </Grid>
