@@ -7,14 +7,14 @@ import { getFirestore } from 'firebase/firestore/lite' //desde lite para solo to
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyA1UD0Z07WbnGxRIYm0XYpwYKzQZUQz_7s",
-    authDomain: "mindscript-e7745.firebaseapp.com",
-    projectId: "mindscript-e7745",
-    storageBucket: "mindscript-e7745.appspot.com",
-    messagingSenderId: "590166154286",
-    appId: "1:590166154286:web:d0c3c372e6523db3b093bf"
-};
-
+    apiKey: "AIzaSyDcCg1I3XK5n4HZ_pa5VSgtIssIU_mYzNw",
+    authDomain: "mindscript-1a58e.firebaseapp.com",
+    projectId: "mindscript-1a58e",
+    storageBucket: "mindscript-1a58e.appspot.com",
+    messagingSenderId: "437688985938",
+    appId: "1:437688985938:web:b2252c1cddd867a751728b"
+  };
+  
 // Initialize Firebase
 export const FirebaseApp = initializeApp(firebaseConfig);
 export const FirebaseAuth = getAuth(FirebaseApp);

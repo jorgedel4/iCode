@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMemo, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useSubmit } from "react-router-dom"
 import { Alert, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
 import { FormatUnderlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
@@ -10,66 +10,74 @@ import { startCreatingUserWithEmailPassword } from '../../store/auth';
 
 export const RegisterPage = () => {
 
+  //Functions for covering password
   const [showPassword, setShowPassword] = React.useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   }
 
-  
+  /*----------- AUTH region ------*/
+  //formData es el objeto que estamos esperando (se rellena con los inputs)
   const formData = {
     displayName: '',
+    firstLastName: '',
+    secondLastName: '',
     id: '',
     email: '',
     campus: '',
     password: '',
     confirmation: '',
-
   }
 
-  const formValidations = { //personalizado del tutorial, hay herramientas externas para hacer validaciones
+  const formValidations = {
+    /*personalizado del tutorial, hay herramientas externas para hacer validaciones
     //son arreglos, 1 param es el valor que ingresa el user, el segundo es el mensaje de error por si no se cumple la validacion, se las vamos a pasar a la función de useForm
-    //si una de estas no se cumple el formulario no va a ser válido
+    //si una de estas no se cumple el formulario no va a ser válido*/
     id: [(value) => value.includes('A0') || value.includes('L0'), 'Ingresa tu matrícula o nómina'], //deben ser los mismos nombres del objeto del formulario
     email: [(value) => value.includes('@tec.mx'), 'Debes entrar con tu correo institucional'], //deben ser los mismos nombres del objeto del formulario
     password: [(value) => value.length >= 6, 'El password debe de tener al menos 6 caracteres'],
     confirmation: [(value) => value === password, 'Tu confirmación es diferente a tu contraseña'],
     displayName: [(value) => value.length >= 1, 'Tu nombre es requerido'],
     campus: [(value) => value === value.toUpperCase(), 'Ingresa las 3 primeras letras de tu campus en mayúscula'],
-
+    // firstLastName: [(value) => value.length >= 2, 'Error del primer apellido'],
   }
+  // var prueba = 12;
 
   const dispatch = useDispatch();
 
+  /*El estado formSubmitted impide que las validaciones/errores se muestren antes de hacer click en Submit */
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-
+  /*Este es el estatus de la autenticación y los mensajes de error de Firebase */
   const { status, errorMessage } = useSelector(state => state.auth);
+
   //Para que no puedan dar submit mientras esta en estado checking se bloquean los botones
   const isCheckingAuthentication = useMemo(() => status === 'checking', [status]);
 
-  const { displayName, id, email, campus, password, confirmation, onInputChange, formState,
-    isFormValid, campusValid, emailValid, passwordValid, displayNameValid, idValid, confirmationValid } = useForm(formData, formValidations);
 
-  //Validación bien: null mal:mensaje de error del arreglo
-  // console.log(displayNameValid);
-  // console.log(emailValid);
+  const {
+    /*Campos del registro*/
+    displayName, firstLastName, secondLastName, id, email, campus, password, confirmation,
+    /*Funciones que trackean el estadio (cambio en input)*/
+    onInputChange, formState, isFormValid,
+    /*Variables que tienen el error de validación*/
+    displayNameValid, firstLastNameValid, secondLastNameValid, idValid, emailValid, campusValid, passwordValid, confirmationValid
+  } = useForm(formData, formValidations);
+
 
   const onSubmit = (event) => {
     event.preventDefault();
     setFormSubmitted(true);
-    // console.log(formState);
     if (!isFormValid) return;
     dispatch(startCreatingUserWithEmailPassword(formState));
+    /*console.log(formState); formState nos trae el objeto con los valores rellenos*/
   }
+  /*----------- end AUTH region ------*/
 
 
   return (
     <AuthLayout title="Registro">
-      {/* <h1>FormValid: {isFormValid ? 'Valido': 'Nel'}</h1> */}
-      {/* <h1>idvalid: {idValid ? 'Valido': 'No válido'}</h1> */}
       <form onSubmit={onSubmit}>
         <Grid container justifyContent="center">
           {/* Name*/}
@@ -87,7 +95,7 @@ export const RegisterPage = () => {
                 required
                 type="text"
                 label="Nombre"
-                placeholder="Dan Perez"
+                placeholder="Ej. Daniel"
                 sx={{
                   color: 'appDark.text',
                   '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -107,6 +115,83 @@ export const RegisterPage = () => {
             </FormControl>
             <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
               {formSubmitted && <FormHelperText error>{displayNameValid}</FormHelperText>}
+            </Grid>
+          </Grid>
+
+          {/* First Lastname*/}
+          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }}>
+              <InputLabel
+                required
+                sx={{
+                  color: 'appDark.text',
+                  '&.Mui-focused': {
+                    color: 'appDark.text' //change label color
+                  }
+                }}>Apellido Paterno</InputLabel>
+              <OutlinedInput
+                required
+                type="text"
+                label="FirstLastName"
+                placeholder="Ej. González"
+                sx={{
+                  color: 'appDark.text',
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color when focused
+                  },
+                }}
+                //Validation
+                name="firstLastName"
+                value={firstLastName}
+                onChange={onInputChange}
+                error={!!firstLastNameValid && formSubmitted}
+
+              />
+            </FormControl>
+            <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
+              {formSubmitted && <FormHelperText error>{firstLastNameValid}</FormHelperText>}
+            </Grid>
+          </Grid>
+
+          {/* Second Lastname*/}
+          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }}>
+              <InputLabel
+                required
+                sx={{
+                  color: 'appDark.text',
+                  '&.Mui-focused': {
+                    color: 'appDark.text' //change label color
+                  }
+                }}>Apellido Materno</InputLabel>
+              <OutlinedInput
+                required
+                type="text"
+                label="SecondLastName"
+                placeholder="Ej. Perez"
+                sx={{
+                  color: 'appDark.text',
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'appDark.box', //change border color when focused
+                  },
+                }}
+                //Validation
+                name="secondLastName"
+                value={secondLastName}
+                onChange={onInputChange}
+              //Error managing
+              // error={prueba != 12}
+
+              />
+            </FormControl>
+            <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
+              {formSubmitted && <FormHelperText error>{secondLastNameValid}</FormHelperText>}
             </Grid>
           </Grid>
 
@@ -335,7 +420,7 @@ export const RegisterPage = () => {
           </Grid>
 
           <Grid item xs={12}
-            // la doble negación lo conbierte en un valor bool
+            // la doble negación lo convierte en un valor bool
             display={!!errorMessage ? '' : 'none'}
           >
             <Alert severity='error'>{errorMessage}</Alert>
@@ -343,7 +428,12 @@ export const RegisterPage = () => {
 
           <Grid container direction="column" alignContent="center" sx={{ mt: 1 }}>
             <Grid item>
-              <Button disabled={isCheckingAuthentication} type='submit' variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+              <Button
+                disabled={isCheckingAuthentication}
+                type='submit'
+                variant="contained"
+                fullWidth
+                sx={{ backgroundColor: 'appDark.button' }}>
                 Regístrate
               </Button>
             </Grid>
