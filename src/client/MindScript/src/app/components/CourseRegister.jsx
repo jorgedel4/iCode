@@ -1,32 +1,84 @@
 import { Grid, InputLabel, Modal, OutlinedInput, Button, FormHelperText, FormControl, Typography } from '@mui/material'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
-import { useState } from 'react';
+import { useState, useEffect, React } from 'react';
 import { useForm } from '../../hooks/useForm';
 
 
 export const CourseRegister = ({ open, close, setCount, count }) => {
+    const [requestVal, setValue] = useState('')
+    
+    const [error, setError] = useState(null);
+    const enrollData = {
+        group: requestVal,
+        student: "A07136662"
+    }
+    const handleInputChange = (event) => {
+        setValue(event.target.value);
+      };
+    
+    
+    
+    const enrollButton = async () => {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+                "group": enrollData.group,
+                "student": enrollData.student
+            })
+        }
+
+        fetch('http://34.125.0.99:8002/enrollstudent', options)
+            .then((response) => {
+                if (response.status === 409) {
+                    throw new Error('Ya estás enrolado prro');
+                }
+                if (response.status === 400) {
+                    throw new Error('El curso ingresado no existe');
+                }
+                if (response.status === 204) {
+                    // throw new Error('Network response was not ok');
+                    setCount(1)
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // handle successful response
+            })
+            .catch((error) => {
+                setError(error.message);
+            });
+    };
+
+console.log(requestVal)
+
     //Course Key input state and validations
-    const formData = {
-        courseKey: '',
-    }
-    const formValidations = { //Aqui value lo buscamos en la DB si viene vacío regresamos false y sale el error todo
-        courseKey: [(value) => value.includes('xx'), 'No se encontró ningún curso con esta clave'],
-    }
-    const { courseKey, courseKeyValid, isFormValid, formState, onInputChange } = useForm(formData, formValidations);
-    // console.log(courseKey)
-    const [formSubmitted, setFormSubmitted] = useState(false);
-    //courseKeyValid solo contiene el mensaje de error 
-    console.log(courseKeyValid);
+    // const formData = {
+    //     courseKey: requestVal,
+    // }
+    // console.log("ayuda")
+    // const formValidations = { //Aqui value lo buscamos en la DB si viene vacío regresamos false y sale el error todo
+    //     courseKey: [(value) => value.includes(200), 'Ya existe'],
+    // }
+    // const { courseKey, courseKeyValid, isFormValid, formState, onInputChange } = useForm(formData, formValidations, requestVal);
+    // // console.log(courseKey)
+    // const [formSubmitted, setFormSubmitted] = useState(false);
+    // //courseKeyValid solo contiene el mensaje de error 
+    // // console.log(courseKeyValid);
+    // console.log(formData.courseKey)
 
     const onSubmit = (event) => {
         event.preventDefault();
-        setFormSubmitted(true);
+        // setFormSubmitted(true);
         // console.log(formState);
-        if (!isFormValid) return;
-        setCount(1)
-        // dispatch(startCreatingUserWithEmailPassword(formState));
+        // if (!isFormValid) return;
+
+        // setCount(1)
     }
-    console.log(count);
+    // console.log(count);
 
 
 
@@ -55,6 +107,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
                 {count === 0 && (
                     //Este parent solo es para no tener containers por cada cambio de vista */}
                     <>
+                        {error && (<FormHelperText>{error}</FormHelperText>)}
                         <form onSubmit={onSubmit} id="form">
                             <Grid container justifyContent="center">
 
@@ -90,21 +143,23 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
                                                     },
                                                 }
                                             }}
-                                            name='courseKey'
-                                            value={courseKey}
-                                            onChange={onInputChange}
-                                            error={!!courseKeyValid && formSubmitted}
+                                            // name='courseKey'
+                                            value={requestVal}
+                                            onChange={handleInputChange}
+                                            // error={!!courseKeyValid && formSubmitted}
 
                                         />
                                     </FormControl>
                                     <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
-                                        {formSubmitted && <FormHelperText error>{courseKeyValid}</FormHelperText>}
+                                        {/* {formSubmitted && <FormHelperText error>{courseKeyValid}</FormHelperText>} */}
                                     </Grid>
                                 </Grid>
 
 
                                 <Grid item id="cancelar" xs={10} align="center">
-                                    <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2, my: 4 }}>
+                                    <Button
+                                        onClick={enrollButton}
+                                        type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2, my: 4 }}>
                                         Unirse
                                     </Button>
                                 </Grid>
@@ -122,8 +177,8 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
                                     ¡Te has unido con éxito al curso!
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} align='center' sx={{color: "success.main", mt:2}}>
-                                <CheckCircleOutlineRoundedIcon sx={{width:90,height:90}}/>
+                            <Grid item xs={12} align='center' sx={{ color: "success.main", mt: 2 }}>
+                                <CheckCircleOutlineRoundedIcon sx={{ width: 90, height: 90 }} />
                             </Grid>
                             <Grid item id="cancelar" xs={10} align="center">
                                 <Button type="submit" onClick={close} variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2, my: 4 }}>

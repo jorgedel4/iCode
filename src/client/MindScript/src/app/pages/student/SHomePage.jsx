@@ -48,31 +48,35 @@ export const SHomePage = () => {
         setCount(0);
     }
 
-
+    //Navigate to
     const modules = "/student/modules"
     const home = "/student/home"
 
     //for every data add to groupsData with desestructured info juas
     const groupsData = [ //Se queda este
-    {
-        name: "Curso A", //Nombre del grupo (nombre del curso)
-        openDate: "26 de Marzo", //Cuando abre
-        closeDate: "26 de Abril", //Cuando cierra
-        professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
-    },
-    { 
-        name: "Curso B",
-        openDate: "27 de Marzo",
-        closeDate: "27 de Abril",
-        professor: "Daniel Perez Rojas"
-    },
-    {
-        name: "Curso C",
-        openDate: "28 de Marzo",
-        closeDate: "28 de Abril",
-        professor: "Daniel Perez Rojas"
-    }
-]
+        // {
+        //     name: "Curso A", //Nombre del grupo (nombre del curso)
+        //     openDate: "26 de Marzo", //Cuando abre
+        //     closeDate: "26 de Abril", //Cuando cierra
+        //     professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
+        // },
+        // {
+        //     name: "Curso B",
+        //     openDate: "27 de Marzo",
+        //     closeDate: "27 de Abril",
+        //     professor: "Daniel Perez Rojas"
+        // },
+        {
+            id_group: "G000000001",
+            id_course: "TC1028",
+            course_name: "Pensamiento computacional",
+            start_date: "2023-02-15T00:00:00Z",
+            end_date: "2023-06-26T23:59:59Z",
+            first_name: "Daniel",
+            flast_name: "Perez",
+            slast_name: "Rojas"
+        }
+    ]
     const homeworkData = [
         {
             title: 'Lunes',
@@ -212,7 +216,7 @@ export const SHomePage = () => {
 
                 {groupsData.map((group, index) => (
                     <Grid key={index} item xs={12} md={4}>
-                        <CoursesCard group={group} index={index} modules={modules}/>
+                        <CoursesCard group={group} index={index} modules={modules} />
                     </Grid>
                 ))}
 

@@ -39,8 +39,9 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
 
 //Login CON EMAIL Y PASSWORD
 export const startLoginWithEmailPassword = ({ email, password }) => {
+    const auth = getAuth();
     return async (dispatch) => {
-
+        
         //Se hace este dispatch para controlar el estado de non auth checkin auth
         dispatch(checkingCredentials());
 
@@ -51,9 +52,10 @@ export const startLoginWithEmailPassword = ({ email, password }) => {
         if (!result.ok) {
             dispatch(logout(result));
         } else {
+            setPersistence(auth,inMemoryPersistence)
             dispatch(login(result))
         }
-
+        
     }
 }
 

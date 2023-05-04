@@ -17,14 +17,17 @@ export const CoursesCard = ({ group, index, modules}) => {
                 <CardActionArea href={modules}>
                     <Grid sx={{ backgroundColor: `${colors[color]}`, height: 40 }} />
                     <CardContent sx={{ pt: 4, pb: 6 }}>
-                        <Typography sx={{ color: 'appDark.text', fontSize: 26, fontWeight: 405 }} >
-                            {group.name}
+                        <Typography xs={6} sx={{ color: 'appDark.text', fontSize: 22, fontWeight: 405 }} >
+                            {group.id_course}. {group.course_name}
                         </Typography>
-                        <Typography sx={{ color: 'appDark.text', fontSize: 18, fontWeight: 405 }}>
-                            {group.openDate} - {group.closeDate}
+                        <Typography xs={6} sx={{ color: 'appDark.text', fontSize: 15, fontWeight: 405 }} >
+                            ({group.id_group})
                         </Typography>
-                        <Typography sx={{ color: 'appDark.text', fontSize: 14, fontWeight: 405 }}>
-                            {group.professor}
+                        <Typography sx={{ color: 'appDark.text', fontSize: 13, fontWeight: 405 }}>
+                            {group.start_date.substring(0,10)} a {group.end_date.substring(0,10)}
+                        </Typography>
+                        <Typography sx={{ color: 'appDark.text', fontSize: 13, fontWeight: 405 }}>
+                            {group.first_name} {group.flast_name} {group.slast_name}
                         </Typography>
                     </CardContent>
                 </CardActionArea>

@@ -64,6 +64,7 @@ export const loginWithEmailPassword = async ({email, password}) => {
         return {
             ok: true,
             uid, photoURL, displayName, email
+            uid, photoURL, displayName, email
         }
     }
     catch (error) {

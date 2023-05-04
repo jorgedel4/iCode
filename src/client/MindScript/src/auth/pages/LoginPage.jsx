@@ -23,6 +23,7 @@ export const LoginPage = () => {
   const { email, password, onInputChange } = useForm({
     email: '',
     password: ''
+    password: ''
   });
 
   //To avoid double authentication
@@ -117,7 +118,7 @@ export const LoginPage = () => {
 
           {/* Esta es la alerta del inicio de sesión con Firebase */}
           <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
-          sx={{mt:1}}>
+            sx={{ mt: 1 }}>
             <Alert severity='error'>{errorMessage}</Alert>
           </Grid>
 

@@ -70,15 +70,13 @@ export const CreateHomework = ({ open, close }) => {
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-            
-                xs={10}
                 id="Grid container Crear Tarea"
                 justifyContent='space-between'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
                     boxShadow: 24,
-                    width: '85vw',
+                    width: '80vw',
                     height: '80vh',
                     overflowY: 'scroll',
                     "&::-webkit-scrollbar": {
@@ -100,7 +98,7 @@ export const CreateHomework = ({ open, close }) => {
                     </Typography>
                 </Grid>
 
-                <Grid item xs={12} lg={6} md={6} fullWidth sx={{ mt: 2 }}>
+                <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
                     <Grid container justifyContent="center" sx={{
                         py: 2,
                         overflowY: 'scroll',
@@ -121,7 +119,7 @@ export const CreateHomework = ({ open, close }) => {
                         {/* Homework name */}
                         <Grid item xs={10} >
                             <Grid container>
-                                <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2 }}>
+                                <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
                                     <InputLabel sx={{
                                         color: 'appDark.text',
                                         '&.Mui-focused': {
@@ -155,7 +153,7 @@ export const CreateHomework = ({ open, close }) => {
 
                         {/* Course Selector */}
                         <Grid item xs={10}>
-                            <FormControl fullWidth variant="filled" sx={{ mt: 3 }}>
+                            <FormControl variant="filled" sx={{ mt: 3, width: '100%' }}>
                                 <InputLabel id="courseSelectorInputLabel"
                                     sx={{
                                         color: 'appDark.text',
@@ -207,7 +205,6 @@ export const CreateHomework = ({ open, close }) => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                     label="Fecha de Desbloqueo"
-                                    fullWidth
                                     sx={{
                                         mt: 3,
                                         width: '100%',
@@ -251,7 +248,6 @@ export const CreateHomework = ({ open, close }) => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                     label="Fecha de Bloqueo"
-                                    fullWidth
                                     sx={{
                                         mt: 3,
                                         width: '100%',
@@ -292,17 +288,17 @@ export const CreateHomework = ({ open, close }) => {
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
                         <Grid item xs={10} id="Grupo">
                             <GroupHomework />
-                        <Grid item id="cancelar">
-                            <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
-                                Cancelar
-                            </Button>
-                        </Grid>
+                            <Grid item id="cancelar">
+                                <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
+                                    Cancelar
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
                 {/* Segunda Seccion */}
-                <Grid item xs={12} lg={6} md={6} fullWidth sx={{ mt: 2 }}>
+                <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
                     <Grid container justifyContent="center" sx={{
                         overflowY: 'scroll',
                         height: '60vh',

@@ -2,8 +2,11 @@ import { Box } from '@mui/material';
 import { Grid, Typography, Toolbar, List } from '@mui/material'
 import { NavBar, CoursesCard, ActionButton, HomeworkBoard, SHHomeworkCard, PHHomeworkCard } from '../components' 
 import { SignalWifiStatusbarNullSharp } from '@mui/icons-material';
+import { getAuth } from "firebase/auth";
 
 export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, home }) => {
+
+
     return (
         <Grid container padding={5} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
             <NavBar/>
