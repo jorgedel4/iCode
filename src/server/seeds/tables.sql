@@ -129,16 +129,6 @@ CREATE TABLE homework (
     FOREIGN KEY (grupo) REFERENCES grupos(id_group)
 );
 
-CREATE TABLE hw_questions (
-    id_hwquestion   VARCHAR(20) NOT NULL,
-    homework        CHAR(20)    NOT NULL,
-    q_type          CHAR(5)     NOT NULL, -- multi, codep (code that uses prints), codef (code that uses functions, rip)
-    info            JSON        NOT NULL,
-
-    PRIMARY KEY (id_hwquestion),
-    FOREIGN KEY (homework) REFERENCES homework(id_homework)
-);
-
 CREATE TABLE questionAttempts (
     student         CHAR(9)     NOT NULL,
     grupo           CHAR(10)    NOT NULL,
@@ -160,5 +150,5 @@ CREATE TABLE hw_questionAttempts (
 
     FOREIGN KEY (student) REFERENCES students(matricula),
     FOREIGN KEY (grupo) REFERENCES grupos(id_group),
-    FOREIGN KEY (question) REFERENCES hw_questions(id_hwquestion)
+    FOREIGN KEY (question) REFERENCES questions(id_question)
 );
