@@ -23,7 +23,6 @@ export const LoginPage = () => {
   const { email, password, onInputChange } = useForm({
     email: '',
     password: ''
-    password: ''
   });
 
   //To avoid double authentication
