@@ -1,4 +1,4 @@
-import { /*singInWithGoogle*/ registerUserWithEmailPassword /*loginWithEmailPassword*/} from "../../firebase/providers";
+import { /*singInWithGoogle*/ registerUserWithEmailPassword,loginWithEmailPassword, logoutFirebase } from "../../firebase/providers";
 import { checkingCredentials, logout, login } from "./"
 //Los thunks son acciones asíncronas
 
@@ -28,8 +28,8 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
     return async (dispatch) => {
         dispatch(checkingCredentials());
 
-        const {ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({ email, password, displayName, firstLastName, secondLastName, campus, id })
-        console.log("Thunks", ok, uid, photoURL, errorMessage);
+        const { ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({ email, password, displayName, firstLastName, secondLastName, campus, id })
+        // console.log("Thunks", ok, uid, photoURL, errorMessage);
         if (!ok) return dispatch(logout({ errorMessage }))
 
         dispatch(login({ uid, displayName, email, photoURL, errorMessage }));
@@ -37,22 +37,30 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
     }
 }
 
-// //Login CON EMAIL Y PASSWORD
-// export const startLoginWithEmailPassword = ({ email, password }) => {
-//     return async (dispatch) => {
+//Login CON EMAIL Y PASSWORD
+export const startLoginWithEmailPassword = ({ email, password }) => {
+    return async (dispatch) => {
 
-//         //Se hace este dispatch para controlar el estado de non auth checkin auth
-//         dispatch(checkingCredentials());
+        //Se hace este dispatch para controlar el estado de non auth checkin auth
+        dispatch(checkingCredentials());
 
-//         const result = await loginWithEmailPassword({email,password});
+        const result = await loginWithEmailPassword({ email, password });
 
-//         console.log({ result })
+        // console.log("Result StartLoginWithEmailAndPassword", { result })
 
-//         if (!result.ok) {
-//             dispatch(logout(result));
-//         } else {
-//             dispatch(login(result))
-//         }
+        if (!result.ok) {
+            dispatch(logout(result));
+        } else {
+            dispatch(login(result))
+        }
 
-//     }
-// }
+    }
+}
+
+/*Log out action to dispatch */
+export const startLogout = () => {
+    return async(dispatch) => {
+        await logoutFirebase();
+        dispatch(logout());
+    }
+}

@@ -7,9 +7,8 @@ import { Button, Checkbox, Alert, FormControl, FormControlLabel, FormGroup, Grid
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
 import { checkGridRowIdIsValid } from '@mui/x-data-grid';
-import { checkingAuthentication } from '../../store/auth/thunks';
 
-// import { checkingAuthentication, startLoginWithEmailPassword } from '../../store/auth';
+import { checkingAuthentication, startLoginWithEmailPassword } from '../../store/auth';
 
 export const LoginPage = () => {
   //Funciones para oculatar y revelar la contraseña
@@ -23,7 +22,7 @@ export const LoginPage = () => {
   //Primer argumento de useForm es Como luce el formulario
   const { email, password, onInputChange } = useForm({
     email: '',
-    password: '123123'
+    password: ''
   });
 
   //To avoid double authentication
@@ -31,12 +30,12 @@ export const LoginPage = () => {
   const isAuthenticated = useMemo(() => status === 'checking', [status])
   // console.log(status);
   
-  //Esta es la función que hace el submit de email y contraseña
+  /*Esta es la función que hace el submit de email y contraseña*/
   const onSubmit = (event) => {
-    // console.log({ email, password })
     event.preventDefault();
     dispatch(checkingAuthentication());
-    // dispatch(startLoginWithEmailPassword({ email, password }));
+    dispatch(startLoginWithEmailPassword({ email, password }));
+    // console.log({ email, password })
   }
   
   return (
@@ -117,10 +116,10 @@ export const LoginPage = () => {
           </Grid>
 
           {/* Esta es la alerta del inicio de sesión con Firebase */}
-          {/* <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
+          <Grid item xs={12} display={!!errorMessage ? '' : 'none'}
           sx={{mt:1}}>
             <Alert severity='error'>{errorMessage}</Alert>
-          </Grid> */}
+          </Grid>
 
           <Grid item sx={{ mt: 1 }}>
             <FormGroup>

@@ -30,7 +30,7 @@ export const RegisterPage = () => {
     confirmation: '',
   }
 
-  const formValidations = { 
+  const formValidations = {
     /*personalizado del tutorial, hay herramientas externas para hacer validaciones
     //son arreglos, 1 param es el valor que ingresa el user, el segundo es el mensaje de error por si no se cumple la validacion, se las vamos a pasar a la función de useForm
     //si una de estas no se cumple el formulario no va a ser válido*/
@@ -49,7 +49,9 @@ export const RegisterPage = () => {
   /*El estado formSubmitted impide que las validaciones/errores se muestren antes de hacer click en Submit */
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  /*Este es el estatus de la autenticación y los mensajes de error de Firebase */
   const { status, errorMessage } = useSelector(state => state.auth);
+
   //Para que no puedan dar submit mientras esta en estado checking se bloquean los botones
   const isCheckingAuthentication = useMemo(() => status === 'checking', [status]);
 
@@ -183,8 +185,8 @@ export const RegisterPage = () => {
                 name="secondLastName"
                 value={secondLastName}
                 onChange={onInputChange}
-                //Error managing
-                // error={prueba != 12}
+              //Error managing
+              // error={prueba != 12}
 
               />
             </FormControl>
@@ -418,7 +420,7 @@ export const RegisterPage = () => {
           </Grid>
 
           <Grid item xs={12}
-            // la doble negación lo conbierte en un valor bool
+            // la doble negación lo convierte en un valor bool
             display={!!errorMessage ? '' : 'none'}
           >
             <Alert severity='error'>{errorMessage}</Alert>
