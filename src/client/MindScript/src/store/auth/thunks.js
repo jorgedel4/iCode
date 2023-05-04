@@ -1,4 +1,4 @@
-// import { singInWithGoogle, registerUserWithEmailPassword, loginWithEmailPassword} from "../../firebase/providers";
+import { /*singInWithGoogle*/ registerUserWithEmailPassword /*loginWithEmailPassword*/} from "../../firebase/providers";
 import { checkingCredentials, logout, login } from "./"
 //Los thunks son acciones asíncronas
 
@@ -23,19 +23,19 @@ export const checkingAuthentication = (email, password) => {
 // // }
 
 
-// //create user con email y password
-// export const startCreatingUserWithEmailPassword = ({ id, email, password, displayName }) => {
-//     return async (dispatch) => {
-//         dispatch(checkingCredentials());
+/*Create user con email y password*/
+export const startCreatingUserWithEmailPassword = ({ email, password, displayName, firstLastName, secondLastName, campus, id }) => {
+    return async (dispatch) => {
+        dispatch(checkingCredentials());
 
-//         const { ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({ id, email, password, displayName })
-//         // console.log(resp);
-//         if (!ok) return dispatch(logout({errorMessage}))
+        const {ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({ email, password, displayName, firstLastName, secondLastName, campus, id })
+        console.log("Thunks", ok, uid, photoURL, errorMessage);
+        if (!ok) return dispatch(logout({ errorMessage }))
 
-//         dispatch(login({ uid, displayName, email, photoURL, errorMessage}));
-//         console.log(logout(errorMessage))
-//     }
-// }
+        dispatch(login({ uid, displayName, email, photoURL, errorMessage }));
+        // console.log(logout(errorMessage))
+    }
+}
 
 // //Login CON EMAIL Y PASSWORD
 // export const startLoginWithEmailPassword = ({ email, password }) => {

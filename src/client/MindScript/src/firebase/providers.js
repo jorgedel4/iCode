@@ -1,7 +1,7 @@
-// //Proveedores de autenticación
+//Proveedores de autenticación
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-// // import { authSlice } from '../store/auth';
-// import { FirebaseAuth } from './config';
+import { authSlice } from '../store/auth';
+import { FirebaseAuth } from './config';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -34,24 +34,25 @@ const googleProvider = new GoogleAuthProvider();
 // }
 
 
-// //Para registrarse con usuario y password
-// export const registerUserWithEmailPassword = async ({ id, email, password, displayName }) => {
-//     try {
-//         // console.log({ id, email, password, displayName })
-//         const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
-//         const { uid, photoURL } = resp.user;
-//         // console.log(resp);
-//         await updateProfile(FirebaseAuth.currentUser, {displayName}); //Así sabemos que estamos modificando el usuario actual
+//Proveedor para registrarse con usuario y password
+export const registerUserWithEmailPassword = async ({ email, password, displayName, firstLastName, secondLastName, campus, id }) => {
+    try {
+        // console.log({ id, email, password, displayName })
+        /*createUserWithEmailAndPassword solo llama el auth, email y password para trabajar */
+        const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
+        const { uid, photoURL } = resp.user; //cosas que vienen del usuario de Firebase
+        console.log("Provider", resp);
+        await updateProfile(FirebaseAuth.currentUser, { displayName }); //Así sabemos que estamos modificando el usuario actual
 
-//         return {
-//             ok: true,
-//             uid, photoURL, email, displayName
-//         }
+        return {
+            ok: true,
+            uid, photoURL, email, displayName, firstLastName, secondLastName, campus, id
+        }
 
-//     } catch (error) {
-//         return { ok: false, errorMessage: error.message }
-//     }
-// }
+    } catch (error) {
+        return { ok: false, errorMessage: error.message }
+    }
+}
 
 
 // export const loginWithEmailPassword = async ({email, password}) => {
