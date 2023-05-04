@@ -73,7 +73,7 @@ func Code(db *sql.DB) http.HandlerFunc {
 		result.HiddenTests["failed"] = 0
 
 		// No code given
-		if reqBody.Code == "" {
+		if len(strings.TrimSpace(reqBody.Code)) == 0 {
 			result.Error = "Código vacío. Hechate unas líneas"
 			result.Passed = false
 		} else {
