@@ -25,7 +25,7 @@ export const WorkEnv = ({ onPrueba }) => {
     //Objeto para codeExec
     const hwData = {
         code: content,
-        id: 'HQ000000000000000001',
+        id: 'CQ000000000000000001',
     }
 
     const handleEditorDidMount = async () => {
