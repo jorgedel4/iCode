@@ -763,5 +763,37 @@ Content-Type: application/json
 
 
 ## Endpoints de actualizacion
+### `/togglemodulestate`
+#### Descripcion
+Cambia el estado del modulo de un grupo (bloqueado o desbloqueado)
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion     |
+|------------------ | --------------------- | ----------- | --------------- |
+| group             | string                | si          | ID del grupo    |
+| module            | string                | si          | ID del modulo   |
+
+#### Respuesta
+En caso de que el estado del modulo haya sido cambiado de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/togglemodulestate
+Content-Type: application/json
+``` json
+{
+    "module": "M0000000000000000003",
+    "group": "G000000001"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+
 
 ## Endpoints de eliminacion
