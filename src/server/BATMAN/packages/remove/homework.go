@@ -17,20 +17,6 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		_, err = tx.Exec("DELETE FROM homeworkConfigs WHERE homework = ?", hwID)
-		if err != nil {
-			tx.Rollback()
-			http.Error(w, "Error deleting homework", http.StatusInternalServerError)
-			return
-		}
-
-		_, err = tx.Exec("DELETE FROM hw_questionAttempts WHERE homework = ?", hwID)
-		if err != nil {
-			tx.Rollback()
-			http.Error(w, "Error deleting homework", http.StatusInternalServerError)
-			return
-		}
-
 		_, err = tx.Exec("DELETE FROM homework WHERE id_homework = ?", hwID)
 		if err != nil {
 			tx.Rollback()

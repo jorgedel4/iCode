@@ -814,7 +814,31 @@ En caso de que se haya eliminado la tarea de manera exitosa, se regresa unicamen
 
 #### Ejemplo
 **Peticion**
-DELETE 34.125.0.99:8002/togglemodulestate
+DELETE 34.125.0.99:8002/homework/H0000000000000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/user/{userID}`
+#### Descripcion
+Elimina a un usuario de la BBDD.
+Importante: De momento se hace una eliminacion en cascada, es decir, todo lo relacionado (ya sea directa o indirectamente) al usuario que se borro.
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `userID` (obligatorio): ID del usuario a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/user/A01231212
 
 **Respuesta**
 HTTP/1.1 200 OK
