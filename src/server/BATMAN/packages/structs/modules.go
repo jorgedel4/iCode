@@ -30,3 +30,8 @@ type ModuleQuestion struct {
 	Module string `json:"module"`
 	NQuestions int `json:"n_questions"`
 }
+
+type SwitchModStatusReq struct {
+	Group string `json:"group"`
+	Module string `json:"module"`
+}

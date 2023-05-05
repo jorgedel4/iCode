@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jorgedel4/iCode/packages/create"
 	"github.com/jorgedel4/iCode/packages/read"
+	"github.com/jorgedel4/iCode/packages/update"
 )
 
 func main() {
@@ -53,6 +54,9 @@ func main() {
 	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
 	r.HandleFunc("/groupmodules/{groupID}", read.GroupModules(mysqlDB)).Methods("GET")
 	r.HandleFunc("/coursemodules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
+
+	// Update operations
+	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)
