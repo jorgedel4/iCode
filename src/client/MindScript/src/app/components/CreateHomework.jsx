@@ -23,6 +23,7 @@ export const CreateHomework = ({ open, close }) => {
     const [course, setCourse] = useState('');
     const handleSelection = (event) => {
         setCourse(event.target.value);
+        // console.log(course)
     };
 
     //State date picker
@@ -80,7 +81,7 @@ export const CreateHomework = ({ open, close }) => {
         fetchData();
     }, []);
     
-    console.log(coursesData)
+    // console.log(coursesData)
     
     //GET group information
     const [groupsData, setGroup] = useState([]);
@@ -93,13 +94,44 @@ export const CreateHomework = ({ open, close }) => {
             mode: 'cors',
         }
 
-        let userID = "L01551955"
+        let userID = "L00000001"
         let term = "current"
         
         const fetchData = async () => {
             if (course) {
                 try {
                     const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    // console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+    
+    // console.log("ADFaf",groupsData)
+    // console.log("cursos", course)
+
+    //GET modules information
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${course}`, options);
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
@@ -109,8 +141,8 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
-    
-    console.log("ADFaf",groupsData)
+    console.log("ADFaf",modulesData)
+    console.log("cursos", course)
     
     // //POST Create Group
 
@@ -290,7 +322,7 @@ export const CreateHomework = ({ open, close }) => {
                                                 },
                                             }}
                                             key={course.id}
-                                            value={course.name}
+                                            value={course.id}
                                         >
                                             {course.id} {course.name}
                                         </MenuItem>
@@ -388,8 +420,10 @@ export const CreateHomework = ({ open, close }) => {
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
                         <Grid item xs={10} id="Grupo">
-                            {groupsData.map((group, index) => (
-                                <GroupHomework key={index} group={group} />
+                            {groupsData.map((group) => (
+                                group.id_course == course ?
+                                <GroupHomework key={group.id_group} group={group} /> 
+                                :null
                             ))}
 
                             <Grid item id="cancelar">
@@ -470,8 +504,8 @@ export const CreateHomework = ({ open, close }) => {
                                     </TableHead>
 
                                     <TableBody>
-                                        {modules.map((module, index) => (
-                                            <AddModuleHomework key={index} module={module} />
+                                        {modulesData.map((module) => (
+                                            <AddModuleHomework key={module.id} module={module} />
                                         ))}
                                     </TableBody>
 

@@ -41,20 +41,21 @@ export function AddModuleHomework({ module }) {
         setCourse(event.target.value);
     };
 
-    //Datos que son necesarios para la checklist
-    const [checked, setChecked] = React.useState(module.checked);
+    //Datos que son necesarios para la checklist (en el futuro)
+    // const [checked, setChecked] = React.useState(module.checked);
+
+    // const handleChange = () => {
+    //     setChecked(!checked);
+    //     module.checked = !checked;
+    //     setCounts(0);
+    // };
+
+    //Datos que son necesarios para la checklist (se va a modificar)
+    const [checked, setChecked] = useState(true);
 
     const handleChange = () => {
         setChecked(!checked);
-        module.checked = !checked;
-        setCounts(0);
     };
-
-    // const [modulo, setModulo] = useState(data);
-    // const [name, setName] = useState('');
-    // let nextId = 0;
-    // console.log("state");
-    // console.log(modulo);
 
 
 
@@ -85,7 +86,7 @@ export function AddModuleHomework({ module }) {
                                     },
                                     }}
                             />}
-                            label={module.courseName}
+                            label={module.name}
                             labelPlacement="end"
                         />
                     </FormControl>

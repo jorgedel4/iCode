@@ -18,10 +18,10 @@ export const GroupHomework = ({ group }) => {
     };
 
 
-    const groupList = [
-        'grupo1',
-        'grupo2',
-    ]
+    // const groupList = [
+    //     'grupo1',
+    //     'grupo2',
+    // ]
     //Datos que son necesarios para la checklist
     const [checked, setChecked] = useState(true);
 
@@ -49,7 +49,7 @@ export const GroupHomework = ({ group }) => {
                                 },
                             }}
                         />}
-                        label={group}
+                        label={group.id_group + " " + group.id_course}
                         labelPlacement="end"
                     />
                 </FormControl>
