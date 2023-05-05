@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { CounterCell } from './CounterCell';
+import { useEffect } from 'react';
 
 
 export const CreateHomework = ({ open, close }) => {
@@ -24,27 +25,9 @@ export const CreateHomework = ({ open, close }) => {
         setCourse(event.target.value);
     };
 
-    const [group, setGroup] = useState('');
-    const handleGroupSelection = (event) => {
-        setGroup(event.target.value);
-    };
     //State date picker
     const [date, setDate] = useState(null);
 
-    // //Manejar Seleccionar grupo
-    // const removeGroup = (event) => {
-    //     setGroup(event.target.value);
-    // };
-    // const addGroup = (event) => {
-    //     setGroup(event.target.value);
-    // };
-
-
-    const coursesList = [
-        'TC1028',
-        'TC1030',
-        'TC10030B',
-    ]
     const groupList = [
         'grupo1',
         'grupo2',
@@ -69,9 +52,76 @@ export const CreateHomework = ({ open, close }) => {
 
     ]
 
-
     /*API region */
-    // const handleEditorDidMount = async () => {
+
+    //GET course information
+    const [coursesData, setCourseRequest] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const responseData = await response.json();
+                setCourseRequest(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+    
+    console.log(coursesData)
+    
+    //GET group information
+    const [groupsData, setGroup] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        let userID = "L01551955"
+        let term = "current"
+        
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    // console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+    
+    console.log("ADFaf",groupsData)
+    
+    // //POST Create Group
+
+    // const registerGroup = {
+    //     course_id: selectedCourse,
+    //     term_id: selectedTerm,
+    //     professor_id: "L00000001",
+    //     modules_confs: rows,
+    // }
+    // // console.log(registerGroup)
+    // const createGroupRequest = async () => {
 
     //     const options = {
     //         method: 'POST',
@@ -83,21 +133,34 @@ export const CreateHomework = ({ open, close }) => {
     //         body: JSON.stringify({
     //             // "id": "test/test/2",
     //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
-    //             "id": hwData.id,
-    //             "code": hwData.code
+
+    //             "course_id": registerGroup.course_id,
+    //             "term_id": registerGroup.term_id,
+    //             "professor_id": registerGroup.professor_id,
+    //             "modules_confs": registerGroup.modules_confs
+
     //         })
     //     }
 
-    //     fetch('http://34.125.0.99:8001/exec', options)
+    //     fetch('http://34.125.0.99:8002/registergroup', options)
     //         .then(response => {
     //             console.log(response)
+    //             if (response.status === 201) {
+    //                 close()
+    //                 throw new Error('Grupo creado');
+    //             }
+
     //         })
     //         .catch(error => {
     //             console.log(error)
     //         })
 
     // };
+
+
+
     /*end API region */
+
 
     return (
         <Modal
@@ -217,7 +280,7 @@ export const CreateHomework = ({ open, close }) => {
                                         },
                                     }}
                                 >
-                                    {coursesList.map((course) => (
+                                    {coursesData.map((course) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -226,10 +289,10 @@ export const CreateHomework = ({ open, close }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            key={course}
-                                            value={course}
+                                            key={course.id}
+                                            value={course.name}
                                         >
-                                            {course}
+                                            {course.id} {course.name}
                                         </MenuItem>
                                     ))}
 
@@ -325,7 +388,7 @@ export const CreateHomework = ({ open, close }) => {
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
                         <Grid item xs={10} id="Grupo">
-                            {groupList.map((group, index) => (
+                            {groupsData.map((group, index) => (
                                 <GroupHomework key={index} group={group} />
                             ))}
 
