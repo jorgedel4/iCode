@@ -41,6 +41,60 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/createhw`
+#### Descripcion
+Crear una nueva tarea para un grupo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                                     |
+|------------------ | --------------------- | ----------- | --------------------------------------------------------------- |
+| group             | string                | si          | ID del grupo                                                    |
+| hw_name           | string                | si          | Nombre de la tarea                                              |
+| open_date         | string                | si          | Fecha de apertura de la tarea                                   |
+| close_date        | string                | si          | Fecha de cierre de la tarea                                     |
+| modules_questions | [ modulesQuestions ]  | si          | Arreglo que representa las preguntas de cada modulo en la tarea |
+
+El arreglo `modulesQuestions` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                                           |
+|-------------- | ----------- | ----------- | --------------------------------------------------------------------- |
+| module        | string      | si          | Modulo que se quiere agregar a la tarea                               |
+| n_questions   | int         | si          | Numero de preguntas requeridas para completar este modulo en la tarea |
+
+#### Respuesta
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/enrollstudent
+Content-Type: application/json
+``` json
+{
+    "group": "G000000001",
+    "hw_name": "Tarea 3: Mas practicas :)",
+    "open_date": "2023-05-11T00:00:00Z",
+    "close_date": "2023-05-14T00:00:00Z",
+    "modules_questions": [
+        {
+            "module": "M0000000000000000002",
+            "n_questions": 1
+        },
+        {
+            "module": "M0000000000000000003",
+            "n_questions": 2
+        }
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/registercampus`
 #### Descripcion
 Registrar un nuevo campus

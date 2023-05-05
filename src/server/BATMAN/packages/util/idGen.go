@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func GenerateRandomNumber(prefix string, n int) string {
+func GenerateID(prefix string, n int) string {
 	rand.Seed(time.Now().UnixNano())
 
 	max := int(math.Pow10(n))
