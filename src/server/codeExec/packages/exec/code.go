@@ -15,8 +15,6 @@ func Code(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Allow CORS (not needed after application has been fully deployed)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
 
 		// Reading requests body
 		body, err := io.ReadAll(r.Body)
@@ -32,16 +30,9 @@ func Code(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		var problemJSON, table, column string
-		// CQ = Course question, HQ = Homework question
-		if reqBody.ID[:2] == "CQ" {
-			table = "questions"
-			column = "id_question"
-		} else if reqBody.ID[:2] == "HQ" {
-			table = "hw_questions"
-			column = "id_hwquestion"
-		}
-		query := fmt.Sprintf("SELECT info FROM %s WHERE %s = ?", table, column)
+		var problemJSON string
+
+		query := "SELECT info FROM questions WHERE id_question = ?"
 		err = db.QueryRow(query, reqBody.ID).Scan(&problemJSON)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
@@ -81,41 +72,47 @@ func Code(db *sql.DB) http.HandlerFunc {
 		result.HiddenTests["passed"] = 0
 		result.HiddenTests["failed"] = 0
 
-		// Running hidden tests
-		for i := 0; i < len(problem.HiddenInputs); i++ {
-			input := problem.HiddenInputs[i]
-			expected := problem.HiddenOutputs[i]
-			output, err := exec(reqBody.Code, input)
-			if err != nil {
-				result = Result{
-					Error: err.Error(),
-					ShownTests: make([]map[string]interface{}, 0),
-					HiddenTests: make(map[string]int),
-					Passed: false,
+		// No code given
+		if len(strings.TrimSpace(reqBody.Code)) == 0 {
+			result.Error = "Código vacío. Hechate unas líneas"
+			result.Passed = false
+		} else {
+			// Running hidden tests
+			for i := 0; i < len(problem.HiddenInputs); i++ {
+				input := problem.HiddenInputs[i]
+				expected := problem.HiddenOutputs[i]
+				output, err := exec(reqBody.Code, input)
+				if err != nil {
+					result = Result{
+						Error:       err.Error(),
+						ShownTests:  make([]map[string]interface{}, 0),
+						HiddenTests: make(map[string]int),
+						Passed:      false,
+					}
+					// return json here
+					break
+				} else {
+					addOutput(output, expected, input, &result, false)
 				}
-				// return json here
-				break
-			} else {
-				addOutput(output, expected, input, &result, false)
 			}
-		}
 
-		// Running shown tests
-		for i := 0; i < len(problem.ShownInputs); i++ {
-			input := problem.ShownInputs[i]
-			expected := problem.ShownOutputs[i]
-			output, err := exec(reqBody.Code, input)
-			if err != nil {
-				result = Result{
-					Error: err.Error(),
-					ShownTests: make([]map[string]interface{}, 0),
-					HiddenTests: make(map[string]int),
-					Passed: false,
+			// Running shown tests
+			for i := 0; i < len(problem.ShownInputs); i++ {
+				input := problem.ShownInputs[i]
+				expected := problem.ShownOutputs[i]
+				output, err := exec(reqBody.Code, input)
+				if err != nil {
+					result = Result{
+						Error:       err.Error(),
+						ShownTests:  make([]map[string]interface{}, 0),
+						HiddenTests: make(map[string]int),
+						Passed:      false,
+					}
+					// return json here
+					break
+				} else {
+					addOutput(output, expected, input, &result, true)
 				}
-				// return json here
-				break
-			} else {
-				addOutput(output, expected, input, &result, true)
 			}
 		}
 

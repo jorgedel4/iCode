@@ -17,3 +17,10 @@ type Group struct {
 	ProfFLastName string    `json:"flast_name"`
 	ProfSLastName string    `json:"slast_name"`
 }
+
+type NewGroupReq struct {
+	CourseID     string       `json:"course_id"`
+	TermID       string       `json:"term_id"`
+	ProfessorID  string       `json:"professor_id"`
+	ModulesConfs []ModuleConf `json:"modules_confs"`
+}

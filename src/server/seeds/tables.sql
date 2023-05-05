@@ -33,7 +33,6 @@ CREATE TABLE admins (
     FOREIGN KEY (campus) REFERENCES campus(id_campus)
 );
 
-
 CREATE TABLE students (
     matricula   CHAR(9)         NOT NULL,
     campus      CHAR(3)         NOT NULL,
@@ -97,9 +96,9 @@ CREATE TABLE moduleConfigs (
     module      CHAR(20)    NOT NULL,
     grupo       CHAR(10)    NOT NULL,
     n_question  INT         NOT NULL,
-    open_date   TIMESTAMP   NOT NULL,
-    close_date  TIMESTAMP   NOT NULL,
+    locked      boolean     NOT NULL,
 
+    PRIMARY KEY (module, grupo),
     FOREIGN KEY (module) REFERENCES modules(id_module),
     FOREIGN KEY (grupo) REFERENCES grupos(id_group)
 );
@@ -122,7 +121,6 @@ CREATE TABLE homework (
     id_homework CHAR(20)        NOT NULL,
     grupo       CHAR(10)        NOT NULL,
     hw_name     VARCHAR(50)     NOT NULL,
-    n_questions INT             NOT NULL,
     open_date   TIMESTAMP       NOT NULL,
     close_date  TIMESTAMP       NOT NULL,
 
@@ -130,14 +128,13 @@ CREATE TABLE homework (
     FOREIGN KEY (grupo) REFERENCES grupos(id_group)
 );
 
-CREATE TABLE hw_questions (
-    id_hwquestion   VARCHAR(20) NOT NULL,
-    homework        CHAR(20)    NOT NULL,
-    q_type          CHAR(5)     NOT NULL, -- multi, codep (code that uses prints), codef (code that uses functions, rip)
-    info            JSON        NOT NULL,
+CREATE TABLE homeworkConfigs (
+    homework    CHAR(20)    NOT NULL,
+    module      CHAR(20)    NOT NULL,
+    n_questions INT         NOT NULL,
 
-    PRIMARY KEY (id_hwquestion),
-    FOREIGN KEY (homework) REFERENCES homework(id_homework)
+    FOREIGN KEY (homework) REFERENCES homework(id_homework),
+    FOREIGN KEY (module) REFERENCES modules(id_module)
 );
 
 CREATE TABLE questionAttempts (
@@ -154,12 +151,12 @@ CREATE TABLE questionAttempts (
 
 CREATE TABLE hw_questionAttempts (
     student         CHAR(9)     NOT NULL,
-    grupo           CHAR(10)    NOT NULL,
+    homework        CHAR(20)    NOT NULL,
     question        CHAR(20)    NOT NULL,
     attempt_status  CHAR(3)     NOT NULL,
     attempt_date    TIMESTAMP   NOT NULL,
 
     FOREIGN KEY (student) REFERENCES students(matricula),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group),
-    FOREIGN KEY (question) REFERENCES hw_questions(id_hwquestion)
+    FOREIGN KEY (homework) REFERENCES homework(id_homework),
+    FOREIGN KEY (question) REFERENCES questions(id_question)
 );

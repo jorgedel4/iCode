@@ -15,3 +15,4 @@ export * from './GroupHomework';
 export * from './AddModuleHomework';
 export * from './CourseRegister';
 export * from './RequestCard';
+export * from './TestsTabs';

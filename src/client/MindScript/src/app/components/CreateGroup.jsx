@@ -20,10 +20,14 @@ export const CreateGroup = ({ open, close }) => {
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '35vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
-    const [count, setCount] = useState(0);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTerm, setSelectedTerm] = useState(null);
-
+    const [rows, setRows] = useState([]);
+    // callback function to update rows variable
+    const handleUpdateRows = (updatedRows) => {
+        setRows(updatedRows);
+    };
+    // console.log(rows)
     /*API region */
 
     //GET term information
@@ -42,7 +46,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/terms?has_started=false`, options);
+                const response = await fetch(`http://34.125.0.99:8002/terms`, options);
                 const responseData = await response.json();
                 setTerm(responseData);
             } catch (error) {
@@ -94,7 +98,7 @@ export const CreateGroup = ({ open, close }) => {
         // let term = "current"
 
         const fetchData = async () => {
-            if(selectedCourse){
+            if (selectedCourse) {
                 try {
                     const response = await fetch(`http://34.125.0.99:8002/coursemodules/${selectedCourse}`, options);
                     const responseData = await response.json();
@@ -109,50 +113,48 @@ export const CreateGroup = ({ open, close }) => {
 
     //POST Create Group
 
-    // const data = {
-    //     courseName: coursesData.name,
-    //     modEx: [
-    //         {
-    //             moduleName: "For",
-    //             moduleNum: 3,
-    //         },
-    //         {
-    //             moduleName: "While",
-    //             moduleNum: 5,
-    //         }
-    //     ],
-    //     term: "chance"
-    // }
-    // console.log(coursesData)
-    // const createGroupRequest = async () => {
+    const registerGroup = {
+        course_id: selectedCourse,
+        term_id: selectedTerm,
+        professor_id: "L00000001",
+        modules_confs: rows,
+    }
+    // console.log(registerGroup)
+    const createGroupRequest = async () => {
 
-    //     const options = {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
 
-    //         },
-    //         mode: 'no-cors',
-    //         body: JSON.stringify({
-    //             // "id": "test/test/2",
-    //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+                // "id": "test/test/2",
+                // "code": "def smallest(a, b):\n\treturn a if a < b else b"
 
-    //             "coursename": data.id,
-    //             "modEx": data.modEx,
-    //             "term": data.term
+                "course_id": registerGroup.course_id,
+                "term_id": registerGroup.term_id,
+                "professor_id": registerGroup.professor_id,
+                "modules_confs": registerGroup.modules_confs
 
-    //         })
-    //     }
+            })
+        }
 
-    //     fetch('http://34.125.0.99:8001/exec', options)
-    //         .then(response => {
-    //             console.log(response)
-    //         })
-    //         .catch(error => {
-    //             console.log(error)
-    //         })
+        fetch('http://34.125.0.99:8002/registergroup', options)
+            .then(response => {
+                console.log(response)
+                if (response.status === 201) {
+                    close()
+                    throw new Error('Grupo creado');
+                }
 
-    // };
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+    };
 
 
 
@@ -176,44 +178,10 @@ export const CreateGroup = ({ open, close }) => {
         });
     };
 
-    // const modules = [
-    //     {
-    //         courseName: "Variables",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Condicionales",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Ciclos For",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Ciclos While",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Manejo de Strings",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Tipo de variables",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Funciones",
-    //         exNum: 0
-    //     },
-    //     {
-    //         courseName: "Imports",
-    //         exNum: 0
-    //     },
-    // ]
-
-
     //State date picker
     const [date, setDate] = useState(null);
+    // console.log(selectedCourse)
+    // console.log(selectedTerm)
 
     return (
         <Modal
@@ -297,7 +265,7 @@ export const CreateGroup = ({ open, close }) => {
 
                 <Grid item xs={10}>
                     {modulesData != null && (
-                        <CounterCell data={modulesData} />
+                        <CounterCell data={modulesData} onUpdateRows={handleUpdateRows} />
                     )}
 
 
@@ -347,7 +315,6 @@ export const CreateGroup = ({ open, close }) => {
                                     {term.name}
                                 </MenuItem>
                             ))}
-
                         </Select>
                     </FormControl>
                 </Grid>
@@ -361,7 +328,9 @@ export const CreateGroup = ({ open, close }) => {
                         </Grid>
                         <Grid item id="crearGrupo" >
                             <Button
-                                onClick={() => { setCount(count + 1) }}
+                                // Lo de abajo estaba en onclick pero no se para que era
+                                // () => {setCount(count + 1)}
+                                onClick={createGroupRequest}
                                 type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                 Crear Grupo
                             </Button>
@@ -375,6 +344,6 @@ export const CreateGroup = ({ open, close }) => {
             </Grid>
             {/* <HomeworkCard key={ 1 }  data={ data } student={ student }></HomeworkCard> */}
 
-        </Modal>
+        </Modal >
     )
 }

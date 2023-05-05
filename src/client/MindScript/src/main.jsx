@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { MindScript } from './MindScript'
 import './styles.css'
 
+//Store
 import { store } from './store' //porque index js ya exporta store
 
 ReactDOM.createRoot(document.getElementById('root')).render(

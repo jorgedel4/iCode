@@ -20,48 +20,60 @@ CodeExec es una REST API implementada en Go. Permite ejecutar y evaluar código 
 | Parameter | Type   | Requerido | Description                                     |
 | --------- | ------ | --------- | ----------------------------------------------- |
 | code      | string | si        | Código a ejecutar                               |
-| id        | string | si        | ID del problema en MongoDB                      |
+| id        | string | si        | ID del problema en MySQL                        |
 
 #### Respuesta
 
 La respuesta tiene formato JSON y contiene los siguientes campos
 
-| Campo          | Tipo                  | Descripcion                                                                               |
-| -------------- | --------------------- | -----------------------------------------------------------------                         |
-| error          | string                | Error generado al ejecutar el código, en caso de que no hayan errores es un string vacio  |
-| shownTests     | [ map[string]string ] | Casos de prueba visibles                                                                  |
-| hiddenTests    | map[string]int        | Cantidad de casos de prueba no visibles que pasaron y fallaron                            |
+| Campo          | Tipo                       | Descripcion                                                                                 |
+| -------------- | ---------------------      | -----------------------------------------------------------------                           |
+| error          | string                     | Error generado al ejecutar el código, en caso de que no hayan errores es un string vacio    |
+| shownTests     | [ map[string]string/bool ] | Casos de prueba visibles                                                                    |
+| shownPassed    | int                        | Numero de casos de pruebas visibles que pasaron                                             |
+| shownFailed    | int                        | Numero de casos de pruebas visibles que fallaron                                            |
+| hiddenTests    | map[string]int             | Cantidad de casos de prueba no visibles que pasaron y fallaron                              |
+| passed         | bool                       | Un booleano que indica si todas las pruebas (tanto las mostradas como las ocultas) pasaron. |
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8081
+POST 34.125.0.99:8081
 Content-Type: application/json
 
 ```
 {
-    "code": "def sumOfTwo(a, b):\n\treturn a + b",
-    "id": "TC1028/2/23"
+    "code": "x = input()\nprint(x.lower())",
+    "id": "HQ000000000000000002"
 }
 ```
 **Respuesta**
 HTTP/1.1 200 OK
 Content-Type: application/json
 
-```
+``` json
 {
     "error": "",
     "shownTests": [
         {
-            "expected": "2",
-            "got": "3",
-            "input": "3,2",
-            "status": "failed"
+            "expected": "dan",
+            "got": "dan",
+            "input": "DaN",
+            "passed": true
+        },
+        {
+            "expected": "perez",
+            "got": "perez",
+            "input": "perEz",
+            "passed": true
         }
     ],
+    "shownPassed": 2,
+    "shownFailed": 0,
     "hiddenTests": {
-        "failed": 1,
-        "passed": 0
-    }
+        "failed": 0,
+        "passed": 2
+    },
+    "passed": true
 }
 ```
 
@@ -70,13 +82,12 @@ En caso de que se presente un error no relacionado con la ejecucion del código,
 
 | HTTP Status | Error Message                                    | Description                                                                                                 |
 | ----------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| 400         | Error reading request body                       | No se proporcionaron todos los atributos necesarios, o nose cumple con el formato                           |
+| 400         | Error reading request body                       | No se proporcionaron todos los atributos necesarios, o nose cumple con el formato solicitado                |
 | 403         | Found disallowed functions in code ({functions}) | El código recibido contiene funciones no permitidas, no se ejecutará                                        |   
-| 500         | Error executing query                            | Problema al hacer la consulta a MongoDB, probablemente no exista un documento con el ID dado                |
-| 500         | Error creating tests                             | Problema interno del servidor para generar casos de prueba, indica que el problema en la BBDD no es correcto|
-| 500         | Error executing code                             | Error al ejecutar código no relacionado directamente con este, probablemente le falta algo al ambiente en el que se ejecuto|
-| 500         | Error parsing result                             | Error al "parsear" el output de la ejecucion del código, indica un error en codeExec/packages/util parseIntoResult()|
-| 500         | Error encoding response                          | Error al transformar el objeto de respuesta a un json, indica un error en la definición del struct `Result` |
+| 500         | Error executing query                            | Problema relacionado con la ejecucion de la query, checar la consola de CodeExec para mas detalles          |
+| 500         | Error executing code                             | Error al ejecutar código no relacionado directamente con este, probablemente le falta algo al ambiente en el que se ejecuto |
+| 500         | Error parsing result                             | Error al "parsear" el output de la ejecucion del código, verificar que la query a ejecutar tenga el formato correcto |
+| 500         | Error formatting response                        | Error al transformar el objeto de respuesta a un json, indica un error en la definición del struct `Result` |
 
 
 

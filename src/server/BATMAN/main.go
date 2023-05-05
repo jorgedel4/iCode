@@ -37,8 +37,10 @@ func main() {
 	r := mux.NewRouter()
 
 	// Create operations
-	r.HandleFunc("/register/{category}", create.Handler(mysqlDB)).Methods("POST")
+	r.HandleFunc("/registercampus", create.Campus(mysqlDB)).Methods("POST")
 	r.HandleFunc("/enrollstudent", create.Enrollment(mysqlDB)).Methods("POST")
+	r.HandleFunc("/registergroup", create.Group(mysqlDB)).Methods("POST")
+	r.HandleFunc("/registerterm", create.Term(mysqlDB)).Methods("POST")
 
 	// Read operations
 	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("GET")
@@ -47,6 +49,9 @@ func main() {
 	r.HandleFunc("/homework", read.Homework(mysqlDB)).Methods("GET")
 	r.HandleFunc("/questionrequests", read.QuestionReqs(mysqlDB)).Methods("GET")
 	r.HandleFunc("/users", read.Users(mysqlDB)).Methods("GET")
+	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
+	r.HandleFunc("/groupmodules/{groupID}", read.GroupModules(mysqlDB)).Methods("GET")
+	r.HandleFunc("/coursemodules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

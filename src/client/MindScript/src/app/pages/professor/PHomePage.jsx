@@ -17,8 +17,8 @@ export const PHomePage = () => {
             mode: 'cors',
         }
 
-        let userID = "A01551955"
-        let term = "current"
+        let userID = "L00000001"
+        let term = "all"
 
         const fetchData = async () => {
             try {
@@ -34,13 +34,10 @@ export const PHomePage = () => {
     }, []);
 
 
-    
-
     //Funciones para abrir la modal de Crear Curso
     const [open, setOpen] = useState(false);
     const showModal = () => { setOpen(true); }
     const closeModal = () => {
-        setCount(0)
         setOpen(false);
     }
 
@@ -52,35 +49,9 @@ export const PHomePage = () => {
     }
 
     //Dynamic modal view
-    const [count, setCount] = useState(0);
     const home = '/professor/home'
     const modules = '/professor/modules' //El nombren se debe de sacar desde la pagina home
 
-
-    // const groupsData = [ 
-    // {
-    //     name: "Curso A", //Nombre del grupo (nombre del curso)
-    //     openDate: "26 de Marzo", //Cuando abre
-    //     closeDate: "26 de Abril", //Cuando cierra
-    //     professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
-    // },
-    // {
-    //     name: "Curso B",
-    //     openDate: "27 de Marzo",
-    //     closeDate: "27 de Abril",
-    //     professor: "Daniel Perez Rojas"
-    // },
-    // {
-    //     id_group: "G000000001",
-    //     id_course: "TC1028",
-    //     course_name: "Pensamiento computacional",
-    //     start_date: "2023-02-15T00:00:00Z",
-    //     end_date: "2023-06-26T23:59:59Z",
-    //     first_name: "Daniel",
-    //     flast_name: "Perez",
-    //     slast_name: "Rojas"
-    // }
-    // ]
 
     const homeworkData = [
         {
@@ -124,19 +95,7 @@ export const PHomePage = () => {
         }
     ]
 
-
-    //Courses lists de donde va a venir esta lista?
-    const coursesList = [
-        'TC1028',
-        'TC1030',
-        'TC10030B',
-    ]
     const request = handleEditorDidMount()
-    // console.log(groupsData)
-
-
-
-
 
     return (
         <Grid container justifyContent='center' alignItems='center'>

@@ -1,61 +1,43 @@
 import React from 'react'
 import { useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink } from "react-router-dom"
 import { AuthLayout } from '../layout/AuthLayout'
-import { Link as RouterLink, useNavigate } from "react-router-dom"
 import { Button, Checkbox, Alert, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkingAuthentication } from '../../store/auth/thunks';
-import { startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { checkGridRowIdIsValid } from '@mui/x-data-grid';
+
+import { checkingAuthentication, startLoginWithEmailPassword } from '../../store/auth';
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
+  //Funciones para oculatar y revelar la contraseña
   const [showPassword, setShowPassword] = React.useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  //To avoid double authentication
-  const { status, errorMessage } = useSelector(state => state.auth);
-
-  //Authentication Redux Hook useForm
   const dispatch = useDispatch();
-
+  //Primer argumento de useForm es Como luce el formulario
   const { email, password, onInputChange } = useForm({
     email: '',
     password: ''
   });
 
+  //To avoid double authentication
+  const { status, errorMessage } = useSelector(state => state.auth);
   const isAuthenticated = useMemo(() => status === 'checking', [status])
-
-  //Esta es la función que hace el submit de las credenciales
+  // console.log(status);
+  
+  /*Esta es la función que hace el submit de email y contraseña*/
   const onSubmit = (event) => {
-    event.preventDefault(); //para que no se chequen credenciales sin haber hecho click
-    console.log(status)
+    event.preventDefault();
+    dispatch(checkingAuthentication());
     dispatch(startLoginWithEmailPassword({ email, password }));
-    if(email.substring(0,1).toUpperCase() == "A" && status === "authenticated"){
-      // console.log("Redirigir a estudiante")
-      console.log("in")
-      navigate("/student/home")
-    }
-    else if(email.substring(0,1).toUpperCase() == "L" && status === "authenticated"){
-      // console.log("Redirigir a profesor")
-      navigate('/professor/home');      
-    }
-    
+    // console.log({ email, password })
   }
-
-  const onGoogleSignIn = () => {
-    console.log('onGoogleSignIn');
-    dispatch(startGoogleSignIn());
-  }
-
-
+  
   return (
     <AuthLayout title='LoginPage'>
       <form onSubmit={onSubmit}>
@@ -82,8 +64,9 @@ export const LoginPage = () => {
                   },
                 }}
 
-                //AUTH
-                name='email'
+                //AUTH 
+                //name se necesita para que el onChange funcione
+                name='email' 
                 value={email}
                 onChange={onInputChange}
               />
@@ -124,7 +107,7 @@ export const LoginPage = () => {
                   },
                 }}
 
-                //AUTH
+                // AUTH
                 name='password'
                 value={password}
                 onChange={onInputChange}

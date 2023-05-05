@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -11,9 +11,11 @@ import {
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { doesSectionHaveLeadingZeros } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
-export function CounterCell({ data }) {
+export function CounterCell({ data, onUpdateRows }) {
   const [counts, setCounts] = useState({});
+  const [rowsData, setRowData] = useState({});
 
   const handleToggle = (module, value) => {
     setCounts((prevCounts) => {
@@ -36,6 +38,17 @@ export function CounterCell({ data }) {
     });
 
   };
+
+  useEffect(() => {
+    // Update object here
+    const val = data.map((module) => ({
+      module_id: module.id,
+      n_questions: counts[module.name] || 0,
+    }));
+    setRowData(val)
+  }, [counts]);
+  // console.log(rowsData);
+  onUpdateRows(rowsData);
 
 
   return (
