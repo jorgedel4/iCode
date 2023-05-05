@@ -47,7 +47,7 @@ export function AddModuleHomework({ module }) {
     const handleChange = () => {
         setChecked(!checked);
         module.checked = !checked;
-        value = 0;
+        setCounts(0);
     };
 
     // const [modulo, setModulo] = useState(data);
@@ -57,17 +57,6 @@ export function AddModuleHomework({ module }) {
     // console.log(modulo);
 
 
-    /*ToDo
-    1.No permitir que se añadan mas de los que existen
-    2.Ver si lo cambiamos por check list la neta */
-
-    const addModule = () => {
-        setModulo([
-            ...modulo, {courseName: "new", //esta "key" tiene que ser diferente cada vez
-            exNum: 0}
-        ]);
-    }
-    // data=modulo
 
     return (
     <>

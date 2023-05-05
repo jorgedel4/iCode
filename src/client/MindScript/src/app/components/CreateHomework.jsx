@@ -18,22 +18,26 @@ import { CounterCell } from './CounterCell';
 export const CreateHomework = ({ open, close }) => {
     const [count, setCount] = useState(0);
 
+    //Selector de curso
     const [course, setCourse] = useState('');
     const handleSelection = (event) => {
         setCourse(event.target.value);
     };
+
     const [group, setGroup] = useState('');
     const handleGroupSelection = (event) => {
         setGroup(event.target.value);
     };
+    //State date picker
+    const [date, setDate] = useState(null);
 
-    //Manejar Seleccionar grupo
-    const removeGroup = (event) => {
-        setGroup(event.target.value);
-    };
-    const addGroup = (event) => {
-        setGroup(event.target.value);
-    };
+    // //Manejar Seleccionar grupo
+    // const removeGroup = (event) => {
+    //     setGroup(event.target.value);
+    // };
+    // const addGroup = (event) => {
+    //     setGroup(event.target.value);
+    // };
 
 
     const coursesList = [
@@ -65,8 +69,35 @@ export const CreateHomework = ({ open, close }) => {
 
     ]
 
-    //State date picker
-    const [date, setDate] = useState(null);
+
+    /*API region */
+    // const handleEditorDidMount = async () => {
+
+    //     const options = {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+
+    //         },
+    //         mode: 'no-cors',
+    //         body: JSON.stringify({
+    //             // "id": "test/test/2",
+    //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
+    //             "id": hwData.id,
+    //             "code": hwData.code
+    //         })
+    //     }
+
+    //     fetch('http://34.125.0.99:8001/exec', options)
+    //         .then(response => {
+    //             console.log(response)
+    //         })
+    //         .catch(error => {
+    //             console.log(error)
+    //         })
+
+    // };
+    /*end API region */
 
     return (
         <Modal
@@ -294,7 +325,10 @@ export const CreateHomework = ({ open, close }) => {
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
                         <Grid item xs={10} id="Grupo">
-                            <GroupHomework />
+                            {groupList.map((group, index) => (
+                                <GroupHomework key={index} group={group} />
+                            ))}
+
                             <Grid item id="cancelar">
                                 <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
                                     Cancelar
@@ -326,21 +360,21 @@ export const CreateHomework = ({ open, close }) => {
 
                             {/* Tabla de ejercicios de modulos */}
                             <TableContainer sx={{
-                                    height: "49vh", //to do no me pegues
-                                    my: 2,
+                                height: "49vh", //to do no me pegues
+                                my: 2,
+                                borderRadius: 2,
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
                                     borderRadius: 2,
-                                    "&::-webkit-scrollbar": {
-                                        width: 5,
-                                    },
-                                    "&::-webkit-scrollbar-track": {
-                                        backgroundColor: "secondary.main",
-                                        borderRadius: 2,
-                                    },
-                                    "&::-webkit-scrollbar-thumb": {
-                                        backgroundColor: "appDark.scrollBar",
-                                        borderRadius: 2,
-                                    },
-                                }}
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}
                             >
                                 <Table sx={{ width: 1 }} aria-label="simple table">
                                     <TableHead sx={{ overflowX: "initial" }}>
@@ -358,7 +392,7 @@ export const CreateHomework = ({ open, close }) => {
                                                 Módulos
                                             </TableCell>
                                             <TableCell
-                                                align="center"
+                                                align="right"
                                                 sx={{
                                                     color: "appDark.text",
                                                     position: "sticky",
@@ -374,7 +408,7 @@ export const CreateHomework = ({ open, close }) => {
 
                                     <TableBody>
                                         {modules.map((module, index) => (
-                                            <AddModuleHomework key={ index } module={module} />
+                                            <AddModuleHomework key={index} module={module} />
                                         ))}
                                     </TableBody>
 
