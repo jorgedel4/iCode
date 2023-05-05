@@ -13,6 +13,7 @@ import (
 	"github.com/jorgedel4/iCode/packages/create"
 	"github.com/jorgedel4/iCode/packages/read"
 	"github.com/jorgedel4/iCode/packages/update"
+	"github.com/jorgedel4/iCode/packages/remove"
 )
 
 func main() {
@@ -57,6 +58,9 @@ func main() {
 
 	// Update operations
 	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")
+
+	// Delete operations
+	r.HandleFunc("/homework/{homeworkID}", remove.Homework(mysqlDB)).Methods("DELETE")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

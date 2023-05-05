@@ -782,7 +782,7 @@ En caso de que el estado del modulo haya sido cambiado de manera exitosa, se reg
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/togglemodulestate
+PATCH 34.125.0.99:8002/togglemodulestate
 Content-Type: application/json
 ``` json
 {
@@ -797,3 +797,24 @@ HTTP/1.1 200 OK
 
 
 ## Endpoints de eliminacion
+
+### `/homework/{homeworkID}`
+#### Descripcion
+Elimina una tarea, al igual que todas las configuraciones e intentos de los estudiantes de esta
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `homeworkID` (obligatorio): ID la tarea a eliminar.
+
+#### Respuesta
+En caso de que se haya eliminado la tarea de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/togglemodulestate
+
+**Respuesta**
+HTTP/1.1 200 OK
