@@ -1,3 +1,4 @@
+-- SQLBook: Code
 DROP DATABASE IF EXISTS iCode;
 CREATE DATABASE iCode;
 
