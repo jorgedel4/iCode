@@ -6,6 +6,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("AdminRequest user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Nómina ", schoolID)
+    }
+    
     const [studentsData, setStudent] = useState([]);
     useEffect(() => {
         const options = {
