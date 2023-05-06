@@ -15,6 +15,8 @@ export const ARequest = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
+    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+
     
     const [selected, setSelected] = useState(null);
     const handleCardSelection = (id) => {

@@ -19,7 +19,8 @@ export const PModulesPage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Home', 'Profile']
+    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    
 
     const homeworkData = [
         {

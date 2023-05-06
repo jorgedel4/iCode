@@ -38,6 +38,7 @@ export const ASyllabus = () => {
         setButtonStudentSelected(false);
     };
 
+
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
@@ -49,6 +50,8 @@ export const ASyllabus = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
+    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+
 
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
