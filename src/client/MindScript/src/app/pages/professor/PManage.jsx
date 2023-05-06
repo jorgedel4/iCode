@@ -43,11 +43,12 @@ export const PManage = () => {
   const [idQuery, setIdQuery] = useState("");
 
   const dataFiltered = filterData(nameQuery, idQuery, usersData);
-  const pages = ['Home', 'Profile']
+  const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+
 
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-      <NavBar/>
+      <NavBar pages={pages}/>
       <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
         <Grid item xs={12} sm={6} lg={6}>
           <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
