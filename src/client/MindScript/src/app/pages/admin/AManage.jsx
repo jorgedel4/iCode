@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { NavBar, SearchBar } from '../../components';
 import { Delete } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
+import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
     const theme = useTheme();
@@ -37,89 +38,102 @@ export const AManage = () => {
         setButtonStudentSelected(false);
     };
 
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Admin management user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Nómina ", schoolID)
+    }
+    
     return (
-        <Grid container alignContent='center' justifyContent='center' padding= {3} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
-            <NavBar/>
-            <Grid container columnSpacing= {1} alignItems='center' justifyContent='space-around' sx={{bgcolor: 'secondary.main', mt:5, borderRadius: 2, height: containerHeight}}>
+        <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
+            <NavBar />
+            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={6} lg={5}>
-                        <SearchBar searchQuery={searchQuery} name={'Nombre'} setSearchQuery={setSearchQuery}/>
+                    <SearchBar searchQuery={searchQuery} name={'Nombre'} setSearchQuery={setSearchQuery} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} lg={4}>
-                    <SearchBar searchQuery={searchQuery} name={'Matrícula/Nómina'} setSearchQuery={setSearchQuery}/>
+                    <SearchBar searchQuery={searchQuery} name={'Matrícula/Nómina'} setSearchQuery={setSearchQuery} />
                 </Grid>
 
                 <Grid item xs={4} lg={1}>
                     <Button
-                    fullWidth
-                    onClick={handleButtonStudentClick}
-                    sx={{
-                        color: 'appDark.text',
-                        bgcolor: buttonStudentSelected ? 'appDark.adminButton': 'transparent', 
-                        '&:hover': {
-                            bgcolor: buttonStudentSelected ? 'appDark.adminButton': 'transparent',
-                        },
-                        '&:focus': {
-                            borderColor: buttonStudentSelected ? 'primary.main': 'appDark.box', 
-                        },
-                        borderRadius:5, 
-                        border: 0.5
-                    }}
+                        fullWidth
+                        onClick={handleButtonStudentClick}
+                        sx={{
+                            color: 'appDark.text',
+                            bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
+                            '&:hover': {
+                                bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
+                            },
+                            '&:focus': {
+                                borderColor: buttonStudentSelected ? 'primary.main' : 'appDark.box',
+                            },
+                            borderRadius: 5,
+                            border: 0.5
+                        }}
                     >
-                    Estudiante
+                        Estudiante
                     </Button>
                 </Grid>
 
                 <Grid item xs={4} lg={1}>
                     <Button
-                    fullWidth
-                    onClick={handleButtonProfessorClick}
-                    sx={{
-                        color: 'appDark.text',
-                        bgcolor: buttonProfessorSelected ? 'appDark.adminButton': 'transparent', 
-                        '&:hover': {
+                        fullWidth
+                        onClick={handleButtonProfessorClick}
+                        sx={{
+                            color: 'appDark.text',
                             bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
-                        },
-                        '&:focus': {
-                            borderColor: buttonProfessorSelected ? 'primary.main': 'appDark.box', 
-                        },
-                        borderRadius:5, 
-                        border: 0.5
-                    }}
+                            '&:hover': {
+                                bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
+                            },
+                            '&:focus': {
+                                borderColor: buttonProfessorSelected ? 'primary.main' : 'appDark.box',
+                            },
+                            borderRadius: 5,
+                            border: 0.5
+                        }}
                     >
-                    Profesor
+                        Profesor
                     </Button>
                 </Grid>
 
                 <Grid item xs={4} lg={1}>
                     <Button
-                    fullWidth
-                    onClick={handleButtonAdminClick}
-                    sx={{
-                        color: 'appDark.text',
-                        bgcolor: buttonAdminSelected ? 'appDark.adminButton': 'transparent', 
-                        '&:hover': {
+                        fullWidth
+                        onClick={handleButtonAdminClick}
+                        sx={{
+                            color: 'appDark.text',
                             bgcolor: buttonAdminSelected ? 'appDark.adminButton' : 'transparent',
-                        },
-                        '&:focus': {
-                            borderColor: buttonAdminSelected ? 'primary.main': 'appDark.box', 
-                        },
-                        borderRadius:5, 
-                        border: 0.5
-                    }}
+                            '&:hover': {
+                                bgcolor: buttonAdminSelected ? 'appDark.adminButton' : 'transparent',
+                            },
+                            '&:focus': {
+                                borderColor: buttonAdminSelected ? 'primary.main' : 'appDark.box',
+                            },
+                            borderRadius: 5,
+                            border: 0.5
+                        }}
                     >
-                    Admin
+                        Admin
                     </Button>
                 </Grid>
 
             </Grid>
-            <Grid item xs={12} sx={{color: 'appDark.text', bgcolor: 'appDark.bgBox', height: '70vh', mt:2, borderRadius: 2}}>
-                <DataGrid disableColumnMenu disableHear rows={rows} columns={columns} theme={theme} sx={{color:'appDark.text', border: 0}} />
+            <Grid item xs={12} sx={{ color: 'appDark.text', bgcolor: 'appDark.bgBox', height: '70vh', mt: 2, borderRadius: 2 }}>
+                <DataGrid disableColumnMenu disableHear rows={rows} columns={columns} theme={theme} sx={{ color: 'appDark.text', border: 0 }} />
             </Grid>
 
 
         </Grid>
-  )
+    )
 }
 
 // const EmptyFooter = () => <div></div>;
@@ -136,29 +150,29 @@ const data = [
     "Canberra",
     "Rio de Janeiro",
     "Dublin"
-  ];
+];
 
-  
+
 const rows = [
-  { name: 'Jorge Delgado', id: 'A01551955', campus: 'PUE', email: 'a01551955@tec.mx', course: 'TC1018', action: 'boton' },
-  { name: 'Ruben Vaazquez', id: 'A01735407', campus: 'PUE', email: 'a01735407@tec.mx', course: 'TC1018', action: 'boton' }
-];
-  
-const columns = [
-  { field: 'name', headerName: 'Nombre', flex: 2, align:'center', headerAlign: 'center' },
-  { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align:'center', headerAlign: 'center' },
-  { field: 'campus', headerName: 'Campus', flex: 2, align:'center', headerAlign: 'center'},
-  { field: 'email', headerName: 'Email', flex:2, align:'center', headerAlign: 'center'},
-  { field: 'course', headerName: 'Materia', flex:2, align:'center', headerAlign: 'center'},
-  { field: 'action', headerName: 'Acciones', flex:2, align:'center', headerAlign: 'center'}
+    { name: 'Jorge Delgado', id: 'A01551955', campus: 'PUE', email: 'a01551955@tec.mx', course: 'TC1018', action: 'boton' },
+    { name: 'Ruben Vaazquez', id: 'A01735407', campus: 'PUE', email: 'a01735407@tec.mx', course: 'TC1018', action: 'boton' }
 ];
 
-  
+const columns = [
+    { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'email', headerName: 'Email', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'course', headerName: 'Materia', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'action', headerName: 'Acciones', flex: 2, align: 'center', headerAlign: 'center' }
+];
+
+
 
 const filterData = (query, data) => {
-if (!query) {
-    return data;
-} else {
-    return data.filter((d) => d.toLowerCase().includes(query));
-}
+    if (!query) {
+        return data;
+    } else {
+        return data.filter((d) => d.toLowerCase().includes(query));
+    }
 };

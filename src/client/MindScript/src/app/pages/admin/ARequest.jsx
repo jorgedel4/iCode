@@ -1,8 +1,21 @@
 import { Button, Grid, Typography } from '@mui/material'
 import React, { useState } from 'react';
 import { NavBar, RequestCard } from '../../components'
+import { getAuth } from "firebase/auth";
 
 export const ARequest = () => {
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("AdminRequest user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Nómina ", schoolID)
+    }
+    
     const [selected, setSelected] = useState(null);
     const handleCardSelection = (id) => {
         if (id === selected) {

@@ -3,9 +3,23 @@ import * as React from 'react';
 import { QuestionsDropdown, TestsTabs } from '../../components';
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
-  
+import { getAuth } from "firebase/auth";
+
 
 export const WorkEnv = ({ onPrueba }) => {
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Student work env user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Matrícula A00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Matrícula ", schoolID)
+    }
+
     const questions = [
         'Pregunta 1',
         'Pregunta 2',
@@ -129,7 +143,7 @@ export const WorkEnv = ({ onPrueba }) => {
 
                         <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
                         {showComponent && (
-                            <TestsTabs tests={ fetchResponse }/>
+                            <TestsTabs tests={fetchResponse} />
                         )}
 
                     </Grid>

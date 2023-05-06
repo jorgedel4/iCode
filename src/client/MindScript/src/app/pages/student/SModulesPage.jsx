@@ -2,10 +2,23 @@ import { Grid, Typography } from '@mui/material'
 import { ModulesLayout } from "../../layout"
 import { SModuleCard } from '../../components'
 // import { PModuleCard } from '../../components'
+import { getAuth } from "firebase/auth";
 
 export const SModulesPage = () => {
     const home = '/student/home'
     const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Student modules user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Matrícula A00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Matrícula ", schoolID)
+    }
 
     const homeworkData = [
         {
@@ -96,7 +109,7 @@ export const SModulesPage = () => {
             progress: 3,
             openDate: '23/01/2023',
             closeDate: '23/02/2023',
-            block: false 
+            block: false
         },
         {
             name: 'Ciclos While',
@@ -104,7 +117,7 @@ export const SModulesPage = () => {
             progress: 4,
             openDate: '23/01/2023',
             closeDate: '23/02/2023',
-            block: true 
+            block: true
         },
     ]
 

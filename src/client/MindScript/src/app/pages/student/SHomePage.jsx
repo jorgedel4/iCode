@@ -3,12 +3,25 @@ import { HomeLayout } from '../../layout/HomeLayout';
 import { CoursesCard, ActionButton, CourseRegister } from '../../components'
 import { AddCircleOutline } from '@mui/icons-material'
 import { useState } from 'react';
+import { getAuth } from "firebase/auth";
 
 export const SHomePage = () => {
 
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Student home user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Matrícula A00000000
+        const schoolID = (user.email).substring(0,8);
+        // console.log("Matrícula ", schoolID)
+    }
+
+
 
     //API region
-
     const handlerHelp = async () => {
         try {
             const options = {

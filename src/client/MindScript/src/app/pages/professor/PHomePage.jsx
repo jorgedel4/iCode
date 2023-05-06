@@ -3,9 +3,22 @@ import { HomeLayout } from '../../layout/HomeLayout';
 import { CoursesCard, ActionButton, CreateGroup, CreateHomework } from '../../components'
 import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
 
 export const PHomePage = () => {
     const theme = useTheme();
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Professor home user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Nómina ", schoolID)
+    }
 
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { NavBar, SearchBar, ActionButton } from '../../components';
 import { AddCircleOutline, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
+import { getAuth } from "firebase/auth";
 
 export const ASyllabus = () => {
     const theme = useTheme();
@@ -36,6 +37,19 @@ export const ASyllabus = () => {
         setButtonProfessorSelected(false);
         setButtonStudentSelected(false);
     };
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user !== null) {
+        // console.log("Admin syllabus user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        const schoolID = (user.email).substring(0, 8);
+        // console.log("Nómina ", schoolID)
+    }
+
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar />
