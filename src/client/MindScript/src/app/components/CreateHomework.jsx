@@ -29,10 +29,7 @@ export const CreateHomework = ({ open, close }) => {
     //State date picker
     const [date, setDate] = useState(null);
 
-    const groupList = [
-        'grupo1',
-        'grupo2',
-    ]
+
 
     const modules = [
         {
@@ -80,9 +77,9 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, []);
-    
+
     // console.log(coursesData)
-    
+
     //GET group information
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
@@ -96,7 +93,7 @@ export const CreateHomework = ({ open, close }) => {
 
         let userID = "L00000001"
         let term = "current"
-        
+
         const fetchData = async () => {
             if (course) {
                 try {
@@ -110,7 +107,7 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
-    
+
     // console.log("ADFaf",groupsData)
     // console.log("cursos", course)
 
@@ -141,9 +138,9 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
-    console.log("ADFaf",modulesData)
+    console.log("ADFaf", modulesData)
     console.log("cursos", course)
-    
+
     // //POST Create Group
 
     // const registerGroup = {
@@ -419,19 +416,24 @@ export const CreateHomework = ({ open, close }) => {
                         </Grid>
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
-                        <Grid item xs={10} id="Grupo">
+                        <Grid item xs={10}
+                            id="Grupo"
+                            sx={{
+                                color: "appDark.text",
+                                top: 0,
+                                bgcolor: "appDark.bgBox",
+                                mt: 3,
+                                borderRadius: 2,
+                            }}>
+                            <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
                             {groupsData.map((group) => (
-                                group.id_course == course ?
-                                <GroupHomework key={group.id_group} group={group} /> 
-                                :null
+                                group.id_course == course
+                                    ? <GroupHomework key={group.id_group} group={group} />
+                                    : null
                             ))}
 
-                            <Grid item id="cancelar">
-                                <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
-                                    Cancelar
-                                </Button>
-                            </Grid>
                         </Grid>
+
                     </Grid>
                 </Grid>
 
@@ -512,12 +514,7 @@ export const CreateHomework = ({ open, close }) => {
                                 </Table>
                             </TableContainer>
 
-                            <Grid item id="cancelar" align="right">
 
-                                <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                                    Crear tarea
-                                </Button>
-                            </Grid>
                         </Grid>
 
                         {/* end container segunda seccion */}
@@ -525,6 +522,21 @@ export const CreateHomework = ({ open, close }) => {
 
                 </Grid>
 
+                <Grid container justifyContent='center' sx={{ mx: 5.5, mb: 2 }}>
+                    <Grid item xs={6} id="cancelar" >
+
+                        <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
+                            Cancelar
+                        </Button>
+                    </Grid>
+                    <Grid item xs={6} id="crear tarea" align="right">
+
+                        <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                            Crear tarea
+                        </Button>
+                    </Grid>
+
+                </Grid>
             </Grid>
 
         </Modal>

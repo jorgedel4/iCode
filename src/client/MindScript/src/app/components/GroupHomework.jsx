@@ -9,19 +9,7 @@ import { useState } from 'react';
 import { AddModuleHomework } from '../components/AddModuleHomework';
 
 export const GroupHomework = ({ group }) => {
-    //Manejar Seleccionar grupo
-    // const removeGroup = (event) => {
-    //     setGroup(event.target.value);
-    // };
-    const addGroup = (event) => {
-        setGroup(event.target.value);
-    };
 
-
-    // const groupList = [
-    //     'grupo1',
-    //     'grupo2',
-    // ]
     //Datos que son necesarios para la checklist
     const [checked, setChecked] = useState(true);
 
@@ -29,12 +17,10 @@ export const GroupHomework = ({ group }) => {
         setChecked(!checked);
     };
 
-
-
     return (
         <Grid container justifyContent="space-between" alignItems='center' >
-            <Grid item xs={8} fullWidth >
-                <FormControl fullWidth variant="filled">
+            <Grid item xs={8} fullwidth="true" >
+                <FormControl fullwidth="true" variant="filled">
                     {/* CheckBox */}
                     <FormControlLabel
                         value="end"
@@ -42,14 +28,14 @@ export const GroupHomework = ({ group }) => {
                             checked={checked}
                             onClick={handleChange}
                             sx={{
-                                ml: 1.5,
+                                ml: 2,
                                 color: 'appDark.icon',
                                 '&.Mui-checked': {
                                     color: 'appDark.adminButton',
                                 },
                             }}
                         />}
-                        label={group.id_group + " " + group.id_course}
+                        label={group.id_group + " - " + group.id_course}
                         labelPlacement="end"
                     />
                 </FormControl>
