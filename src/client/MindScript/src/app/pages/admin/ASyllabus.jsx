@@ -56,11 +56,11 @@ export const ASyllabus = () => {
             <Grid item fullWidth lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                     <Grid item xs={12} sm={6} lg={5}>
-                        <SearchBar searchQuery={searchQuery} name={'Nombre'} setSearchQuery={setSearchQuery} />
+                        <SearchBar searchQuery={searchQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setSearchQuery} />
                     </Grid>
 
                     <Grid item xs={12} sm={6} lg={4}>
-                        <SearchBar searchQuery={searchQuery} name={'Matrícula/Nómina'} setSearchQuery={setSearchQuery} />
+                        <SearchBar searchQuery={searchQuery} name={'Matrícula/Nómina'} placeholder={'A00000000'} setSearchQuery={setSearchQuery} />
                     </Grid>
 
                     <Grid item xs={4} lg={1}>
