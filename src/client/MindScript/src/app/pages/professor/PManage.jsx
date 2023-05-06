@@ -1,8 +1,8 @@
-import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material';
+import { Grid, useTheme, useMediaQuery, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { NavBar, SearchBar } from '../../components';
 import { DataGrid } from '@mui/x-data-grid';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 
 export const PManage = () => {
   //GET term information
@@ -32,17 +32,10 @@ export const PManage = () => {
     fetchData();
   }, []);
 
-
-
-
-
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 150;
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filt, setFilt] = useState([])
 
   // const dataFiltered = filterData(searchQuery, data);
   const [nameQuery, setNameQuery] = useState("");
@@ -55,11 +48,11 @@ export const PManage = () => {
       <NavBar />
       <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
         <Grid item xs={12} sm={6} lg={6}>
-          <SearchBar searchQuery={nameQuery} name={'Nombre'} setSearchQuery={setNameQuery} />
+          <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
         </Grid>
 
         <Grid item xs={12} sm={6} lg={6}>
-          <SearchBar searchQuery={idQuery} name={'Matrícula/Nómina'} setSearchQuery={setIdQuery} />
+          <SearchBar searchQuery={idQuery} name={'Matrícula/Nómina'} placeholder={'A00000000'} setSearchQuery={setIdQuery} />
         </Grid>
 
       </Grid>

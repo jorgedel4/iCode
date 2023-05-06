@@ -2,7 +2,7 @@ import { PersonSearch, Search } from '@mui/icons-material'
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 import React from 'react'
 
-export const SearchBar = ({ setSearchQuery, name }) => {
+export const SearchBar = ({ setSearchQuery, name, placeholder }) => {
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
@@ -30,8 +30,8 @@ export const SearchBar = ({ setSearchQuery, name }) => {
                         </IconButton>
                     </InputAdornment>
                 }
-                label="Nombre"
-                placeholder="A00000000@tec.mx"
+                label={name}
+                placeholder={placeholder}
                 sx={{
                     color: 'appDark.text',
                     '&:hover .MuiOutlinedInput-notchedOutline': {
