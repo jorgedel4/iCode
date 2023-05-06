@@ -69,7 +69,7 @@ En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente u
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/enrollstudent
+POST 34.125.0.99:8002/createhw
 Content-Type: application/json
 ``` json
 {
