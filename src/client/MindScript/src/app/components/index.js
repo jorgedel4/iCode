@@ -16,3 +16,4 @@ export * from './AddModuleHomework';
 export * from './CourseRegister';
 export * from './RequestCard';
 export * from './TestsTabs';
+export * from './OptionButton';
