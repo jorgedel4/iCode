@@ -54,7 +54,7 @@ export const ARequest = () => {
     ]
     return (
         <Grid container padding={3} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar />
+            <NavBar pages={pages}/>
             <Grid item xs={4} sx={{ mt: 5 }}>
                 <Grid container rowSpacing={1}>
                     {request.map((r) => (

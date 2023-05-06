@@ -2,10 +2,10 @@ import { Grid, Typography, List, Link, IconButton, Button } from '@mui/material'
 import { DeleteOutline, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard } from '../components' 
 
-export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName }) => {
+export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages }) => {
     return (
         <Grid container padding={5} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
-            <NavBar />
+            <NavBar pages={pages}/>
 
             <Grid item xs={12} sx={{mt:4, height: '24px'}}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>

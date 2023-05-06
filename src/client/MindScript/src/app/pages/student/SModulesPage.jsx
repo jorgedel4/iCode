@@ -19,6 +19,8 @@ export const SModulesPage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Matrícula ", schoolID)
     }
+    const pages = ['Home', 'Profile']
+
 
     const homeworkData = [
         {
@@ -122,7 +124,7 @@ export const SModulesPage = () => {
     ]
 
     return (
-        <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName}>
+        <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
                 {modules.map((module, index) => (
                     <Grid item key={index} xs={12} md={4}>

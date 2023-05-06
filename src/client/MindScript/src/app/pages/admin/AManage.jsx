@@ -6,18 +6,20 @@ import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
+
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
     if (user !== null) {
-        // console.log("AdminRequest user info", user)
+        // console.log("Admin manager user info", user)
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Nómina L00000000
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    
+    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+
     const [studentsData, setStudent] = useState([]);
     useEffect(() => {
         const options = {
@@ -157,7 +159,7 @@ export const AManage = () => {
 
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar />
+            <NavBar pages={pages}/>
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />

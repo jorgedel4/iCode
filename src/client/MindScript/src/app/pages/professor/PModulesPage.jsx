@@ -19,6 +19,7 @@ export const PModulesPage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
+    const pages = ['Home', 'Profile']
 
     const homeworkData = [
         {
@@ -48,7 +49,7 @@ export const PModulesPage = () => {
     ]
 
     return (
-        <ModulesLayout home={home} homeworkData={homeworkData} student={false} hwBTitle={'Asignaciones'} groupName={groupName}>
+        <ModulesLayout home={home} homeworkData={homeworkData} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
 
                 <Grid item xs={12} md={4}>

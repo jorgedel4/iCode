@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import { startLogout } from '../../store/auth';
 
 // const pages = ['Home', 'Profile']
-const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+// const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
 
-export const NavBar = ({ drawerWidth = 240 }) => {
+export const NavBar = ({ drawerWidth = 240, pages }) => {
 
     const dispatch = useDispatch();
 

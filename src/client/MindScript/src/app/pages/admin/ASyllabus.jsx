@@ -52,7 +52,7 @@ export const ASyllabus = () => {
 
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar />
+            <NavBar pages={pages}/>
             <Grid item fullWidth lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                     <Grid item xs={12} sm={6} lg={5}>

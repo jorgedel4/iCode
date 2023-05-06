@@ -19,6 +19,7 @@ export const PHomePage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
+    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
 
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
@@ -113,7 +114,7 @@ export const PHomePage = () => {
     return (
         <Grid container justifyContent='center' alignItems='center'>
 
-            <HomeLayout groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home}>
+            <HomeLayout groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home} pages={pages}>
 
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />
