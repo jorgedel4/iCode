@@ -85,3 +85,41 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION mod_question_status(group_id CHAR(20), question_id CHAR(20), student CHAR(9))
+RETURNS CHAR(3)
+BEGIN
+    DECLARE question_status CHAR(3);
+    DECLARE done BOOLEAN DEFAULT FALSE;
+    
+    DECLARE cur CURSOR FOR
+        SELECT attempt_status
+        FROM questionAttempts
+        WHERE student = student
+        AND grupo = group_id
+        AND question = question_id;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    SET question_status = 'PEN';
+
+    OPEN cur;
+        read_loop: LOOP
+        FETCH cur INTO question_status;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        IF question_status = 'PAS' THEN
+            CLOSE cur;
+            RETURN 'PAS';
+        END IF;
+        END LOOP;
+    CLOSE cur;
+
+    IF question_status = 'PEN' THEN
+        RETURN question_status;
+    ELSE
+        RETURN 'FAI';
+    END IF;
+END$$
+DELIMITER ;
