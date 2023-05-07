@@ -32,7 +32,7 @@ type HWProfessor struct {
 }
 
 type NewHWReq struct {
-	Group            string           `json:"group"`
+	Groups           []string         `json:"groups"`
 	HWName           string           `json:"hw_name"`
 	OpenDate         time.Time        `json:"open_date"`
 	CloseDate        time.Time        `json:"close_date"`

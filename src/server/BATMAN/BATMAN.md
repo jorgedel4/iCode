@@ -52,7 +52,7 @@ Crear una nueva tarea para un grupo
 (Mediante el body de la peticion)
 | Parametro         | Tipo                  | Obligatorio | Descripcion                                                     |
 |------------------ | --------------------- | ----------- | --------------------------------------------------------------- |
-| group             | string                | si          | ID del grupo                                                    |
+| group             | [ string ]            | si          | Arreglo de IDs de los grupos a los que se agregara la tarea     |
 | hw_name           | string                | si          | Nombre de la tarea                                              |
 | open_date         | string                | si          | Fecha de apertura de la tarea                                   |
 | close_date        | string                | si          | Fecha de cierre de la tarea                                     |
@@ -66,6 +66,7 @@ El arreglo `modulesQuestions` debiese de contener unicamente objetos con las sig
 
 #### Respuesta
 En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+Nota: Se genera una tarea (con ID unico) por cada grupo dado, pero todas estas tienen la misma configuracion inicial
 
 #### Ejemplo
 **Peticion**
@@ -73,7 +74,10 @@ POST 34.125.0.99:8002/createhw
 Content-Type: application/json
 ``` json
 {
-    "group": "G000000001",
+    "groups": [
+        "G000000001",
+        "G000000002"
+    ],
     "hw_name": "Tarea 3: Mas practicas :)",
     "open_date": "2023-05-11T00:00:00Z",
     "close_date": "2023-05-14T00:00:00Z",
