@@ -55,7 +55,7 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		}
 
-		tx.Commit()
+		err = tx.Commit()
 		if err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)
 			return

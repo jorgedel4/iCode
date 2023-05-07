@@ -63,6 +63,7 @@ func main() {
 	// Delete operations
 	r.HandleFunc("/homework/{homeworkID}", remove.Homework(mysqlDB)).Methods("DELETE")
 	r.HandleFunc("/user/{userID}", remove.User(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/unenrollstudent", remove.Unenroll(mysqlDB)).Methods("DELETE")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

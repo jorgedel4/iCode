@@ -887,3 +887,30 @@ DELETE 34.125.0.99:8002/user/A01231212
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+---
+
+### `/unenrollstudent`
+#### Descripcion
+Desenrola a un estudiante de un grupo.
+Nota: Al desenrolar a un estudiante de un grupo, se eliminan todos los intentos de preguntas de tareas y modulos que haya realizado para este grupo
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                         |
+|------------------ | --------------------- | ----------- | --------------------------------------------------- |
+| group             | string                | si          | ID del grupo del que se desea desenrolar al alumno  |
+| student           | string                | si          | Matricula del alumno a desenrolar                   |
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/user/unenrollstudent
+
+**Respuesta**
+HTTP/1.1 200 OK
