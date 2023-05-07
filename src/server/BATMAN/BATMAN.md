@@ -222,7 +222,47 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/registeruser`
+#### Descripcion
+Registrar a un nuevo usuario
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                                    |
+|-------------- | ----------- | ----------- | ---------------------------------------------- |
+| id            | string      | si          | ID (matricula o nomina) del usuario a crear    |
+| campus        | string      | si          | ID del campus al que pertenece                 |
+| name          | string      | si          | Nombre del usuario                             |
+| flast_name    | string      | si          | Apellido paterno                               |
+| slast_name    | string      | si          | Apellido materno                               |
+
+#### Respuesta
+En caso de que se haya registrado al usuario de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/registeruser
+Content-Type: application/json
+``` json
+{
+    "id": "A01551957",
+    "campus": "PUE",
+    "name": "Jaime",
+    "flast_name": "Estrada",
+    "slast_name": "Calleros"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ## Endpoints de lectura
+
 ### `/courses`
 #### Descripcion
 Todos los cursos que se tienen registrados
@@ -763,6 +803,7 @@ Content-Type: application/json
 
 
 ## Endpoints de actualizacion
+
 ### `/togglemodulestate`
 #### Descripcion
 Cambia el estado del modulo de un grupo (bloqueado o desbloqueado)
