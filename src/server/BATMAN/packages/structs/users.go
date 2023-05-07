@@ -13,3 +13,11 @@ type User struct {
 	Campus string `json:"campus"`
 	Email  string `json:"email"`
 }
+
+type NewUser struct {
+	ID        string `json:"id"`
+	Campus    string `json:"campus"`
+	Name      string `json:"name"`
+	FLastName string `json:"flast_name"`
+	SLastName string `json:"slast_name"`
+}
