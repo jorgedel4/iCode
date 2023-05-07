@@ -914,3 +914,27 @@ DELETE 34.125.0.99:8002/user/unenrollstudent
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+---
+
+### `/group/{groupID}`
+#### Descripcion
+Elimina a un grupo
+Nota: Al eliminar a un grupo, se eliminan en cascada los registros de las demas tablas que tengan alguna relacion con el grupo que se elimino (en cascada)
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `groupID` (obligatorio): ID del grupo a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al grupo de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/group/G000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
