@@ -12,6 +12,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jorgedel4/iCode/packages/create"
 	"github.com/jorgedel4/iCode/packages/read"
+	"github.com/jorgedel4/iCode/packages/update"
+	"github.com/jorgedel4/iCode/packages/remove"
 )
 
 func main() {
@@ -41,6 +43,8 @@ func main() {
 	r.HandleFunc("/enrollstudent", create.Enrollment(mysqlDB)).Methods("POST")
 	r.HandleFunc("/registergroup", create.Group(mysqlDB)).Methods("POST")
 	r.HandleFunc("/registerterm", create.Term(mysqlDB)).Methods("POST")
+	r.HandleFunc("/createhw", create.Homework(mysqlDB)).Methods("POST")
+	r.HandleFunc("/registeruser", create.User(mysqlDB)).Methods("POST")
 
 	// Read operations
 	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("GET")
@@ -52,6 +56,15 @@ func main() {
 	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
 	r.HandleFunc("/groupmodules/{groupID}", read.GroupModules(mysqlDB)).Methods("GET")
 	r.HandleFunc("/coursemodules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
+
+	// Update operations
+	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")
+
+	// Delete operations
+	r.HandleFunc("/homework/{homeworkID}", remove.Homework(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/user/{userID}", remove.User(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/unenrollstudent", remove.Unenroll(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/group/{groupID}", remove.Group(mysqlDB)).Methods("DELETE")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

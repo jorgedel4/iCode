@@ -41,6 +41,64 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/createhw`
+#### Descripcion
+Crear una nueva tarea para un grupo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                                     |
+|------------------ | --------------------- | ----------- | --------------------------------------------------------------- |
+| group             | [ string ]            | si          | Arreglo de IDs de los grupos a los que se agregara la tarea     |
+| hw_name           | string                | si          | Nombre de la tarea                                              |
+| open_date         | string                | si          | Fecha de apertura de la tarea                                   |
+| close_date        | string                | si          | Fecha de cierre de la tarea                                     |
+| modules_questions | [ modulesQuestions ]  | si          | Arreglo que representa las preguntas de cada modulo en la tarea |
+
+El arreglo `modulesQuestions` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                                           |
+|-------------- | ----------- | ----------- | --------------------------------------------------------------------- |
+| module        | string      | si          | Modulo que se quiere agregar a la tarea                               |
+| n_questions   | int         | si          | Numero de preguntas requeridas para completar este modulo en la tarea |
+
+#### Respuesta
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+Nota: Se genera una tarea (con ID unico) por cada grupo dado, pero todas estas tienen la misma configuracion inicial
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/createhw
+Content-Type: application/json
+``` json
+{
+    "groups": [
+        "G000000001",
+        "G000000002"
+    ],
+    "hw_name": "Tarea 3: Mas practicas :)",
+    "open_date": "2023-05-11T00:00:00Z",
+    "close_date": "2023-05-14T00:00:00Z",
+    "modules_questions": [
+        {
+            "module": "M0000000000000000002",
+            "n_questions": 1
+        },
+        {
+            "module": "M0000000000000000003",
+            "n_questions": 2
+        }
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/registercampus`
 #### Descripcion
 Registrar un nuevo campus
@@ -168,7 +226,47 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/registeruser`
+#### Descripcion
+Registrar a un nuevo usuario
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                                    |
+|-------------- | ----------- | ----------- | ---------------------------------------------- |
+| id            | string      | si          | ID (matricula o nomina) del usuario a crear    |
+| campus        | string      | si          | ID del campus al que pertenece                 |
+| name          | string      | si          | Nombre del usuario                             |
+| flast_name    | string      | si          | Apellido paterno                               |
+| slast_name    | string      | si          | Apellido materno                               |
+
+#### Respuesta
+En caso de que se haya registrado al usuario de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/registeruser
+Content-Type: application/json
+``` json
+{
+    "id": "A01551957",
+    "campus": "PUE",
+    "name": "Jaime",
+    "flast_name": "Estrada",
+    "slast_name": "Calleros"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ## Endpoints de lectura
+
 ### `/courses`
 #### Descripcion
 Todos los cursos que se tienen registrados
@@ -710,4 +808,133 @@ Content-Type: application/json
 
 ## Endpoints de actualizacion
 
+### `/togglemodulestate`
+#### Descripcion
+Cambia el estado del modulo de un grupo (bloqueado o desbloqueado)
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion     |
+|------------------ | --------------------- | ----------- | --------------- |
+| group             | string                | si          | ID del grupo    |
+| module            | string                | si          | ID del modulo   |
+
+#### Respuesta
+En caso de que el estado del modulo haya sido cambiado de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.125.0.99:8002/togglemodulestate
+Content-Type: application/json
+``` json
+{
+    "module": "M0000000000000000003",
+    "group": "G000000001"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+
+
 ## Endpoints de eliminacion
+
+### `/homework/{homeworkID}`
+#### Descripcion
+Elimina una tarea, al igual que todas las configuraciones e intentos de los estudiantes de esta
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `homeworkID` (obligatorio): ID la tarea a eliminar.
+
+#### Respuesta
+En caso de que se haya eliminado la tarea de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/homework/H0000000000000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/user/{userID}`
+#### Descripcion
+Elimina a un usuario de la BBDD.
+Importante: De momento se hace una eliminacion en cascada, es decir, todo lo relacionado (ya sea directa o indirectamente) al usuario que se borro.
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `userID` (obligatorio): ID del usuario a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/user/A01231212
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/unenrollstudent`
+#### Descripcion
+Desenrola a un estudiante de un grupo.
+Nota: Al desenrolar a un estudiante de un grupo, se eliminan todos los intentos de preguntas de tareas y modulos que haya realizado para este grupo
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                         |
+|------------------ | --------------------- | ----------- | --------------------------------------------------- |
+| group             | string                | si          | ID del grupo del que se desea desenrolar al alumno  |
+| student           | string                | si          | Matricula del alumno a desenrolar                   |
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/user/unenrollstudent
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/group/{groupID}`
+#### Descripcion
+Elimina a un grupo
+Nota: Al eliminar a un grupo, se eliminan en cascada los registros de las demas tablas que tengan alguna relacion con el grupo que se elimino (en cascada)
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `groupID` (obligatorio): ID del grupo a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al grupo de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/group/G000000001
+
+**Respuesta**
+HTTP/1.1 200 OK

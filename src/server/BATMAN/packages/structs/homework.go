@@ -30,3 +30,11 @@ type HWProfessor struct {
 	Opening    time.Time `json:"opening"`
 	Closing    time.Time `json:"closing"`
 }
+
+type NewHWReq struct {
+	Groups           []string         `json:"groups"`
+	HWName           string           `json:"hw_name"`
+	OpenDate         time.Time        `json:"open_date"`
+	CloseDate        time.Time        `json:"close_date"`
+	ModulesQuestions []ModuleQuestion `json:"modules_questions"`
+}
