@@ -1,7 +1,7 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import { ModulesLayout } from "../../layout"
 import { SModuleCard } from '../../components'
-// import { PModuleCard } from '../../components'
+import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
 export const SModulesPage = () => {
@@ -11,123 +11,74 @@ export const SModulesPage = () => {
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
+    var schoolID;
     if (user !== null) {
         // console.log("Student modules user info", user)
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Matrícula A00000000
-        const schoolID = (user.email).substring(0, 8);
+        schoolID = (user.email).substring(1, 9);
         // console.log("Matrícula ", schoolID)
     }
+
     const pages = ['Home', 'Profile']
 
-
-    const homeworkData = [
-        {
-            title: 'Lunes',
-            homework: [ //Tareas que se entregen el lunes de esa semana
-                {
-                    work: 'Tarea 1' //nombre de la tarea
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Martes',
-            homework: [
-            ]
-        },
-        {
-            title: 'Miercoles',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Jueves',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Viernes',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Sabado',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Domingo',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
+    //API para obtener los datos de las tarjeras de modulos
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
         }
-    ]
 
-    const modules = [
-        {
-            name: 'Variables',
-            noQuestions: 5,
-            progress: 3,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: true
-        },
-        {
-            name: 'Condicionales',
-            noQuestions: 10,
-            progress: 3,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: false
-        },
-        {
-            name: 'Ciclos While',
-            noQuestions: 5,
-            progress: 4,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: true
-        },
-    ]
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/groupmodules/G000000001?user_id=A${schoolID}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    //API para obtener los datos de las tareas de la semana
+    const [homeworkData, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const group = "G000000001";
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/homework?id=A${schoolID}&time=week&group=${group}&group_by=week`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-                {modules.map((module, index) => (
+                {modulesData.map((module, index) => (
                     <Grid item key={index} xs={12} md={4}>
+                        {module.progress === 100? modulesData[index+1].locked=false : null}
                         <SModuleCard module={module} index={index} />
                     </Grid>
                 ))}

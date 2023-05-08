@@ -34,9 +34,9 @@ export const PHHomeworkCard = ({ data }) => {
                 ]}
             >
                 {open ? <ExpandLess sx={{ color: 'appDark.icon' }} /> : <ExpandMore sx={{ color: 'appDark.icon' }} />}
-                <ListItemText sx={{ color: 'appDark.text' }} primary={ data.title } />
+                <ListItemText sx={{ color: 'appDark.text' }} primary={ data[0] } />
                 <Grid sx={{ borderRadius: '20px', border: 2, borderColor: 'appDark.icon' }}>
-                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my:.1, mx:1.1 }}>{ data.homework.length }</Typography>
+                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my:.1, mx:1.1 }}>{ data[1].length }</Typography>
                 </Grid>
 
             </ListItemButton>
@@ -51,12 +51,12 @@ export const PHHomeworkCard = ({ data }) => {
                     disablePadding
                 >
 
-                    {data.homework.map((homework, indexH) => (
+                    {(data[1]).map((homework, indexH) => (
                         <Grid container key={ indexH }>
                             <ListItem disablePadding>
                                 <ListItemButton>
 
-                                    <ListItemText sx={{ pl: 4 }} primary={ homework.work } />
+                                    <ListItemText sx={{ pl: 4 }} primary={ homework.hw_name } />
 
                                 </ListItemButton>
                             

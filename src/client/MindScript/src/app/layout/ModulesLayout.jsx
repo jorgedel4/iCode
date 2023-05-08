@@ -1,4 +1,4 @@
-import { Grid, Typography, List, Link, IconButton, Button } from '@mui/material'
+import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard } from '../components' 
 
@@ -34,19 +34,19 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                             {student?
                                 <>
                                     {homeworkData.map((data, index) => (
-                                        <SMHomeworkCard key={ index }  data={ data } />
+                                        <SMHomeworkCard key={ index }  data={ data } index={ index } />
                                     ))}
                                 </>
                                 
                             :
                                 <>
-                                    {homeworkData.map((data, index) => (
+                                    {homeworkData[0].map((data, index) => (
                                         <Grid key = { index } container 
                                             alignItems='center'
                                             sx={{ width: 300 }}
                                             >
                                             <Grid item xs={9}>
-                                                <Typography>{data.work}</Typography>
+                                                <Typography>{data.hw_name}</Typography>
                                             </Grid>
                                             <Grid item xs={2}>
                                                 <IconButton sx={{ color: 'appDark.icon' }}>

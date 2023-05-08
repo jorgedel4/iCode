@@ -2,7 +2,7 @@ import { Grid, Typography, CardContent, CardActionArea } from '@mui/material'
 import { HomeLayout } from '../../layout/HomeLayout';
 import { CoursesCard, ActionButton, CourseRegister } from '../../components'
 import { AddCircleOutline } from '@mui/icons-material'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
 export const SHomePage = () => {
@@ -10,12 +10,13 @@ export const SHomePage = () => {
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
+    var schoolID;
     if (user !== null) {
-        // console.log("Student home user info", user)
+        // console.log("Student modules user info", user)
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Matrícula A00000000
-        const schoolID = (user.email).substring(0, 8);
+        schoolID = (user.email).substring(1, 9);
         // console.log("Matrícula ", schoolID)
     }
 
@@ -68,148 +69,200 @@ const closeModalRegister = () => {
 const modules = "/student/modules"
 const home = "/student/home"
 
+//API para obtener la info de los grupos
+const [groupsData, setGroup] = useState([]);
+useEffect(() => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+        mode: 'cors',
+    }
+
+    // let userID = "L00000001"
+    let term = "all"
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://34.125.0.99:8002/groups?id=A${schoolID}&term=${term}`, options);
+            const responseData = await response.json();
+            setGroup(responseData);
+        } catch (error) {
+            // console.error(error);
+        }
+    };
+
+    fetchData();
+}, []);
+
 //for every data add to groupsData with desestructured info juas
-const groupsData = [ //Se queda este
-    // {
-    //     name: "Curso A", //Nombre del grupo (nombre del curso)
-    //     openDate: "26 de Marzo", //Cuando abre
-    //     closeDate: "26 de Abril", //Cuando cierra
-    //     professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
-    // },
-    // {
-    //     name: "Curso B",
-    //     openDate: "27 de Marzo",
-    //     closeDate: "27 de Abril",
-    //     professor: "Daniel Perez Rojas"
-    // },
-    {
-        id_group: "G000000001",
-        id_course: "TC1028",
-        course_name: "Pensamiento computacional",
-        start_date: "2023-02-15T00:00:00Z",
-        end_date: "2023-06-26T23:59:59Z",
-        first_name: "Daniel",
-        flast_name: "Perez",
-        slast_name: "Rojas"
+// const groupsData = [ //Se queda este
+//     // {
+//     //     name: "Curso A", //Nombre del grupo (nombre del curso)
+//     //     openDate: "26 de Marzo", //Cuando abre
+//     //     closeDate: "26 de Abril", //Cuando cierra
+//     //     professor: "Daniel Perez Rojas" //Nombre del profesor encargado del grupo
+//     // },
+//     // {
+//     //     name: "Curso B",
+//     //     openDate: "27 de Marzo",
+//     //     closeDate: "27 de Abril",
+//     //     professor: "Daniel Perez Rojas"
+//     // },
+//     {
+//         id_group: "G000000001",
+//         id_course: "TC1028",
+//         course_name: "Pensamiento computacional",
+//         start_date: "2023-02-15T00:00:00Z",
+//         end_date: "2023-06-26T23:59:59Z",
+//         first_name: "Daniel",
+//         flast_name: "Perez",
+//         slast_name: "Rojas"
+//     }
+// ]
+
+//API para obtener los datos de las tareas de la semana
+const [homeworkData, setHomework] = useState([]);
+useEffect(() => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+        mode: 'cors',
     }
-]
-const homeworkData = [
-    {
-        title: 'Lunes',
-        homework: [ //Tareas que se entregen el lunes de esa semana
-            {
-                group: 'Curso A', //nombre del grupo que tiene la tarea
-                work: 'Tarea 1' //nombre de la tarea
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    },
-    {
-        title: 'Martes',
-        homework: [
-            {
-                group: 'Curso B',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso B',
-                work: 'Quiz 2'
-            },
-        ]
-    },
-    {
-        title: 'Miercoles',
-        homework: [
-            {
-                group: 'Curso A',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    },
-    {
-        title: 'Jueves',
-        homework: [
-            {
-                group: 'Curso A',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    },
-    {
-        title: 'Viernes',
-        homework: [
-            {
-                group: 'Curso A',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    },
-    {
-        title: 'Sabado',
-        homework: [
-            {
-                group: 'Curso A',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    },
-    {
-        title: 'Domingo',
-        homework: [
-            {
-                group: 'Curso A',
-                work: 'Tarea 1'
-            },
-            {
-                group: 'Curso A',
-                work: 'Tarea 2'
-            },
-            {
-                group: 'Curso C',
-                work: 'Quiz 1'
-            },
-        ]
-    }
-]
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://34.125.0.99:8002/homework?id=A${schoolID}&time=week&group=all&group_by=week`, options);
+            const responseData = await response.json();
+            setHomework(responseData);
+        } catch (error) {
+            // console.error(error);
+        }
+    };
+
+    fetchData();
+}, []);
+
+// const homeworkData = [
+//     {
+//         title: 'Lunes',
+//         homework: [ //Tareas que se entregen el lunes de esa semana
+//             {
+//                 group: 'Curso A', //nombre del grupo que tiene la tarea
+//                 work: 'Tarea 1' //nombre de la tarea
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Martes',
+//         homework: [
+//             {
+//                 group: 'Curso B',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso B',
+//                 work: 'Quiz 2'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Miercoles',
+//         homework: [
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Jueves',
+//         homework: [
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Viernes',
+//         homework: [
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Sabado',
+//         homework: [
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Domingo',
+//         homework: [
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 1'
+//             },
+//             {
+//                 group: 'Curso A',
+//                 work: 'Tarea 2'
+//             },
+//             {
+//                 group: 'Curso C',
+//                 work: 'Quiz 1'
+//             },
+//         ]
+//     }
+// ]
 
 return (
     <HomeLayout homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} home={home} pages={pages} >
