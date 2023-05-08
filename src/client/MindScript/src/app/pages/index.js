@@ -1,5 +1,6 @@
 export * from './student/SHomePage';
 export * from './student/SModulesPage';
+export * from './student/MultiOpt';
 export * from './professor/PHomePage';
 export * from './professor/PManage';
 export * from './admin/AManage';
