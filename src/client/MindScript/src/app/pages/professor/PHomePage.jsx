@@ -17,7 +17,7 @@ export const PHomePage = () => {
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Nómina L00000000
-        schoolID = (user.email).substring(1, 9);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Nómina ", schoolID)
     }
     console.log("Nómina ", schoolID)
@@ -40,7 +40,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/groups?id=L${schoolID}&term=${term}`, options);
+                const response = await fetch(`http://34.125.0.99:8002/groups?id=${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -83,7 +83,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/homework?id=L${schoolID}&time=future&group=all&group_by=group`, options);
+                const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {

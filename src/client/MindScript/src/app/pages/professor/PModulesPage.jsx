@@ -18,7 +18,7 @@ export const PModulesPage = () => {
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Nómina L00000000
-        schoolID = (user.email).substring(1, 9);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Nómina ", schoolID)
     }
 
@@ -39,7 +39,7 @@ export const PModulesPage = () => {
 
     //     const fetchData = async () => {
     //         try {
-    //             const response = await fetch(`http://34.125.0.99:8002/homework?id=L${schoolID}&time=future&group=${group}&group_by=group`, options);
+    //             const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
     //             // const response = await fetch(`http://34.125.0.99:8002/homework?id=L00000001&time=future&group=G000000001&group_by=group`, options);
     //             const responseData = await response.json();
     //             setHomework(responseData);

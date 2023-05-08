@@ -16,7 +16,7 @@ export const SHomePage = () => {
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Matrícula A00000000
-        schoolID = (user.email).substring(1, 9);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
 
@@ -85,7 +85,7 @@ useEffect(() => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://34.125.0.99:8002/groups?id=A${schoolID}&term=${term}`, options);
+            const response = await fetch(`http://34.125.0.99:8002/groups?id=${schoolID}&term=${term}`, options);
             const responseData = await response.json();
             setGroup(responseData);
         } catch (error) {
@@ -135,7 +135,7 @@ useEffect(() => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://34.125.0.99:8002/homework?id=A${schoolID}&time=week&group=all&group_by=week`, options);
+            const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
             const responseData = await response.json();
             setHomework(responseData);
         } catch (error) {
