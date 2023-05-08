@@ -1,5 +1,6 @@
 import { Grid, Button, Typography } from '@mui/material'
 import { NavBar, QuestionsDropdown, OptionButton } from '../../components'
+import { getAuth } from "firebase/auth";
 
 export const MultiOpt = () => {
     //Current user info
