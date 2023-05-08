@@ -11,16 +11,20 @@ export const PHomePage = () => {
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
+    var schoolID;
     if (user !== null) {
         // console.log("Professor home user info", user)
         //Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
         //Nómina L00000000
-        const schoolID = (user.email).substring(0, 8);
+        schoolID = (user.email).substring(1, 9);
         // console.log("Nómina ", schoolID)
     }
+    console.log("Nómina ", schoolID)
+
     const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
 
+    //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
         const options = {
@@ -31,12 +35,12 @@ export const PHomePage = () => {
             mode: 'cors',
         }
 
-        let userID = "L00000001"
+        // let userID = "L00000001"
         let term = "all"
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                const response = await fetch(`http://34.125.0.99:8002/groups?id=L${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -66,55 +70,38 @@ export const PHomePage = () => {
     const home = '/professor/home'
     const modules = '/professor/modules' //El nombren se debe de sacar desde la pagina home
 
-
-    const homeworkData = [
-        {
-            title: 'Curso A',
-            homework: [ //Tareas que se entregen del curso A
-                {
-                    work: 'Tarea 1' //nombre de la tarea
-                },
-                {
-                    work: 'Tarea 2'
-                },
-                {
-                    work: 'Quiz 1'
-                },
-            ]
-        },
-        {
-            title: 'Curso B',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Quiz 2'
-                },
-            ]
-        },
-        {
-            title: 'Curso C',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-                {
-                    work: 'Quiz 1'
-                },
-            ]
+    //API para obtener los datos de las tareas de la semana
+    const [homeworkData, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
         }
-    ]
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/homework?id=L${schoolID}&time=future&group=all&group_by=group`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const homework = Object.entries(homeworkData)
 
     const request = handleEditorDidMount()
 
     return (
         <Grid container justifyContent='center' alignItems='center'>
 
-            <HomeLayout groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home} pages={pages}>
+            <HomeLayout groupsData={groupsData} homeworkData={homework} hwBTitle={'Asignaciones en Curso'} home={home} pages={pages}>
 
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />

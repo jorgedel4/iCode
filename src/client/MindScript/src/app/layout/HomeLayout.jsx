@@ -24,7 +24,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                             {student?
                                 <>
                                     {homeworkData.map((data, index) => (
-                                        <SHHomeworkCard key={ index }  data={ data } />
+                                        <SHHomeworkCard key={ index }  data={ data } index= { index } />
                                     ))}
                                 </>
                         
@@ -34,6 +34,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                                         <PHHomeworkCard key={ index }  data={ data } />
                                     ))}
                                 </>
+                                // null
                             }
                         </List>
 

@@ -40,7 +40,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                 
                             :
                                 <>
-                                    {homeworkData.map((data, index) => (
+                                    {homeworkData[0].map((data, index) => (
                                         <Grid key = { index } container 
                                             alignItems='center'
                                             sx={{ width: 300 }}
