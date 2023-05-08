@@ -1,6 +1,6 @@
 import { Card, CardContent, CardActionArea, Typography, Grid, IconButton, LinearProgress } from '@mui/material'
 import { linearProgressClasses } from '@mui/material/LinearProgress';
-import { Edit, LockOutlined } from '@mui/icons-material'
+import { LockOutlined } from '@mui/icons-material'
 import * as React from 'react';
 
 export const SModuleCard = ({ module, index }) => {
@@ -15,11 +15,11 @@ export const SModuleCard = ({ module, index }) => {
                 backgroundColor: 'secondary.main',
                 borderRadius: '12px',
                 boxShadow: '5px 5px 0px 5px rgba(0, 0, 0, 0.1)',
-                ':hover': !module.block&& { backgroundColor: 'secondary.main', opacity: 0.8 } }}
+                ':hover': !module.locked&& { backgroundColor: 'secondary.main', opacity: 0.8 } }}
             >
                 <CardActionArea
                     onClick={() => console.log("CardActionArea clicked")}
-                    disabled={module.block ? true : false }
+                    disabled={module.locked ? true : false }
                 >
                     <Grid container 
                         justifyContent="flex-end" 
@@ -28,7 +28,7 @@ export const SModuleCard = ({ module, index }) => {
                             { 
                                 backgroundColor: `${colors[color]}`, height: 35
                             },
-                            module.block && {
+                            module.locked && {
                                 backgroundColor: "#6D7483", height: 35 
                             }
                         ]}
@@ -46,7 +46,7 @@ export const SModuleCard = ({ module, index }) => {
                         <Grid container justifyContent='flex-end'>
                             <LockOutlined sx={[
                                 { color: 'secondary.main' },
-                                module.block && {color: 'appDark.icon'}
+                                module.locked && {color: 'appDark.icon'}
                                 ]} />
                         </Grid>
 
@@ -61,7 +61,7 @@ export const SModuleCard = ({ module, index }) => {
                             <Grid item xs={10}>
                                 <LinearProgress
                                     variant="determinate" 
-                                    value={(module.progress*100)/module.noQuestions}
+                                    value={module.progress}
                                     sx={{
                                         mt: 1,
                                         height: 10,
@@ -79,7 +79,7 @@ export const SModuleCard = ({ module, index }) => {
 
                             <Grid item xs={2}>
                                 <Typography sx={{color: 'appDark.text'}}>
-                                    {(module.progress*100)/module.noQuestions}%
+                                    {module.progress}%
                                 </Typography>
                             </Grid>
                         </Grid>
