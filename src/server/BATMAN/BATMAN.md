@@ -938,3 +938,27 @@ DELETE 34.125.0.99:8002/group/G000000001
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+---
+
+### `/course/{courseID}`
+#### Descripcion
+Elimina a un curso
+Nota: La eliminación en la BBDD es en cascada, por lo que se borraran los contenidos de otras tablas que tengan alguna relación con el curso borrado. Esto incluye grupos, preguntas y modulos
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `courseID` (obligatorio): ID del curso a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al curso de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/course/TC1028
+
+**Respuesta**
+HTTP/1.1 200 OK
