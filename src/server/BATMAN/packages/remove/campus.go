@@ -7,16 +7,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Module(mysqlDB *sql.DB) http.HandlerFunc {
+func Campus(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		moduleID := mux.Vars(r)["moduleID"]
+		campusID := mux.Vars(r)["campusID"]
 
-		query := `DELETE FROM modules
-		WHERE id_module = ?`
+		query := `DELETE FROM campus
+		WHERE id_campus = ?`
 
-		_, err := mysqlDB.Exec(query, moduleID)
+		_, err := mysqlDB.Exec(query, campusID)
 		if err != nil {
-			http.Error(w, "Error deleting module", http.StatusInternalServerError)
+			http.Error(w, "Error deleting campus", http.StatusInternalServerError)
 			return
 		}
 

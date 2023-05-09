@@ -986,3 +986,26 @@ DELETE 34.125.0.99:8002/module/M0000000000000000001
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+---
+
+### `/campus/{campusID}`
+#### Descripcion
+Elimina a un campus
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `campusID` (obligatorio): ID del campus a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al campus de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/campus/PUE
+
+**Respuesta**
+HTTP/1.1 200 OK
