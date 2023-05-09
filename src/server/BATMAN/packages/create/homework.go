@@ -33,7 +33,12 @@ func Homework(mysql *sql.DB) http.HandlerFunc {
 		}
 
 		for _, group := range req.Groups {
-			hwID := util.GenerateID("H", 19)
+			hwID, err := util.GenerateID("H", 19)
+			if err != nil {
+				tx.Rollback()
+				http.Error(w, "Error creating homework", http.StatusInternalServerError)
+				return
+			}
 
 			_, err = tx.Exec("INSERT INTO homework VALUES (?, ?, ?, ?, ?)", hwID, group, req.HWName, req.OpenDate, req.CloseDate)
 			if err != nil {
