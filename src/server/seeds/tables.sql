@@ -1,3 +1,4 @@
+-- SQLBook: Code
 DROP DATABASE IF EXISTS iCode;
 CREATE DATABASE iCode;
 
@@ -30,9 +31,8 @@ CREATE TABLE admins (
     slast_name  VARCHAR(20),
 
     PRIMARY KEY (id_admin),
-    FOREIGN KEY (campus) REFERENCES campus(id_campus)
+    FOREIGN KEY (campus) REFERENCES campus(id_campus) ON DELETE CASCADE
 );
-
 
 CREATE TABLE students (
     matricula   CHAR(9)         NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE students (
     slast_name  VARCHAR(20),
 
     PRIMARY KEY (matricula),
-    FOREIGN KEY (campus) REFERENCES campus(id_campus)
+    FOREIGN KEY (campus) REFERENCES campus(id_campus) ON DELETE CASCADE
 );
 
 CREATE TABLE professors (
@@ -53,7 +53,7 @@ CREATE TABLE professors (
     slast_name      VARCHAR(20),
 
     PRIMARY KEY (nomina),
-    FOREIGN KEY (campus) REFERENCES campus(id_campus)
+    FOREIGN KEY (campus) REFERENCES campus(id_campus) ON DELETE CASCADE
 );
 
 CREATE TABLE courses (
@@ -70,9 +70,9 @@ CREATE TABLE grupos (
     term            CHAR(4)     NOT NULL,
 
     PRIMARY KEY (id_group),
-    FOREIGN KEY (course) REFERENCES courses(id_course),
-    FOREIGN KEY (main_professor) REFERENCES professors(nomina),
-    FOREIGN KEY (term) REFERENCES terms(id_term)
+    FOREIGN KEY (course) REFERENCES courses(id_course) ON DELETE CASCADE,
+    FOREIGN KEY (main_professor) REFERENCES professors(nomina) ON DELETE CASCADE,
+    FOREIGN KEY (term) REFERENCES terms(id_term) ON DELETE CASCADE
 );
 
 CREATE TABLE enrollments (
@@ -80,8 +80,8 @@ CREATE TABLE enrollments (
     student     CHAR(9)     NOT NULL,
 
     PRIMARY KEY (grupo, student),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group),
-    FOREIGN KEY (student) REFERENCES students(matricula)
+    FOREIGN KEY (grupo) REFERENCES grupos(id_group) ON DELETE CASCADE,
+    FOREIGN KEY (student) REFERENCES students(matricula) ON DELETE CASCADE
 );
 
 CREATE TABLE modules (
@@ -90,18 +90,18 @@ CREATE TABLE modules (
     nombre      VARCHAR(30) NOT NULL,
 
     PRIMARY KEY (id_module),
-    FOREIGN KEY (course) REFERENCES courses(id_course)
+    FOREIGN KEY (course) REFERENCES courses(id_course) ON DELETE CASCADE
 );
 
 CREATE TABLE moduleConfigs (
     module      CHAR(20)    NOT NULL,
     grupo       CHAR(10)    NOT NULL,
     n_question  INT         NOT NULL,
-    open_date   TIMESTAMP   NOT NULL,
-    close_date  TIMESTAMP   NOT NULL,
+    locked      boolean     NOT NULL,
 
-    FOREIGN KEY (module) REFERENCES modules(id_module),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group)
+    PRIMARY KEY (module, grupo),
+    FOREIGN KEY (module) REFERENCES modules(id_module) ON DELETE CASCADE,
+    FOREIGN KEY (grupo) REFERENCES grupos(id_group) ON DELETE CASCADE
 );
 
 CREATE TABLE questions (
@@ -114,30 +114,28 @@ CREATE TABLE questions (
     current_status  CHAR(3)     NOT NULL,
 
     PRIMARY KEY (id_question),
-    FOREIGN KEY (module) REFERENCES modules(id_module),
-    FOREIGN KEY (created_by) REFERENCES professors(nomina)
+    FOREIGN KEY (module) REFERENCES modules(id_module) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES professors(nomina) ON DELETE CASCADE
 );
 
 CREATE TABLE homework (
     id_homework CHAR(20)        NOT NULL,
     grupo       CHAR(10)        NOT NULL,
     hw_name     VARCHAR(50)     NOT NULL,
-    n_questions INT             NOT NULL,
     open_date   TIMESTAMP       NOT NULL,
     close_date  TIMESTAMP       NOT NULL,
 
     PRIMARY KEY (id_homework),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group)
+    FOREIGN KEY (grupo) REFERENCES grupos(id_group) ON DELETE CASCADE
 );
 
-CREATE TABLE hw_questions (
-    id_hwquestion   VARCHAR(20) NOT NULL,
-    homework        CHAR(20)    NOT NULL,
-    q_type          CHAR(5)     NOT NULL, -- multi, codep (code that uses prints), codef (code that uses functions, rip)
-    info            JSON        NOT NULL,
+CREATE TABLE homeworkConfigs (
+    homework    CHAR(20)    NOT NULL,
+    module      CHAR(20)    NOT NULL,
+    n_questions INT         NOT NULL,
 
-    PRIMARY KEY (id_hwquestion),
-    FOREIGN KEY (homework) REFERENCES homework(id_homework)
+    FOREIGN KEY (homework) REFERENCES homework(id_homework) ON DELETE CASCADE,
+    FOREIGN KEY (module) REFERENCES modules(id_module) ON DELETE CASCADE
 );
 
 CREATE TABLE questionAttempts (
@@ -147,19 +145,19 @@ CREATE TABLE questionAttempts (
     attempt_status  CHAR(3)     NOT NULL,
     attempt_date    TIMESTAMP   NOT NULL,
 
-    FOREIGN KEY (student) REFERENCES students(matricula),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group),
-    FOREIGN KEY (question) REFERENCES questions(id_question)
+    FOREIGN KEY (student) REFERENCES students(matricula) ON DELETE CASCADE,
+    FOREIGN KEY (grupo) REFERENCES grupos(id_group) ON DELETE CASCADE,
+    FOREIGN KEY (question) REFERENCES questions(id_question) ON DELETE CASCADE
 );
 
 CREATE TABLE hw_questionAttempts (
     student         CHAR(9)     NOT NULL,
-    grupo           CHAR(10)    NOT NULL,
+    homework        CHAR(20)    NOT NULL,
     question        CHAR(20)    NOT NULL,
     attempt_status  CHAR(3)     NOT NULL,
     attempt_date    TIMESTAMP   NOT NULL,
 
-    FOREIGN KEY (student) REFERENCES students(matricula),
-    FOREIGN KEY (grupo) REFERENCES grupos(id_group),
-    FOREIGN KEY (question) REFERENCES hw_questions(id_hwquestion)
+    FOREIGN KEY (student) REFERENCES students(matricula) ON DELETE CASCADE,
+    FOREIGN KEY (homework) REFERENCES homework(id_homework) ON DELETE CASCADE,
+    FOREIGN KEY (question) REFERENCES questions(id_question) ON DELETE CASCADE
 );
