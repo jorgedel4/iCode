@@ -96,7 +96,6 @@ export const NavBar = ({ drawerWidth = 240, pages }) => {
                             </Grid>
                         </Grid>
                     }
-
                 </Grid>
 
             </Toolbar>
