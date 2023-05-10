@@ -36,11 +36,10 @@ export const PModulesPage = () => {
          }
 
          const group = "G000000001";
-         const id = "A01551955";
  
          const fetchData = async () => {
              try {
-                 const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}?user_id=${id}`, options);
+                 const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}`, options);
                  const responseData = await response.json();
                  setModule(responseData);
              } catch (error) {
@@ -112,22 +111,6 @@ export const PModulesPage = () => {
     // }
 
     const homework = Object.values(homeworkData)
-
-
-    const modules = [
-        {
-            name: 'Variables',
-            block: true
-        },
-        {
-            name: 'Condicionales',
-            block: false
-        },
-        {
-            name: 'Ciclos While',
-            block: false
-        },
-    ]
 
     return (
         <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages}>

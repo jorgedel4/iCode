@@ -8,9 +8,40 @@ export const PModuleCard = ({ module, index }) => {
     const [status, setBlock] = React.useState(module.locked)
 
     const changeStatus = () => {
-        console.log(module.locked)
         setBlock(!status);
-        module.locked = status;        
+
+        //Esto se tiene que borrar en un futuro
+        const group = "G000000001";
+        
+        //API para modificar si un modulo esta bloqueado o no
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+                "module": module.id,
+                "group": group
+            })
+        }
+
+        fetch('http://34.125.0.99:8002/togglemodulestate', options)
+            .then(response => {
+                // console.log(response)
+                return response.json()
+            })
+            // .then(json => {
+            //     setResponse(json)
+            //     setShowComponent(true)
+            // })
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
     };
 
     return(
