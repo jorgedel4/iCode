@@ -65,6 +65,9 @@ func main() {
 	r.HandleFunc("/user/{userID}", remove.User(mysqlDB)).Methods("DELETE")
 	r.HandleFunc("/unenrollstudent", remove.Unenroll(mysqlDB)).Methods("DELETE")
 	r.HandleFunc("/group/{groupID}", remove.Group(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/course/{courseID}", remove.Course(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/module/{moduleID}", remove.Module(mysqlDB)).Methods("DELETE")
+	r.HandleFunc("/campus/{campusID}", remove.Campus(mysqlDB)).Methods("DELETE")
 
 	log.Println("Starting BATMAN on", os.Getenv("PORT"))
 	err = http.ListenAndServe(os.Getenv("PORT"), r)

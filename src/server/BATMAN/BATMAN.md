@@ -938,3 +938,74 @@ DELETE 34.125.0.99:8002/group/G000000001
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+---
+
+### `/course/{courseID}`
+#### Descripcion
+Elimina a un curso
+Nota: La eliminación en la BBDD es en cascada, por lo que se borraran los contenidos de otras tablas que tengan alguna relación con el curso borrado. Esto incluye grupos, preguntas y modulos
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `courseID` (obligatorio): ID del curso a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al curso de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/course/TC1028
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/module/{moduleID}`
+#### Descripcion
+Elimina a un modulo
+Nota: La eliminación en la BBDD es en cascada, por lo que se borraran los contenidos de otras tablas que tengan alguna relación con el modulo borrado. Esto incluye preguntas e intentos de estas
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `moduleID` (obligatorio): ID del modulo a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al curso de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/module/M0000000000000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/campus/{campusID}`
+#### Descripcion
+Elimina a un campus
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `campusID` (obligatorio): ID del campus a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al campus de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.125.0.99:8002/campus/PUE
+
+**Respuesta**
+HTTP/1.1 200 OK

@@ -28,7 +28,11 @@ func Group(mysqlDB *sql.DB) http.HandlerFunc {
 
 		// No estoy orgulloso de este metodo, pero era problematico generar IDs con prefijo que fuera autoincrementadas
 		// es necesario que los IDs tengan predijo dado a que esto hace el uso de las APIs mas fluido
-		groupID := util.GenerateID("G", 9)
+		groupID, err := util.GenerateID("G", 9)
+		if err != nil {
+			http.Error(w, "Error creating group", http.StatusInternalServerError)
+			return
+		}
 
 		// Start transaction
 		tx, err := mysqlDB.Begin()
