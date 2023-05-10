@@ -11,6 +11,8 @@ import (
 
 func CourseModules(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		courseID := mux.Vars(r)["courseID"]
 
 		query := `SELECT id_module, nombre

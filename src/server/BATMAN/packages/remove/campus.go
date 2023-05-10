@@ -9,6 +9,8 @@ import (
 
 func Campus(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		campusID := mux.Vars(r)["campusID"]
 
 		query := `DELETE FROM campus
