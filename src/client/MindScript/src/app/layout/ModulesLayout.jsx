@@ -40,29 +40,32 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                 
                             :
                                 <>
-                                    {homeworkData[0].map((data, index) => (
-                                        <Grid key = { index } container 
-                                            alignItems='center'
-                                            sx={{ width: 300 }}
-                                            >
-                                            <Grid item xs={9}>
-                                                <Typography>{data.hw_name}</Typography>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                                <IconButton sx={{ color: 'appDark.icon' }}>
-                                                    <Edit/>
-                                                </IconButton>
-                                            </Grid>
+                                    {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
+                                    {homeworkData[0] != undefined ?
+                                        homeworkData[0].map((data, index) => (
+                                            <Grid key = { index } container 
+                                                alignItems='center'
+                                                sx={{ width: 300 }}
+                                                >
+                                                <Grid item xs={9}>
+                                                    <Typography>{data.hw_name}</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <IconButton sx={{ color: 'appDark.icon' }}>
+                                                        <Edit/>
+                                                    </IconButton>
+                                                </Grid>
 
-                                            <Grid item xs={1}>
-                                                <IconButton sx={{ color: 'appDark.icon' }}>
-                                                    <DeleteOutline/>
-                                                </IconButton>
-                                            </Grid>
-                                        
+                                                <Grid item xs={1}>
+                                                    <IconButton sx={{ color: 'appDark.icon' }}>
+                                                        <DeleteOutline/>
+                                                    </IconButton>
+                                                </Grid>
                                             
-                                        </Grid>
-                                    ))}
+                                                
+                                            </Grid>
+                                        ))
+                                    :null}
                                 </>
                             }     
                         </List>

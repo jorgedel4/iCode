@@ -5,11 +5,12 @@ import * as React from 'react';
 export const PModuleCard = ({ module, index }) => {
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
     const color = index - (colors.length * parseInt(index / colors.length));
-    const [status, setBlock] = React.useState(module.block)
+    const [status, setBlock] = React.useState(module.locked)
 
     const changeStatus = () => {
+        console.log(module.locked)
         setBlock(!status);
-        module.block = status;        
+        module.locked = status;        
     };
 
     return(

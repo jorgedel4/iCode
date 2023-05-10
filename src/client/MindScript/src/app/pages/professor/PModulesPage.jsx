@@ -23,69 +23,95 @@ export const PModulesPage = () => {
     }
 
     const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
-    
-    //API para obtener los datos de las tareas
-    // const [homeworkData, setHomework] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
+
+     //API para obtener los datos de las tarjeras de modulos
+     const [modulesData, setModule] = useState([]);
+     useEffect(() => {
+         const options = {
+             method: 'GET',
+             headers: {
+                 'Accept': 'application/json',
+             },
+             mode: 'cors',
+         }
+
+         const group = "G000000001";
+         const id = "A01551955";
+ 
+         const fetchData = async () => {
+             try {
+                 const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}?user_id=${id}`, options);
+                 const responseData = await response.json();
+                 setModule(responseData);
+             } catch (error) {
+                 // console.error(error);
+             }
+         };
+ 
+         fetchData();
+     }, []);
+
+    console.log("modulos" + modulesData)
+
+     //API para obtener los datos de las tareas
+    const [homeworkData, setHomework] = useState([]);
+     useEffect(() => {
+         const options = {
+             method: 'GET',
+             headers: {
+                 'Accept': 'application/json',
+             },
+             mode: 'cors',
+         }
+
+         const group = "G000000001";
+ 
+         const fetchData = async () => {
+             try {
+                 const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+                 const responseData = await response.json();
+                 setHomework(responseData);
+             } catch (error) {
+                 console.error(error);
+             }
+         };
+ 
+         fetchData();
+     }, []);
+
+    // const homeworkData = {
+    //     "G000000001": [
+    //         {
+    //             "hw_id": "H0000000000000000001",
+    //             "hw_name": "Tarea 1",
+    //             "course_id": "TC1028",
+    //             "course_name": "Pensamiento computacional",
+    //             "group_id": "G000000001",
+    //             "opening": "2023-05-05T00:00:00Z",
+    //             "closing": "2023-05-10T00:00:00Z"
     //         },
-    //         mode: 'cors',
-    //     }
-
-    //     const group = "G000000001";
-
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
-    //             // const response = await fetch(`http://34.125.0.99:8002/homework?id=L00000001&time=future&group=G000000001&group_by=group`, options);
-    //             const responseData = await response.json();
-    //             setHomework(responseData);
-    //         } catch (error) {
-    //             // console.error(error);
+    //         {
+    //             "hw_id": "H0000000000000000002",
+    //             "hw_name": "Tarea 2",
+    //             "course_id": "TC1028",
+    //             "course_name": "Pensamiento computacional",
+    //             "group_id": "G000000001",
+    //             "opening": "2023-05-11T00:00:00Z",
+    //             "closing": "2023-05-16T00:00:00Z"
+    //         },
+    //         {
+    //             "hw_id": "H4809793312412692480",
+    //             "hw_name": "Tarea 3",
+    //             "course_id": "TC1028",
+    //             "course_name": "Pensamiento computacional",
+    //             "group_id": "G000000001",
+    //             "opening": "2023-05-11T00:00:00Z",
+    //             "closing": "2023-05-14T00:00:00Z"
     //         }
-    //     };
+    //     ]
+    // }
 
-    //     fetchData();
-    // }, []);
-
-    const homeworkData = {
-        "G000000001": [
-            {
-                "hw_id": "H0000000000000000001",
-                "hw_name": "Tarea 1: Condicionales",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-05T00:00:00Z",
-                "closing": "2023-05-10T00:00:00Z"
-            },
-            {
-                "hw_id": "H0000000000000000002",
-                "hw_name": "Tarea 2: Condicionales",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-11T00:00:00Z",
-                "closing": "2023-05-16T00:00:00Z"
-            },
-            {
-                "hw_id": "H4809793312412692480",
-                "hw_name": "Tarea 3: Mas practicas :)",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-11T00:00:00Z",
-                "closing": "2023-05-14T00:00:00Z"
-            }
-        ]
-    }
-
-    console.log(homeworkData)
     const homework = Object.values(homeworkData)
-    console.log("homework"+homework)
 
 
     const modules = [
@@ -131,7 +157,7 @@ export const PModulesPage = () => {
                     </Card>
                 </Grid>
 
-                {modules.map((module, index) => (
+                {modulesData.map((module, index) => (
                     <Grid item key={index} xs={12} md={4}>
                         <PModuleCard module={module} index={index} />
                     </Grid>
