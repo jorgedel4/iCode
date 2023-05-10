@@ -34,6 +34,28 @@ export const ASyllabus = () => {
     }, []);
     // console.log(syllabusData)
 
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ "id": id })
+                mode: 'cors',
+
+            };
+
+            const response = await fetch(`http://34.125.0.99:8002/course/${id}`, options);
+            const data = await response.json();
+            return data
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
