@@ -50,11 +50,11 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 				results = append(results, result)
 			}
 		} else {
-			baseQuery = `SELECT id_module, nombre, open_date, close_date, n_question
-			FROM modules m JOIN grupos g on m.course = g.course 
+			baseQuery = `SELECT id_module, nombre, locked, n_question
+			FROM modules m 
+			JOIN grupos g on m.course = g.course 
 			JOIN moduleConfigs mc on m.id_module = mc.module 
-			WHERE g.id_group = ?
-			ORDER BY mc.open_date ASC`
+			WHERE g.id_group = ?`
 
 			values = append(values, groupID)
 
