@@ -43,8 +43,7 @@ export const PManage = () => {
   const [idQuery, setIdQuery] = useState("");
 
   const dataFiltered = filterData(nameQuery, idQuery, usersData);
-  const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
-
+  const pages = ['Home', 'Profile']
 
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>

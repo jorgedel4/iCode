@@ -22,7 +22,8 @@ export const PModulesPage = () => {
         // console.log("Nómina ", schoolID)
     }
 
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = ['Home', 'Profile']
+
     
     //API para obtener los datos de las tareas
     // const [homeworkData, setHomework] = useState([]);
