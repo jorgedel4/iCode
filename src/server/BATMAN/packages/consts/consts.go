@@ -6,3 +6,9 @@ var AccountTypes = map[byte]string{
 	'A': "student",
 	'S': "admin",
 }
+
+var DBUsersIDColumn = map[string]string{
+	"professor": "nomina",
+	"student": "matricula",
+	"admin": "id_admin",
+}

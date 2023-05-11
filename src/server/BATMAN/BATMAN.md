@@ -839,6 +839,41 @@ Content-Type: application/json
 **Respuesta**
 HTTP/1.1 200 OK
 
+---
+
+### `/user/{userID}`
+#### Descripcion
+Modifica la informacion de un usuario
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro    | Tipo        | Obligatorio | Descripcion            |
+|------------- | ----------- | ----------- | ---------------------- |
+| campus       | string      | no          | ID del nuevo campus    |
+| name         | string      | no          | Nuevo nombre           |
+| flast_name   | string      | no          | Nuevo apellido paterno |
+| slast_name   | string      | no          | Nuevo apellido materno |
+
+#### Respuesta
+En caso de que se haya modificado la información del usuario de forma exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.125.0.99:8002//user/S00000001
+Content-Type: application/json
+``` json
+{
+    "name": "Samuel",
+    "flast_name": "Garcia"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
 
 
 ## Endpoints de eliminacion
