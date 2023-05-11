@@ -103,3 +103,50 @@ HTTP/1.1 200 OK Content-Type: application/json
 ]
 
 ```
+
+
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador</h2>
+
+<h3 style="color:#0000FF;">/requestQuestion</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+SOlicitud para agregar una pregunta a la base de datos
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| module       | string    | si                                           | ID del estudiante que pide preguntas                    |
+| q_type       | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
+| info         | string    | si                                           | ID del grupo al que pertene el estudiante               |
+| created_by   | string    | si                                           | ID del profesor que creo la tarea                       |
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json 
+
+```json
+{
+    "module": "M0000000000000000001",
+    "q_type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+    "created_by": "L00000003"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created

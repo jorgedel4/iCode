@@ -30,6 +30,16 @@ func MoQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	selectors = append(selectors, "module = ?")
 	values = append(values, req.Assigment)
 
+	selectors = append(selectors, "mod_question_status(?, id_question, ?) = ? OR mod_question_status2(?, id_question, ?) = ?")
+	//Primer chequeo con PEN
+	values = append(values, req.Group)
+	values = append(values, req.Student)
+	values = append(values, "PEN")
+	//Segunda revision con "FAI"
+	values = append(values, req.Group)
+	values = append(values, req.Student)
+	values = append(values, "FAI")
+
 	/* 	selectors = append(selectors, "attempt_status = ?")
 	   	values = append(values, "PEN") */
 
