@@ -1,7 +1,7 @@
 import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { NavBar, SearchBar } from '../../components';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, Save } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
@@ -72,6 +72,36 @@ export const AManage = () => {
         fetchData();
     }, []);
 
+    const handleEditRow = (id, rows, setRows) => {
+        const updatedRows = rows.map((row) => {
+            if (row.id === id) {
+                return { ...row, editable: !row.editable }; // Toggle the editable property
+            }
+            return row;
+        });
+        setRows(updatedRows);
+    };
+
+    const handleSaveRow = (id, rows, setRows) => {
+        const updatedRows = rows.map((row) => {
+            if (row.id === id) {
+                return { ...row, editable: row.editable }; // Toggle the editable property
+            }
+            return row;
+        });
+        setRows(updatedRows);
+    };
+
+    const handleRowChange = (id, rows, setRows, field, value) => {
+        const updatedRows = rows.map((row) => {
+            if (row.id === id) {
+                return { ...row, [field]: value };
+            }
+            return row;
+        });
+        setRows(updatedRows);
+    };
+
 
     const handleDelete = async (id) => {
         // console.log(id);
@@ -95,12 +125,34 @@ export const AManage = () => {
         }
     };
 
+    const handleEdit = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ "id": id })
+                mode: 'cors',
+
+            };
+
+            const response = await fetch(`http://34.125.0.99:8002/user/${id}`, options);
+            const data = await response.json();
+            return data
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
-
+    const [editMode, setEditMode] = useState(false);
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     const [campusQuery, setCampusQuery] = useState("");
@@ -133,6 +185,15 @@ export const AManage = () => {
         setButtonStudentSelected(false);
     };
 
+    const handleEditClick = () => {
+        setEditMode(true);
+    };
+
+    const handleSaveClick = () => {
+        // Handle the save logic
+        setEditMode(false);
+    };
+
     const columns = [
         { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
         { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
@@ -146,9 +207,45 @@ export const AManage = () => {
             mx: 10,
             renderCell: (params) => (
                 <>
-                    <IconButton aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
-                        <Edit />
-                    </IconButton>
+                    {buttonStudentSelected ? (
+                        <>
+                            <IconButton
+                                aria-label="delete"
+                                sx={{ color: 'appDark.icon', mx: 2 }}
+                                onClick={() => {
+                                    if (params.row.editable) {
+                                        handleSaveRow(params.row.id, studentsData, setStudent);
+                                    } else {
+                                        handleEditRow(params.row.id, studentsData, setStudent);
+                                    }
+                                }}
+                                disabled={params.row.editable}
+                            >
+                                {params.row.editable ? <Save /> : <Edit />}
+                            </IconButton>
+                        </>
+                    ) : buttonProfessorSelected ? (
+                        <>
+                            <IconButton
+                                aria-label="delete"
+                                sx={{ color: 'appDark.icon', mx: 2 }}
+                                onClick={() => {
+                                    if (params.row.editable) {
+                                        console.log(params.row.id)
+                                        handleSaveRow(params.row.id, professorsData, setProfessor);
+                                    } else {
+                                        handleEditRow(params.row.id, professorsData, setProfessor);
+                                    }
+                                }}
+                                disabled={params.row.editable}
+                            >
+                                {params.row.editable ? <Save /> : <Edit />}
+                            </IconButton>
+                        </>
+                    ) : (
+                        <>
+                        </>
+                    )}
                     <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
@@ -159,7 +256,7 @@ export const AManage = () => {
 
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar pages={pages}/>
+            <NavBar pages={pages} />
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
@@ -246,6 +343,22 @@ export const AManage = () => {
                     columns={columns}
                     theme={theme}
                     sx={{ color: 'appDark.text', border: 0 }}
+                    onCellEditCommit={(params) =>
+                        buttonStudentSelected ?
+                            handleRowChange(params.id, studentsData, setStudent, params.field, params.value)
+                            : buttonProfessorSelected ?
+                                handleRowChange(params.id, professorData, setProfessor, params.field, params.value)
+                                : null
+                    }
+                    components={{
+                        Toolbar: () => (
+                            <Grid container justifyContent="flex-end" alignItems="center">
+                                <Button onClick={handleSaveRow} variant="contained" color="primary">
+                                    Save Rows
+                                </Button>
+                            </Grid>
+                        ),
+                    }}
                 />
             </Grid>
 
