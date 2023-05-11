@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/read"
+	"elPadrino/RIDDLE/packages/write"
 	"fmt"
 	"log"
 	"net/http"
@@ -38,6 +39,9 @@ func main() {
 
 	//Read operations
 	r.HandleFunc("/questions", read.Questions(mysqlDB)).Methods("GET")
+
+	//Write operations
+	r.HandleFunc("/requestQuestion", write.RequestQuestion(mysqlDB)).Methods("POST")
 
 	//
 	log.Println("Starting RIDDLE on", os.Getenv("PORT"))

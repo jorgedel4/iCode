@@ -20,6 +20,8 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 		req.Student = r.URL.Query().Get("id_student")     //Matricula
 		req.Assigment = r.URL.Query().Get("id_assigment") //Modulo o Tarea
 		req.Group = r.URL.Query().Get("id_group")
+		req.Module = r.URL.Query().Get("id_module")
+
 		// parametro de grupo
 
 		//Verificar que los params sean cumplidos
@@ -60,10 +62,28 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 
 		} else if req.Assigment[0] == 'H' {
 
+			if req.Module == "" {
+				http.Error(w, "Error reading Group", http.StatusBadRequest)
+				return
+			}
+
 			log.Println("SIuiuiu")
 			//Llamar funcion para preguntas de grupos
-			/* 			util.HwQuestions(w, req, mysqlDB)
-			 */
+			res, err := util.HwQuestions(w, req, mysqlDB)
+
+			//convertir las estructuras
+			hwreqsJSON, err := json.Marshal(res)
+			if err != nil {
+				http.Error(w, "Error parsing response", http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(hwreqsJSON)
+			w.(http.Flusher).Flush()
+			w.(http.CloseNotifier).CloseNotify()
+
 		}
 
 	}
