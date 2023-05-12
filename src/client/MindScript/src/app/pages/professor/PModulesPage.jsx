@@ -4,10 +4,12 @@ import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
+import { useParams } from 'react-router-dom';
 
 export const PModulesPage = () => {
     const home = '/professor/home'
     const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+    let params = useParams()
 
     //Current user info
     const auth = getAuth();
@@ -27,55 +29,57 @@ export const PModulesPage = () => {
      //API para obtener los datos de las tarjeras de modulos
      const [modulesData, setModule] = useState([]);
      useEffect(() => {
-         const options = {
-             method: 'GET',
-             headers: {
-                 'Accept': 'application/json',
-             },
-             mode: 'cors',
-         }
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-         const group = "G000000001";
+        //  const group = "G000000001";
+        const group = params.group;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
  
-         const fetchData = async () => {
-             try {
-                 const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}`, options);
-                 const responseData = await response.json();
-                 setModule(responseData);
-             } catch (error) {
-                 // console.error(error);
-             }
-         };
- 
-         fetchData();
+        fetchData();
      }, []);
 
-    console.log("modulos" + modulesData)
+    // console.log("modulos" + modulesData)
 
      //API para obtener los datos de las tareas
     const [homeworkData, setHomework] = useState([]);
      useEffect(() => {
-         const options = {
-             method: 'GET',
-             headers: {
-                 'Accept': 'application/json',
-             },
-             mode: 'cors',
-         }
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-         const group = "G000000001";
+        //  const group = "G000000001";
+        const group = params.group;
  
-         const fetchData = async () => {
-             try {
-                 const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
-                 const responseData = await response.json();
-                 setHomework(responseData);
-             } catch (error) {
-                 console.error(error);
-             }
-         };
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
  
-         fetchData();
+        fetchData();
      }, []);
 
     // const homeworkData = {
@@ -140,11 +144,13 @@ export const PModulesPage = () => {
                     </Card>
                 </Grid>
 
-                {modulesData.map((module, index) => (
-                    <Grid item key={index} xs={12} md={4}>
-                        <PModuleCard module={module} index={index} />
-                    </Grid>
-                ))}
+                {modulesData != null && modulesData != undefined ?
+                    modulesData.map((module, index) => (
+                        <Grid item key={index} xs={12} md={4}>
+                            <PModuleCard module={module} index={index} group={params.group}/>
+                        </Grid>
+                ))
+                : null}
             </Grid>
         </ModulesLayout>
     )

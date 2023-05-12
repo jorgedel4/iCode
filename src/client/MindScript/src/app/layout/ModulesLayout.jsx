@@ -9,7 +9,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
 
             <Grid item xs={12} sx={{mt:4, height: '24px'}}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
-                    {'< Cursos'}
+                    {'< Grupos'}
                 </Button>
             </Grid>
 
@@ -19,76 +19,82 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                 </Typography>
             </Grid> 
 
-            <Grid item xs={12} md={3} lg={5} xl={6} sx={{mt:1}}>
+            <Grid item xs={12} md={4} lg={6} xl={7} sx={{mt:1}}>
                 { children }
             </Grid>
 
-            <Grid item xs={12} md={9} lg={7} xl={6} sx={{mt:1}}>
+            <Grid item xs={12} md={8} lg={6} xl={5} sx={{mt:1}}>
 
                 <Grid container justifyContent='flex-end'>
                     
-                    <HomeworkBoard xs={-1}>
-                        <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
+                    {/* <Grid item xs={-12}> */}
+                        <HomeworkBoard xs={-1}>
+                            <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
 
-                        <List>
-                            {student?
-                                <>
-                                    {homeworkData.map((data, index) => (
-                                        <SMHomeworkCard key={ index }  data={ data } index={ index } />
-                                    ))}
-                                </>
-                                
-                            :
-                                <>
-                                    {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
-                                    {homeworkData[0] != undefined ?
-                                        homeworkData[0].map((data, index) => (
-                                            <Grid key = { index } container 
-                                                alignItems='center'
-                                                sx={{ width: 300 }}
-                                                >
-                                                <Grid item xs={9}>
-                                                    <Typography>{data.hw_name}</Typography>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <IconButton sx={{ color: 'appDark.icon' }}>
-                                                        <Edit/>
-                                                    </IconButton>
-                                                </Grid>
+                            <List>
+                                {student?
+                                    <>
+                                        {homeworkData.map((data, index) => (
+                                            <SMHomeworkCard key={ index }  data={ data } index={ index } />
+                                        ))}
+                                    </>
+                                    
+                                :
+                                    <>
+                                        {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
+                                        {homeworkData[0] != undefined && homeworkData[0] != null ?
+                                            homeworkData[0].map((data, index) => (
+                                                <Grid key = { index } container 
+                                                    alignItems='center'
+                                                    sx={{ width: 300 }}
+                                                    >
+                                                    <Grid item xs={9}>
+                                                        <Typography>{data.hw_name}</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <IconButton sx={{ color: 'appDark.icon' }}>
+                                                            <Edit/>
+                                                        </IconButton>
+                                                    </Grid>
 
-                                                <Grid item xs={1}>
-                                                    <IconButton sx={{ color: 'appDark.icon' }}>
-                                                        <DeleteOutline/>
-                                                    </IconButton>
-                                                </Grid>
-                                            
+                                                    <Grid item xs={1}>
+                                                        <IconButton sx={{ color: 'appDark.icon' }}>
+                                                            <DeleteOutline/>
+                                                        </IconButton>
+                                                    </Grid>
                                                 
-                                            </Grid>
-                                        ))
-                                    :null}
-                                </>
-                            }     
-                        </List>
+                                                    
+                                                </Grid>
+                                            ))
+                                        :null}
+                                    </>
+                                }     
+                            </List>
 
-                    </HomeworkBoard>
+                        </HomeworkBoard>
+                    {/* </Grid> */}
 
                     {!student ?
                         <>
-                            <Button
-                                variant="contained"
-                                sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
-                                ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
-                            >
-                                Avances y Progresos
-                            </Button>
+                            {/* <Grid item xs={12}> */}
+                                <Button
+                                    variant="contained"
+                                    sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
+                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
+                                >
+                                    Avances y Progresos
+                                </Button>
+                            {/* </Grid> */}
+                            {/* <Grid item xs={12}> */}
 
-                            <Button
-                                variant='contained'
-                                sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
-                                ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
-                            >
-                                Mandar Preguntas
-                            </Button>
+                                <Button
+                                    variant='contained'
+                                    sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
+                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
+                                >
+                                    Mandar Preguntas
+                                </Button>
+                            {/* </Grid> */}
                         </>
                     :null}
                 </Grid>

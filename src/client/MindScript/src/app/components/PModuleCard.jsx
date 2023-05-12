@@ -2,16 +2,13 @@ import { Card, CardContent, CardActions, Typography, Grid, IconButton } from '@m
 import { Edit, LockOutlined, LockOpenRounded } from '@mui/icons-material'
 import * as React from 'react';
 
-export const PModuleCard = ({ module, index }) => {
+export const PModuleCard = ({ module, index, group }) => {
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
     const color = index - (colors.length * parseInt(index / colors.length));
     const [status, setBlock] = React.useState(module.locked)
 
     const changeStatus = () => {
         setBlock(!status);
-
-        //Esto se tiene que borrar en un futuro
-        const group = "G000000001";
         
         //API para modificar si un modulo esta bloqueado o no
         const options = {
@@ -19,7 +16,7 @@ export const PModuleCard = ({ module, index }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            mode: 'no-cors',
+            mode: 'cors',
             body: JSON.stringify({
                 "module": module.id,
                 "group": group
@@ -28,18 +25,10 @@ export const PModuleCard = ({ module, index }) => {
 
         fetch('http://34.125.0.99:8002/togglemodulestate', options)
             .then(response => {
-                // console.log(response)
-                return response.json()
-            })
-            // .then(json => {
-            //     setResponse(json)
-            //     setShowComponent(true)
-            // })
-            .then(data => {
-                console.log(data)
+                console.log(response)
             })
             .catch(error => {
-                console.log(error)
+                // console.log(error)
             })
 
     };
