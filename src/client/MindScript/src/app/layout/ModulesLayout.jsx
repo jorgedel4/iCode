@@ -3,9 +3,30 @@ import { DeleteOutline, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard } from '../components' 
 
 export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages }) => {
+    const display = (event) => {
+        console.log("dlsdfjasljf")
+
+    }
+
+    //Funciones para abrir la modal de Crear TAREA
+    const [openEditHomework, setOpenEditHomework] = useState(false);
+    const showModalEditHomework = (data) => {
+        setOpenEditHomework(true);
+    }
+    const closeModalEditHomework = () => {
+        setOpenEditHomework(false);
+    }
+
+    //Funciones para abrir la modal de Eliminar tarea
+    const [openDeleteHomework, setOpenDeleteHomework] = useState(false);
+    const showModalDeleteHomework = () => { setOpenDeleteHomework(true); }
+    const closeModalDeleteHomework = () => {
+        setOpenDeleteHomework(false);
+    }
+
     return (
-        <Grid container padding={5} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
-            <NavBar pages={pages}/>
+        <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
+            <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
 
             <Grid item xs={12} sx={{mt:4, height: '24px'}}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
@@ -52,6 +73,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                         <Typography>{data.hw_name}</Typography>
                                                     </Grid>
                                                     <Grid item xs={2}>
+                                                <EditHomework open={openEditHomework} close={closeModalEditHomework} data={data}/>
                                                         <IconButton sx={{ color: 'appDark.icon' }}>
                                                             <Edit/>
                                                         </IconButton>
