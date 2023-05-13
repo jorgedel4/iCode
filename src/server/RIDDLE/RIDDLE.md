@@ -150,3 +150,98 @@ Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json
 <p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 201 Created
+
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Tarea</h2>
+
+<h3 style="color:#0000FF;">/hwQuestionAttempt</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Carga de intentos de preguntas de tareas
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+student, homework, question, attempt_status
+
+| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
+| homework         | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
+| question         | string    | si                                           | ID de la pregunta que se intenta                        |
+| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que el intento de la pregunta de una tarea se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de hw_questionAtempts.
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/hwQuestionAttempt Content-Type: application/json 
+
+```json
+{
+    "student": "A01731511",
+    "homework": "H0000000000000000002",
+    "question": "CQ000000000000000002",
+    "attempt_status": "FAI"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Modulo</h2>
+
+<h3 style="color:#0000FF;">/modQuestionAttempt</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Carga de intentos de preguntas de Modulos
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+student, grupo, question, attempt_status
+
+| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
+| grupo            | string    | si                                           | ID del grupo                                            | 
+| question         | string    | si                                           | ID de la pregunta que se intenta                        |
+| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que el intento de la pregunta de un modulo se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de questionAtempts.
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json 
+
+```json
+{
+    "student": "A01731511",
+    "grupo": "G000000003",
+    "question": "CQ000000000000000002",
+    "attempt_status": "FAI"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
