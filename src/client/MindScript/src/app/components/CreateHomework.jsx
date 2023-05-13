@@ -158,12 +158,11 @@ export const CreateHomework = ({ open, close, schoolID }) => {
         };
         fetchData();
     }, [course]);
-    console.log("yfgfhfjg", modulesData)
 
     let modules = [];
     modulesData.map((module) => (
         modules.push({
-            module: module.id,
+            id: module.id,
             name: module.name,
             n_questions: 0,
             checked: true
@@ -174,8 +173,8 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
     const createHomework = {
         hw_name: hwname,
-        startDate: startDate,
-        endDate: endDate,
+        open_date: startDate,
+        close_date: endDate,
     }
 
     // console.log("POST Register Homework", createHomework)
@@ -192,7 +191,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                 })
                 : null
         ))
-        console.log("Request groups", requestModules)
+        console.log("Request modules", requestModules)
         groups.map((group) => (
             (group.checked && (group.id_course === course))
                 ? requestGroups.push(
@@ -217,11 +216,13 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                 modules_questions: requestModules
             })
         }
+        console.log("Options", options)
 
         fetch('http://34.125.0.99:8002/createhw', options)
             .then(response => {
                 // console.log("createHomeworkRequest", response)
                 if (response.status === 201) {
+                    close()
                     // console.log(respose)
                     throw new Error('Grupo creado');
                 }
