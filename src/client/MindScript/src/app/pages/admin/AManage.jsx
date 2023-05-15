@@ -73,15 +73,24 @@ export const AManage = () => {
     }, []);
 
     const handleEditButton = (id) => {
-        const updatedData = dataFiltered.map((row) => {
-            if (row.id === id) {
-                setEditMode(true);
-                return { ...row, editMode: true };
-            } else {
+        setFilter((prevData) => {
+            let updatedData = prevData.map((row) => {
+                if (row.editMode) {
+                    // Disable previously edited row
+                    return { ...row, editMode: false };
+                }
                 return row;
+            });
+
+            const clickedRow = updatedData.find((row) => row.id === id);
+            if (clickedRow) {
+                // Enable the clicked row
+                clickedRow.editMode = true;
             }
+
+            setEditMode(clickedRow && clickedRow.editMode);
+            return updatedData;
         });
-        setFilter(updatedData);
     };
 
     const handleSaveRow = (id) => {
@@ -216,9 +225,16 @@ export const AManage = () => {
                             <IconButton
                                 aria-label="delete"
                                 sx={{ color: 'appDark.icon', mx: 2 }}
-                                onClick={() => handleEditButton(params.row.id)}
+                                onClick={() => {
+                                    setEditedRow(params.row.id)
+                                    if (params.row.editMode) {
+                                        handleSaveRow(params.row.id);
+                                    } else {
+                                        handleEditButton(params.row.id);
+                                    }
+                                }}
                             >
-                                {editMode ? <Save /> : <Edit />}
+                                {params.row.editMode ? <Save /> : <Edit />}
                             </IconButton>
                         </>
                     ) : (
@@ -323,8 +339,17 @@ export const AManage = () => {
                     rows={dataFiltered}
                     columns={columns}
                     theme={theme}
-                    isCellEditable={(params) => editMode && editedRow === params.row.id }
-                    sx={{ color: 'appDark.text', border: 0 }}
+                    isCellEditable={(params) => editMode && editedRow === params.row.id}
+                    sx={{
+                        color: 'appDark.text', 
+                        border: 0,
+                        '& .edit-mode-row': {
+                            backgroundColor: 'red',
+                        },
+                        '& .MuiDataGrid-cell--editable': {
+                            bgcolor: 'primary.main'
+                          },
+                    }}
                 />
             </Grid>
 
