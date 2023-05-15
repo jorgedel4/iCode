@@ -15,7 +15,7 @@ func HwQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	//Query de base para preguntas de tareas
-	baseQueryHw := `SELECT id_question, q_type, info, mod_question_status2(?, id_question, ?) AS status
+	baseQueryHw := `SELECT id_question, q_type, info, homeworkQuestions(?, id_question, ?) AS status
 	FROM questions`
 
 	//Slices para almacenar los selectores y valores del where
@@ -33,7 +33,7 @@ func HwQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	values = append(values, req.Module)
 
 	//Le paso la funcion en el where para que solo me de las preguntas con PEN
-	selectors = append(selectors, "mod_question_status2(?, id_question, ?) = ? OR mod_question_status2(?, id_question, ?) = ?")
+	selectors = append(selectors, "homeworkQuestions(?, id_question, ?) = ? OR mod_question_status2(?, id_question, ?) = ?")
 	//Primer chequeo con PEN
 	values = append(values, req.Assigment)
 	values = append(values, req.Student)
