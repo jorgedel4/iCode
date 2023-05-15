@@ -56,6 +56,7 @@ export function AddModuleHomework({ module }) {
     const handleChange = () => {
         setChecked(!checked);
         module.checked = !checked;
+        setCounts(0);
     };
 
   

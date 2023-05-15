@@ -39,27 +39,6 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
 
 
-    // const modules = [
-    //     {
-    //         name: "Variables",
-    //         id: "M0000000000000000004",
-    //         n_questions: 0,
-    //         checked: false
-    //     },
-    //     {
-    //         name: "Condicionales",
-    //         id: "M0000000000000000005",
-    //         n_questions: 0,
-    //         checked: true
-    //     },
-    //     {
-    //         name: "Ciclo for",
-    //         id: "M0000000000000000006",
-    //         n_questions: 0,
-    //         checked: true
-    //     },
-    // ]
-
     /*API region */
 
     //GET course information
@@ -173,8 +152,8 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
     const createHomework = {
         hw_name: hwname,
-        open_date: startDate,
-        close_date: endDate,
+        startDate: startDate,
+        endDate: endDate,
     }
 
     // console.log("POST Register Homework", createHomework)
@@ -198,7 +177,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                     group.id_group)
                 : null
         ))
-        // console.log("Request groups", requestGroups)
+        console.log("Request groups", requestGroups)
 
         const options = {
             method: 'POST',
@@ -209,20 +188,18 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             mode: 'no-cors',
             body: JSON.stringify({
 
-                groups: requestGroups,
-                hw_name: createHomework.hw_name,
-                open_date: createHomework.startDate,
-                close_date: createHomework.endDate,
-                modules_questions: requestModules
+                "groups": requestGroups,
+                "hw_name": createHomework.hw_name,
+                "open_date": createHomework.startDate,
+                "close_date": createHomework.endDate,
+                "modules_questions": requestModules
             })
         }
-        console.log("Options", options)
-
+        console.log(options)
         fetch('http://34.125.0.99:8002/createhw', options)
             .then(response => {
                 // console.log("createHomeworkRequest", response)
                 if (response.status === 201) {
-                    close()
                     // console.log(respose)
                     throw new Error('Grupo creado');
                 }

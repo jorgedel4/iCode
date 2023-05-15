@@ -16,71 +16,47 @@ export const EditHomework = ({ open, close, data }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-    // const modules = [
-    //     {
-    //         name: "Variables",
-    //         id: "M0000000000000000004",
-    //         n_questions: 0,
-    //         checked: false
-    //     },
-    //     {
-    //         name: "Condicionales",
-    //         id: "M0000000000000000005",
-    //         n_questions: 0,
-    //         checked: true
-    //     },
-    //     {
-    //         name: "Ciclo for",
-    //         id: "M0000000000000000006",
-    //         n_questions: 0,
-    //         checked: true
-    //     },
-    // ]
+
     const onSubmit = (event) => {
         event.preventDefault();
-        // setFormSubmitted(true);
-        // console.log(formState);
-        // if (!isFormValid) return;
     }
     console.log(data);
 
     //GET modules information
-    // const [modulesData, setModule] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-    //     // let userID = "A01551955"
-    //     // let term = "current"
+        // let userID = "A01551955"
+        // let term = "current"
 
-    //     const fetchData = async () => {
-    //         if (course) {
-    //             try {
-    //                 const response = await fetch(`http://34.125.0.99:8002/coursemodules/${}`, options);
-    //                 const responseData = await response.json();
-    //                 setModule(responseData);
-    //             } catch (error) {
-    //                 // console.error(error); .push({id:, n_questions: })
-    //             }
-    //         }
-    //     };
-    //     fetchData();
-    // }, [course]);
+        const fetchData = async () => {
+                try {
+                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${data.course_id}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    // console.error(error); .push({id:, n_questions: })
+                }
+        };
+        fetchData();
+    }, []);
 
-    // let modules = [];
-    // modulesData.map((module) => (
-    //     modules.push({
-    //         id: module.id,
-    //         name: module.name,
-    //         n_questions: 0,
-    //         checked: true
-    //     })
-    // ))
+    let modules = [];
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true
+        })
+    ))
 
 
 
@@ -89,7 +65,7 @@ export const EditHomework = ({ open, close, data }) => {
             id="Modal prrona Editar tarea"
             open={open}
             onClose={close}
-            aria-labelledby="Unirse a un curso"
+            aria-labelledby="Editar tarea"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
@@ -104,9 +80,9 @@ export const EditHomework = ({ open, close, data }) => {
 
                 }}>
 
-                <Grid item xs={12} id="PrimeraSección">
+                <Grid item xs={12} >
                     <Typography id="modal-hw-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
-                        {data.work}
+                        {data.hw_name}
                     </Typography>
                 </Grid>
 
@@ -179,9 +155,9 @@ export const EditHomework = ({ open, close, data }) => {
 
                                     <TableBody>
                                         {modules.map((module) => (
-                                            <>
-                                                <AddModuleHomework key={module.id} module={module} />
-                                            </>
+
+                                            <AddModuleHomework key={module.id} module={module} />
+
                                         ))}
                                     </TableBody>
 
@@ -277,7 +253,7 @@ export const EditHomework = ({ open, close, data }) => {
                         </Grid>
 
                         {/* Botones */}
-                        <Grid container justifyContent='center' sx={{ my:3,mx: 5.5 }}>
+                        <Grid container justifyContent='center' sx={{ my: 3, mx: 5.5 }}>
                             <Grid item xs={6} id="cancelar" >
 
                                 <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>

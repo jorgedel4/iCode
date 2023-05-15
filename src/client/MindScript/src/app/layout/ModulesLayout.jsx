@@ -1,12 +1,10 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, Edit } from '@mui/icons-material'
-import { NavBar, HomeworkBoard, SMHomeworkCard } from '../components' 
+import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
+import { useState } from 'react';
 
 export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages }) => {
-    const display = (event) => {
-        console.log("dlsdfjasljf")
 
-    }
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);
@@ -28,7 +26,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
 
-            <Grid item xs={12} sx={{mt:4, height: '24px'}}>
+            <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
                     {'< Grupos'}
                 </Button>
@@ -38,92 +36,96 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                 <Typography fontWeight={900} fontSize={18} sx={{ color: 'appDark.text' }}>
                     {groupName}
                 </Typography>
-            </Grid> 
-
-            <Grid item xs={12} md={4} lg={6} xl={7} sx={{mt:1}}>
-                { children }
             </Grid>
 
-            <Grid item xs={12} md={8} lg={6} xl={5} sx={{mt:1}}>
+            <Grid item xs={12} md={4} lg={6} xl={7} sx={{ mt: 1 }}>
+                {children}
+            </Grid>
+
+            <Grid item xs={12} md={8} lg={6} xl={5} sx={{ mt: 1 }}>
 
                 <Grid container justifyContent='flex-end'>
-                    
+
                     {/* <Grid item xs={-12}> */}
-                        <HomeworkBoard xs={-1}>
-                            <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
+                    <HomeworkBoard xs={-1}>
+                        <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
 
-                            <List>
-                                {student?
-                                    <>
-                                        {homeworkData.map((data, index) => (
-                                            <SMHomeworkCard key={ index }  data={ data } index={ index } />
-                                        ))}
-                                    </>
-                                    
+                        <List>
+                            {student ?
+                                <>
+                                    {homeworkData.map((data, index) => (
+                                        <SMHomeworkCard key={index} data={data} index={index} />
+                                    ))}
+                                </>
+
                                 :
-                                    <>
-                                        {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
-                                        {homeworkData[0] != undefined && homeworkData[0] != null ?
-                                            homeworkData[0].map((data, index) => (
-                                                <Grid key = { index } container 
-                                                    alignItems='center'
-                                                    sx={{ width: 300 }}
-                                                    >
-                                                    <Grid item xs={9}>
-                                                        <Typography>{data.hw_name}</Typography>
-                                                    </Grid>
-                                                    <Grid item xs={2}>
-                                                <EditHomework open={openEditHomework} close={closeModalEditHomework} data={data}/>
-                                                        <IconButton sx={{ color: 'appDark.icon' }}>
-                                                            <Edit/>
-                                                        </IconButton>
-                                                    </Grid>
-
-                                                    <Grid item xs={1}>
-                                                        <IconButton sx={{ color: 'appDark.icon' }}>
-                                                            <DeleteOutline/>
-                                                        </IconButton>
-                                                    </Grid>
-                                                
-                                                    
+                                <>
+                                    {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
+                                    {homeworkData[0] != undefined && homeworkData[0] != null ?
+                                        homeworkData[0].map((data, index) => (
+                                            <Grid key={index} container
+                                                alignItems='center'
+                                                sx={{ width: 300 }}
+                                            >
+                                                <Grid item xs={9}>
+                                                    <Typography>{data.hw_name}</Typography>
                                                 </Grid>
-                                            ))
-                                        :null}
-                                    </>
-                                }     
-                            </List>
+                                                <Grid item xs={2}>
+                                                    <EditHomework open={openEditHomework} close={closeModalEditHomework} data={data} />
+                                                    <IconButton onClick={showModalEditHomework} sx={{ color: 'appDark.icon' }}>
+                                                        <Edit />
+                                                    </IconButton>
+                                                </Grid>
 
-                        </HomeworkBoard>
+                                                <Grid item xs={1}>
+                                                    <IconButton sx={{ color: 'appDark.icon' }}>
+                                                        <DeleteOutline />
+                                                    </IconButton>
+                                                </Grid>
+
+
+                                            </Grid>
+                                        ))
+                                        : null}
+                                </>
+                            }
+                        </List>
+
+                    </HomeworkBoard>
                     {/* </Grid> */}
 
                     {!student ?
                         <>
                             {/* <Grid item xs={12}> */}
-                                <Button
-                                    variant="contained"
-                                    sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
-                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
-                                >
-                                    Avances y Progresos
-                                </Button>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    width: 400, bgcolor: 'appDark.button', mb: 1,
+                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 }
+                                }}
+                            >
+                                Avances y Progresos
+                            </Button>
                             {/* </Grid> */}
                             {/* <Grid item xs={12}> */}
 
-                                <Button
-                                    variant='contained'
-                                    sx={{ width: 400, bgcolor: 'appDark.button', mb: 1,
-                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 } }}
-                                >
-                                    Mandar Preguntas
-                                </Button>
+                            <Button
+                                variant='contained'
+                                sx={{
+                                    width: 400, bgcolor: 'appDark.button', mb: 1,
+                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 }
+                                }}
+                            >
+                                Mandar Preguntas
+                            </Button>
                             {/* </Grid> */}
                         </>
-                    :null}
+                        : null}
                 </Grid>
 
             </Grid>
 
         </Grid>
-        
+
     )
 }
