@@ -73,6 +73,7 @@ export const AManage = () => {
     }, []);
 
     const handleEditButton = (id) => {
+        setEditRow(id);
         setFilter((prevData) => {
             let updatedData = prevData.map((row) => {
                 if (row.editMode) {
@@ -94,6 +95,7 @@ export const AManage = () => {
     };
 
     const handleSaveRow = (id) => {
+        setEditRow(null);
         const updatedData = dataFiltered.map((row) => {
             if (row.id === id) {
                 setEditMode(false);
@@ -157,7 +159,7 @@ export const AManage = () => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
     const [editMode, setEditMode] = useState(false);
-    const [editedRow, setEditedRow] = useState(null);
+    const [editRow, setEditRow] = useState(null);
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     const [campusQuery, setCampusQuery] = useState("");
@@ -203,53 +205,33 @@ export const AManage = () => {
             mx: 10,
             renderCell: (params) => (
                 <>
-                    {buttonStudentSelected ? (
-                        <>
-                            <IconButton
-                                aria-label="edit"
-                                sx={{ color: 'appDark.icon', mx: 2 }}
-                                onClick={() => {
-                                    setEditedRow(params.row.id)
-                                    if (params.row.editMode) {
-                                        handleSaveRow(params.row.id);
-                                    } else {
-                                        handleEditButton(params.row.id);
-                                    }
-                                }}
-                            >
-                                {params.row.editMode ? <Save /> : <Edit />}
-                            </IconButton>
-                        </>
-                    ) : buttonProfessorSelected ? (
-                        <>
-                            <IconButton
-                                aria-label="delete"
-                                sx={{ color: 'appDark.icon', mx: 2 }}
-                                onClick={() => {
-                                    setEditedRow(params.row.id)
-                                    if (params.row.editMode) {
-                                        handleSaveRow(params.row.id);
-                                    } else {
-                                        handleEditButton(params.row.id);
-                                    }
-                                }}
-                            >
-                                {params.row.editMode ? <Save /> : <Edit />}
-                            </IconButton>
-                        </>
+                    {editRow === params.row.id ? (
+                        <IconButton
+                            aria-label="save"
+                            sx={{ color: 'appDark.icon', mx: 2 }}
+                            onClick={() => handleSaveRow(params.row.id)}
+                        >
+                            <Save />
+                        </IconButton>
                     ) : (
-                        <>
-                        </>
+                        <IconButton
+                            aria-label="edit"
+                            sx={{ color: 'appDark.icon', mx: 2 }}
+                            onClick={() => handleEditButton(params.row.id)}
+                        >
+                            <Edit />
+                        </IconButton>
                     )}
                     <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
                 </>
             ),
+
         },
     ];
-    console.log("editedrow: ", editedRow)
-    console.log("mode", editMode)
+    console.log("editedrow: ", editRow)
+    // console.log("mode", editMode)
 
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -339,16 +321,16 @@ export const AManage = () => {
                     rows={dataFiltered}
                     columns={columns}
                     theme={theme}
-                    isCellEditable={(params) => editMode && editedRow === params.row.id}
+                    isCellEditable={(params) => editRow === params.row.id}
                     sx={{
-                        color: 'appDark.text', 
+                        color: 'appDark.text',
                         border: 0,
                         '& .edit-mode-row': {
                             backgroundColor: 'red',
                         },
                         '& .MuiDataGrid-cell--editable': {
                             bgcolor: 'primary.main'
-                          },
+                        },
                     }}
                 />
             </Grid>
