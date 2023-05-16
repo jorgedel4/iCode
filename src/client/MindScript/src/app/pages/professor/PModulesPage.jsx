@@ -117,7 +117,7 @@ export const PModulesPage = () => {
     const homework = Object.values(homeworkData)
 
     return (
-        <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages}>
+        <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
 
                 <Grid item xs={12} md={4}>

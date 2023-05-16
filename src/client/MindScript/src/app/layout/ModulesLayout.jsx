@@ -1,14 +1,15 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
-import { DeleteOutline, Edit } from '@mui/icons-material'
+import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages }) => {
-
+export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages, modules }) => {
+    //Importante para EditHomework
+    const [editData, setData] = useState(null);
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);
-    const showModalEditHomework = (data) => {
+    const showModalEditHomework = () => {
         setOpenEditHomework(true);
     }
     const closeModalEditHomework = () => {
@@ -21,6 +22,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
     const closeModalDeleteHomework = () => {
         setOpenDeleteHomework(false);
     }
+
+
+   
+
 
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -60,7 +65,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
 
                                 :
                                 <>
-                                    {/* {console.log("dddeeffe"+homeworkData[0].lenght)} */}
+                                    {/* {console.log("HOMEWORKDATA", homeworkData)} */}
                                     {homeworkData[0] != undefined && homeworkData[0] != null ?
                                         homeworkData[0].map((data, index) => (
                                             <Grid key={index} container
@@ -71,8 +76,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                     <Typography>{data.hw_name}</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <EditHomework open={openEditHomework} close={closeModalEditHomework} data={data} />
-                                                    <IconButton onClick={showModalEditHomework} sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton onClick={() => {
+                                                        setData(data)
+                                                        showModalEditHomework()
+                                                    }} sx={{ color: 'appDark.icon' }}>
                                                         <Edit />
                                                     </IconButton>
                                                 </Grid>
@@ -87,6 +94,9 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                             </Grid>
                                         ))
                                         : null}
+
+                                        < EditHomework open={openEditHomework} close={closeModalEditHomework}  editData={editData} modules={modules}/>
+                                   
                                 </>
                             }
                         </List>
