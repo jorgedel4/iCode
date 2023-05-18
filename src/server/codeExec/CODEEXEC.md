@@ -4,7 +4,7 @@ CodeExec es una REST API implementada en Go. Permite ejecutar y evaluar código 
 
 ## URL Base
 
-`34.125.0.99:8081`
+`34.16.137.250:8081`
 
 ## Endpoints
 
@@ -37,7 +37,7 @@ La respuesta tiene formato JSON y contiene los siguientes campos
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8081
+POST 34.16.137.250:8081
 Content-Type: application/json
 
 ```

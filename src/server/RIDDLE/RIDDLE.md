@@ -9,7 +9,7 @@ Nunca se le darán preguntas repetidas, en caso de no existir más preguntas se 
 Funcionando como un conector entre las BBDDs (MongoDB y MySQL) y el cliente.
 
 <h2 style="color:#65b891;">URL BASE</h2>
-34.125.0.99:8003
+34.16.137.250:8003
 
 <h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de modulo</h2>
 
@@ -39,7 +39,7 @@ la informacion de la pregunta a resolver.
 
 
 GET 
-34.125.0.99:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001&id_group=G000000001
+34.16.137.250:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001&id_group=G000000001
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 <p style= "font-weight: bold;">Respuesta</p>
@@ -85,7 +85,7 @@ la informacion de la pregunta a resolver y su status.
 
 
 GET 
-34.125.0.99:8003/questions?id_student=A01551955&id_assigment=H0000000000000000001&id_module=M0000000000000000001
+34.16.137.250:8003/questions?id_student=A01551955&id_assigment=H0000000000000000001&id_module=M0000000000000000001
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 <p style= "font-weight: bold;">Respuesta</p>
@@ -135,7 +135,7 @@ En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente u
 
 
 POST
-Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json 
+Peticion POST 34.16.137.250:8003/requestQuestion Content-Type: application/json 
 
 ```json
 {
