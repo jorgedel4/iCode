@@ -64,6 +64,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			SET %s
 			WHERE id_homework = ?`, hwConfigsSQL)
 
+			values = append(values, homeworkID)
 			_, err = tx.Exec(updateHWquery, values...)
 			if err != nil {
 				tx.Rollback()
