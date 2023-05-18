@@ -43,7 +43,7 @@ export const SModulesPage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/groupmodules/${group}?user_id=${schoolID}`, options);
+                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${group}?user_id=${schoolID}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
@@ -70,7 +70,7 @@ export const SModulesPage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=week&group=${group}&group_by=week`, options);
+                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=week&group=${group}&group_by=week`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {

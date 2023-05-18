@@ -23,7 +23,7 @@ export const PModuleCard = ({ module, index, group }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8002/togglemodulestate', options)
+        fetch('http://34.16.137.250:8002/togglemodulestate', options)
             .then(response => {
                 console.log(response)
             })

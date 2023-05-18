@@ -40,7 +40,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/groups?id=${schoolID}&term=${term}`, options);
+                const response = await fetch(`http://34.16.137.250:8002/groups?id=${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -83,7 +83,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
+                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
@@ -186,7 +186,7 @@ const handleEditorDidMount = async () => {
     // let userID = "A01551955"
     // let term = "current"
 
-    // fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options)
+    // fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options)
     // .then(response => response.json())
     // // .then(data => console.log("aqui\n", data))
     // .then(data => setGroup(data))

@@ -57,7 +57,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
                 const responseData = await response.json();
                 setCourseRequest(responseData);
             } catch (error) {
@@ -86,7 +86,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
         const fetchData = async () => {
             if (course) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                    const response = await fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options);
                     const responseData = await response.json();
                     setGroup(responseData);
                 } catch (error) {
@@ -127,7 +127,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
         const fetchData = async () => {
             if (course) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${course}`, options);
+                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
@@ -196,7 +196,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             })
         }
         console.log(options)
-        fetch('http://34.125.0.99:8002/createhw', options)
+        fetch('http://34.16.137.250:8002/createhw', options)
             .then(response => {
                 // console.log("createHomeworkRequest", response)
                 if (response.status === 201) {

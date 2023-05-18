@@ -40,7 +40,7 @@ const handlerHelp = async () => {
             })
         };
 
-        const request = await fetch('http://34.125.0.99:8002/courses', options);
+        const request = await fetch('http://34.16.137.250:8002/courses', options);
         // if (!request.ok) {
         //   throw new Error(`HTTP error! status: ${request.status}`);
         // }
@@ -85,7 +85,7 @@ useEffect(() => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://34.125.0.99:8002/groups?id=${schoolID}&term=${term}`, options);
+            const response = await fetch(`http://34.16.137.250:8002/groups?id=${schoolID}&term=${term}`, options);
             const responseData = await response.json();
             setGroup(responseData);
         } catch (error) {
@@ -109,7 +109,7 @@ useEffect(() => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
+            const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
             const responseData = await response.json();
             setHomework(responseData);
         } catch (error) {

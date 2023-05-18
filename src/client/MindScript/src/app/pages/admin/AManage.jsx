@@ -35,7 +35,7 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/users?user_type=student&campus=all&id=all&name=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
             } catch (error) {
@@ -61,7 +61,7 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
             } catch (error) {
@@ -86,7 +86,7 @@ export const AManage = () => {
 
             };
 
-            const response = await fetch(`http://34.125.0.99:8002/user/${id}`, options);
+            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
             const data = await response.json();
             return data
 

@@ -55,7 +55,7 @@ export const RemoveButton = ({ open, close }) => {
     //     const fetchData = async () => {
     //         if (course) {
     //             try {
-    //                 const response = await fetch(`http://34.125.0.99:8002/coursemodules/${course}`, options);
+    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
     //                 const responseData = await response.json();
     //                 setModule(responseData);
     //             } catch (error) {
