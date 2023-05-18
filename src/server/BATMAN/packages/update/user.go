@@ -81,7 +81,7 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 			values = append(values, userID)
 			_, err = mysqlDB.Exec(query, values...)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Error updating user's info", http.StatusInternalServerError)
 				return
 			}
 		}
