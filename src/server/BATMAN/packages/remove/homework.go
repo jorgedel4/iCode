@@ -9,6 +9,8 @@ import (
 
 func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		hwID := mux.Vars(r)["homeworkID"]
 
 		tx, err := mysqlDB.Begin()

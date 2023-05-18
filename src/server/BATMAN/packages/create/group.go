@@ -10,30 +10,39 @@ import (
 	"github.com/jorgedel4/iCode/packages/util"
 )
 
+// Create new group
 func Group(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
+		// Read request body
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
 
+		// Parse into struct
 		var req structs.NewGroupReq
 		if err := json.Unmarshal(body, &req); err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
 
+		// Generate group ID 
 		// No estoy orgulloso de este metodo, pero era problematico generar IDs con prefijo que fuera autoincrementadas
 		// es necesario que los IDs tengan predijo dado a que esto hace el uso de las APIs mas fluido
-		groupID := util.GenerateID("G", 9)
+		groupID, err := util.GenerateID("G", 9)
+		if err != nil {
+			http.Error(w, "Error creating group", http.StatusInternalServerError)
+			return
+		}
 
 		// Start transaction
 		tx, err := mysqlDB.Begin()
 		if err != nil {
-			http.Error(w, "Error starting transaction", http.StatusInternalServerError)
+			http.Error(w, "Error creating group", http.StatusInternalServerError)
 			return
 		}
 
@@ -45,7 +54,7 @@ func Group(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		// Save module configurations
+		// Save module configurations for the new group
 		for _, module := range req.ModulesConfs {
 			_, err = tx.Exec("INSERT INTO moduleConfigs VALUES (?, ?, ?, ?)", module.ModuleID, groupID, module.NQuestions, false)
 			if err != nil {

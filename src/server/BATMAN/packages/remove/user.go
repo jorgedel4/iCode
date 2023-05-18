@@ -10,6 +10,8 @@ import (
 
 func User(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		userID := mux.Vars(r)["userID"]
 
 		if userID == "" {

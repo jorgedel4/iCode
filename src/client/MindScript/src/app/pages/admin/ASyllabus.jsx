@@ -1,43 +1,100 @@
-import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent } from '@mui/material'
-import { useState } from 'react'
+import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent, IconButton } from '@mui/material'
+import { useState, useEffect } from 'react'
 import { NavBar, SearchBar, ActionButton } from '../../components';
-import { AddCircleOutline, NoteAddOutlined } from '@mui/icons-material'
+import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const ASyllabus = () => {
+    // Api region
+    const [syllabusData, setSyllabus] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
+                const responseData = await response.json();
+                setSyllabus(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    // console.log(syllabusData)
+
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ "id": id })
+                mode: 'cors',
+
+            };
+
+            const response = await fetch(`http://34.16.137.250:8002/course/${id}`, options);
+            const data = await response.json();
+            return data
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 150;
+    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 60 : 120;
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filt, setFilt] = useState([])
+    const [nameQuery, setNameQuery] = useState("");
+    const [idQuery, setIdQuery] = useState("");
+    const [dataFiltered, setFilter] = useState([]);
 
-    const dataFiltered = filterData(searchQuery, data);
+    useEffect(() => {
+        const filteredData = filterData(nameQuery, idQuery, syllabusData);
+        setFilter(filteredData);
+    }, [nameQuery, idQuery, syllabusData]);
 
-    const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
-    const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
-    const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
 
-    const handleButtonStudentClick = () => {
-        setButtonStudentSelected(!buttonStudentSelected);
-        setButtonProfessorSelected(false);
-        setButtonAdminSelected(false);
-    };
-
-    const handleButtonProfessorClick = () => {
-        setButtonProfessorSelected(!buttonProfessorSelected);
-        setButtonStudentSelected(false);
-        setButtonAdminSelected(false);
-    };
-
-    const handleButtonAdminClick = () => {
-        setButtonAdminSelected(!buttonAdminSelected);
-        setButtonProfessorSelected(false);
-        setButtonStudentSelected(false);
-    };
-
+    const columns = [
+        { field: 'id', headerName: 'Id', flex: 2, align: 'center', headerAlign: 'center' },
+        { field: 'name', headerName: 'Materia', flex: 2, align: 'center', headerAlign: 'center' },
+        { field: 'n_modules', headerName: 'Modulos', flex: 2, align: 'center', headerAlign: 'center' },
+        {
+            field: 'actions',
+            headerName: 'Acciones',
+            flex: 2,
+            align: 'center',
+            headerAlign: 'center',
+            mx: 10,
+            renderCell: (params) => (
+                <>
+                    <IconButton aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                        <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                        <Delete />
+                    </IconButton>
+                </>
+            ),
+        },
+    ];
 
     //Current user info
     const auth = getAuth();
@@ -55,66 +112,24 @@ export const ASyllabus = () => {
 
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar pages={pages}/>
-            <Grid item fullWidth lg={9}>
+            <NavBar pages={pages} />
+            <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
-                    <Grid item xs={12} sm={6} lg={5}>
-                        <SearchBar searchQuery={searchQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setSearchQuery} />
+                    <Grid item xs={12} sm={6} lg={6}>
+                        <SearchBar searchQuery={nameQuery} name={'Materia'} placeholder={'Introducción a Python'} setSearchQuery={setNameQuery} />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <SearchBar searchQuery={searchQuery} name={'Matrícula/Nómina'} placeholder={'A00000000'} setSearchQuery={setSearchQuery} />
-                    </Grid>
-
-                    <Grid item xs={4} lg={1}>
-                        <Button
-                            fullWidth
-                            onClick={handleButtonStudentClick}
-                            sx={{
-                                color: 'appDark.text',
-                                bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
-                                '&:hover': {
-                                    bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
-                                },
-                                '&:focus': {
-                                    borderColor: buttonStudentSelected ? 'primary.main' : 'appDark.box',
-                                },
-                                borderRadius: 5,
-                                border: 0.5
-                            }}
-                        >
-                            Materia
-                        </Button>
-                    </Grid>
-
-                    <Grid item xs={4} lg={1}>
-                        <Button
-                            fullWidth
-                            onClick={handleButtonProfessorClick}
-                            sx={{
-                                color: 'appDark.text',
-                                bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
-                                '&:hover': {
-                                    bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
-                                },
-                                '&:focus': {
-                                    borderColor: buttonProfessorSelected ? 'primary.main' : 'appDark.box',
-                                },
-                                borderRadius: 5,
-                                border: 0.5
-                            }}
-                        >
-                            Modulo
-                        </Button>
+                    <Grid item xs={12} sm={6} lg={6}>
+                        <SearchBar searchQuery={idQuery} name={'Id'} placeholder={'TC0000'} setSearchQuery={setIdQuery} />
                     </Grid>
 
                 </Grid>
                 <Grid item xs={12} sx={{ color: 'appDark.text', bgcolor: 'appDark.bgBox', height: '70vh', mt: 2, borderRadius: 2 }}>
-                    <DataGrid disableColumnMenu disableHeader hideFooterPagination rows={rows} columns={columns} theme={theme} sx={{ color: 'appDark.text', border: 0 }} />
+                    <DataGrid disableColumnMenu disableHeader hideFooterPagination rows={dataFiltered} columns={columns} theme={theme} sx={{ color: 'appDark.text', border: 0 }} />
                 </Grid>
             </Grid>
 
-            <Grid item fullWidth lg={3}>
+            <Grid item xs={12} md={12} lg={3}>
                 <Grid container rowSpacing={1} justifyContent='center' align='center' alignItems='center'>
                     <Grid item xs={12} >
                         <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Acciones</Typography>
@@ -155,38 +170,14 @@ export const ASyllabus = () => {
     )
 }
 
-const data = [
-    "Paris",
-    "London",
-    "New York",
-    "Tokyo",
-    "Berlin",
-    "Buenos Aires",
-    "Cairo",
-    "Canberra",
-    "Rio de Janeiro",
-    "Dublin"
-];
 
-
-const rows = [
-    { id: 1, subject: 'TC1028', module: 'If, While', action: 'boton' },
-    { id: 2, subject: 'TC1032', module: 'Funciones', action: 'boton' },
-
-];
-
-const columns = [
-    { field: 'subject', headerName: 'Materia', flex: 2, align: 'center', headerAlign: 'center' },
-    { field: 'module', headerName: 'Modulos', flex: 2, align: 'center', headerAlign: 'center' },
-    { field: 'action', headerName: 'Acciones', flex: 2, align: 'center', headerAlign: 'center' }
-];
-
-
-
-const filterData = (query, data) => {
-    if (!query) {
-        return data;
+const filterData = (nameQuery, idQuery, usersData) => {
+    if (!nameQuery && !idQuery) {
+        return usersData;
     } else {
-        return data.filter((d) => d.toLowerCase().includes(query));
+        return usersData.filter((d) =>
+            (nameQuery && d.name.toLowerCase().includes(nameQuery.toLowerCase())) ||
+            (idQuery && d.id.toLowerCase().includes(idQuery.toLowerCase()))
+        );
     }
 };

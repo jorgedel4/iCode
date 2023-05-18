@@ -1,4 +1,4 @@
-# RIDDLE API
+<h1 style="color:#93e5ab; font-size: 40px">RIDDLE API</h1>
 
 RIDDLE (Question Resource Interface for Developing, Deploying, and Logging Exams) es una API con el
 propósito de mostrar preguntas cuando el estudiante las solicite, siguiendo el siguiente orden:
@@ -8,41 +8,145 @@ propósito de mostrar preguntas cuando el estudiante las solicite, siguiendo el 
 Nunca se le darán preguntas repetidas, en caso de no existir más preguntas se le notificará al usuario.
 Funcionando como un conector entre las BBDDs (MongoDB y MySQL) y el cliente.
 
-## URL BASE
-34.125.0.99:8003
+<h2 style="color:#65b891;">URL BASE</h2>
+34.16.137.250:8003
 
-## ENDPOINTS de solicitud de preguntas
-### /questions
-#### Descripción
-Solicitar el tipo de pregunta e informacion JSON de cada pregunta
+<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de modulo</h2>
 
-#### Metodo de HTTP
+<h3 style="color:#0000FF;">/questions</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 GET
 
-#### Parametros
+<h3 style="color:#b5ffe1;">Parámetros</h3>
 (Mediante el URL)
+
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
 | :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
 | id_student   | string    | si                                           | ID del estudiante que pide preguntas                   |
-| id_assigment | string    | si                                           | ID del modulo o tarea desde la que se hace la peticion | 
-| id_group     | string    | no (Solo en modulos es obligatoria)          | ID del grupo al que pertene el estudiante              |
+| id_assigment | string    | si                                           | ID del modulo desde la que se hace la peticion         | 
+| id_group     | string    | si                                           | ID del grupo al que pertene el estudiante              |
 
-#### Respuesta 
+<h3 style="color:#b5ffe1;">Respuesta</h3>
 En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
 la informacion de la pregunta a resolver.
 
-#### Ejemplo
-**Peticion**
-GET 
-34.125.0.99:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
 
-**Respuesta**
+
+GET 
+34.16.137.250:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001&id_group=G000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
 [
     {
+        "IdPregunta": "CQ000000000000000001",
+        "Type": "codep",
         "Info": "{\"hinputs\": [[\"2\"], [\"4\"]], \"sinputs\": [[\"3\"], [\"6\"]], \"houtputs\": [\"4\", \"16\"], \"language\": \"python\", \"soutputs\": [\"9\", \"36\"], \"timeoutSec\": 10, \"description\": \"Double a number\", \"initialCode\": \"\", \"forbiddenFunctions\": []}",
-        "Type": "codep"
+        "Status": "FAI"
     }
 ]
 ```
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de tareas</h2>
+
+<h3 style="color:#0000FF;">/questions</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+GET
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| id_student   | string    | si                                           | ID del estudiante que pide preguntas                    |
+| id_assigment | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
+| id_module    | string    | si                                           | ID del grupo al que pertene el estudiante               |
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
+la informacion de la pregunta a resolver y su status.
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+GET 
+34.16.137.250:8003/questions?id_student=A01551955&id_assigment=H0000000000000000001&id_module=M0000000000000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+
+[
+    {
+        "IdPregunta": "CQ000000000000000003",
+        "Type": "codep",
+        "Info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+        "Status": "PEN"
+    }
+]
+
+```
+
+
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador</h2>
+
+<h3 style="color:#0000FF;">/requestQuestion</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+SOlicitud para agregar una pregunta a la base de datos
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| module       | string    | si                                           | ID del estudiante que pide preguntas                    |
+| q_type       | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
+| info         | string    | si                                           | ID del grupo al que pertene el estudiante               |
+| created_by   | string    | si                                           | ID del profesor que creo la tarea                       |
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.16.137.250:8003/requestQuestion Content-Type: application/json 
+
+```json
+{
+    "module": "M0000000000000000001",
+    "q_type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+    "created_by": "L00000003"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
