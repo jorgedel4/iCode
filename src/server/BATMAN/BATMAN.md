@@ -862,7 +862,7 @@ En caso de que se haya modificado la información del usuario de forma exitosa, 
 
 #### Ejemplo
 **Peticion**
-PATCH 34.125.0.99:8002//user/S00000001
+PATCH 34.125.0.99:8002/user/S00000001
 Content-Type: application/json
 ``` json
 {
@@ -874,7 +874,55 @@ Content-Type: application/json
 **Respuesta**
 HTTP/1.1 200 OK
 
+---
 
+### `/homework/{homeworkID}`
+#### Descripcion
+Modifica la configuracion de una tarea
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                 | Obligatorio | Descripcion            |
+|------------------ | -------------------- | ----------- | ---------------------- |
+| name              | string               | no          | Nombre de la tarea     |
+| open_date         | string               | no          | Fecha de apertura      |
+| close_date        | string               | no          | Fecha de cierre        |
+| modules_questions | [ modulesQuestions ] | no          | Arreglo que representa las preguntas de cada modulo en la tarea |
+
+El arreglo `modulesQuestions` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                                           |
+|-------------- | ----------- | ----------- | --------------------------------------------------------------------- |
+| module        | string      | si          | Modulo que se quiere agregar a la tarea                               |
+| n_questions   | int         | si          | Numero de preguntas requeridas para completar este modulo en la tarea |
+
+#### Respuesta
+En caso de que se haya modificado la configuración de la tarea de forma exitosa, se regresa únicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.125.0.99:8002/homework/H0000000000000000001
+Content-Type: application/json
+``` json
+{
+    "name": "hello world",
+    "modules_questions": [
+        {
+            "module": "M0000000000000000001",
+            "n_questions": 12
+        },
+        {
+            "module": "M0000000000000000002",
+            "n_questions": 3
+        }
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
 
 ## Endpoints de eliminacion
 
