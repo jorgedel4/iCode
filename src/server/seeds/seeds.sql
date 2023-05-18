@@ -106,7 +106,10 @@ INSERT INTO modules VALUES
 INSERT INTO moduleConfigs VALUES
     ("M0000000000000000001", "G000000001", 3, TRUE),
     ("M0000000000000000002", "G000000001", 3, TRUE),
-    ("M0000000000000000003", "G000000001", 3, TRUE);
+    ("M0000000000000000003", "G000000001", 3, TRUE),
+    ("M0000000000000000001", "G000000003", 2, TRUE),
+    ("M0000000000000000002", "G000000003", 3, FALSE),
+    ("M0000000000000000003", "G000000003", 1, TRUE);
 
 INSERT INTO questions VALUES
     ("CQ000000000000000001", "M0000000000000000001", "codep", '{"description": "Double a number", "hinputs": [["2"], ["4"]], "houtputs": ["4", "16"], "sinputs": [["3"], ["6"]], "soutputs": ["9", "36"], "timeoutSec": 10, "forbiddenFunctions": [], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),

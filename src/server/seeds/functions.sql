@@ -3,13 +3,13 @@ USE iCode;
 SET GLOBAL log_bin_trust_function_creators = 1;
 
 DELIMITER $$
-CREATE FUNCTION successful_mod_attempts(matricula CHAR(9), mod_id CHAR(20))
+CREATE FUNCTION successful_mod_attempts(matricula CHAR(9), mod_id CHAR(20), group_id CHAR(10))
 RETURNS INT
 BEGIN
     DECLARE successful_attempts INT;
     SELECT COUNT(*) INTO successful_attempts FROM questionAttempts qa
     JOIN questions q ON qa.question = q.id_question
-    WHERE student = matricula AND module = mod_id AND attempt_status = 'PAS';
+    WHERE student = matricula AND module = mod_id AND grupo = group_id AND attempt_status = 'PAS';
     RETURN successful_attempts;
 END$$
 DELIMITER ;

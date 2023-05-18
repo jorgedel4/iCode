@@ -17,14 +17,14 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 		userID := r.URL.Query().Get("user_id")
 
 		var baseQuery string
-		var results []interface{}
+		results := make([]interface{}, 0)
 		var values []interface{}
 
 		if len(userID) > 0 && userID[0] == 'A' {
-			baseQuery = `SELECT id_module, nombre, locked, n_question, successful_mod_attempts(?, id_module) AS answered 
-			FROM modules m JOIN grupos g on m.course = g.course 
-			JOIN moduleConfigs mc on m.id_module = mc.module 
-			WHERE g.id_group = ?`
+			baseQuery = `SELECT id_module, nombre, locked, n_question, successful_mod_attempts(?, id_module, grupo) AS answered
+			FROM moduleConfigs mc
+			JOIN modules m ON mc.module = m.id_module 
+			WHERE mc.grupo = ?`
 
 			values = append(values, userID)
 			values = append(values, groupID)
@@ -51,10 +51,9 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		} else {
 			baseQuery = `SELECT id_module, nombre, locked, n_question
-			FROM modules m 
-			JOIN grupos g on m.course = g.course 
-			JOIN moduleConfigs mc on m.id_module = mc.module 
-			WHERE g.id_group = ?`
+			FROM moduleConfigs mc
+			JOIN modules m ON mc.module = m.id_module 
+			WHERE mc.grupo = ?`
 
 			values = append(values, groupID)
 

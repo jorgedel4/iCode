@@ -41,12 +41,10 @@ func Enrollment(mysqlDB *sql.DB) http.HandlerFunc {
 			if strings.HasPrefix(err.Error(), "Error 1062 (23000): Duplicate entry") {
 				http.Error(w, fmt.Sprintf("'%s' already enrolled in '%s'", req.Student, req.Group), http.StatusConflict)
 				return
-			} else if strings.ToLower(err.Error()) == 
-				"error 1452 (23000): cannot add or update a child row: a foreign key constraint fails (`icode`.`enrollments`, constraint `enrollments_ibfk_1` foreign key (`grupo`) references `grupos` (`id_group`))" {
+			} else if strings.Contains(err.Error(), "grupos"){
 				http.Error(w, fmt.Sprintf("Group '%s' does not exist", req.Group), http.StatusBadRequest)
 				return
-			} else if strings.ToLower(err.Error()) == 
-			"error 1452 (23000): cannot add or update a child row: a foreign key constraint fails (`icode`.`enrollments`, constraint `enrollments_ibfk_2` foreign key (`student`) references `students` (`matricula`))" {
+			} else if strings.Contains(err.Error(), "students"){
 				http.Error(w, fmt.Sprintf("Student '%s' does not exist", req.Student), http.StatusBadRequest)
 				return
 			}
