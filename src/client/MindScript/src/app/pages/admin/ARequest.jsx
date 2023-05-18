@@ -34,7 +34,7 @@ export const ARequest = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all`, options);
                 const responseData = await response.json();
                 setRequest(responseData);
             } catch (error) {

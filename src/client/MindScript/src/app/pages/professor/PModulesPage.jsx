@@ -39,8 +39,8 @@ export const PModulesPage = () => {
 
     //     const fetchData = async () => {
     //         try {
-    //             const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
-    //             // const response = await fetch(`http://34.125.0.99:8002/homework?id=L00000001&time=future&group=G000000001&group_by=group`, options);
+    //             const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+    //             // const response = await fetch(`http://34.16.137.250:8002/homework?id=L00000001&time=future&group=G000000001&group_by=group`, options);
     //             const responseData = await response.json();
     //             setHomework(responseData);
     //         } catch (error) {

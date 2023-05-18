@@ -22,7 +22,7 @@ export const PManage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://34.125.0.99:8002/enrolledstudents/G000000001`, options);
+        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/G000000001`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {

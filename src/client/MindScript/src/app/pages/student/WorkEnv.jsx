@@ -59,7 +59,7 @@ export const WorkEnv = ({ onPrueba }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8001/exec', options)
+        fetch('http://34.16.137.250:8001/exec', options)
             .then(response => {
                 // console.log(response)
                 return response.json()

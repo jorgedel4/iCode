@@ -31,7 +31,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8002/enrollstudent', options)
+        fetch('http://34.16.137.250:8002/enrollstudent', options)
             .then((response) => {
                 if (response.status === 409) {
                     throw new Error('Ya estás enrolado prro');

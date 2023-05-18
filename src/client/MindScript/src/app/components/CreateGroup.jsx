@@ -46,7 +46,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/terms`, options);
+                const response = await fetch(`http://34.16.137.250:8002/terms`, options);
                 const responseData = await response.json();
                 setTerm(responseData);
             } catch (error) {
@@ -73,7 +73,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
                 const responseData = await response.json();
                 setCourse(responseData);
             } catch (error) {
@@ -100,7 +100,7 @@ export const CreateGroup = ({ open, close }) => {
         const fetchData = async () => {
             if (selectedCourse) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${selectedCourse}`, options);
+                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${selectedCourse}`, options);
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
@@ -141,7 +141,7 @@ export const CreateGroup = ({ open, close }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8002/registergroup', options)
+        fetch('http://34.16.137.250:8002/registergroup', options)
             .then(response => {
                 console.log(response)
                 if (response.status === 201) {
