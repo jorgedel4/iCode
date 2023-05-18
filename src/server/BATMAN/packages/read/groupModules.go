@@ -21,7 +21,7 @@ func GroupModules(mysqlDB *sql.DB) http.HandlerFunc {
 		var values []interface{}
 
 		if len(userID) > 0 && userID[0] == 'A' {
-			baseQuery = `SELECT id_module, nombre, locked, n_question, successful_mod_attempts(?, id_module) AS answered
+			baseQuery = `SELECT id_module, nombre, locked, n_question, successful_mod_attempts(?, id_module, grupo) AS answered
 			FROM moduleConfigs mc
 			JOIN modules m ON mc.module = m.id_module 
 			WHERE mc.grupo = ?`
