@@ -16,12 +16,9 @@ export const PManage = () => {
       mode: 'cors',
     }
 
-    // let userID = "A01551955"
-    // let term = "current"
-
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://34.125.0.99:8002/enrolledstudents/G000000001`, options);
+        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/G000000001`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {
@@ -31,6 +28,29 @@ export const PManage = () => {
 
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    // console.log(id);
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({ "id": id })
+        mode: 'cors',
+
+      };
+
+      const response = await fetch(`http://34.125.0.99:8002/user/${id}`, options);
+      const data = await response.json();
+      return data
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -65,12 +85,6 @@ export const PManage = () => {
   )
 }
 
-const handleEdit = (row) => {
-};
-
-const handleDelete = (row) => {
-};
-
 const columns = [
   { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
   { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
@@ -83,7 +97,7 @@ const columns = [
     mx: 10,
     renderCell: (params) => (
       <>
-        <IconButton aria-label="delete" sx={{ color: 'appDark.icon'}}>
+        <IconButton aria-label="delete" sx={{ color: 'appDark.icon' }}>
           <Delete />
         </IconButton>
       </>
