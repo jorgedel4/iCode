@@ -6,6 +6,24 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
+    const theme = useTheme();
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
+    const [editMode, setEditMode] = useState(false);
+    const [updatedStudentsData, setUpdatedStudentsData] = useState([]);
+    const [updatedProfessorsData, setUpdatedProfessorsData] = useState([]);
+
+    const [editRow, setEditRow] = useState(null);
+    const [nameQuery, setNameQuery] = useState("");
+    const [idQuery, setIdQuery] = useState("");
+    const [campusQuery, setCampusQuery] = useState("");
+    const [dataFiltered, setFilter] = useState([]);
+
+
+    const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
+    const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
+    const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
 
     //Current user info
     const auth = getAuth();
@@ -35,9 +53,11 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/users?user_type=student&campus=all&id=all&name=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
+                setUpdatedStudentsData(responseData);
+
             } catch (error) {
                 // console.error(error);
             }
@@ -61,9 +81,11 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
+                setUpdatedProfessorsData(responseData);
+
             } catch (error) {
                 // console.error(error);
             }
@@ -71,6 +93,28 @@ export const AManage = () => {
 
         fetchData();
     }, []);
+
+    const handlePatch = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ "id": id })
+                mode: 'cors',
+
+            };
+
+            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            const data = await response.json();
+            return data
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleEditButton = (id) => {
         setEditRow(id);
@@ -94,19 +138,23 @@ export const AManage = () => {
         });
     };
 
-    const handleSaveRow = (id) => {
+    const handleSaveRow = (params) => {
         setEditRow(null);
+        var prevData;
         const updatedData = dataFiltered.map((row) => {
-            if (row.id === id) {
+            if (row.id === params.id) {
+                prevData = row;
                 setEditMode(false);
-                return { ...row, editMode: false };
+                return { ...row, editMode: false, name: params.name, campus: params.campus };
             } else {
                 return row;
             }
         });
         setFilter(updatedData);
+        if (prevData !== params) {
+            handlePatch(params.id);
+        }
     };
-
 
 
     const handleDelete = async (id) => {
@@ -122,7 +170,7 @@ export const AManage = () => {
 
             };
 
-            const response = await fetch(`http://34.125.0.99:8002/user/${id}`, options);
+            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
             const data = await response.json();
             return data
 
@@ -130,44 +178,6 @@ export const AManage = () => {
             console.error(error);
         }
     };
-
-    const handleEdit = async (id) => {
-        // console.log(id);
-        try {
-            const options = {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // body: JSON.stringify({ "id": id })
-                mode: 'cors',
-
-            };
-
-            const response = await fetch(`http://34.125.0.99:8002/user/${id}`, options);
-            const data = await response.json();
-            return data
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-
-    const theme = useTheme();
-    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
-    const [editMode, setEditMode] = useState(false);
-    const [editRow, setEditRow] = useState(null);
-    const [nameQuery, setNameQuery] = useState("");
-    const [idQuery, setIdQuery] = useState("");
-    const [campusQuery, setCampusQuery] = useState("");
-    const [dataFiltered, setFilter] = useState([]);
-
-    const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
-    const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
-    const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
 
     useEffect(() => {
         const filteredData = filterData(nameQuery, idQuery, campusQuery, buttonStudentSelected ? studentsData : buttonProfessorSelected ? professorsData : []);
@@ -193,9 +203,15 @@ export const AManage = () => {
     };
 
     const columns = [
-        { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center', editable: editMode },
-        { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center', editable: editMode },
-        { field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center', editable: editMode },
+        {
+            field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
         {
             field: 'actions',
             headerName: 'Acciones',
@@ -209,7 +225,7 @@ export const AManage = () => {
                         <IconButton
                             aria-label="save"
                             sx={{ color: 'appDark.icon', mx: 2 }}
-                            onClick={() => handleSaveRow(params.row.id)}
+                            onClick={() => handleSaveRow(params.row)}
                         >
                             <Save />
                         </IconButton>
@@ -230,8 +246,6 @@ export const AManage = () => {
 
         },
     ];
-    console.log("editedrow: ", editRow)
-    // console.log("mode", editMode)
 
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -355,3 +369,4 @@ const filterData = (nameQuery, idQuery, campusQuery, usersData) => {
         );
     }
 };
+
