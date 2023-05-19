@@ -2,101 +2,8 @@ import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, MenuItem, u
 import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from 'react';
 
-export const CreateCourse = ({ open, close }) => {
+export const EditCourse = ({ open, close, params }) => {
 
-    const theme = useTheme();
-    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
-
-    //Selector de curso
-    const [course, setCourse] = useState('');
-    const handleSelection = (event) => {
-        setCourse(event.target.value);
-        // console.log(course)
-    };
-
-    const modules = [
-        {
-            courseName: "Variables",
-            exNum: 0,
-            checked: false
-        },
-        {
-            courseName: "Condicionales",
-            exNum: 0,
-            checked: true
-        },
-        {
-            courseName: "Ciclo for",
-            exNum: 0,
-            checked: true
-        },
-
-    ]
-
-    /*API region */
-
-    //GET course information
-    const [coursesData, setCourseRequest] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
-                const responseData = await response.json();
-                setCourseRequest(responseData);
-            } catch (error) {
-                // console.error(error);
-            }
-        };
-        fetchData();
-    }, []);
-
-    // console.log(coursesData)
-
-    //GET group information
-    const [groupsData, setGroup] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        let userID = "L00000001"
-        let term = "current"
-
-        const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options);
-                    const responseData = await response.json();
-                    setGroup(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
-            }
-        };
-        fetchData();
-    }, [course]);
-
-    // console.log("ADFaf",groupsData)
-    // console.log("cursos", course)
-
-    //GET modules information
     const [modulesData, setModule] = useState([]);
     useEffect(() => {
         const options = {
@@ -106,36 +13,71 @@ export const CreateCourse = ({ open, close }) => {
             },
             mode: 'cors',
         }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-                    const responseData = await response.json();
-                    setModule(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
+            try {
+                const response = await fetch(`http://34.16.137.250:8002/coursemodules/${params.id}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                console.error(error);
             }
         };
+
         fetchData();
-    }, [course]);
-    // console.log("ADFaf", modulesData)
-    // console.log("cursos", course)
+    }, [params.id]);
+
+    const moduleControls = Array.isArray(modulesData) && modulesData.length > 0 ?
+        modulesData.map((module) => (
+            <FormControl key={module.id} sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
+                <InputLabel
+                    sx={{
+                        color: 'appDark.text',
+                        '&.Mui-focused': {
+                            color: 'appDark.text'
+                        }
+                    }}
+                >
+                    Nombre del Módulo
+                </InputLabel>
+                <OutlinedInput
+                    type="input"
+                    label="Nombre del Módulo"
+                    placeholder="Módulo 1"
+                    value={module.name}
+                    sx={{
+                        color: 'appDark.text',
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'appDark.box',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'appDark.box',
+                        },
+                        '&.MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'transparent',
+                            },
+                        }
+                    }}
+                />
+            </FormControl>
+        )) : null;
+
+
+    const theme = useTheme();
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
 
     return (
         <Modal
             id="Modal prrona Crear Tarea"
             open={open}
             onClose={close}
-            aria-labelledby="crearCurso"
+            aria-labelledby="editarCurso"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                id="Grid container Crear Materia"
+                id="Grid container Editar Materia"
                 justifyContent='space-between'
                 sx={{
                     bgcolor: 'secondary.main',
@@ -146,13 +88,26 @@ export const CreateCourse = ({ open, close }) => {
 
                 <Grid item xs={12} id="PrimeraSección">
                     <Typography id="modal-modal-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
-                        Crear Materia
+                        Editar Curso
                     </Typography>
                 </Grid>
 
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" sx={{
-                        py: 3,
+                        py: 2,
+                        overflowY: 'scroll',
+                        height: '60vh',
+                        "&::-webkit-scrollbar": {
+                            width: 5,
+                        },
+                        "&::-webkit-scrollbar-track": {
+                            backgroundColor: "secondary.main",
+                            borderRadius: 2,
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "appDark.scrollBar",
+                            borderRadius: 2,
+                        },
                     }}>
 
                         <Grid item xs={10} >
@@ -167,6 +122,7 @@ export const CreateCourse = ({ open, close }) => {
                                     type="input"
                                     label="ID del Curso"
                                     placeholder="TC1028"
+                                    value={params.id}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -188,7 +144,7 @@ export const CreateCourse = ({ open, close }) => {
                         </Grid>
 
                         <Grid item xs={10} >
-                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
+                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
                                 <InputLabel sx={{
                                     color: 'appDark.text',
                                     '&.Mui-focused': {
@@ -199,6 +155,7 @@ export const CreateCourse = ({ open, close }) => {
                                     type="input"
                                     label="Nombre del Curso"
                                     placeholder="Pensamiento Computacional"
+                                    value={params.name}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -214,9 +171,12 @@ export const CreateCourse = ({ open, close }) => {
                                         }
                                     }}
 
-
                                 />
                             </FormControl>
+                        </Grid>
+
+                        <Grid item xs={10}>
+                            {moduleControls}
                         </Grid>
 
                     </Grid>
@@ -232,7 +192,7 @@ export const CreateCourse = ({ open, close }) => {
                         </Grid>
                         <Grid item xs={6} id="crear tarea">
                             <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                                Crear Materia
+                                Guardar
                             </Button>
                         </Grid>
                     </Grid>
