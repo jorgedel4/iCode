@@ -45,6 +45,7 @@ func main() {
 	r.HandleFunc("/registerterm", create.Term(mysqlDB)).Methods("POST")
 	r.HandleFunc("/createhw", create.Homework(mysqlDB)).Methods("POST")
 	r.HandleFunc("/registeruser", create.User(mysqlDB)).Methods("POST")
+	r.HandleFunc("/course", create.Course(mysqlDB)).Methods("POST")
 
 	// Read operations
 	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("GET")

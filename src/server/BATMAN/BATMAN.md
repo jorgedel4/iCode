@@ -265,6 +265,44 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/course`
+#### Descripcion
+Registrar un nuevo curso
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                     |
+|-------------- | ----------- | ----------- | ------------------------------- |
+| id            | string      | si          | ID del curso a crear            |
+| name          | string      | si          | Nombre del curso                |
+| modules       | [ string ]  | si          | Nombre de los modulos del curso |
+
+#### Respuesta
+En caso de que se haya registrado al curso de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/course
+Content-Type: application/json
+``` json
+{
+    "id": "TC1021",
+    "name": "Sepultura de batos",
+    "modules": [
+        "Intro a leetcode",
+        "Leetcode 2"
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+
+
 ## Endpoints de lectura
 
 ### `/courses`
