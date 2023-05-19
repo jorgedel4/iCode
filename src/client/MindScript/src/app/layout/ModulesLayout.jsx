@@ -2,6 +2,8 @@ import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
 import { useState, useEffect } from 'react';
+import { useForm } from '../../hooks/useForm';
+
 
 export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages, modules }) => {
     //Importante para EditHomework
@@ -97,6 +99,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                             </Grid>
                                         ))
                                         : null}
+                                        
 
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
                                     < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />

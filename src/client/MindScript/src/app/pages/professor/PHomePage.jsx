@@ -93,6 +93,7 @@ export const PHomePage = () => {
 
         fetchData();
     }, []);
+    console.log("this is homework data", homeworkData)
 
     const homework = Object.entries(homeworkData)
 
