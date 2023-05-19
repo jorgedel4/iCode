@@ -4,6 +4,7 @@ import { NavBar, SearchBar, ActionButton } from '../../components';
 import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
+import { CreateCourse } from '../../components/CreateCourse';
 
 export const ASyllabus = () => {
     // Api region
@@ -16,9 +17,6 @@ export const ASyllabus = () => {
             },
             mode: 'cors',
         }
-
-        // let userID = "A01551955"
-        // let term = "current"
 
         const fetchData = async () => {
             try {
@@ -55,6 +53,13 @@ export const ASyllabus = () => {
             console.error(error);
         }
     };
+
+    //Funciones para abrir la modal de Crear Curso
+    const [openCreateCourse, setOpenCreateCourse] = useState(false);
+    const showModalCreateCourse = () => { setOpenCreateCourse(true); }
+    const closeModalCreateCourse = () => {
+        setOpenCreateCourse(false);
+    }
 
 
     const theme = useTheme();
@@ -117,6 +122,8 @@ export const ASyllabus = () => {
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} />
+
             <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                     <Grid item xs={12} sm={6} lg={6}>
@@ -140,7 +147,7 @@ export const ASyllabus = () => {
                     </Grid>
                     <Grid item xs={10}>
                         <ActionButton >
-                            <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                            <CardActionArea onClick={showModalCreateCourse} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <AddCircleOutline sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100 }} />
 
