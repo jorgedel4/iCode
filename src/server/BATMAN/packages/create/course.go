@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/jorgedel4/iCode/packages/structs"
 	"github.com/jorgedel4/iCode/packages/util"
@@ -59,11 +60,15 @@ func Course(mysqlDB *sql.DB) http.HandlerFunc {
 		// Create course
 		courseQuery := `INSERT INTO courses (id_course, course_name)
 		VALUES (?, ?)`
-		println(4)
+
 		_, err = tx.Exec(courseQuery, req.ID, req.Name)
 		if err != nil {
 			tx.Rollback()
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			if strings.Contains(err.Error(), req.ID){
+				http.Error(w, fmt.Sprintf("Course with ID '%s' already exists", req.ID), http.StatusConflict)
+			} else {
+				http.Error(w, "Error creating course", http.StatusInternalServerError)
+			}
 			return
 		}
 
