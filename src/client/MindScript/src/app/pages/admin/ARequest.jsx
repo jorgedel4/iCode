@@ -15,7 +15,11 @@ export const ARequest = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        {name: 'Gestion de Usuarios', route: '/admin/management'}, 
+        {name: 'Solicitudes', route: '/admin/request'}, 
+        {name: 'Plan de Estudios', route: '/admin/syllabus'}
+    ]
 
 
     // Api region
@@ -34,7 +38,7 @@ export const ARequest = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all`, options);
+                const response = await fetch(`http://34.16.137.250:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all`, options);
                 const responseData = await response.json();
                 setRequest(responseData);
             } catch (error) {

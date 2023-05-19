@@ -2,7 +2,7 @@ import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material
 import { useState, useEffect } from 'react'
 import { NavBar, SearchBar } from '../../components';
 import { Delete, Edit, Save } from '@mui/icons-material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
@@ -11,9 +11,6 @@ export const AManage = () => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
     const [editMode, setEditMode] = useState(false);
-    const [updatedStudentsData, setUpdatedStudentsData] = useState([]);
-    const [updatedProfessorsData, setUpdatedProfessorsData] = useState([]);
-
     const [editRow, setEditRow] = useState(null);
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
@@ -36,7 +33,11 @@ export const AManage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        {name: 'Gestion de Usuarios', route: '/admin/management'}, 
+        {name: 'Solicitudes', route: '/admin/request'}, 
+        {name: 'Plan de Estudios', route: '/admin/syllabus'}
+    ]
 
     const [studentsData, setStudent] = useState([]);
     useEffect(() => {
@@ -47,19 +48,13 @@ export const AManage = () => {
             },
             mode: 'cors',
         }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
-                setUpdatedStudentsData(responseData);
-
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
@@ -76,18 +71,13 @@ export const AManage = () => {
             mode: 'cors',
         }
 
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
-                setUpdatedProfessorsData(responseData);
-
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
@@ -95,7 +85,6 @@ export const AManage = () => {
     }, []);
 
     const handlePatch = async (id) => {
-        // console.log(id);
         try {
             const options = {
                 method: 'PATCH',
@@ -121,7 +110,6 @@ export const AManage = () => {
         setFilter((prevData) => {
             let updatedData = prevData.map((row) => {
                 if (row.editMode) {
-                    // Disable previously edited row
                     return { ...row, editMode: false };
                 }
                 return row;
@@ -129,7 +117,6 @@ export const AManage = () => {
 
             const clickedRow = updatedData.find((row) => row.id === id);
             if (clickedRow) {
-                // Enable the clicked row
                 clickedRow.editMode = true;
             }
 
@@ -158,14 +145,12 @@ export const AManage = () => {
 
 
     const handleDelete = async (id) => {
-        // console.log(id);
         try {
             const options = {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // body: JSON.stringify({ "id": id })
                 mode: 'cors',
 
             };
@@ -355,9 +340,6 @@ export const AManage = () => {
 }
 
 
-
-
-
 const filterData = (nameQuery, idQuery, campusQuery, usersData) => {
     if (!nameQuery && !idQuery && !campusQuery) {
         return usersData;
@@ -369,4 +351,3 @@ const filterData = (nameQuery, idQuery, campusQuery, usersData) => {
         );
     }
 };
-

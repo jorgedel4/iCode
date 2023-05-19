@@ -22,7 +22,7 @@ export const ASyllabus = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
                 const responseData = await response.json();
                 setSyllabus(responseData);
             } catch (error) {
@@ -47,7 +47,7 @@ export const ASyllabus = () => {
 
             };
 
-            const response = await fetch(`http://34.125.0.99:8002/course/${id}`, options);
+            const response = await fetch(`http://34.16.137.250:8002/course/${id}`, options);
             const data = await response.json();
             return data
 
@@ -107,7 +107,11 @@ export const ASyllabus = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        {name: 'Gestion de Usuarios', route: '/admin/management'}, 
+        {name: 'Solicitudes', route: '/admin/request'}, 
+        {name: 'Plan de Estudios', route: '/admin/syllabus'}
+    ]
 
 
     return (
