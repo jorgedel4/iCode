@@ -1,16 +1,6 @@
 import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, MenuItem, useTheme, useMediaQuery } from '@mui/material'
-
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-import { useState } from 'react';
-import { GroupHomework } from './GroupHomework';
-import { useEffect } from 'react';
-
+import { useState, useEffect } from 'react';
 
 export const CreateCourse = ({ open, close }) => {
 
@@ -25,11 +15,6 @@ export const CreateCourse = ({ open, close }) => {
         setCourse(event.target.value);
         // console.log(course)
     };
-
-    //State date picker
-    const [date, setDate] = useState(null);
-
-
 
     const modules = [
         {
@@ -140,56 +125,6 @@ export const CreateCourse = ({ open, close }) => {
     }, [course]);
     console.log("ADFaf", modulesData)
     console.log("cursos", course)
-
-    // //POST Create Group
-
-    // const registerGroup = {
-    //     course_id: selectedCourse,
-    //     term_id: selectedTerm,
-    //     professor_id: "L00000001",
-    //     modules_confs: rows,
-    // }
-    // // console.log(registerGroup)
-    // const createGroupRequest = async () => {
-
-    //     const options = {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-
-    //         },
-    //         mode: 'no-cors',
-    //         body: JSON.stringify({
-    //             // "id": "test/test/2",
-    //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
-
-    //             "course_id": registerGroup.course_id,
-    //             "term_id": registerGroup.term_id,
-    //             "professor_id": registerGroup.professor_id,
-    //             "modules_confs": registerGroup.modules_confs
-
-    //         })
-    //     }
-
-    //     fetch('http://34.125.0.99:8002/registergroup', options)
-    //         .then(response => {
-    //             console.log(response)
-    //             if (response.status === 201) {
-    //                 close()
-    //                 throw new Error('Grupo creado');
-    //             }
-
-    //         })
-    //         .catch(error => {
-    //             console.log(error)
-    //         })
-
-    // };
-
-
-
-    /*end API region */
-
 
     return (
         <Modal
