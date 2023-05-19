@@ -4,90 +4,45 @@ import { useForm } from '../../hooks/useForm';
 import { getAuth } from "firebase/auth";
 
 
-export const RemoveButton = ({ open, close }) => {
+export const RemoveButton = ({ open, close, editData, confirmationText }) => {
 
-    //State date pickers
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const eliminar = () => {
+        console.log("eliminame esta")
+        console.log(editData.hw_id)
 
-    const modules = [
-        {
-            name: "Variables",
-            id: "M0000000000000000004",
-            n_questions: 0,
-            checked: false
-        },
-        {
-            name: "Condicionales",
-            id: "M0000000000000000005",
-            n_questions: 0,
-            checked: true
-        },
-        {
-            name: "Ciclo for",
-            id: "M0000000000000000006",
-            n_questions: 0,
-            checked: true
-        },
-    ]
-    const onSubmit = (event) => {
-        event.preventDefault();
-        // setFormSubmitted(true);
-        // console.log(formState);
-        // if (!isFormValid) return;
     }
+    const handleDelete = async (hw_id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
 
+            };
+            console.log(hw_id)
+            const response = await fetch(`http://34.16.137.250:8002/homework/${hw_id}`, options);
+            console.log(response)
+        
 
-    //GET modules information
-    // const [modulesData, setModule] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
-
-    //     // let userID = "A01551955"
-    //     // let term = "current"
-
-    //     const fetchData = async () => {
-    //         if (course) {
-    //             try {
-    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-    //                 const responseData = await response.json();
-    //                 setModule(responseData);
-    //             } catch (error) {
-    //                 // console.error(error); .push({id:, n_questions: })
-    //             }
-    //         }
-    //     };
-    //     fetchData();
-    // }, [course]);
-
-    // let modules = [];
-    // modulesData.map((module) => (
-    //     modules.push({
-    //         id: module.id,
-    //         name: module.name,
-    //         n_questions: 0,
-    //         checked: true
-    //     })
-    // ))
-
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     return (
         <Modal
-            id="Modal prrona Editar tarea"
+            id="Modal prrona Eliminar "
             open={open}
             onClose={close}
-            aria-labelledby="Unirse a un curso"
+            aria-labelledby="Eliminar"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                
+
                 id="Grid container Unirse curso"
                 justifyContent='center'
                 sx={{
@@ -99,10 +54,13 @@ export const RemoveButton = ({ open, close }) => {
                 }}>
 
                 <Grid item xs={12} id="PrimeraSección">
+
                     <Typography id="modal-hw-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
-                        Esto debe ser dinámico para que pueda reutilizarse en todo lo que se borra
+                        {confirmationText}
                     </Typography>
+
                 </Grid>
+
                 {/* Botones */}
                 <Grid container justifyContent='center' sx={{ my: 3, mx: 5.5 }}>
                     <Grid item xs={6} id="cancelar" >
@@ -110,12 +68,17 @@ export const RemoveButton = ({ open, close }) => {
                         <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
                             Cancelar
                         </Button>
+
                     </Grid>
+
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                        <Button
+                            onClick={() => handleDelete(editData.hw_id)}
+                            type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Eliminar
                         </Button>
+
                     </Grid>
 
                 </Grid>

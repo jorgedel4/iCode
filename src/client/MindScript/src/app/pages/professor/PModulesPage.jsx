@@ -82,37 +82,7 @@ export const PModulesPage = () => {
         fetchData();
      }, []);
 
-    // const homeworkData = {
-    //     "G000000001": [
-    //         {
-    //             "hw_id": "H0000000000000000001",
-    //             "hw_name": "Tarea 1",
-    //             "course_id": "TC1028",
-    //             "course_name": "Pensamiento computacional",
-    //             "group_id": "G000000001",
-    //             "opening": "2023-05-05T00:00:00Z",
-    //             "closing": "2023-05-10T00:00:00Z"
-    //         },
-    //         {
-    //             "hw_id": "H0000000000000000002",
-    //             "hw_name": "Tarea 2",
-    //             "course_id": "TC1028",
-    //             "course_name": "Pensamiento computacional",
-    //             "group_id": "G000000001",
-    //             "opening": "2023-05-11T00:00:00Z",
-    //             "closing": "2023-05-16T00:00:00Z"
-    //         },
-    //         {
-    //             "hw_id": "H4809793312412692480",
-    //             "hw_name": "Tarea 3",
-    //             "course_id": "TC1028",
-    //             "course_name": "Pensamiento computacional",
-    //             "group_id": "G000000001",
-    //             "opening": "2023-05-11T00:00:00Z",
-    //             "closing": "2023-05-14T00:00:00Z"
-    //         }
-    //     ]
-    // }
+
 
     const homework = Object.values(homeworkData)
 
@@ -136,7 +106,7 @@ export const PModulesPage = () => {
 
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
                                 <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
-                                    Gstión de Alumnos
+                                    Gestión de Alumnos
                                 </Typography>
 
                             </CardContent>

@@ -24,7 +24,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
     }
 
 
-   
+
 
 
     return (
@@ -85,7 +85,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                 </Grid>
 
                                                 <Grid item xs={1}>
-                                                    <IconButton sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton onClick={() => {
+                                                        setData(data)
+                                                        showModalDeleteHomework()
+                                                    }} sx={{ color: 'appDark.icon' }}>
                                                         <DeleteOutline />
                                                     </IconButton>
                                                 </Grid>
@@ -95,8 +98,9 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                         ))
                                         : null}
 
-                                        < EditHomework open={openEditHomework} close={closeModalEditHomework}  editData={editData} modules={modules}/>
-                                   
+                                    < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
+                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />
+
                                 </>
                             }
                         </List>
