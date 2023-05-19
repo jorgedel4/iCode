@@ -10,6 +10,7 @@ type SelectQuestion struct {
 
 type ResultQuestion struct {
 	IdPregunta string
+	Module     string
 	Type       string
 	Info       string
 	Status     string //JSON with Info Question
