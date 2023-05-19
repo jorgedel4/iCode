@@ -13,8 +13,10 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Update an user's information
 func User(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		userID := mux.Vars(r)["userID"]
@@ -41,14 +43,10 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		if req.ID != "" {
-			http.Error(w, "Users' ID cannot be changed", http.StatusBadRequest)
-			return
-		}
-
 		var columnsToChange []string
 		var values []interface{}
 
+		// Get all columns that will be changed
 		if req.Campus != "" {
 			columnsToChange = append(columnsToChange, "campus = ?")
 			values = append(values, req.Campus)
@@ -70,6 +68,7 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 
 		if len(columnsToChange) != 0 {
+			// Turn selected columns into SQL string
 			columnsToChangeSQL := strings.Join(columnsToChange, ", ")
 			idColumn := consts.DBUsersIDColumn[userType]
 
@@ -86,6 +85,7 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		}
 
+		// Return response and close connection
 		w.WriteHeader(http.StatusOK)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()
