@@ -1,75 +1,86 @@
--- SQLBook: Code
-/* Function to count the attempts */
---Checar si el ultimo intento esta en FAI, si es asi toma los 3 ultimos registros de attempts
 DELIMITER $$
 
-CREATE FUNCTION getHomework(homework_id CHAR(20), student_id CHAR(9))
-    RETURNS INT
+CREATE FUNCTION homeworkQuestion (
+    homework_id CHAR(20),
+    student_id CHAR(9))
+    RETURNS ROW
     BEGIN
-        
+        DECLARE last_attempt ROW;
+        --Take the last attempt
+        SET last_attempt = (
+            SELECT *
+            FROM hw_questionAttempts
+            WHERE student = student_id AND homework = homework_id
+            ORDER BY attempt_date DESC
+            LIMIT 1
+        );
 
+        IF last_attempt.attempt_status = 'PAS' THEN
+        DELIMITER ##
+            RETURN NewHWQuestion(homework_id, student_id)
+        ELSE
+            DECLARE continuousAttempts INT;
+            SET continuousAttempts := ContinuousAttempts(homework_id, student_id, last_attempt.question);
 
+            IF continuousAttempts <= 3 THEN
+            DELIMITER %%
+                DECLARE question ROW;
 
--- ///////////////////////////
-DELIMITER $$
-CREATE FUNCTION CountAttemptsFails(homework_id CHAR(20), student_id CHAR(9))
-    RETURNS INT
-    BEGIN
-        DECLARE attempts INT;
+                SELECT *
+                INTO question
+                FROM questions
+                WHERE id_question = last_attempt.question
+                LIMIT 1;
 
-        SELECT COUNT(*) INTO attempts
-        FROM hw_questionAttempts
-        WHERE homework = homework_id AND student = student_id AND attempt_status = 'FAI';
-        
-        RETURN attempts;
-    END $$
+                RETURN question;
+            ELSE
+                RETURN NewHWQuestion(homework_id, student_id)
+            END IF %%
+        END IF ##
+    END 
+END$$
 DELIMITER ;
 
 
---Tests
-SELECT CountAttemptsFails('H0000000000000000001', 'A01551955');
-INSERT INTO hw_questionAttempts (student, homework, question, attempt_status,attempt_date) VALUES ("A01551955", "H0000000000000000001", "CQ000000000000000001", "FAI", '2023-04-14 12:43:23');
-DROP FUNCTION CountAttemptsFails;
-
-
-/* Function to check the questions per module*/
+--Function 2
 DELIMITER $$
-CREATE FUNCTION QuestionsPerModule(
-    --Recibo los 3 parametros 
+CREATE FUNCTION ContinuousAttempts(
     homework_id CHAR(20),
-    question_id CHAR(20),
-    student_id CHAR(9)
-) RETURNS INT --Regreso un contador de preguntas por modulo
-
+    student_id CHAR(9),
+    question_id CHAR(20)
+) RETURN INT
 BEGIN
-    DECLARE module_id CHAR(20); --id del modulo de la pregunta seleccionada
-    DECLARE allowed_questions INT; -- Numero de preguntas por modulo segun la tarea
-    DECLARE attempts INT; -- INtentos registrados en hw_questionAttempts
+    DECLARE cur CURSOR FOR
+        SELECT attempt_status
+        FROM hw_questionAttempts
+        WHERE student = student_id AND homework = homework_id;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    OPEN cur;
 
-    -- Obtener el módulo de la pregunta
-    SELECT module INTO module_id
-    FROM questions
-    WHERE id_question = question_id;
+    read_loop: LOOP
 
-    -- Obtener la cantidad de preguntas admitidas para el módulo y tarea específicos
-    SELECT n_questions INTO allowed_questions
-    FROM homeworkConfigs
-    WHERE homework = homework_id
-    AND module = module_id;
+END$$
+DELIMITER ;
 
-    -- Contar los intentos fallidos y pendientes de la pregunta del estudiante en hw_questionAttempts
-    SELECT COUNT(*) INTO attempts
-    FROM hw_questionAttempts
-    WHERE homework = homework_id
-    AND student = student_id
-    AND question = question_id
-    AND attempt_status IN ('FAI', 'PEN');
 
-    -- Si la cantidad de intentos es menor a la cantidad de preguntas admitidas, se permite la pregunta
-    IF attempts < allowed_questions THEN
-        RETURN 1; -- Retorna 1 para indicar que la pregunta es válida
-    ELSE
-        RETURN 0; -- Retorna 0 para indicar que la pregunta no es válida
-    END IF;
-END $$
+-- Obtener modulos de una tarea
+-- Checar estatus de cada modulo (con una funcion que tome el modulo, tarea y estudiante y te diga si aun le faltan preguntas de ese modulo)
+-- El primer modulo que encuentres que no este terminado, regresa una pregunta que no se haya resuelto de ese modulo (con otra funcion que tome modulo, estudiante y tarea)
+-- Function
+DELIMITER $$
+CREATE FUNCTION NewHWQuestion(
+    homework_id CHAR(20),
+    student_id CHAR(9)
+) RETURNS ROW
+BEGIN
+    DECLARE result_row ROW;
+    SELECT q.* INTO result_row
+    FROM questions q
+    WHERE 
+    
+    
+    RETURN result_row;
+END$$
 DELIMITER ;

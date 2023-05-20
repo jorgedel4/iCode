@@ -24,13 +24,14 @@ func HwQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// Checar ultima pregunta
-	/* queryBase := `SELECT func()`
+	queryBase := `SELECT id_question`
 
 	var selectors []string
 	var values []interface{}
 
 	values = append(values, req.Student)
 	values = append(values, req.Assigment) */
+
 
 }
 
