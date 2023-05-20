@@ -110,7 +110,7 @@ export const RegisterPage = () => {
     setFormSubmitted(true);
     if (!isFormValid) return;
     dispatch(startCreatingUserWithEmailPassword(formState));
-    console.log(formState); //formState nos trae el objeto con los valores rellenos
+    // console.log(formState); //formState nos trae el objeto con los valores rellenos
     registrationRequest()
   }
   
