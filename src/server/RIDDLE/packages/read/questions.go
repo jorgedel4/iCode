@@ -19,8 +19,8 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 		var req structs.SelectQuestion
 		req.Student = r.URL.Query().Get("id_student")     //Matricula
 		req.Assigment = r.URL.Query().Get("id_assigment") //Modulo o Tarea
-		req.Group = r.URL.Query().Get("id_group")
-		req.Module = r.URL.Query().Get("id_module")
+		req.Group = r.URL.Query().Get("id_group")         //Grupo
+		req.Module = r.URL.Query().Get("id_module")       //Modulo
 
 		// parametro de grupo
 
@@ -69,7 +69,7 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 
 			log.Println("SIuiuiu")
 			//Llamar funcion para preguntas de grupos
-			res, err := util.HwQuestions(w, req, mysqlDB)
+			res, _ := util.HwQuestions(w, req, mysqlDB)
 
 			//convertir las estructuras
 			hwreqsJSON, err := json.Marshal(res)

@@ -107,7 +107,7 @@ HTTP/1.1 200 OK Content-Type: application/json
 
 
 _____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador</h2>
+<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador desde interfaz</h2>
 
 <h3 style="color:#0000FF;">/requestQuestion</h3>
 
@@ -122,10 +122,10 @@ POST
 
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
 | :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| module       | string    | si                                           | ID del estudiante que pide preguntas                    |
-| q_type       | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
-| info         | string    | si                                           | ID del grupo al que pertene el estudiante               |
-| created_by   | string    | si                                           | ID del profesor que creo la tarea                       |
+| module       | string    | si                                           | ID del modulo al que pertenece la pregunta              |
+| q_type       | string    | si                                           | Tipo de pregunta a cargar                               | 
+| info         | string    | si                                           | String con info de toda la pregunta                     |
+| created_by   | string    | si                                           | ID del profesor que realiza la peticion                 |
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
@@ -143,6 +143,163 @@ Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json
     "q_type": "codep",
     "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
     "created_by": "L00000003"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador desde file.json</h2>
+
+<h3 style="color:#0000FF;">/requestQuestion</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Solicitud para agregar una pregunta o preguntas a la base de datos a traves de un file.json
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+
+Se recibe un archivo llamado "file.json" el cual puede contener 1 o mas objetos de tipo json, donde cada uno de estos representa
+una pregunta en especifico.
+
+El contenido del archivo file.json debe contener una estructura de arreglos como el siguiente:
+
+```json
+[
+    {
+        "module": "M0000000000000000001",
+        "q_type": "codep",
+        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+        "created_by": "L00000003"
+    },
+    {
+        "module": "M0000000000000000002",
+        "q_type": "multi",
+        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+        "created_by": "L00000003"
+    }
+]
+```
+
+Donde cada arreglo representa una pregunta, y cada arrgelo contiene la siguiente informacion:
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| module       | string    | si                                           | ID del modulo al que pertenece la pregunta              |
+| q_type       | string    | si                                           | Tipo de pregunta a cargar                               | 
+| info         | string    | si                                           | String con info de toda la pregunta                     |
+| created_by   | string    | si                                           | ID del profesor que realiza la peticion                 |
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta o preguntas a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json 
+
+<h3>file.json</h3>
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Tarea</h2>
+
+<h3 style="color:#0000FF;">/hwQuestionAttempt</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Carga de intentos de preguntas de tareas
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+student, homework, question, attempt_status
+
+| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
+| homework         | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
+| question         | string    | si                                           | ID de la pregunta que se intenta                        |
+| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que el intento de la pregunta de una tarea se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de hw_questionAtempts.
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/hwQuestionAttempt Content-Type: application/json 
+
+```json
+{
+    "student": "A01731511",
+    "homework": "H0000000000000000002",
+    "question": "CQ000000000000000002",
+    "attempt_status": "FAI"
+}
+```
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 201 Created
+
+_____________________________________________________
+<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Modulo</h2>
+
+<h3 style="color:#0000FF;">/modQuestionAttempt</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Carga de intentos de preguntas de Modulos
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+POST
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el Body)
+student, grupo, question, attempt_status
+
+| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
+| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
+| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
+| grupo            | string    | si                                           | ID del grupo                                            | 
+| question         | string    | si                                           | ID de la pregunta que se intenta                        |
+| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de que el intento de la pregunta de un modulo se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de questionAtempts.
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+
+POST
+Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json 
+
+```json
+{
+    "student": "A01731511",
+    "grupo": "G000000003",
+    "question": "CQ000000000000000002",
+    "attempt_status": "FAI"
 }
 ```
 

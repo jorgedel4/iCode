@@ -9,7 +9,3 @@ type RequestQuestion struct {
 	/* SubmittedOn agrego el tiempo en el que se agrega realmente */
 	/* CurrentStatus = a todos se les da PEN por default */
 }
-
-type Capsule struct {
-	Questions []RequestQuestion `json:"pregunta"`
-}
