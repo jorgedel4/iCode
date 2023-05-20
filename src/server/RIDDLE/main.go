@@ -41,6 +41,7 @@ func main() {
 
 	//Read operations
 	r.HandleFunc("/questions", read.Questions(mysqlDB)).Methods("GET")
+	/* r.HandleFunc("/statusHomework", read.StatusHomework(mysqlDB)).Methods("GET") */
 
 	//Write operations
 	r.HandleFunc("/requestQuestion", write.RequestQuestion(mysqlDB)).Methods("POST")
