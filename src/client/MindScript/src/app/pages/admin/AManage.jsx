@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar } from '../../components';
+import { NavBar, SearchBar, RemoveButton } from '../../components';
 import { Delete, Edit, Save } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
@@ -12,6 +12,7 @@ export const AManage = () => {
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
     const [editMode, setEditMode] = useState(false);
     const [editRow, setEditRow] = useState(null);
+    const [editData, setEditData] = useState(null);
     var editRowParams;
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
@@ -22,6 +23,13 @@ export const AManage = () => {
     const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
     const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
     const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
+
+    //Funciones para abrir la modal de Eliminar Usuario
+    const [openDeleteUser, setOpenDeleteUser] = useState(false);
+    const showModalDeleteUser = () => { setOpenDeleteUser(true); }
+    const closeModalDeleteUser = () => {
+        setOpenDeleteUser(false);
+    }
 
     //Current user info
     const auth = getAuth();
@@ -167,7 +175,7 @@ export const AManage = () => {
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
             setStudent(prevData => prevData.filter(user => user.id !== id));
             setProfessor(prevData => prevData.filter(user => user.id !== id));
-            return response.json;
+            return response;
 
         } catch (error) {
             console.error(error);
@@ -239,7 +247,15 @@ export const AManage = () => {
                             <Edit />
                         </IconButton>
                     )}
-                    <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                    <IconButton
+                        // onClick={() => handleDelete(params.row.id)}
+                        onClick={() => {
+                            showModalDeleteUser();
+                            setEditData(params.id)
+                        }}
+
+                        aria-label="delete"
+                        sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
                 </>
@@ -247,10 +263,11 @@ export const AManage = () => {
 
         },
     ];
-
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <RemoveButton open={openDeleteUser} close={closeModalDeleteUser} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este usuario?" />
+
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
