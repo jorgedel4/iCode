@@ -4,10 +4,12 @@ import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
+import { useParams } from 'react-router-dom';
 
 export const PModulesPage = () => {
     const home = '/professor/home'
     const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+    let params = useParams()
 
     //Current user info
     const auth = getAuth();
@@ -23,88 +25,69 @@ export const PModulesPage = () => {
     }
 
     const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
-    
-    //API para obtener los datos de las tareas
-    // const [homeworkData, setHomework] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
 
-    //     const group = "G000000001";
-
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
-    //             // const response = await fetch(`http://34.16.137.250:8002/homework?id=L00000001&time=future&group=G000000001&group_by=group`, options);
-    //             const responseData = await response.json();
-    //             setHomework(responseData);
-    //         } catch (error) {
-    //             // console.error(error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);
-
-    const homeworkData = {
-        "G000000001": [
-            {
-                "hw_id": "H0000000000000000001",
-                "hw_name": "Tarea 1: Condicionales",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-05T00:00:00Z",
-                "closing": "2023-05-10T00:00:00Z"
+     //API para obtener los datos de las tarjeras de modulos
+     const [modulesData, setModule] = useState([]);
+     useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
             },
-            {
-                "hw_id": "H0000000000000000002",
-                "hw_name": "Tarea 2: Condicionales",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-11T00:00:00Z",
-                "closing": "2023-05-16T00:00:00Z"
-            },
-            {
-                "hw_id": "H4809793312412692480",
-                "hw_name": "Tarea 3: Mas practicas :)",
-                "course_id": "TC1028",
-                "course_name": "Pensamiento computacional",
-                "group_id": "G000000001",
-                "opening": "2023-05-11T00:00:00Z",
-                "closing": "2023-05-14T00:00:00Z"
+            mode: 'cors',
+        }
+
+        //  const group = "G000000001";
+        const group = params.group;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${group}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                // console.error(error);
             }
-        ]
-    }
+        };
+ 
+        fetchData();
+     }, []);
 
-    console.log(homeworkData)
+    // console.log("modulos" + modulesData)
+
+     //API para obtener los datos de las tareas
+    const [homeworkData, setHomework] = useState([]);
+     useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        //  const group = "G000000001";
+        const group = params.group;
+ 
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+ 
+        fetchData();
+     }, []);
+
+
+
     const homework = Object.values(homeworkData)
-    console.log("homework"+homework)
-
-
-    const modules = [
-        {
-            name: 'Variables',
-            block: true
-        },
-        {
-            name: 'Condicionales',
-            block: false
-        },
-        {
-            name: 'Ciclos While',
-            block: false
-        },
-    ]
 
     return (
-        <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages}>
+        <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
 
                 <Grid item xs={12} md={4}>
@@ -123,7 +106,7 @@ export const PModulesPage = () => {
 
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
                                 <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
-                                    Gstión de Alumnos
+                                    Gestión de Alumnos
                                 </Typography>
 
                             </CardContent>
@@ -131,11 +114,13 @@ export const PModulesPage = () => {
                     </Card>
                 </Grid>
 
-                {modules.map((module, index) => (
-                    <Grid item key={index} xs={12} md={4}>
-                        <PModuleCard module={module} index={index} />
-                    </Grid>
-                ))}
+                {modulesData != null && modulesData != undefined ?
+                    modulesData.map((module, index) => (
+                        <Grid item key={index} xs={12} md={4}>
+                            <PModuleCard module={module} index={index} group={params.group}/>
+                        </Grid>
+                ))
+                : null}
             </Grid>
         </ModulesLayout>
     )
