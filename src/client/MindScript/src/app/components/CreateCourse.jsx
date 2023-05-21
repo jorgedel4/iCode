@@ -1,24 +1,136 @@
 import { Add, Delete } from '@mui/icons-material';
-import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, IconButton, useTheme, useMediaQuery } from '@mui/material'
+import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, IconButton, useTheme, useMediaQuery, FormHelperText } from '@mui/material'
 import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from 'react';
 
-export const CreateCourse = ({ open, close }) => {
+export const CreateCourse = ({ open, close, onCreateCourse }) => {
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 65 : 90;
 
+    const [id, setId] = useState('');
+    const [courseName, setCourse] = useState('');
     const [modules, setModule] = useState([]);
+    const [modulesInput, setInput] = useState([]);
+    const [idError, setIdError] = useState(null);
+    const [nameError, setNameError] = useState(null);
+
+    const handleCreate = async () => {
+        if (!id || !courseName || modulesInput.some((input) => !input)) {
+            return;
+        }
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": id,
+                    "name": courseName,
+                    "modules": modulesInput
+                }),
+                mode: 'cors',
+            };
+
+            const response = await fetch(`http://34.16.137.250:8002/course`, options);
+            if (response.ok) {
+                close();
+                const courseData = {
+                    id: id,
+                    name: courseName,
+                    n_modules: modulesInput.length,
+                };
+                onCreateCourse(courseData);
+            }
+            if (response.status === 408) {
+                throw new Error('ID ya existe')
+            }
+            if (response.status === 409) {
+                throw new Error('Nombre ya existe')
+            }
+            if (response.status === 410) {
+                throw new Error('ID y Nombre ya existen')
+            }
+            return response.json;
+        } catch (error) {
+            if (error.message === 'ID ya existe') {
+                setIdError(error.message);
+                setNameError(null);
+            }
+            if (error.message === 'Nombre ya existe') {
+                setIdError(null);
+                setNameError(error.message);
+            }
+            if (error.message === 'ID y Nombre ya existen') {
+                setIdError('ID ya existe');
+                setNameError('Nombre ya existe');
+            }
+        }
+    };
 
     useEffect(() => {
         if (open) {
             addModuleControl();
         } else {
             setModule([]);
+            setInput([]);
+            setId('');
+            setCourse('');
+            setIdError(null);
+            setNameError(null);
         }
     }, [open]);
+
+    const handleIdChange = (event) => {
+        const { value } = event.target;
+        const capitalizedValue = value.toUpperCase();
+        setId(capitalizedValue);
+    };
+
+    const handleCourseChange = (event) => {
+        const { value } = event.target;
+        const capitalizedValue = value.replace(/\b\w/g, (c) => c.toUpperCase());
+        setCourse(capitalizedValue);
+    };
+
+
+    const handleModuleChange = (moduleId, event) => {
+        setModule((prevModules) => {
+            const updatedModules = prevModules.map((module) => {
+                if (module.key === moduleId) {
+                    return {
+                        ...module,
+                        input: event.target.value,
+                    };
+                }
+                return module;
+            });
+
+            const updatedInputs = updatedModules.map((module) => module.input);
+            setInput(updatedInputs);
+
+            return updatedModules;
+        });
+    };
+
+
+    const deleteModuleControl = (moduleId) => {
+        setModule((prevModules) => {
+            if (prevModules.length === 1 && prevModules[0].key === moduleId) {
+                return prevModules;
+            }
+
+            const updatedModules = prevModules.filter((module) => module.key !== moduleId);
+
+            const updatedInputs = updatedModules.map((module) => module.input);
+            setInput(updatedInputs);
+
+            return updatedModules;
+        });
+    };
 
     const addModuleControl = () => {
         const id = Date.now();
@@ -32,6 +144,7 @@ export const CreateCourse = ({ open, close }) => {
                                 sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
                             >
                                 <InputLabel
+                                    required
                                     sx={{
                                         color: 'appDark.text',
                                         '&.Mui-focused': {
@@ -45,6 +158,8 @@ export const CreateCourse = ({ open, close }) => {
                                     type="input"
                                     label="Nombre del Curso"
                                     placeholder="For loop"
+                                    value={modules.input}
+                                    onChange={(event) => handleModuleChange(id, event)}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -87,18 +202,6 @@ export const CreateCourse = ({ open, close }) => {
 
         setModule((prevModules) => [...prevModules, newModule]);
     };
-
-    const deleteModuleControl = (moduleId) => {
-        setModule((prevModules) => {
-            if (prevModules.length === 1 && prevModules[0].key === moduleId) {
-                return prevModules; 
-            }
-
-            const updatedModules = prevModules.filter((module) => module.key !== moduleId);
-            return updatedModules;
-        });
-    };
-
 
     return (
         <Modal
@@ -144,7 +247,7 @@ export const CreateCourse = ({ open, close }) => {
 
                         <Grid item xs={10} >
                             <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
-                                <InputLabel sx={{
+                                <InputLabel required sx={{
                                     color: 'appDark.text',
                                     '&.Mui-focused': {
                                         color: 'appDark.text' //change label color
@@ -154,6 +257,9 @@ export const CreateCourse = ({ open, close }) => {
                                     type="input"
                                     label="ID del Curso"
                                     placeholder="TC1028"
+                                    value={id}
+                                    onChange={handleIdChange}
+                                    error={idError !== null}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -172,20 +278,27 @@ export const CreateCourse = ({ open, close }) => {
 
                                 />
                             </FormControl>
+                            {idError && (<FormHelperText sx={{ color: 'error.main', mx: 1 }}>{idError}</FormHelperText>)}
                         </Grid>
 
                         <Grid item xs={10} >
                             <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                <InputLabel sx={{
+                                <InputLabel required sx={{
                                     color: 'appDark.text',
                                     '&.Mui-focused': {
                                         color: 'appDark.text' //change label color
                                     }
                                 }}>Nombre del Curso</InputLabel>
                                 <OutlinedInput
-                                    type="input"
+                                    type="text"
                                     label="Nombre del Curso"
                                     placeholder="Pensamiento Computacional"
+                                    value={courseName}
+                                    onChange={handleCourseChange}
+                                    error={nameError !== null}
+                                    inputProps={{
+                                        autoCapitalize: 'words',
+                                    }}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -204,6 +317,8 @@ export const CreateCourse = ({ open, close }) => {
 
                                 />
                             </FormControl>
+                            {nameError && (<FormHelperText sx={{ color: 'error.main', mx: 1 }}>{nameError}</FormHelperText>)}
+
                         </Grid>
                         <Grid item xs={10}>
                             {modules.map((module) => module.jsx)}
@@ -221,7 +336,7 @@ export const CreateCourse = ({ open, close }) => {
                             </Button>
                         </Grid>
                         <Grid item xs={6} id="crear tarea">
-                            <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                            <Button onClick={handleCreate} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                 Crear Materia
                             </Button>
                         </Grid>

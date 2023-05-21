@@ -93,15 +93,16 @@ export const AManage = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "name": `${editRowParams.first_name}`,
-                    "flast_name": `${editRowParams.flast_name}`,
-                    "slast_name": `${editRowParams.slast_name}`,
-                    "campus": `${editRowParams.campus}`
+                    "name": editRowParams.first_name,
+                    "flast_name": editRowParams.flast_name,
+                    "slast_name": editRowParams.slast_name,
+                    "campus": editRowParams.campus
                 }),
                 mode: 'cors',
             };
 
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            return response.json;
         } catch (error) {
             console.error(error);
         }
@@ -164,8 +165,9 @@ export const AManage = () => {
             };
 
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
-            const data = await response.json();
-            return data
+            setStudent(prevData => prevData.filter(user => user.id !== id));
+            setProfessor(prevData => prevData.filter(user => user.id !== id));
+            return response.json;
 
         } catch (error) {
             console.error(error);

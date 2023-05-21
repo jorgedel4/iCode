@@ -30,7 +30,6 @@ export const ASyllabus = () => {
 
         fetchData();
     }, []);
-    // console.log(syllabusData)
 
     const handleDelete = async (id) => {
         // console.log(id);
@@ -46,12 +45,15 @@ export const ASyllabus = () => {
             };
 
             const response = await fetch(`http://34.16.137.250:8002/course/${id}`, options);
-            const data = await response.json();
-            return data
-
+            setSyllabus(prevData => prevData.filter(course => course.id !== id));
+            return response.json;
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const handleCreateCourse = (newCourse) => {
+        setSyllabus(prevData => [...prevData, newCourse]);
     };
 
     //Funciones para abrir la modal de Crear Curso
@@ -134,7 +136,7 @@ export const ASyllabus = () => {
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} />
+            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse}/>
             <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
 
             <Grid item xs={12} md={12} lg={9}>
