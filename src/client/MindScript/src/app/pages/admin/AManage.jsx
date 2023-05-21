@@ -275,10 +275,13 @@ export const AManage = () => {
                                 bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonStudentSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Estudiante
@@ -296,10 +299,13 @@ export const AManage = () => {
                                 bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonProfessorSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Profesor
@@ -317,10 +323,13 @@ export const AManage = () => {
                                 bgcolor: buttonAdminSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonAdminSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Admin
