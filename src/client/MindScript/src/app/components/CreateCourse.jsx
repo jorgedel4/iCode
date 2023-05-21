@@ -65,12 +65,12 @@ export const CreateCourse = ({ open, close }) => {
 
                         <Grid item xs={3} sx={{ mt: 2 }}>
                             <Grid container align="center" justifyContent="space-around">
-                                <Grid item xs={5} sx={{ bgcolor: 'error.main' }}>
+                                <Grid item xs={5} sx={{ bgcolor: 'appDark.button' }}>
                                     <IconButton sx={{ color: 'appDark.icon' }} onClick={addModuleControl}>
                                         <Add />
                                     </IconButton>
                                 </Grid>
-                                <Grid item xs={5} sx={{ bgcolor: 'appDark.adminButton' }}>
+                                <Grid item xs={5} sx={{ bgcolor: 'error.main' }}>
                                     <IconButton
                                         sx={{ color: 'appDark.icon' }}
                                         onClick={() => deleteModuleControl(id)}
