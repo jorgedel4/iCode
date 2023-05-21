@@ -637,7 +637,9 @@ Usarios que estan dados de alta en la plataforma
 (En formato JSON) Se regresa un arreglo de estudiantes. Cada estudiante tiene los siguientes campos
 | Campo            | Tipo                  | Descripcion                                  |
 | ---------------- | --------------------- | ----------------------                       |
-| name             | string                | Nombre completo del usuario                  |
+| first_name       | string                | Nombre del usuario                           |
+| flast_name       | string                | Apellido paterno                             |
+| slast_name       | string                | Apellido materno                             |
 | id               | string                | ID del usuario                               |
 | campus           | string                | Campus del usuario                           |
 | email            | string                | Correo del usuario                           |
