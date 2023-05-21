@@ -1,4 +1,5 @@
-import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, MenuItem, useTheme, useMediaQuery } from '@mui/material'
+import { Add, Delete } from '@mui/icons-material';
+import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, IconButton, useTheme, useMediaQuery } from '@mui/material'
 import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from 'react';
 
@@ -6,125 +7,98 @@ export const CreateCourse = ({ open, close }) => {
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 65 : 90;
 
-    //Selector de curso
-    const [course, setCourse] = useState('');
-    const handleSelection = (event) => {
-        setCourse(event.target.value);
-        // console.log(course)
+    const [modules, setModule] = useState([]);
+
+    useEffect(() => {
+        if (open) {
+            addModuleControl();
+        } else {
+            setModule([]);
+        }
+    }, [open]);
+
+    const addModuleControl = () => {
+        const id = Date.now();
+        const newModule = {
+            key: id,
+            jsx: (
+                <Grid item xs={12} key={id}>
+                    <Grid container alignItems="center" justifyContent="center">
+                        <Grid item xs={9}>
+                            <FormControl
+                                sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
+                            >
+                                <InputLabel
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text',
+                                        },
+                                    }}
+                                >
+                                    Añadir Módulo
+                                </InputLabel>
+                                <OutlinedInput
+                                    type="input"
+                                    label="Nombre del Curso"
+                                    placeholder="For loop"
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'appDark.box', //change border color on hover
+                                        },
+                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'appDark.box', //change border color when focused
+                                        },
+                                        '&.MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: 'transparent',
+                                            },
+                                        },
+                                    }}
+                                />
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={3} sx={{ mt: 2 }}>
+                            <Grid container align="center" justifyContent="space-around">
+                                <Grid item xs={5} sx={{ bgcolor: 'error.main' }}>
+                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addModuleControl}>
+                                        <Add />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={5} sx={{ bgcolor: 'appDark.adminButton' }}>
+                                    <IconButton
+                                        sx={{ color: 'appDark.icon' }}
+                                        onClick={() => deleteModuleControl(id)}
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            ),
+        };
+
+        setModule((prevModules) => [...prevModules, newModule]);
     };
 
-    const modules = [
-        {
-            courseName: "Variables",
-            exNum: 0,
-            checked: false
-        },
-        {
-            courseName: "Condicionales",
-            exNum: 0,
-            checked: true
-        },
-        {
-            courseName: "Ciclo for",
-            exNum: 0,
-            checked: true
-        },
-
-    ]
-
-    /*API region */
-
-    //GET course information
-    const [coursesData, setCourseRequest] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
-                const responseData = await response.json();
-                setCourseRequest(responseData);
-            } catch (error) {
-                // console.error(error);
+    const deleteModuleControl = (moduleId) => {
+        setModule((prevModules) => {
+            if (prevModules.length === 1 && prevModules[0].key === moduleId) {
+                return prevModules; 
             }
-        };
-        fetchData();
-    }, []);
 
-    // console.log(coursesData)
+            const updatedModules = prevModules.filter((module) => module.key !== moduleId);
+            return updatedModules;
+        });
+    };
 
-    //GET group information
-    const [groupsData, setGroup] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        let userID = "L00000001"
-        let term = "current"
-
-        const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options);
-                    const responseData = await response.json();
-                    setGroup(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
-            }
-        };
-        fetchData();
-    }, [course]);
-
-    // console.log("ADFaf",groupsData)
-    // console.log("cursos", course)
-
-    //GET modules information
-    const [modulesData, setModule] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
-        const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-                    const responseData = await response.json();
-                    setModule(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
-            }
-        };
-        fetchData();
-    }, [course]);
-    // console.log("ADFaf", modulesData)
-    // console.log("cursos", course)
 
     return (
         <Modal
@@ -217,6 +191,9 @@ export const CreateCourse = ({ open, close }) => {
 
                                 />
                             </FormControl>
+                        </Grid>
+                        <Grid item xs={10}>
+                            {modules.map((module) => module.jsx)}
                         </Grid>
 
                     </Grid>
