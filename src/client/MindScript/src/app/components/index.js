@@ -22,3 +22,4 @@ export * from './EditHomework';
 export * from './CreateQuestion';
 export * from './CreateCourse';
 export * from './EditCourse';
+export * from './AddModuleCourse';

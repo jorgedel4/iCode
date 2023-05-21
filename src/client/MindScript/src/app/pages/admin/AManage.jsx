@@ -87,22 +87,22 @@ export const AManage = () => {
 
     const handlePatch = async (id) => {
         try {
-            console.log(editRowParams)
             const options = {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "name": `${editRowParams.first_name}`,
-                    "flast_name": `${editRowParams.flast_name}`,
-                    "slast_name": `${editRowParams.flast_name}`,
-                    "campus": `${editRowParams.campus}`
+                    "name": editRowParams.first_name,
+                    "flast_name": editRowParams.flast_name,
+                    "slast_name": editRowParams.slast_name,
+                    "campus": editRowParams.campus
                 }),
                 mode: 'cors',
             };
 
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            return response.json;
         } catch (error) {
             console.error(error);
         }
@@ -135,15 +135,20 @@ export const AManage = () => {
             if (row.id === params.id) {
                 prevData = row;
                 setEditMode(false);
-                return { ...row, editMode: false, first_name: params.first_name, flast_name: params.flast_name, slast_name: params.slast_name, campus: params.campus };
+                return {
+                    ...row, editMode: false,
+                    first_name: params.first_name.charAt(0).toUpperCase() + params.first_name.slice(1),
+                    flast_name: params.flast_name.charAt(0).toUpperCase() + params.flast_name.slice(1),
+                    slast_name: params.slast_name.charAt(0).toUpperCase() + params.slast_name.slice(1),
+                    campus: params.campus.toUpperCase()
+                };
             } else {
                 return row;
             }
         });
         setFilter(updatedData);
         if (prevData !== params) {
-            const row = () => updatedData.find(row => row.id === params.id);
-            console.log(row)
+            editRowParams = updatedData.find(row => row.id === params.id);
             handlePatch(params.id);
         }
     };
@@ -160,8 +165,9 @@ export const AManage = () => {
             };
 
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
-            const data = await response.json();
-            return data
+            setStudent(prevData => prevData.filter(user => user.id !== id));
+            setProfessor(prevData => prevData.filter(user => user.id !== id));
+            return response.json;
 
         } catch (error) {
             console.error(error);
@@ -269,10 +275,13 @@ export const AManage = () => {
                                 bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonStudentSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Estudiante
@@ -290,10 +299,13 @@ export const AManage = () => {
                                 bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonProfessorSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Profesor
@@ -311,10 +323,13 @@ export const AManage = () => {
                                 bgcolor: buttonAdminSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonAdminSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Admin
@@ -327,6 +342,7 @@ export const AManage = () => {
                     disableColumnMenu
                     disableSelectionOnClick
                     disableHear
+                    hideFooterPagination
                     rows={dataFiltered}
                     columns={columns}
                     isCellEditable={(params) => editRow === params.row.id}
