@@ -63,15 +63,15 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 		defer rows.Close()
 
 		// Iterate over returned users and store them
-		var users []structs.User
+		users := make([]structs.User, 0)
+		
 		for rows.Next() {
 			var user structs.User
-			var first_name, flast_name, slast_name string
-			if err := rows.Scan(&user.ID, &user.Campus, &first_name, &flast_name, &slast_name); err != nil {
+			if err := rows.Scan(&user.ID, &user.Campus, &user.FirstName, &user.FLastName, &user.SLastName); err != nil {
 				http.Error(w, "Error reading results", http.StatusInternalServerError)
 				return
 			}
-			user.Name = fmt.Sprintf("%s %s %s", first_name, flast_name, slast_name)
+			// Fix this later :)
 			user.Email = fmt.Sprintf("%s@tec.mx", user.ID)
 			users = append(users, user)
 		}
