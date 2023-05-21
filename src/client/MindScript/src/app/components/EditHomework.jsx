@@ -59,25 +59,27 @@ export const EditHomework = ({ open, close, editData, modules }) => {
         ))
         console.log("Request modules", requestModules)
 
-        // const options = {
-        //     method: 'PATCH',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     mode: 'cors',
-        //     body: JSON.stringify({
-        //         "name": updateHomework.hw_name,
-        //         "modules_questions": requestModules
-        //     })
-        // }
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                "name": updateHomework.hw_name,
+                "modules_questions": requestModules,
+                "open_date": updateHomework.startDate,
+                "close_date": updateHomework.endDate
+            })
+        }
 
-        // fetch(`http://34.16.137.250:8002/homework/${editData.hw_id}`, options)
-        //     .then(response => {
-        //         console.log(response)
-        //     })
-        //     .catch(error => {
-        //         // console.log(error)
-        //     })
+        fetch(`http://34.16.137.250:8002/homework/${editData.hw_id}`, options)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                // console.log(error)
+            })
 
     };
 
