@@ -1,9 +1,10 @@
 import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar, ActionButton } from '../../components';
+import { NavBar, SearchBar, ActionButton, EditCourse } from '../../components';
 import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
+import { CreateCourse } from '../../components/CreateCourse';
 
 export const ASyllabus = () => {
     // Api region
@@ -16,9 +17,6 @@ export const ASyllabus = () => {
             },
             mode: 'cors',
         }
-
-        // let userID = "A01551955"
-        // let term = "current"
 
         const fetchData = async () => {
             try {
@@ -56,6 +54,20 @@ export const ASyllabus = () => {
         }
     };
 
+    //Funciones para abrir la modal de Crear Curso
+    const [openCreateCourse, setOpenCreateCourse] = useState(false);
+    const showModalCreateCourse = () => { setOpenCreateCourse(true); }
+    const closeModalCreateCourse = () => {
+        setOpenCreateCourse(false);
+    }
+
+    //Funciones para abrir la modal de Editar Curso
+    const [rowParams, setRowParams] = useState([]);
+    const [openEditCourse, setOpenEditCourse] = useState(false);
+    const closeModalEditCourse = () => {
+        setOpenEditCourse(false);
+    }
+
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -85,7 +97,12 @@ export const ASyllabus = () => {
             mx: 10,
             renderCell: (params) => (
                 <>
-                    <IconButton aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                    <IconButton onClick={() => {
+                        setRowParams(params.row);
+                        setOpenEditCourse(true);
+                    }}
+                        aria-label="delete"
+                        sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Edit />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
@@ -107,12 +124,19 @@ export const ASyllabus = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        { name: 'Gestion de Usuarios', route: '/admin/management' },
+        { name: 'Solicitudes', route: '/admin/request' },
+        { name: 'Plan de Estudios', route: '/admin/syllabus' }
+    ]
 
 
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} />
+            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
+
             <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                     <Grid item xs={12} sm={6} lg={6}>
@@ -136,7 +160,7 @@ export const ASyllabus = () => {
                     </Grid>
                     <Grid item xs={10}>
                         <ActionButton >
-                            <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                            <CardActionArea onClick={showModalCreateCourse} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <AddCircleOutline sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100 }} />
 

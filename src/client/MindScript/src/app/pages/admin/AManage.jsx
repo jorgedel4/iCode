@@ -1,11 +1,27 @@
 import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { NavBar, SearchBar } from '../../components';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, Save } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
+    const theme = useTheme();
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
+    const [editMode, setEditMode] = useState(false);
+    const [editRow, setEditRow] = useState(null);
+    var editRowParams;
+    const [nameQuery, setNameQuery] = useState("");
+    const [idQuery, setIdQuery] = useState("");
+    const [campusQuery, setCampusQuery] = useState("");
+    const [dataFiltered, setFilter] = useState([]);
+
+
+    const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
+    const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
+    const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
 
     //Current user info
     const auth = getAuth();
@@ -18,7 +34,11 @@ export const AManage = () => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Nómina ", schoolID)
     }
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        { name: 'Gestion de Usuarios', route: '/admin/management' },
+        { name: 'Solicitudes', route: '/admin/request' },
+        { name: 'Plan de Estudios', route: '/admin/syllabus' }
+    ]
 
     const [studentsData, setStudent] = useState([]);
     useEffect(() => {
@@ -29,17 +49,13 @@ export const AManage = () => {
             },
             mode: 'cors',
         }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
@@ -56,32 +72,89 @@ export const AManage = () => {
             mode: 'cors',
         }
 
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
         fetchData();
     }, []);
 
+    const handlePatch = async (id) => {
+        try {
+            console.log(editRowParams)
+            const options = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "name": `${editRowParams.first_name}`,
+                    "flast_name": `${editRowParams.flast_name}`,
+                    "slast_name": `${editRowParams.flast_name}`,
+                    "campus": `${editRowParams.campus}`
+                }),
+                mode: 'cors',
+            };
+
+            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleEditButton = (id) => {
+        setEditRow(id);
+        setFilter((prevData) => {
+            let updatedData = prevData.map((row) => {
+                if (row.editMode) {
+                    return { ...row, editMode: false };
+                }
+                return row;
+            });
+
+            const clickedRow = updatedData.find((row) => row.id === id);
+            if (clickedRow) {
+                clickedRow.editMode = true;
+            }
+
+            setEditMode(clickedRow && clickedRow.editMode);
+            return updatedData;
+        });
+    };
+
+    const handleSaveRow = (params) => {
+        setEditRow(null);
+        var prevData;
+        const updatedData = dataFiltered.map((row) => {
+            if (row.id === params.id) {
+                prevData = row;
+                setEditMode(false);
+                return { ...row, editMode: false, first_name: params.first_name, flast_name: params.flast_name, slast_name: params.slast_name, campus: params.campus };
+            } else {
+                return row;
+            }
+        });
+        setFilter(updatedData);
+        if (prevData !== params) {
+            const row = () => updatedData.find(row => row.id === params.id);
+            console.log(row)
+            handlePatch(params.id);
+        }
+    };
 
     const handleDelete = async (id) => {
-        // console.log(id);
         try {
             const options = {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // body: JSON.stringify({ "id": id })
                 mode: 'cors',
 
             };
@@ -94,21 +167,6 @@ export const AManage = () => {
             console.error(error);
         }
     };
-
-
-    const theme = useTheme();
-    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
-
-    const [nameQuery, setNameQuery] = useState("");
-    const [idQuery, setIdQuery] = useState("");
-    const [campusQuery, setCampusQuery] = useState("");
-    const [dataFiltered, setFilter] = useState([]);
-
-    const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
-    const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
-    const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
 
     useEffect(() => {
         const filteredData = filterData(nameQuery, idQuery, campusQuery, buttonStudentSelected ? studentsData : buttonProfessorSelected ? professorsData : []);
@@ -134,9 +192,21 @@ export const AManage = () => {
     };
 
     const columns = [
-        { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
-        { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
-        { field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center' },
+        {
+            field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'first_name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'flast_name', headerName: '1er Apellido', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'slast_name', headerName: '2do Apellido', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
         {
             field: 'actions',
             headerName: 'Acciones',
@@ -146,20 +216,35 @@ export const AManage = () => {
             mx: 10,
             renderCell: (params) => (
                 <>
-                    <IconButton aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
-                        <Edit />
-                    </IconButton>
+                    {editRow === params.row.id ? (
+                        <IconButton
+                            aria-label="save"
+                            sx={{ color: 'appDark.icon', mx: 2 }}
+                            onClick={() => handleSaveRow(params.row)}
+                        >
+                            <Save />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            aria-label="edit"
+                            sx={{ color: 'appDark.icon', mx: 2 }}
+                            onClick={() => handleEditButton(params.row.id)}
+                        >
+                            <Edit />
+                        </IconButton>
+                    )}
                     <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
                 </>
             ),
+
         },
     ];
 
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar pages={pages}/>
+            <NavBar pages={pages} />
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
@@ -244,8 +329,14 @@ export const AManage = () => {
                     disableHear
                     rows={dataFiltered}
                     columns={columns}
-                    theme={theme}
-                    sx={{ color: 'appDark.text', border: 0 }}
+                    isCellEditable={(params) => editRow === params.row.id}
+                    sx={{
+                        color: 'appDark.text',
+                        border: 0,
+                        '& .MuiDataGrid-cell--editable': {
+                            bgcolor: 'primary.main'
+                        },
+                    }}
                 />
             </Grid>
 
@@ -254,18 +345,17 @@ export const AManage = () => {
     )
 }
 
-
-
-
-
 const filterData = (nameQuery, idQuery, campusQuery, usersData) => {
     if (!nameQuery && !idQuery && !campusQuery) {
         return usersData;
     } else {
-        return usersData.filter((d) =>
-            (nameQuery && d.name.toLowerCase().includes(nameQuery.toLowerCase())) ||
-            (idQuery && d.id.toLowerCase().includes(idQuery.toLowerCase())) ||
-            (campusQuery && d.campus.toLowerCase().includes(campusQuery.toLowerCase()))
-        );
+        return usersData.filter((d) => {
+            const fullName = `${d.first_name} ${d.flast_name} ${d.slast_name}`;
+            return (
+                (nameQuery && fullName.toLowerCase().includes(nameQuery.toLowerCase())) ||
+                (idQuery && d.id.toLowerCase().includes(idQuery.toLowerCase())) ||
+                (campusQuery && d.campus.toLowerCase().includes(campusQuery.toLowerCase()))
+            );
+        });
     }
 };
