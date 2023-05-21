@@ -65,7 +65,7 @@ func Course(mysqlDB *sql.DB) http.HandlerFunc {
 		if err != nil {
 			tx.Rollback()
 			if strings.Contains(err.Error(), req.ID){
-				http.Error(w, fmt.Sprintf("Course with ID '%s' already exists", req.ID), http.StatusConflict)
+				http.Error(w, fmt.Sprintf("Course with ID '%s' already exists", req.ID), http.StatusRequestTimeout)
 			} else {
 				http.Error(w, "Error creating course", http.StatusInternalServerError)
 			}
