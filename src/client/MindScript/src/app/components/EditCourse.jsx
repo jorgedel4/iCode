@@ -87,9 +87,9 @@ export const EditCourse = ({ open, close, params }) => {
                     />
                 </FormControl>
                 <div style={{ padding: 10, justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-                    <div style={{ backgroundColor: theme.palette.error.main, marginTop: 15 }}>
+                    <div style={{ backgroundColor: theme.palette.error.main, marginTop: 15, borderRadius: 5 }}>
                         <IconButton
-                            sx={{ color: 'appDark.icon' }}
+                            sx={{ color: 'appDark.icon'}}
                             onClick={() => handleDeleteModule(module.id)}
                         >
                             <Delete />
