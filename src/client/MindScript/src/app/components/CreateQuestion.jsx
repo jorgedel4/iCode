@@ -1,4 +1,4 @@
-import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+import { Grid, InputLabel, useTheme, useMediaQuery, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -18,203 +18,82 @@ import { useForm } from '../../hooks/useForm';
 
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
+    const theme = useTheme();
+    const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+    const containerWidth = isXLargeScreen ? '80vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
+
     //Prueba
     const checked = true;
 
-    //Nombre de la tarea
-    const { hwname, onInputChange } = useForm({
-        hwname: '',
+    //Description
+    const { qdescription, onInputChange } = useForm({
+        qdescription: '',
     });
 
     //Selector de curso 
-    const [course, setCourse] = useState('');
-    const handleSelection = (event) => {
-        setCourse(event.target.value);
-        // console.log(course)
+    const [qmodule, setQModule] = useState('');
+    const handleQModuleSelection = (event) => {
+        setQModule(event.target.value);
+        console.log(qmodule)
     };
 
-    //State date pickers
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-
-
-
-    /*API region */
-
-    //GET course information
-    const [coursesData, setCourseRequest] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        // let userID = "A01551955"
-        // let term = "current"
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
-                const responseData = await response.json();
-                setCourseRequest(responseData);
-            } catch (error) {
-                // console.error(error);
-            }
-        };
-        fetchData();
-    }, []);
-
-    // console.log(coursesData)
-
-    //GET group information
-    const [groupsData, setGroup] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        let userID = "L00000001"
-        let term = "current"
-
-        const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options);
-                    const responseData = await response.json();
-                    setGroup(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
-            }
-        };
-        fetchData();
-    }, [course]);
-    console.log("asfasklfdj",course)
-
-    let groups = [];
-    groupsData.map((group) => (
-        groups.push({
-            id_group: group.id_group,
-            id_course: group.id_course,
-            // course_name: group.course_name,
-            checked: true
-        })
-    ))
-
-    // console.log("groupsData",groupsData)
-    // console.log("cursos", course)
+    //Selector de tipo de pregunta 
+    const [qtype, setQType] = useState('');
+    const handleQTypeSelection = (event) => {
+        setQType(event.target.value);
+        console.log(qtype)
+    };
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
+    // useEffect(() => {
+    //     const options = {
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //         },
+    //         mode: 'cors',
+    //     }
 
-        // let userID = "A01551955"
-        // let term = "current"
+    //     // let userID = "A01551955"
+    //     // let term = "current"
 
-        const fetchData = async () => {
-            if (course) {
-                try {
-                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-                    const responseData = await response.json();
-                    setModule(responseData);
-                } catch (error) {
-                    // console.error(error); .push({id:, n_questions: })
-                }
-            }
-        };
-        fetchData();
-    }, [course]);
+    //     const fetchData = async () => {
+    //         if (course) {
+    //             try {
+    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
+    //                 const responseData = await response.json();
+    //                 setModule(responseData);
+    //             } catch (error) {
+    //                 // console.error(error); .push({id:, n_questions: })
+    //             }
+    //         }
+    //     };
+    //     fetchData();
+    // }, [course]);
 
     let modules = [];
-    modulesData.map((module) => (
-        modules.push({
-            id: module.id,
-            name: module.name,
-            n_questions: 0,
-            checked: true
-        })
-    ))
+    // modulesData.map((module) => (
+    //     modules.push({
+    //         id: module.id,
+    //         name: module.name,
+    //         n_questions: 0,
+    //         checked: true
+    //     })
+    // ))
 
     // //POST Create Homework
 
-    const createHomework = {
-        hw_name: hwname,
-        startDate: startDate,
-        endDate: endDate,
+    const createQuestion = {
+        qdescription: qdescription,
+
     }
 
-    
+
     // console.log("POST Register Homework", createHomework)
     console.log("Modules", modulesData)
-
-    const createHomeworkRequest = async () => {
-        let requestModules = [];
-        let requestGroups = [];
-
-        modules.map((module) => (
-            module.checked
-                ? requestModules.push({
-                    module: module.id,
-                    n_questions: module.n_questions,
-                })
-                : null
-        ))
-        console.log("Request modules", requestModules)
-        groups.map((group) => (
-            (group.checked && (group.id_course === course))
-                ? requestGroups.push(
-                    group.id_group)
-                : null
-        ))
-        console.log("Request groups", requestGroups)
-
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-
-            },
-            mode: 'no-cors',
-            body: JSON.stringify({
-
-                "groups": requestGroups,
-                "hw_name": createHomework.hw_name,
-                "open_date": createHomework.startDate,
-                "close_date": createHomework.endDate,
-                "modules_questions": requestModules
-            })
-        }
-        console.log(options)
-        fetch('http://34.16.137.250:8002/createhw', options)
-            .then(response => {
-                // console.log("createHomeworkRequest", response)
-                if (response.status === 201) {
-                    // console.log(respose)
-                    throw new Error('Grupo creado');
-                }
-
-                console.log(respose)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    };
-
-
 
     /*end API region */
 
@@ -234,7 +113,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
                     boxShadow: 24,
-                    width: '80vw',
+                    width: containerWidth,
                     height: '80vh',
                     overflowY: 'scroll',
                     "&::-webkit-scrollbar": {
@@ -256,7 +135,9 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Typography>
                 </Grid>
 
+
                 <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
+
                     <Grid container justifyContent="center" sx={{
                         py: 2,
                         overflowY: 'scroll',
@@ -274,42 +155,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                         },
                     }}>
 
-                        {/* Homework name */}
-                        <Grid item xs={10} >
-                            <Grid container>
-                                <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
-                                    <InputLabel sx={{
-                                        color: 'appDark.text',
-                                        '&.Mui-focused': {
-                                            color: 'appDark.text' //change label color
-                                        }
-                                    }}>Nombre de la tarea</InputLabel>
-                                    <OutlinedInput
-                                        type="input"
-                                        label="Nombre de la Tarea"
-                                        placeholder="Tarea 1"
-                                        sx={{
-                                            color: 'appDark.text',
-                                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                borderColor: 'appDark.box', //change border color on hover
-                                            },
-                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                borderColor: 'appDark.box', //change border color when focused
-                                            },
-                                            '&.MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    borderColor: 'transparent',
-                                                },
-                                            }
-                                        }}
-                                        name='hwname'
-                                        value={hwname}
-                                        onChange={onInputChange}
-
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
 
                         {/* Module Selector */}
                         <Grid item xs={10}>
@@ -328,8 +173,57 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
                                 <Select
                                     id="moduleSelector"
-                                    value={course}
-                                    onChange={handleSelection}
+                                    value={qmodule}
+                                    onChange={handleQModuleSelection}
+                                    sx={{ borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {modulesData.map((module) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={module.id}
+                                            value={module.id}
+                                        >
+                                            {module.id} {module.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        {/* Type Selector (code or multiple selection)*/}
+                        <Grid item xs={10}>
+                            <FormControl variant="filled" sx={{ mt: 3, width: '100%' }}>
+                                <InputLabel id="questionTypeSelectorInputLabel"
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Tipo de pregunta</InputLabel>
+
+
+                                <Select
+                                    id="questionTypeSelector"
+                                    value={qtype}
+                                    onChange={handleQTypeSelection}
                                     sx={{ borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
                                     MenuProps={{
                                         PaperProps: {
@@ -359,90 +253,43 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             </FormControl>
                         </Grid>
 
-                        {/* Fecha Desbloqueo */}
-                        <Grid item xs={10}>
-                            {/* Date picker */}
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Fecha de Desbloqueo"
-                                    sx={{
-                                        mt: 3,
-                                        width: '100%',
-                                        bgcolor: "appDark.bgBox",
-                                        borderRadius: 2,
-
-
-                                        '& .MuiInputLabel-root': {
+                        {/* Question description */}
+                        <Grid item xs={10} sx={{ mt: 2 }}>
+                            <Grid container>
+                                <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', height: 100 }}>
+                                    <InputLabel sx={{
+                                        color: 'appDark.text',
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        height: 100
+                                    }}>Descripción de la pregunta</InputLabel>
+                                    <OutlinedInput
+                                        type="input"
+                                        label="Descripción de la pregunta"
+                                        placeholder="Descripción"
+                                        sx={{
                                             color: 'appDark.text',
-                                            '&.Mui-focused ': {
-                                                color: 'appDark.text'
-                                            }
-                                        },
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'transparent',
+                                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'appDark.box', //change border color on hover
                                             },
-                                            '&:hover fieldset': {
-                                                borderColor: 'appDark.box',
+                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'appDark.box', //change border color when focused
                                             },
-                                            '&.Mui-focused fieldset': {
-                                                borderColor: 'appDark.box',
+                                            '&.MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'transparent',
+                                                },
                                             },
-                                        },
-                                        '& .MuiOutlinedInput-input': {
-                                            color: 'appDark.text',
-                                        },
+                                            height: 100
+                                        }}
+                                        name='qdescription'
+                                        value={qdescription}
+                                        onChange={onInputChange}
 
-
-                                        svg: { color: 'appDark.text' },
-                                    }}
-
-                                    value={startDate} onChange={(newValue) => setStartDate(newValue)} />
-                            </LocalizationProvider>
-
-                        </Grid>
-
-                        {/* Fecha de Bloqueo */}
-                        <Grid item xs={10}>
-                            {/* Date picker */}
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Fecha de Bloqueo"
-                                    sx={{
-                                        mt: 3,
-                                        width: '100%',
-                                        bgcolor: "appDark.bgBox",
-                                        borderRadius: 2,
-
-
-                                        '& .MuiInputLabel-root': {
-                                            color: 'appDark.text',
-                                            '&.Mui-focused ': {
-                                                color: 'appDark.text'
-                                            }
-                                        },
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'transparent',
-                                            },
-                                            '&:hover fieldset': {
-                                                borderColor: 'appDark.box',
-                                            },
-                                            '&.Mui-focused fieldset': {
-                                                borderColor: 'appDark.box',
-                                            },
-                                        },
-                                        '& .MuiOutlinedInput-input': {
-                                            color: 'appDark.text',
-                                        },
-
-
-                                        svg: { color: 'appDark.text' },
-                                    }}
-
-                                    value={endDate} onChange={(newValue) => setEndDate(newValue)} />
-                            </LocalizationProvider>
-
+                                    />
+                                </FormControl>
+                            </Grid>
                         </Grid>
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
@@ -456,11 +303,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 borderRadius: 2,
                             }}>
                             <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
-                            {groups.map((group) => (
-                                group.id_course == course
-                                    ? <GroupHomework key={group.id_group} group={group} />
-                                    : null
-                            ))}
+
 
                         </Grid>
 
@@ -487,65 +330,16 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
                         <Grid item xs={10} >
 
-                            {/* Tabla de ejercicios de modulos */}
-                            <TableContainer sx={{
-                                height: "49vh", //to do no me pegues
-                                my: 2,
-                                borderRadius: 2,
-                                "&::-webkit-scrollbar": {
-                                    width: 5,
-                                },
-                                "&::-webkit-scrollbar-track": {
-                                    backgroundColor: "secondary.main",
-                                    borderRadius: 2,
-                                },
-                                "&::-webkit-scrollbar-thumb": {
-                                    backgroundColor: "appDark.scrollBar",
-                                    borderRadius: 2,
-                                },
-                            }}
+                            <Button
+                                variant="contained"
+                                component="label"
                             >
-                                <Table sx={{ width: 1 }} aria-label="simple table">
-                                    <TableHead sx={{ overflowX: "initial" }}>
-                                        <TableRow>
-                                            <TableCell
-                                                align="left"
-                                                sx={{
-                                                    color: "appDark.text",
-                                                    position: "sticky",
-                                                    top: 0,
-                                                    bgcolor: "primary.main",
-                                                    zIndex: 1,
-                                                }}
-                                            >
-                                                Módulos
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                sx={{
-                                                    color: "appDark.text",
-                                                    position: "sticky",
-                                                    top: 0,
-                                                    bgcolor: "primary.main",
-                                                    zIndex: 1,
-                                                }}
-                                            >
-                                                Ejercicios
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-
-                                    <TableBody>
-                                        {modules.map((module) => (
-                                            <>
-                                                <AddModuleHomework key={module.id} module={module} />
-                                            </>
-                                        ))}
-                                    </TableBody>
-
-                                </Table>
-                            </TableContainer>
-
+                                Subir Archivo
+                                <input
+                                    type="file"
+                                    hidden
+                                />
+                            </Button>
 
                         </Grid>
 
@@ -563,8 +357,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Grid>
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button onClick={createHomeworkRequest} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                            Crear tarea
+                        <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                            Enviar solicitud
                         </Button>
                     </Grid>
 
