@@ -31,8 +31,8 @@ func RequestQuestion(mysqlDB *sql.DB) http.HandlerFunc {
 			// Hacer algo con el archivo JSON
 		}
 
-		w.WriteHeader(http.StatusNoContent)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()
+
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Unenroll student from group and remove anything related to them in the group
 func Unenroll(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -71,6 +72,7 @@ func Unenroll(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Return response and close connection
 		w.WriteHeader(http.StatusOK)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()

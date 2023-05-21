@@ -13,22 +13,26 @@ import (
 	"github.com/jorgedel4/iCode/packages/util"
 )
 
+// Return all the homework that a student has assigned or that a professor assigned
 func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Header for CORS (not needed after deployment)
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
+		// Get needed variables from url parameters
 		var hwReq structs.HWReq
 		hwReq.ID = r.URL.Query().Get("id")
 		hwReq.Time = r.URL.Query().Get("time")
 		hwReq.Group = r.URL.Query().Get("group")
 		hwReq.GroupBy = r.URL.Query().Get("group_by")
 
+		// Verify that they were given
 		if hwReq.ID == "" || hwReq.Time == "" || hwReq.Group == "" || hwReq.GroupBy == "" {
 			http.Error(w, "Error reading parameters from url", http.StatusBadRequest)
 			return
 		}
 
+		// Check user's account type
 		accountType, ok := consts.AccountTypes[hwReq.ID[0]]
 		if !ok {
 			http.Error(w, "Invalid account type", http.StatusBadRequest)
@@ -128,6 +132,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		}
 
+		// Return response and close connection
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(hwJSON)

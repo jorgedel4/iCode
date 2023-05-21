@@ -12,8 +12,10 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Update a homework's configuration
 func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		homeworkID := mux.Vars(r)["homeworkID"]
@@ -37,6 +39,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 		var hwConfigs []string
 		var values []interface{}
 
+		// New homework settings
 		if req.Name != "" {
 			hwConfigs = append(hwConfigs, "hw_name = ?")
 			values = append(values, req.Name)
@@ -58,6 +61,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Update homework info
 		if len(hwConfigs) > 0 {
 			hwConfigsSQL := strings.Join(hwConfigs, ", ")
 			updateHWquery := fmt.Sprintf(`UPDATE homework
@@ -73,6 +77,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 		}
 
+		// Update the modules configuration for the homework
 		if len(req.ModulesQuestions) > 0 {
 			// Delete previos hw module configs
 			deleteQuery := `DELETE FROM homeworkConfigs 
@@ -101,6 +106,8 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+
+		// Return response and close connection
 		w.WriteHeader(http.StatusOK)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()

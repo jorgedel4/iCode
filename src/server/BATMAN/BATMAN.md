@@ -265,6 +265,44 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/course`
+#### Descripcion
+Registrar un nuevo curso
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                     |
+|-------------- | ----------- | ----------- | ------------------------------- |
+| id            | string      | si          | ID del curso a crear            |
+| name          | string      | si          | Nombre del curso                |
+| modules       | [ string ]  | si          | Nombre de los modulos del curso |
+
+#### Respuesta
+En caso de que se haya registrado al curso de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/course
+Content-Type: application/json
+``` json
+{
+    "id": "TC1021",
+    "name": "Sepultura de batos",
+    "modules": [
+        "Intro a leetcode",
+        "Leetcode 2"
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+
+
 ## Endpoints de lectura
 
 ### `/courses`
@@ -599,7 +637,9 @@ Usarios que estan dados de alta en la plataforma
 (En formato JSON) Se regresa un arreglo de estudiantes. Cada estudiante tiene los siguientes campos
 | Campo            | Tipo                  | Descripcion                                  |
 | ---------------- | --------------------- | ----------------------                       |
-| name             | string                | Nombre completo del usuario                  |
+| first_name       | string                | Nombre del usuario                           |
+| flast_name       | string                | Apellido paterno                             |
+| slast_name       | string                | Apellido materno                             |
 | id               | string                | ID del usuario                               |
 | campus           | string                | Campus del usuario                           |
 | email            | string                | Correo del usuario                           |
