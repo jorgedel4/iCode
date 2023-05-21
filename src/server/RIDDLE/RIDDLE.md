@@ -11,6 +11,8 @@ Funcionando como un conector entre las BBDDs (MongoDB y MySQL) y el cliente.
 <h2 style="color:#65b891;">URL BASE</h2>
 34.16.137.250:8003
 
+<h1 style="color:#B5FFE1;">ENDPOINTS de Lectura</h1>
+________________________________________________________________
 <h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de modulo</h2>
 
 <h3 style="color:#0000FF;">/questions</h3>
@@ -307,3 +309,74 @@ Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json
 <p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 201 Created
+
+
+<h1 style="color:#B5FFE1;">ENDPOINTS de Eliminación</h1>
+________________________________________________________________
+<h2 style="color:#65b891;">ENDPOINT rechazo de pregunta del profesor por admin</h2>
+
+<h3 style="color:#0000FF;">/declineQuestionRequest/{questionID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos no debe
+ser admitida
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+DELETE
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+Response 
+HTTP/1.1 200 OK 
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+DELETE 
+34.16.137.250:8003/declineQuestionRequest/CQ000000000000000004
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK 
+
+
+<h1 style="color:#B5FFE1;">ENDPOINTS de Actualización</h1>
+________________________________________________________________
+
+<h2 style="color:#65b891;">ENDPOINT aceptación de pregunta del profesor por admin</h2>
+
+<h3 style="color:#0000FF;">/aproveQuestionRequest/{questionID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos si debe
+ser admitida
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+PATCH
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+Response 
+HTTP/1.1 200 OK 
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+DELETE 
+34.16.137.250:8003/aproveQuestionRequest/CQ000000000000000004
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK 
