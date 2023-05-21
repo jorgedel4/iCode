@@ -1,73 +1,25 @@
+import React, { useState } from "react";
 import { Add, Delete } from '@mui/icons-material';
-import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, IconButton, useTheme, useMediaQuery, FormHelperText } from '@mui/material'
+import { Typography, Grid, Modal, useTheme, useMediaQuery, Button, InputLabel, MenuItem, Select, OutlinedInput, IconButton } from "@mui/material";
+
+
 import FormControl from '@mui/material/FormControl';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react'
 
-export const CreateCourse = ({ open, close, onCreateCourse }) => {
 
+export function AddModuleCourse({ open, close, course }) {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 65 : 90;
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
 
-    const [id, setId] = useState('');
-    const [courseName, setCourse] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState(null);
     const [modules, setModule] = useState([]);
     const [modulesInput, setInput] = useState([]);
-    const [idError, setIdError] = useState(null);
-    const [nameError, setNameError] = useState(null);
-    const handleCreate = async () => {
-        if (!id || !courseName || modulesInput.some((input) => !input)) {
-            return;
-        }
-        try {
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "id": id,
-                    "name": courseName,
-                    "modules": modulesInput
-                }),
-                mode: 'cors',
-            };
 
-            const response = await fetch(`http://34.16.137.250:8002/course`, options);
-            if (response.ok) {
-                close();
-                const courseData = {
-                    id: id,
-                    name: courseName,
-                    n_modules: modulesInput.length,
-                };
-                onCreateCourse(courseData);
-            }
-            if (response.status === 408) {
-                throw new Error('ID ya existe')
-            }
-            if (response.status === 409) {
-                throw new Error('Nombre ya existe')
-            }
-            if (response.status === 410) {
-                throw new Error('ID y Nombre ya existen')
-            }
-            return response.json;
-        } catch (error) {
-            if (error.message === 'ID ya existe') {
-                setIdError(error.message);
-                setNameError(null);
-            }
-            if (error.message === 'Nombre ya existe') {
-                setIdError(null);
-                setNameError(error.message);
-            }
-            if (error.message === 'ID y Nombre ya existen') {
-                setIdError('ID ya existe');
-                setNameError('Nombre ya existe');
-            }
-        }
+
+    const handleCourseSelection = (event) => {
+        setSelectedCourse(event.target.value);
     };
 
     useEffect(() => {
@@ -76,25 +28,33 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
         } else {
             setModule([]);
             setInput([]);
-            setId('');
-            setCourse('');
-            setIdError(null);
-            setNameError(null);
+            setSelectedCourse(null);
         }
     }, [open]);
 
-    const handleIdChange = (event) => {
-        const { value } = event.target;
-        const capitalizedValue = value.toUpperCase();
-        setId(capitalizedValue);
-    };
+    const [modulesData, setSelectedModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-    const handleCourseChange = (event) => {
-        const { value } = event.target;
-        const capitalizedValue = value.replace(/\b\w/g, (c) => c.toUpperCase());
-        setCourse(capitalizedValue);
-    };
-
+        const fetchData = async () => {
+            if (selectedCourse) {
+                try {
+                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${selectedCourse}`, options);
+                    const responseData = await response.json();
+                    setSelectedModule(responseData);
+                } catch (error) {
+                    // console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [selectedCourse]);
 
     const handleModuleChange = (moduleId, event) => {
         setModule((prevModules) => {
@@ -207,11 +167,10 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
             id="Modal prrona Crear Tarea"
             open={open}
             onClose={close}
-            aria-labelledby="crearCurso"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                id="Grid container Crear Materia"
+                id="Grid container Editar Materia"
                 justifyContent='center'
                 sx={{
                     bgcolor: 'secondary.main',
@@ -220,107 +179,78 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
                     width: `${containerWidth}vw`,
                 }}>
 
-                <Grid item xs={12} id="PrimeraSección">
+                <Grid item xs={12}>
                     <Typography id="modal-modal-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
-                        Crear Materia
+                        Añadir Módulo
                     </Typography>
                 </Grid>
 
                 <Grid item xs={10}>
                     <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, mt: 2, ml: 1 }}>
-                        Información General
+                        Cursos Disponibles
                     </Typography>
                 </Grid>
 
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" sx={{
-                        py: 3,
-                        height: '60vh',
+                        py: 2,
+                        height: '45vh',
                     }}>
-
-                        <Grid item xs={10} >
-                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
-                                <InputLabel required sx={{
-                                    color: 'appDark.text',
-                                    '&.Mui-focused': {
-                                        color: 'appDark.text' //change label color
-                                    }
-                                }}>ID del Curso</InputLabel>
-                                <OutlinedInput
-                                    type="input"
-                                    label="ID del Curso"
-                                    placeholder="TC1028"
-                                    value={id}
-                                    onChange={handleIdChange}
-                                    error={idError !== null}
-                                    sx={{
-                                        color: 'appDark.text',
-                                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'appDark.box', //change border color on hover
-                                        },
-                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'appDark.box', //change border color when focused
-                                        },
-                                        '&.MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'transparent',
-                                            },
-                                        }
-                                    }}
-
-
-                                />
-                            </FormControl>
-                            {idError && (<FormHelperText sx={{ color: 'error.main', mx: 1 }}>{idError}</FormHelperText>)}
-                        </Grid>
-
-                        <Grid item xs={10} >
-                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                <InputLabel required sx={{
-                                    color: 'appDark.text',
-                                    '&.Mui-focused': {
-                                        color: 'appDark.text' //change label color
-                                    }
-                                }}>Nombre del Curso</InputLabel>
-                                <OutlinedInput
-                                    type="text"
-                                    label="Nombre del Curso"
-                                    placeholder="Pensamiento Computacional"
-                                    value={courseName}
-                                    onChange={handleCourseChange}
-                                    error={nameError !== null}
-                                    inputProps={{
-                                        autoCapitalize: 'words',
-                                    }}
-                                    sx={{
-                                        color: 'appDark.text',
-                                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'appDark.box', //change border color on hover
-                                        },
-                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'appDark.box', //change border color when focused
-                                        },
-                                        '&.MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'transparent',
-                                            },
-                                        }
-                                    }}
-
-
-                                />
-                            </FormControl>
-                            {nameError && (<FormHelperText sx={{ color: 'error.main', mx: 1 }}>{nameError}</FormHelperText>)}
-
-                        </Grid>
                         <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                            <FormControl variant="filled" sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
+                                <InputLabel
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Curso</InputLabel>
+
+                                <Select
+                                    value={selectedCourse || ''}
+                                    onChange={handleCourseSelection}
+                                    sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {course.map((course) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={course.name}
+                                            value={course.id}
+                                        >
+                                            {course.id} {course.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={10}>
+                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
                                 Módulos
                             </Typography>
                         </Grid>
+
                         <Grid item xs={10} sx={{
                             overflowY: 'scroll',
-                            height: '30vh',
+                            height: '25vh',
                             "&::-webkit-scrollbar": {
                                 width: 5,
                             },
@@ -334,9 +264,10 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
                             },
                         }}>
                             {modules.map((module) => module.jsx)}
-                        </Grid>
 
+                        </Grid>
                     </Grid>
+
 
                 </Grid>
 
@@ -348,13 +279,13 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
                             </Button>
                         </Grid>
                         <Grid item xs={6} id="crear tarea">
-                            <Button onClick={handleCreate} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                                Crear Materia
+                            <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                                Guardar
                             </Button>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
         </Modal>
-    )
+    );
 }

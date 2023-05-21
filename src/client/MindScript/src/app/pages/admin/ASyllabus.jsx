@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar, ActionButton, EditCourse } from '../../components';
+import { NavBar, SearchBar, ActionButton, EditCourse, AddModuleCourse } from '../../components';
 import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
@@ -70,6 +70,13 @@ export const ASyllabus = () => {
         setOpenEditCourse(false);
     }
 
+    //Funciones para abrir la modal de Añadir modulo
+    const [openAddModule, setOpenAddModule] = useState(false);
+    const showAddModule = () => { setOpenAddModule(true); }
+    const closeModalAddModule = () => {
+        setOpenAddModule(false);
+    }
+
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -136,8 +143,9 @@ export const ASyllabus = () => {
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse}/>
+            <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
             <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
+            <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData}/>
 
             <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
@@ -177,7 +185,7 @@ export const ASyllabus = () => {
 
                     <Grid item xs={12}>
                         <ActionButton >
-                            <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                            <CardActionArea onClick={showAddModule} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <NoteAddOutlined sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100 }} />
                                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
