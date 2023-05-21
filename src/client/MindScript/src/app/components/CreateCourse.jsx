@@ -127,6 +127,19 @@ export const CreateCourse = ({ open, close }) => {
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" sx={{
                         py: 3,
+                        overflowY: 'scroll',
+                        height: '45vh',
+                        "&::-webkit-scrollbar": {
+                            width: 5,
+                        },
+                        "&::-webkit-scrollbar-track": {
+                            backgroundColor: "secondary.main",
+                            borderRadius: 2,
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "appDark.scrollBar",
+                            borderRadius: 2,
+                        },
                     }}>
 
                         <Grid item xs={10} >
