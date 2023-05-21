@@ -213,7 +213,7 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
         >
             <Grid container
                 id="Grid container Crear Materia"
-                justifyContent='space-between'
+                justifyContent='center'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
@@ -227,22 +227,16 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
                     </Typography>
                 </Grid>
 
+                <Grid item xs={10}>
+                    <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, mt: 2, ml: 1 }}>
+                        Información General
+                    </Typography>
+                </Grid>
+
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" sx={{
                         py: 3,
-                        overflowY: 'scroll',
-                        height: '45vh',
-                        "&::-webkit-scrollbar": {
-                            width: 5,
-                        },
-                        "&::-webkit-scrollbar-track": {
-                            backgroundColor: "secondary.main",
-                            borderRadius: 2,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "appDark.scrollBar",
-                            borderRadius: 2,
-                        },
+                        height: '60vh',
                     }}>
 
                         <Grid item xs={10} >
@@ -321,6 +315,25 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
 
                         </Grid>
                         <Grid item xs={10}>
+                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                                Módulos
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={10} sx={{
+                            overflowY: 'scroll',
+                            height: '30vh',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
                             {modules.map((module) => module.jsx)}
                         </Grid>
 

@@ -78,7 +78,7 @@ export const EditCourse = ({ open, close, params }) => {
         >
             <Grid container
                 id="Grid container Editar Materia"
-                justifyContent='space-between'
+                justifyContent='center'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
@@ -86,32 +86,26 @@ export const EditCourse = ({ open, close, params }) => {
                     width: `${containerWidth}vw`,
                 }}>
 
-                <Grid item xs={12} id="PrimeraSección">
+                <Grid item xs={12}>
                     <Typography id="modal-modal-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
                         Editar Curso
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={10}>
+                    <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, mt: 2, ml: 1 }}>
+                        Información General
                     </Typography>
                 </Grid>
 
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" sx={{
                         py: 2,
-                        overflowY: 'scroll',
                         height: '60vh',
-                        "&::-webkit-scrollbar": {
-                            width: 5,
-                        },
-                        "&::-webkit-scrollbar-track": {
-                            backgroundColor: "secondary.main",
-                            borderRadius: 2,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "appDark.scrollBar",
-                            borderRadius: 2,
-                        },
                     }}>
 
                         <Grid item xs={10} >
-                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
+                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 1 }}>
                                 <InputLabel sx={{
                                     color: 'appDark.text',
                                     '&.Mui-focused': {
@@ -144,7 +138,7 @@ export const EditCourse = ({ open, close, params }) => {
                         </Grid>
 
                         <Grid item xs={10} >
-                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
+                            <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 1 }}>
                                 <InputLabel sx={{
                                     color: 'appDark.text',
                                     '&.Mui-focused': {
@@ -174,8 +168,26 @@ export const EditCourse = ({ open, close, params }) => {
                                 />
                             </FormControl>
                         </Grid>
-
                         <Grid item xs={10}>
+                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 1 }}>
+                                Módulos
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={10} sx={{
+                            height: '30vh',
+                            overflowY: 'scroll',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
                             {moduleControls}
                         </Grid>
 
