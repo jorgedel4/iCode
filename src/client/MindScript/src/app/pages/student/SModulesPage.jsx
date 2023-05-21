@@ -25,7 +25,10 @@ export const SModulesPage = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    const pages = ['Home', 'Profile']
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
 
     //API para obtener los datos de las tarjeras de modulos
     const [modulesData, setModule] = useState([]);

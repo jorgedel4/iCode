@@ -22,7 +22,10 @@ export const PHomePage = () => {
     }
     console.log("Nómina ", schoolID)
 
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        { name: 'Home', route: '/professor/home' },
+        { name: 'Profile', route: '/professor/profile' },
+    ]
 
     //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);

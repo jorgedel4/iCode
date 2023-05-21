@@ -20,7 +20,10 @@ export const SHomePage = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    const pages = ['Home', 'Profile']
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
     
 
 

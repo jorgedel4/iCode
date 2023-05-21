@@ -43,7 +43,10 @@ export const PManage = () => {
   const [idQuery, setIdQuery] = useState("");
 
   const dataFiltered = filterData(nameQuery, idQuery, usersData);
-  const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+  const pages = [
+    { name: 'Home', route: '/professor/home' },
+    { name: 'Profile', route: '/professor/profile' },
+]
 
 
   return (

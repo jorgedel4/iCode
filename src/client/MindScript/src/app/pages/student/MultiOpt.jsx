@@ -21,7 +21,10 @@ export const MultiOpt = () => {
     const qNumber = 'Pregunta #'
     const qContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
-    const pages = ['Home', 'Profile']
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
 
     const questions = [
         'Pregunta 1',
