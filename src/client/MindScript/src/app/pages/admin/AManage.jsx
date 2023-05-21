@@ -12,6 +12,7 @@ export const AManage = () => {
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
     const [editMode, setEditMode] = useState(false);
     const [editRow, setEditRow] = useState(null);
+    var editRowParams;
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     const [campusQuery, setCampusQuery] = useState("");
@@ -34,9 +35,9 @@ export const AManage = () => {
         // console.log("Nómina ", schoolID)
     }
     const pages = [
-        {name: 'Gestion de Usuarios', route: '/admin/management'}, 
-        {name: 'Solicitudes', route: '/admin/request'}, 
-        {name: 'Plan de Estudios', route: '/admin/syllabus'}
+        { name: 'Gestion de Usuarios', route: '/admin/management' },
+        { name: 'Solicitudes', route: '/admin/request' },
+        { name: 'Plan de Estudios', route: '/admin/syllabus' }
     ]
 
     const [studentsData, setStudent] = useState([]);
@@ -86,20 +87,22 @@ export const AManage = () => {
 
     const handlePatch = async (id) => {
         try {
+            console.log(editRowParams)
             const options = {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // body: JSON.stringify({ "id": id })
+                body: JSON.stringify({
+                    "name": `${editRowParams.first_name}`,
+                    "flast_name": `${editRowParams.flast_name}`,
+                    "slast_name": `${editRowParams.flast_name}`,
+                    "campus": `${editRowParams.campus}`
+                }),
                 mode: 'cors',
-
             };
 
             const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
-            const data = await response.json();
-            return data
-
         } catch (error) {
             console.error(error);
         }
@@ -132,17 +135,18 @@ export const AManage = () => {
             if (row.id === params.id) {
                 prevData = row;
                 setEditMode(false);
-                return { ...row, editMode: false, name: params.name, campus: params.campus };
+                return { ...row, editMode: false, first_name: params.first_name, flast_name: params.flast_name, slast_name: params.slast_name, campus: params.campus };
             } else {
                 return row;
             }
         });
         setFilter(updatedData);
         if (prevData !== params) {
+            const row = () => updatedData.find(row => row.id === params.id);
+            console.log(row)
             handlePatch(params.id);
         }
     };
-
 
     const handleDelete = async (id) => {
         try {
@@ -192,7 +196,13 @@ export const AManage = () => {
             field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
         },
         {
-            field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+            field: 'first_name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'flast_name', headerName: '1er Apellido', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
+        },
+        {
+            field: 'slast_name', headerName: '2do Apellido', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
         },
         {
             field: 'campus', headerName: 'Campus', flex: 2, align: 'center', headerAlign: 'center', editable: editMode,
@@ -319,14 +329,10 @@ export const AManage = () => {
                     disableHear
                     rows={dataFiltered}
                     columns={columns}
-                    theme={theme}
                     isCellEditable={(params) => editRow === params.row.id}
                     sx={{
                         color: 'appDark.text',
                         border: 0,
-                        '& .edit-mode-row': {
-                            backgroundColor: 'red',
-                        },
                         '& .MuiDataGrid-cell--editable': {
                             bgcolor: 'primary.main'
                         },
@@ -339,15 +345,17 @@ export const AManage = () => {
     )
 }
 
-
 const filterData = (nameQuery, idQuery, campusQuery, usersData) => {
     if (!nameQuery && !idQuery && !campusQuery) {
         return usersData;
     } else {
-        return usersData.filter((d) =>
-            (nameQuery && d.name.toLowerCase().includes(nameQuery.toLowerCase())) ||
-            (idQuery && d.id.toLowerCase().includes(idQuery.toLowerCase())) ||
-            (campusQuery && d.campus.toLowerCase().includes(campusQuery.toLowerCase()))
-        );
+        return usersData.filter((d) => {
+            const fullName = `${d.first_name} ${d.flast_name} ${d.slast_name}`;
+            return (
+                (nameQuery && fullName.toLowerCase().includes(nameQuery.toLowerCase())) ||
+                (idQuery && d.id.toLowerCase().includes(idQuery.toLowerCase())) ||
+                (campusQuery && d.campus.toLowerCase().includes(campusQuery.toLowerCase()))
+            );
+        });
     }
 };
