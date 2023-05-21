@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar, ActionButton, EditCourse, AddModuleCourse } from '../../components';
+import { NavBar, SearchBar, ActionButton, EditCourse, AddModuleCourse, RemoveButton } from '../../components';
 import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
@@ -46,7 +46,7 @@ export const ASyllabus = () => {
 
             const response = await fetch(`http://34.16.137.250:8002/course/${id}`, options);
             setSyllabus(prevData => prevData.filter(course => course.id !== id));
-            return response.json;
+            return response;
         } catch (error) {
             console.error(error);
         }
@@ -77,6 +77,13 @@ export const ASyllabus = () => {
         setOpenAddModule(false);
     }
 
+    //Funciones para abrir la modal de Eliminar Usuario
+    const [openDeleteCourse, setOpenDeleteCourse] = useState(false);
+    const showModalDeleteCourse = () => { setOpenDeleteCourse(true); }
+    const closeModalDeleteCourse = () => {
+        setOpenDeleteCourse(false);
+    }
+
 
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -86,6 +93,8 @@ export const ASyllabus = () => {
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     const [dataFiltered, setFilter] = useState([]);
+    const [editData, setEditData] = useState(null);
+
 
     useEffect(() => {
         const filteredData = filterData(nameQuery, idQuery, syllabusData);
@@ -114,7 +123,13 @@ export const ASyllabus = () => {
                         sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Edit />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                    <IconButton
+                        onClick={() => {
+                            showModalDeleteCourse();
+                            setEditData(params.row.id)
+                        }}
+                        aria-label="delete"
+                        sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
                 </>
@@ -143,9 +158,11 @@ export const ASyllabus = () => {
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <RemoveButton open={openDeleteCourse} close={closeModalDeleteCourse} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este curso?" />
+
             <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
             <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
-            <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData}/>
+            <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} />
 
             <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>

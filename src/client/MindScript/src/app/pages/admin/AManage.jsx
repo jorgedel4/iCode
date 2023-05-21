@@ -248,10 +248,9 @@ export const AManage = () => {
                         </IconButton>
                     )}
                     <IconButton
-                        // onClick={() => handleDelete(params.row.id)}
                         onClick={() => {
                             showModalDeleteUser();
-                            setEditData(params.id)
+                            setEditData(params.row.id)
                         }}
 
                         aria-label="delete"
