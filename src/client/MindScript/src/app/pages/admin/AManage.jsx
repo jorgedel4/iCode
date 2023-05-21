@@ -87,7 +87,6 @@ export const AManage = () => {
 
     const handlePatch = async (id) => {
         try {
-            console.log(editRowParams)
             const options = {
                 method: 'PATCH',
                 headers: {
@@ -96,7 +95,7 @@ export const AManage = () => {
                 body: JSON.stringify({
                     "name": `${editRowParams.first_name}`,
                     "flast_name": `${editRowParams.flast_name}`,
-                    "slast_name": `${editRowParams.flast_name}`,
+                    "slast_name": `${editRowParams.slast_name}`,
                     "campus": `${editRowParams.campus}`
                 }),
                 mode: 'cors',
@@ -135,15 +134,20 @@ export const AManage = () => {
             if (row.id === params.id) {
                 prevData = row;
                 setEditMode(false);
-                return { ...row, editMode: false, first_name: params.first_name, flast_name: params.flast_name, slast_name: params.slast_name, campus: params.campus };
+                return {
+                    ...row, editMode: false,
+                    first_name: params.first_name.charAt(0).toUpperCase() + params.first_name.slice(1),
+                    flast_name: params.flast_name.charAt(0).toUpperCase() + params.flast_name.slice(1),
+                    slast_name: params.slast_name.charAt(0).toUpperCase() + params.slast_name.slice(1),
+                    campus: params.campus.toUpperCase()
+                };
             } else {
                 return row;
             }
         });
         setFilter(updatedData);
         if (prevData !== params) {
-            const row = () => updatedData.find(row => row.id === params.id);
-            console.log(row)
+            editRowParams = updatedData.find(row => row.id === params.id);
             handlePatch(params.id);
         }
     };
@@ -327,6 +331,7 @@ export const AManage = () => {
                     disableColumnMenu
                     disableSelectionOnClick
                     disableHear
+                    hideFooterPagination
                     rows={dataFiltered}
                     columns={columns}
                     isCellEditable={(params) => editRow === params.row.id}
