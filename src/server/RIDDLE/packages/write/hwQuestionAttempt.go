@@ -17,7 +17,7 @@ func HwQuestionAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 		//Leer el body de la conexion
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "chispas", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -60,18 +60,3 @@ func HwQuestionAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 
 	}
 }
-
-/*
- Debe regresar la info de questions
-
- Primero desde el select le indico que datos quiero
-
- Con la funcionde status, puedo recibir el estatus de esta pregunta en base al ultimo intento registrado en hw_questionAttempts
-
- Ahora debo generar un contador que observe cuantas veces se obtiene un status de FAIL para cada pregunta, si esta tiene ya 3 errores, no se le vuelve a entregar al usuario aunque sea FAIL
-
-
-
-
-
-*/

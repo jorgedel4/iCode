@@ -146,3 +146,37 @@ BEGIN
     );
 END$$
 DELIMITER ;
+
+
+
+--FUNCTION to Get homeworkStatus
+DELIMITER $$
+
+CREATE FUNCTION CalculateProgress(
+    student_id CHAR(9),
+    homework_id CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE total_questions INT;
+    DECLARE answered_correctly INT;
+    DECLARE progress INT;
+
+    -- Obtener el total de preguntas para la tarea en homeworkConfigs
+    SELECT SUM(n_questions) INTO total_questions
+    FROM homeworkConfigs
+    WHERE homework = homework_id;
+
+    -- Obtener el número de preguntas contestadas correctamente por el estudiante en hw_questionAttempts
+    SELECT COUNT(*) INTO answered_correctly
+    FROM hw_questionAttempts
+    WHERE student = student_id
+        AND homework = homework_id
+        AND attempt_status = 'PAS';
+
+    -- Calcular el progreso como un porcentaje
+    SET progress = (answered_correctly / total_questions) * 100;
+
+    RETURN progress;
+END$$
+
+DELIMITER ;
