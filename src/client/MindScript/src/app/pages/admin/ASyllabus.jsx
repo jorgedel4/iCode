@@ -7,7 +7,10 @@ import { getAuth } from "firebase/auth";
 import { CreateCourse } from '../../components/CreateCourse';
 
 export const ASyllabus = () => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    
     // Api region
+
     const [syllabusData, setSyllabus] = useState([]);
     useEffect(() => {
         const options = {
@@ -20,7 +23,7 @@ export const ASyllabus = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/courses`, options);
+                const response = await fetch(`${batmanAPI}courses`, options);
                 const responseData = await response.json();
                 setSyllabus(responseData);
             } catch (error) {
@@ -44,7 +47,7 @@ export const ASyllabus = () => {
 
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/course/${id}`, options);
+            const response = await fetch(`${batmanAPI}course/${id}`, options);
             setSyllabus(prevData => prevData.filter(course => course.id !== id));
             return response;
         } catch (error) {

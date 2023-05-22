@@ -7,6 +7,8 @@ import { getAuth } from "firebase/auth";
 import { useParams } from 'react-router-dom';
 
 export const PModulesPage = () => {
+  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const home = '/professor/home'
     const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
     let params = useParams()
@@ -45,7 +47,7 @@ export const PModulesPage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${group}`, options);
+                const response = await fetch(`${batmanAPI}groupmodules/${group}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
@@ -74,7 +76,7 @@ export const PModulesPage = () => {
  
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {

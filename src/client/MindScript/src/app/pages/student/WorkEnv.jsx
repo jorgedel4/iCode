@@ -1,12 +1,17 @@
 import { Grid, Button, Typography } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs } from '../../components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 
 
 export const WorkEnv = ({ onPrueba }) => {
+
+    const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
+
 
     //Current user info
     const auth = getAuth();
@@ -32,6 +37,35 @@ export const WorkEnv = ({ onPrueba }) => {
         'Pregunta 9',
         'Pregunta #',
     ];
+
+    //API para obtener la info de los grupos
+    const [homework, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "L00000001"
+        let term = "all"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}groups?id=${schoolID}&term=${term}`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
 
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
@@ -59,7 +93,7 @@ export const WorkEnv = ({ onPrueba }) => {
             })
         }
 
-        fetch('http://34.16.137.250:8001/exec', options)
+        fetch(`${codeAPI}exec`, options)
             .then(response => {
                 // console.log(response)
                 return response.json()
@@ -73,25 +107,6 @@ export const WorkEnv = ({ onPrueba }) => {
             })
 
     };
-
-    console.log(fetchResponse)
-
-    //Objeto para test
-    const tests = [
-        {
-            status: true,
-            feed: "djchdjdjds"
-        },
-        {
-            status: true,
-            feed: "djdkjdidweifujsd"
-        },
-        {
-            status: false,
-            feed: "djkdjsldjdkendjcs"
-        }
-
-    ]
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>

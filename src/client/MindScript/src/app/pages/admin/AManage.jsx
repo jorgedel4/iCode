@@ -7,6 +7,8 @@ import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
@@ -59,7 +61,7 @@ export const AManage = () => {
         }
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
+                const response = await fetch(`${batmanAPI}users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
             } catch (error) {
@@ -82,7 +84,7 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
+                const response = await fetch(`${batmanAPI}users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
             } catch (error) {
@@ -109,7 +111,7 @@ export const AManage = () => {
                 mode: 'cors',
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            const response = await fetch(`${batmanAPI}user/${id}`, options);
             return response.json;
         } catch (error) {
             console.error(error);
@@ -172,7 +174,7 @@ export const AManage = () => {
 
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            const response = await fetch(`${batmanAPI}user/${id}`, options);
             setStudent(prevData => prevData.filter(user => user.id !== id));
             setProfessor(prevData => prevData.filter(user => user.id !== id));
             return response;
