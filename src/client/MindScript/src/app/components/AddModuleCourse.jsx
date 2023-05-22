@@ -9,6 +9,8 @@ import { useEffect } from 'react'
 
 export function AddModuleCourse({ open, close, course }) {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
@@ -45,7 +47,7 @@ export function AddModuleCourse({ open, close, course }) {
         const fetchData = async () => {
             if (selectedCourse) {
                 try {
-                    const response = await fetch(`http://34.16.137.250:8002/coursemodules/${selectedCourse}`, options);
+                    const response = await fetch(`${batmanAPI}coursemodules/${selectedCourse}`, options);
                     const responseData = await response.json();
                     setSelectedModule(responseData);
                 } catch (error) {

@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 export const CreateCourse = ({ open, close, onCreateCourse }) => {
 
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 65 : 90;
@@ -34,7 +36,7 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
                 mode: 'cors',
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/course`, options);
+            const response = await fetch(`${batmanAPI}course`, options);
             if (response.ok) {
                 close();
                 const courseData = {

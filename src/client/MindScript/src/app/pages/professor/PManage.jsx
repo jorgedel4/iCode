@@ -5,6 +5,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Delete } from '@mui/icons-material';
 
 export const PManage = () => {
+  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
   //GET term information
   const [usersData, setUser] = useState([]);
   useEffect(() => {
@@ -22,7 +24,7 @@ export const PManage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/G000000001`, options);
+        const response = await fetch(`${batmanAPI}enrolledstudents/G000000001`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {

@@ -3,6 +3,7 @@ import { NavBar, QuestionsDropdown, OptionButton } from '../../components'
 import { getAuth } from "firebase/auth";
 
 export const MultiOpt = () => {
+
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;

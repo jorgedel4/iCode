@@ -7,6 +7,8 @@ import { getAuth } from "firebase/auth";
 
 export const PHomePage = () => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    
 
     //Current user info
     const auth = getAuth();
@@ -43,7 +45,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groups?id=${schoolID}&term=${term}`, options);
+                const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -93,7 +95,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
