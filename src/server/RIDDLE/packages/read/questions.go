@@ -69,7 +69,7 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 
 			log.Println("SIuiuiu")
 			//Llamar funcion para preguntas de grupos
-			res, _ := util.HwQuestions(w, req, mysqlDB)
+			/* res, _ := util.HwQuestions(w, req, mysqlDB)
 
 			//convertir las estructuras
 			hwreqsJSON, err := json.Marshal(res)
@@ -82,7 +82,7 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 			w.WriteHeader(http.StatusOK)
 			w.Write(hwreqsJSON)
 			w.(http.Flusher).Flush()
-			w.(http.CloseNotifier).CloseNotify()
+			w.(http.CloseNotifier).CloseNotify() */
 
 		}
 
