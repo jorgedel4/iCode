@@ -105,9 +105,47 @@ HTTP/1.1 200 OK Content-Type: application/json
 ]
 
 ```
+_______________________________________________
+<h2 style="color:#65b891;">ENDPOINT para revisar progreso de una tarea</h2>
+
+<h3 style="color:#0000FF;">/statusHomework</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Solicitar el porcentaje de avance de una tarea para un estudiante dado
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+GET
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| student_id   | string    | si                                           | ID del estudiante al que se busca evaluar su avance en la tarea                  |
+| homework_id  | string    | si                                           | ID de la tarea a la que se referencia         | 
 
 
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
 
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+GET 
+34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "progress": "67%"
+}
+```
+
+
+<h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
 _____________________________________________________
 <h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador desde interfaz</h2>
 
@@ -309,6 +347,7 @@ Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json
 <p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 201 Created
+
 
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Eliminación</h1>
