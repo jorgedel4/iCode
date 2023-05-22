@@ -1,6 +1,7 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard } from '../components' 
+import { useState, useEffect } from 'react';
 
 export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages }) => {
     const display = (event) => {
@@ -26,7 +27,6 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
 
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
 
             <Grid item xs={12} sx={{mt:4, height: '24px'}}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
@@ -73,7 +73,6 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                         <Typography>{data.hw_name}</Typography>
                                                     </Grid>
                                                     <Grid item xs={2}>
-                                                <EditHomework open={openEditHomework} close={closeModalEditHomework} data={data}/>
                                                         <IconButton sx={{ color: 'appDark.icon' }}>
                                                             <Edit/>
                                                         </IconButton>
