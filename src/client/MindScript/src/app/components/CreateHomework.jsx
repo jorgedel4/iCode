@@ -560,7 +560,12 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                     </Grid>
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button onClick={createHomeworkRequest} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                        <Button
+                            onClick={() => {
+                                createHomeworkRequest();
+                                close();
+                            }}
+                            type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Crear tarea
                         </Button>
                     </Grid>

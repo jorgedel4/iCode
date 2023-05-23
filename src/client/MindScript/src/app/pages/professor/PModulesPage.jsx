@@ -31,10 +31,6 @@ export const PModulesPage = (props) => {
     const navigate = useNavigate()
     const gestion = () => {
         navigate('/professor/management/'+params.group)
-        // this.props.history.push({pathname: "/professor/management",
-        // state: { group:"G0000000001" }})
-        // console.log("click gestión")
-        
     }
 
 

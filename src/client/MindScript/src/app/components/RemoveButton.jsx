@@ -25,7 +25,7 @@ export const RemoveButton = ({ open, close, editData, confirmationText }) => {
             console.log(hw_id)
             const response = await fetch(`http://34.16.137.250:8002/homework/${hw_id}`, options);
             console.log(response)
-        
+
 
         } catch (error) {
             console.error(error);
@@ -74,7 +74,10 @@ export const RemoveButton = ({ open, close, editData, confirmationText }) => {
                     <Grid item xs={6} id="crear tarea" align="right">
 
                         <Button
-                            onClick={() => handleDelete(editData.hw_id)}
+                            onClick={() => {
+                                handleDelete(editData.hw_id);
+                                close();
+                            }}
                             type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Eliminar
                         </Button>
