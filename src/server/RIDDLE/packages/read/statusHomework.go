@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/structs"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -25,23 +24,23 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		query := `SELECT CalculateProgress(?, ?);`
+		query := `SELECT GetTotalQuestions(?, ?), GetCorrectQuestion(?, ?);`
 
 		var progress int
-		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID).Scan(&progress)
+		var total int
+		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID, req.StudentID, req.HomeworkID).Scan(&total, &progress)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
 			return
 		}
 
-		// Add the percentage symbol to the progress
-		progressWithSymbol := fmt.Sprintf("%d%%", progress)
-
 		// Create a response struct
 		response := struct {
-			Progress string `json:"progress"`
+			Total    int `json:"total"`
+			Progress int `json:"progress"`
 		}{
-			Progress: progressWithSymbol,
+			Total:    total,
+			Progress: progress,
 		}
 
 		// Encode the response struct into JSON
