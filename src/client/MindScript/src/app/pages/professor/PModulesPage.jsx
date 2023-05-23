@@ -7,11 +7,11 @@ import { getAuth } from "firebase/auth";
 import { useParams } from 'react-router-dom';
 
 export const PModulesPage = () => {
+    let params = useParams()
   const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const home = '/professor/home'
-    const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
-    let params = useParams()
+    const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
 
     //Current user info
     const auth = getAuth();
@@ -62,7 +62,7 @@ export const PModulesPage = () => {
 
      //API para obtener los datos de las tareas
     const [homeworkData, setHomework] = useState([]);
-     useEffect(() => {
+    useEffect(() => {
         const options = {
             method: 'GET',
             headers: {
@@ -71,24 +71,24 @@ export const PModulesPage = () => {
             mode: 'cors',
         }
 
-        //  const group = "G000000001";
         const group = params.group;
- 
+
         const fetchData = async () => {
             try {
                 const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
-                console.error(error);
+                // console.error(error);
             }
         };
- 
+
         fetchData();
-     }, []);
+    }, []);
 
 
 
+    console.log(homeworkData)
     const homework = Object.values(homeworkData)
 
     return (

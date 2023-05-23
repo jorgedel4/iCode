@@ -6,11 +6,11 @@ import { getAuth } from "firebase/auth";
 import { useParams } from 'react-router-dom';
 
 export const SModulesPage = () => {
+    let params = useParams()
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const home = '/student/home'
-    const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
-    let params = useParams()
+    const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
 
     // console.log(useParams().group)
 
