@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { NavBar, SearchBar } from '../../components';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete } from '@mui/icons-material';
-import { useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 export const PManage = () => {
   // console.log(this.props.location.state.group)
+  let params = useParams()
   
   //GET term information
   const [usersData, setUser] = useState([]);
@@ -19,11 +20,11 @@ export const PManage = () => {
       mode: 'cors',
     }
     // console.log(group)
-
+    const group = params.group;
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/G000000001`, options);
+        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/${group}`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {
@@ -33,6 +34,28 @@ export const PManage = () => {
 
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const options = {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "group": `${params.group}`,
+            "student": `${id}`
+          }),
+          mode: 'cors',
+
+      };
+
+      const response = await fetch(`http://34.16.137.250:8002/unenrollstudent`, options);
+
+    } catch (error) {
+      console.error(error);
+    }    
+  };
 
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -49,6 +72,25 @@ export const PManage = () => {
     { name: 'Profile', route: '/professor/profile' },
   ]
 
+  const columns = [
+    { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
+    { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
+    {
+      field: 'actions',
+      headerName: 'Acciones',
+      flex: 2,
+      align: 'center',
+      headerAlign: 'center',
+      mx: 10,
+      renderCell: (data) => (
+        <>
+          <IconButton onClick={() => handleDelete(data.row.id)} aria-label="delete" sx={{ color: 'appDark.icon' }}>
+            <Delete />
+          </IconButton>
+        </>
+      ),
+    },
+  ];
 
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -72,33 +114,8 @@ export const PManage = () => {
   )
 }
 
-const handleEdit = (row) => {
+const handleEdit = (id) => {
 };
-
-const handleDelete = (row) => {
-};
-
-const columns = [
-  { field: 'id', headerName: 'Matrícula/Nómina', flex: 2, align: 'center', headerAlign: 'center' },
-  { field: 'name', headerName: 'Nombre', flex: 2, align: 'center', headerAlign: 'center' },
-  {
-    field: 'actions',
-    headerName: 'Acciones',
-    flex: 2,
-    align: 'center',
-    headerAlign: 'center',
-    mx: 10,
-    renderCell: (params) => (
-      <>
-        <IconButton aria-label="delete" sx={{ color: 'appDark.icon' }}>
-          <Delete />
-        </IconButton>
-      </>
-    ),
-  },
-];
-
-
 
 const filterData = (nameQuery, idQuery, usersData) => {
   if (!nameQuery && !idQuery) {

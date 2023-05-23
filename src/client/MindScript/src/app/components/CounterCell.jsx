@@ -11,7 +11,7 @@ import {
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { doesSectionHaveLeadingZeros } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
+// import { doesSectionHaveLeadingZeros } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
 export function CounterCell({ data, onUpdateRows }) {
   const [counts, setCounts] = useState({});
