@@ -14,6 +14,8 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+
 DELIMITER $$
 CREATE FUNCTION successful_hw_attempts(matricula CHAR(9), hw_id CHAR(20))
 RETURNS INT
@@ -120,3 +122,34 @@ BEGIN
     RETURN total_questions;
 END $$
 DELIMITER ;
+
+
+DELIMITER $$
+CREATE FUNCTION InsertModule(
+    module_id CHAR(20),
+    course_id CHAR(10),
+    module_name VARCHAR(30)
+) RETURNS CHAR(50)
+BEGIN
+    DECLARE module_exists INT;
+    DECLARE error_message CHAR(50);
+
+    -- Verificar si ya existe un módulo con el mismo nombre y curso
+    SELECT COUNT(*) INTO module_exists
+    FROM modules
+    WHERE nombre = module_name AND course = course_id;
+
+    IF module_exists > 0 THEN
+        SET error_message = 'Module already exists for the given course';
+    ELSE
+        -- Insertar el nuevo módulo
+        INSERT INTO modules (id_module, course, nombre)
+        VALUES (module_id, course_id, module_name);
+        
+        SET error_message = '';
+    END IF;
+
+    RETURN error_message;
+END $$
+DELIMITER ;
+
