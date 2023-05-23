@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/structs"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -16,8 +15,8 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 
 		// Get the required variables from URL parameters
 		var req structs.HomeworkCheck
-		req.StudentID = r.URL.Query().Get("student_id")
-		req.HomeworkID = r.URL.Query().Get("homework_id")
+		req.StudentID = r.URL.Query().Get("id_student")
+		req.HomeworkID = r.URL.Query().Get("id_homework")
 
 		// Check if the required variables are provided
 		if req.StudentID == "" || req.HomeworkID == "" {
@@ -25,23 +24,23 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		query := `SELECT CalculateProgress(?, ?);`
+		query := `SELECT GetTotalQuestions(?, ?), GetCorrectQuestion(?, ?);`
 
 		var progress int
-		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID).Scan(&progress)
+		var total int
+		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID, req.StudentID, req.HomeworkID).Scan(&total, &progress)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
 			return
 		}
 
-		// Add the percentage symbol to the progress
-		progressWithSymbol := fmt.Sprintf("%d%%", progress)
-
 		// Create a response struct
 		response := struct {
-			Progress string `json:"progress"`
+			Total    int `json:"total"`
+			Progress int `json:"progress"`
 		}{
-			Progress: progressWithSymbol,
+			Total:    total,
+			Progress: progress,
 		}
 
 		// Encode the response struct into JSON
@@ -57,35 +56,3 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 		w.Write(responseJSON)
 	}
 }
-
-/*
-Pseudocodigo para obtener el status actual de una tarea en cuanto a progreso
-
-GO
-- Necesito pedir como parametros con GET el id_student, id_homework
-- En base a esto debo verificar el progreso de este estduiante en esa tarea
-
-MYSQL
-Puedo crear una funcion que reciba los dos id como parametros,
-
-La funcion debe:
-
-- Crear un contador que tome la cantidad de intentos pasados (status = PAS)de ese estudiante en esa tarea desde
-la tabla de hw_questionAttempts
-
-- Para saber cuantas preguntas tenia esa pregunta debo ir a homeworkConfigs y revisar todos los registros con ese id_homework,
-puedo hacer un select de todos los registros con ese id de tarea, una vez que ya tengo todos los registros, con un
-cursor recorro cada registro y tomo el numero de preguntas n_questions, ya con eso sumo todos para tener un total que
-equivale a mi 100% de la tarea,
-
-Al final solo necesito calcular el porcentaje, lo puedo hacer desde mysql para que la funcion central de me un entero
-que representa el porcentaje
-
-
-
-NOTAS:
-
-No debo fijarme en las preguntas que ya tengan 3 intentos con FAI, porque siguen contando como fallas
-y el procentaje de avance solo toma en consideracion a las preguntas bien contestadas
-
-*/

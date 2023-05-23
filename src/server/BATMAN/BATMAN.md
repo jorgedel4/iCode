@@ -41,6 +41,39 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/module`
+#### Descripcion
+Crear un nuevo modulo para un curso dado
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro   | Tipo        | Obligatorio | Descripcion                                   |
+|------------ | ----------- | ----------- | --------------------------------------------- |
+| course      | string      | si          | ID del curso al que pertenece el modulo       |
+| nombre      | string      | si          | Nombre del modulo                             |
+
+#### Respuesta
+En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.16.137.250:8002/module
+Content-Type: application/json
+``` json
+{
+    "course": "TC1030",
+    "nombre": "Modulo TEST"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/createhw`
 #### Descripcion
 Crear una nueva tarea para un grupo
@@ -305,6 +338,56 @@ HTTP/1.1 201 Created
 
 ## Endpoints de lectura
 
+### `/courses`
+#### Descripcion
+Todos los cursos que se tienen registrados
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+No se necesitan parametros
+
+#### Respuesta
+(En formato JSON) Arreglo de objetos que representan los cursos. Cada curso cuenta con los siguientes campos
+| Campo          | Tipo                  | Descripcion                               |
+| -------------- | --------------------- | ----------------------------------------- |
+| id             | string                | Identificador del campus                  |
+| name           | string                | Nombre del campus                         |
+
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8002/campus
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "campus_id": "CSF",
+        "campus_name": "Santa Fe"
+    },
+    {
+        "campus_id": "GDL",
+        "campus_name": "Guadalajara"
+    },
+    {
+        "campus_id": "HID",
+        "campus_name": "Hidalgo"
+    },
+    {
+        "campus_id": "MTY",
+        "campus_name": "Monterrey"
+    },
+    {
+        "campus_id": "PUE",
+        "campus_name": "Puebla"
+    }
+]
+```
+
+---
 ### `/courses`
 #### Descripcion
 Todos los cursos que se tienen registrados
@@ -1132,3 +1215,5 @@ DELETE 34.16.137.250:8002/campus/PUE
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+4152 3140 2307 4720

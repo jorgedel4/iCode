@@ -14,6 +14,8 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+
 DELIMITER $$
 CREATE FUNCTION successful_hw_attempts(matricula CHAR(9), hw_id CHAR(20))
 RETURNS INT
@@ -84,3 +86,70 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION GetCorrectQuestion(
+    student_id CHAR(9),
+    homework_id CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE answered_correctly INT;
+    
+    SELECT COUNT(*) INTO answered_correctly
+    FROM hw_questionAttempts
+    WHERE student = student_id
+        AND homework = homework_id
+        AND attempt_status = 'PAS';
+    
+    RETURN answered_correctly;
+END $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION GetTotalQuestions(
+    id_student CHAR(9),
+    id_homework CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE total_questions INT;
+    
+    SELECT SUM(n_questions) INTO total_questions
+    FROM homeworkConfigs
+    WHERE homework = id_homework;
+    
+    RETURN total_questions;
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE FUNCTION InsertModule(
+    module_id CHAR(20),
+    course_id CHAR(10),
+    module_name VARCHAR(30)
+) RETURNS CHAR(50)
+BEGIN
+    DECLARE module_exists INT;
+    DECLARE error_message CHAR(50);
+
+    -- Verificar si ya existe un módulo con el mismo nombre y curso
+    SELECT COUNT(*) INTO module_exists
+    FROM modules
+    WHERE nombre = module_name AND course = course_id;
+
+    IF module_exists > 0 THEN
+        SET error_message = 'Module already exists for the given course';
+    ELSE
+        -- Insertar el nuevo módulo
+        INSERT INTO modules (id_module, course, nombre)
+        VALUES (module_id, course_id, module_name);
+        
+        SET error_message = '';
+    END IF;
+
+    RETURN error_message;
+END $$
+DELIMITER ;
+

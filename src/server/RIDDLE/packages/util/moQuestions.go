@@ -15,7 +15,7 @@ func MoQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 
 	/* 	selec := fmt.Sprintf("SELECT id_question, q_type, info, mod_question_status(%s, id_question, %s)", req.Group, req.Student)
 	 */ //Query de base para preguntas de
-	baseQuery := `SELECT q.id_question, q.q_type, q.info, mod_question_status(?, q.id_question, ?) AS status
+	baseQuery := `SELECT q.id_question, q.module, q.q_type, q.info, mod_question_status(?, q.id_question, ?) AS status
 	FROM questions q`
 
 	var selectors []string
@@ -30,7 +30,7 @@ func MoQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	selectors = append(selectors, "module = ?")
 	values = append(values, req.Assigment)
 
-	selectors = append(selectors, "mod_question_status(?, id_question, ?) = ? OR mod_question_status2(?, id_question, ?) = ?")
+	selectors = append(selectors, "mod_question_status(?, id_question, ?) = ? OR mod_question_status(?, id_question, ?) = ?")
 	//Primer chequeo con PEN
 	values = append(values, req.Group)
 	values = append(values, req.Student)
@@ -62,7 +62,7 @@ func MoQuestions(w http.ResponseWriter, req structs.SelectQuestion, mysqlDB *sql
 	var results []structs.ResultQuestion
 	for rows.Next() {
 		var result structs.ResultQuestion
-		if err = rows.Scan(&result.IdPregunta, &result.Type, &result.Info, &result.Status); err != nil {
+		if err = rows.Scan(&result.IdPregunta, &result.Module, &result.Type, &result.Info, &result.Status); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return []structs.ResultQuestion{}, err
 		}

@@ -12,8 +12,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jorgedel4/iCode/packages/create"
 	"github.com/jorgedel4/iCode/packages/read"
-	"github.com/jorgedel4/iCode/packages/update"
 	"github.com/jorgedel4/iCode/packages/remove"
+	"github.com/jorgedel4/iCode/packages/update"
 )
 
 func main() {
@@ -46,6 +46,7 @@ func main() {
 	r.HandleFunc("/createhw", create.Homework(mysqlDB)).Methods("POST")
 	r.HandleFunc("/registeruser", create.User(mysqlDB)).Methods("POST")
 	r.HandleFunc("/course", create.Course(mysqlDB)).Methods("POST")
+	r.HandleFunc("/module", create.Module(mysqlDB)).Methods("POST")
 
 	// Read operations
 	r.HandleFunc("/courses", read.Courses(mysqlDB)).Methods("GET")
@@ -57,6 +58,7 @@ func main() {
 	r.HandleFunc("/terms", read.Terms(mysqlDB)).Methods("GET")
 	r.HandleFunc("/groupmodules/{groupID}", read.GroupModules(mysqlDB)).Methods("GET")
 	r.HandleFunc("/coursemodules/{courseID}", read.CourseModules(mysqlDB)).Methods("GET")
+	r.HandleFunc("/campus", read.Campus(mysqlDB)).Methods("GET")
 
 	// Update operations
 	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")

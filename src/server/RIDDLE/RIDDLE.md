@@ -140,10 +140,34 @@ GET
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
 {
+    "total": 3,
+    "progress": 2
+}
+```
+<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
+<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
+
+=======
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+GET 
+34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
     "progress": "67%"
 }
 ```
-
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
 _____________________________________________________
