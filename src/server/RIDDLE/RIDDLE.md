@@ -73,53 +73,7 @@ HTTP/1.1 200 OK Content-Type: application/json
     "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}"
 }
 ```
-_____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de tareas</h2>
 
-<h3 style="color:#0000FF;">/questions</h3>
-
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
-
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-GET
-
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el URL)
-
-| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
-| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| id_student   | string    | si                                           | ID del estudiante que pide preguntas                    |
-| id_assigment | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
-| id_module    | string    | si                                           | ID del grupo al que pertene el estudiante               |
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
-la informacion de la pregunta a resolver y su status.
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
-
-
-GET 
-34.16.137.250:8003/questions?id_student=A01551955&id_assigment=H0000000000000000001&id_module=M0000000000000000001
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
-
-HTTP/1.1 200 OK Content-Type: application/json
-``` json
-
-[
-    {
-        "IdPregunta": "CQ000000000000000003",
-        "Type": "codep",
-        "Info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        "Status": "PEN"
-    }
-]
-
-```
 _______________________________________________
 <h2 style="color:#65b891;">ENDPOINT para revisar progreso de una tarea</h2>
 
