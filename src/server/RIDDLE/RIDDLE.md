@@ -13,12 +13,12 @@ Funcionando como un conector entre las BBDDs (MongoDB y MySQL) y el cliente.
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Lectura</h1>
 ________________________________________________________________
-<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de modulo</h2>
+<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de Modulo o Tarea</h2>
 
 <h3 style="color:#0000FF;">/questions</h3>
 
 <h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
+Solicitar una pregunta nueva, puede ser de una tarea  de un modulo
 
 <h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 GET
@@ -29,35 +29,50 @@ GET
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
 | :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
 | id_student   | string    | si                                           | ID del estudiante que pide preguntas                   |
-| id_assigment | string    | si                                           | ID del modulo desde la que se hace la peticion         | 
-| id_group     | string    | si                                           | ID del grupo al que pertene el estudiante              |
+| id_assigment | string    | si                                           | ID del modulo o Tarea desde la que se hace la peticion | 
+| id_group     | string    | solo en caso de pregunta de modulo           | ID del grupo al que pertene el estudiante              |
 
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
-la informacion de la pregunta a resolver.
+<h3 style="color:#b5ffe1;">Respuesta para ambos casos</h3>
+(En formato JSON) Arreglo de objetos que representan a la pregunta recibida. Cada estudiante cuenta con los siguientes camposos estudiante
+| Campo          | Tipo                  | Descripcion                                                         |
+| -------------- | --------------------- | ------------------------------------------------------------------: |
+| id_pregunta    | string                | ID de la pregunta obtenida                                          |
+| type           | string                | Tipo de la pregunta (codep o multi)                                 |
+| info           | string                | Informacion de la pregunta (descripcion, inputs y outputs, etc)     |
 
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
-
+<h3 style="color:#b5ffe1;">Ejemplos</h3>
+<p style= "font-weight: bold;">Peticion Para Pregunta de Tarea</p>
 
 GET 
-34.16.137.250:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001&id_group=G000000001
+34.16.137.250:8003/questions?id_assigment=H0000000000000000001&id_student=A01551955
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
-[
-    {
-        "IdPregunta": "CQ000000000000000001",
-        "Type": "codep",
-        "Info": "{\"hinputs\": [[\"2\"], [\"4\"]], \"sinputs\": [[\"3\"], [\"6\"]], \"houtputs\": [\"4\", \"16\"], \"language\": \"python\", \"soutputs\": [\"9\", \"36\"], \"timeoutSec\": 10, \"description\": \"Double a number\", \"initialCode\": \"\", \"forbiddenFunctions\": []}",
-        "Status": "FAI"
-    }
-]
+{
+    "id_pregunta": "CQ000000000000000005",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}"
+}
 ```
 
+
+<p style= "font-weight: bold;">Peticion Para Pregunta de Modulo</p>
+
+GET 
+34.16.137.250:8003/questions?id_assigment=H0000000000000000001&id_student=A01551955&id_group=G000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "id_pregunta": "CQ000000000000000004",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}"
+}
+```
 _____________________________________________________
 <h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de tareas</h2>
 

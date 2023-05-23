@@ -56,46 +56,6 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE FUNCTION mod_question_status(group_id CHAR(20), question_id CHAR(20), student CHAR(9))
-RETURNS CHAR(3)
-BEGIN
-    DECLARE question_status CHAR(3);
-    DECLARE done BOOLEAN DEFAULT FALSE;
-    
-    DECLARE cur CURSOR FOR
-        SELECT attempt_status
-        FROM questionAttempts
-        WHERE student = student
-        AND grupo = group_id
-        AND question = question_id;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    
-    SET question_status = 'PEN';
-
-    OPEN cur;
-        read_loop: LOOP
-        FETCH cur INTO question_status;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-        IF question_status = 'PAS' THEN
-            CLOSE cur;
-            RETURN 'PAS';
-        END IF;
-        END LOOP;
-    CLOSE cur;
-
-    IF question_status = 'PEN' THEN
-        RETURN question_status;
-    ELSE
-        RETURN 'FAI';
-    END IF;
-END$$
-DELIMITER ;
-
-
-
-DELIMITER $$
 CREATE FUNCTION GetCorrectQuestion(
     student_id CHAR(9),
     homework_id CHAR(20)
@@ -262,13 +222,12 @@ BEGIN
             CLOSE cur;
             RETURN 'PAS';
         ELSE
-            SET question_status = 'FAI'
+            SET question_status = 'FAI';
         END IF;
         END LOOP;
     CLOSE cur;
 
     RETURN question_status;
-    END IF;
 END$$
 DELIMITER ;
 
@@ -362,4 +321,74 @@ BEGIN
 
     RETURN questionID;
 END$$
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION ModQuestionStatus(
+    question_id CHAR(20),
+    grupo_id CHAR(20),
+    student_id CHAR(9)
+) RETURNS CHAR(3)
+BEGIN
+    DECLARE question_status CHAR(3);
+    DECLARE done BOOLEAN DEFAULT FALSE;
+    
+    DECLARE cur CURSOR FOR
+        SELECT attempt_status
+        FROM questionAttempts
+        WHERE student = student_id
+        AND grupo = grupo_id
+        AND question = question_id;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    SET question_status = 'PEN';
+
+    OPEN cur;
+        read_loop: LOOP
+        FETCH cur INTO question_status;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        IF question_status = 'PAS' THEN
+            CLOSE cur;
+            RETURN 'PAS';
+        ELSE
+            SET question_status = 'FAI';
+        END IF;
+        END LOOP;
+    CLOSE cur;
+
+    RETURN question_status;
+END$$
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION ModuleQuestionID(
+    group_id CHAR(20),
+    module_id CHAR(20),
+    student_id CHAR(20)
+) RETURNS CHAR(20)
+BEGIN
+    DECLARE question CHAR(20);
+
+    SELECT id_question INTO question FROM questions
+    WHERE module = module_id
+    AND ModQuestionStatus(id_question, group_id, student_id) = 'PEN'
+    ORDER BY RAND()
+    LIMIT 1;
+
+    IF question IS NULL THEN
+        SELECT id_question INTO question FROM questions
+        WHERE module = module_id
+        AND ModQuestionStatus(id_question, group_id, student_id) = 'FAI'
+        ORDER BY RAND()
+        LIMIT 1;
+    END IF;
+
+    RETURN question;
+END $$
 DELIMITER ;
