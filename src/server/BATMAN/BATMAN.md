@@ -41,6 +41,39 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/module`
+#### Descripcion
+Crear un nuevo modulo para un curso dado
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro   | Tipo        | Obligatorio | Descripcion                                   |
+|------------ | ----------- | ----------- | --------------------------------------------- |
+| course      | string      | si          | ID del curso al que pertenece el modulo       |
+| nombre      | string      | si          | Nombre del modulo                             |
+
+#### Respuesta
+En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.16.137.250:8002/module
+Content-Type: application/json
+``` json
+{
+    "course": "TC1030",
+    "nombre": "Modulo TEST"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
 ### `/createhw`
 #### Descripcion
 Crear una nueva tarea para un grupo
@@ -1182,3 +1215,5 @@ DELETE 34.16.137.250:8002/campus/PUE
 
 **Respuesta**
 HTTP/1.1 200 OK
+
+4152 3140 2307 4720
