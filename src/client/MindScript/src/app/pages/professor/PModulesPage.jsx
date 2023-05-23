@@ -4,9 +4,9 @@ import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export const PModulesPage = () => {
+export const PModulesPage = (props) => {
     const home = '/professor/home'
     const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
     let params = useParams()
@@ -28,10 +28,19 @@ export const PModulesPage = () => {
         { name: 'Home', route: '/professor/home' },
         { name: 'Profile', route: '/professor/profile' },
     ]
+    const navigate = useNavigate()
+    const gestion = () => {
+        navigate('/professor/management')
+        // this.props.history.push({pathname: "/professor/management",
+        // state: { group:"G0000000001" }})
+        // console.log("click gestión")
+        
+    }
 
-     //API para obtener los datos de las tarjeras de modulos
-     const [modulesData, setModule] = useState([]);
-     useEffect(() => {
+
+    //API para obtener los datos de las tarjeras de modulos
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
         const options = {
             method: 'GET',
             headers: {
@@ -52,15 +61,15 @@ export const PModulesPage = () => {
                 // console.error(error);
             }
         };
- 
+
         fetchData();
-     }, []);
+    }, []);
 
     // console.log("modulos" + modulesData)
 
-     //API para obtener los datos de las tareas
+    //API para obtener los datos de las tareas
     const [homeworkData, setHomework] = useState([]);
-     useEffect(() => {
+    useEffect(() => {
         const options = {
             method: 'GET',
             headers: {
@@ -71,7 +80,7 @@ export const PModulesPage = () => {
 
         //  const group = "G000000001";
         const group = params.group;
- 
+
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
@@ -81,18 +90,19 @@ export const PModulesPage = () => {
                 console.error(error);
             }
         };
- 
+
         fetchData();
-     }, []);
+    }, []);
 
 
 
     const homework = Object.values(homeworkData)
 
+
+
     return (
         <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-
                 <Grid item xs={12} md={4}>
 
                     <Card sx={{
@@ -104,7 +114,7 @@ export const PModulesPage = () => {
                         ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 }
                     }}
                     >
-                        <CardActionArea sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
+                        <CardActionArea onClick={gestion} sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
                             <CardContent sx={{ pt: 4, pb: 6 }}>
 
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
@@ -120,11 +130,12 @@ export const PModulesPage = () => {
                 {modulesData != null && modulesData != undefined ?
                     modulesData.map((module, index) => (
                         <Grid item key={index} xs={12} md={4}>
-                            <PModuleCard module={module} index={index} group={params.group}/>
+                            <PModuleCard module={module} index={index} group={params.group} />
                         </Grid>
-                ))
-                : null}
+                    ))
+                    : null}
             </Grid>
         </ModulesLayout>
     )
 }
+

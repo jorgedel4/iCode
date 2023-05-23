@@ -3,8 +3,11 @@ import { useState, useEffect } from 'react';
 import { NavBar, SearchBar } from '../../components';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 export const PManage = () => {
+  // console.log(this.props.location.state.group)
+  
   //GET term information
   const [usersData, setUser] = useState([]);
   useEffect(() => {
@@ -15,10 +18,8 @@ export const PManage = () => {
       },
       mode: 'cors',
     }
-    
+    // console.log(group)
 
-    // let userID = "A01551955"
-    // let term = "current"
 
     const fetchData = async () => {
       try {
@@ -46,12 +47,12 @@ export const PManage = () => {
   const pages = [
     { name: 'Home', route: '/professor/home' },
     { name: 'Profile', route: '/professor/profile' },
-]
+  ]
 
 
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-      <NavBar pages={pages}/>
+      <NavBar pages={pages} />
       <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
         <Grid item xs={12} sm={6} lg={6}>
           <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
@@ -89,7 +90,7 @@ const columns = [
     mx: 10,
     renderCell: (params) => (
       <>
-        <IconButton aria-label="delete" sx={{ color: 'appDark.icon'}}>
+        <IconButton aria-label="delete" sx={{ color: 'appDark.icon' }}>
           <Delete />
         </IconButton>
       </>
