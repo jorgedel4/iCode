@@ -27,6 +27,8 @@ export const RemoveButton = ({ open, close, editData, confirmationText, handleDe
     //     }
     // };
 
+    console.log("editData remove button",editData)
+
 
     return (
         <Modal

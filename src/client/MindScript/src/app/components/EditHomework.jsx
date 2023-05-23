@@ -13,8 +13,6 @@ import { AddModuleHomework } from './AddModuleHomework';
 export const EditHomework = ({ open, close, editData, modules }) => {
 
     const theme = useTheme();
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -75,7 +73,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
             })
         }
 
-        fetch(`${batmanAPI}homework/${editData.hw_id}`, options)
+        fetch(`http://34.16.137.250:8002/homework/${editData.hw_id}`, options)
             .then(response => {
                 console.log(response)
             })
@@ -113,7 +111,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
 
                             </Typography>
                         </Grid>
-                        
+
                         <Grid item xs={10} >
                             <Grid container>
                                 <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
@@ -330,7 +328,12 @@ export const EditHomework = ({ open, close, editData, modules }) => {
                                     </Grid>
                                     <Grid item xs={6} id="crear tarea" align="right">
 
-                                        <Button onClick={updateHomeworkRequest} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                                        <Button
+                                            onClick={() => {
+                                                updateHomeworkRequest();
+                                                close();
+                                            }}
+                                            type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                             Actualizar tarea
                                         </Button>
                                     </Grid>
