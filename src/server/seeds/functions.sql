@@ -261,14 +261,13 @@ BEGIN
         IF question_status = 'PAS' THEN
             CLOSE cur;
             RETURN 'PAS';
+        ELSE
+            SET question_status = 'FAI'
         END IF;
         END LOOP;
     CLOSE cur;
 
-    IF question_status = 'PEN' THEN
-        RETURN question_status;
-    ELSE
-        RETURN 'FAI';
+    RETURN question_status;
     END IF;
 END$$
 DELIMITER ;
