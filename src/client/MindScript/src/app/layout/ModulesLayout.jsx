@@ -31,7 +31,6 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
 
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
 
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>

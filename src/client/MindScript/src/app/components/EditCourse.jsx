@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 
 export const EditCourse = ({ open, close, params }) => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
@@ -20,7 +22,7 @@ export const EditCourse = ({ open, close, params }) => {
         }
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/coursemodules/${params.id}`, options);
+                const response = await fetch(`${batmanAPI}coursemodules/${params.id}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
@@ -42,7 +44,7 @@ export const EditCourse = ({ open, close, params }) => {
 
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/module/${id}`, options);
+            const response = await fetch(`${batmanAPI}module/${id}`, options);
             setModule(prevData => prevData.filter(module => module.id !== id));
             return response.json;
         } catch (error) {

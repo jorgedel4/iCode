@@ -1,4 +1,5 @@
 USE iCode;
+USE iCode;
 
 SET GLOBAL log_bin_trust_function_creators = 1;
 -- FUNCTION to get homeworkQuestions
@@ -38,4 +39,6 @@ BEGIN
     RETURN total_questions;
 END $$
 DELIMITER ;
+
+
 

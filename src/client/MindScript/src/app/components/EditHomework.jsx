@@ -13,6 +13,8 @@ import { AddModuleHomework } from './AddModuleHomework';
 export const EditHomework = ({ open, close, editData, modules }) => {
 
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -73,7 +75,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
             })
         }
 
-        fetch(`http://34.16.137.250:8002/homework/${editData.hw_id}`, options)
+        fetch(`${batmanAPI}homework/${editData.hw_id}`, options)
             .then(response => {
                 console.log(response)
             })
