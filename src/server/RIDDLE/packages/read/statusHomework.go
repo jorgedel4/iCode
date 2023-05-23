@@ -15,8 +15,8 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 
 		// Get the required variables from URL parameters
 		var req structs.HomeworkCheck
-		req.StudentID = r.URL.Query().Get("student_id")
-		req.HomeworkID = r.URL.Query().Get("homework_id")
+		req.StudentID = r.URL.Query().Get("id_student")
+		req.HomeworkID = r.URL.Query().Get("id_homework")
 
 		// Check if the required variables are provided
 		if req.StudentID == "" || req.HomeworkID == "" {

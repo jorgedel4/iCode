@@ -319,6 +319,56 @@ No se necesitan parametros
 (En formato JSON) Arreglo de objetos que representan los cursos. Cada curso cuenta con los siguientes campos
 | Campo          | Tipo                  | Descripcion                               |
 | -------------- | --------------------- | ----------------------------------------- |
+| id             | string                | Identificador del campus                  |
+| name           | string                | Nombre del campus                         |
+
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8002/campus
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "campus_id": "CSF",
+        "campus_name": "Santa Fe"
+    },
+    {
+        "campus_id": "GDL",
+        "campus_name": "Guadalajara"
+    },
+    {
+        "campus_id": "HID",
+        "campus_name": "Hidalgo"
+    },
+    {
+        "campus_id": "MTY",
+        "campus_name": "Monterrey"
+    },
+    {
+        "campus_id": "PUE",
+        "campus_name": "Puebla"
+    }
+]
+```
+
+---
+### `/courses`
+#### Descripcion
+Todos los cursos que se tienen registrados
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+No se necesitan parametros
+
+#### Respuesta
+(En formato JSON) Arreglo de objetos que representan los cursos. Cada curso cuenta con los siguientes campos
+| Campo          | Tipo                  | Descripcion                               |
+| -------------- | --------------------- | ----------------------------------------- |
 | id             | string                | Identificador del curso                   |
 | name           | string                | Nombre completo del curso                 |
 | n_modules      | int                   | Numero de modulos pertenecientes al curso |

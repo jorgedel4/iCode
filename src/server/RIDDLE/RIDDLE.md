@@ -140,10 +140,12 @@ GET
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
 {
-    "progress": "67%"
+    "total": 3,
+    "progress": 2
 }
 ```
-
+<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
+<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
 _____________________________________________________
