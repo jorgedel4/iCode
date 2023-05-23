@@ -23,3 +23,4 @@ export * from './CreateQuestion';
 export * from './CreateCourse';
 export * from './EditCourse';
 export * from './AddModuleCourse';
+export * from './Timer';
