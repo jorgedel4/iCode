@@ -1,8 +1,13 @@
 package structs
 
-type ModQuestAttempt struct {
+type HwQuestionAttempt struct {
 	Student       string `json:"student"`
-	Group         string `json:"grupo"`
+	Homework      string `json:"homework"`
 	IdQuestion    string `json:"question"`
 	AttemptStatus string `json:"attempt_status"`
+}
+
+type HomeworkCheck struct {
+	HomeworkID string
+	StudentID  string
 }
