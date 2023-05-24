@@ -11,30 +11,40 @@ import { useState } from 'react';
 import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { useEffect } from 'react';
-import { useForm } from '../../hooks/useForm';
+import { getAuth } from "firebase/auth";
 
 
-export const CreateHomework = ({ open, close, schoolID }) => {
+export const CreateHomework = ({ open, close }) => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid;
+    if (user !== null) {
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        schoolID = (email).substring(0, 9).toUpperCase();
+    }
 
     //Prueba
     const checked = true;
 
     //Nombre de la tarea
-    const { hwname, onInputChange } = useState('');
+    const [hwname, setHw] = useState('');
+    const handleHw = (event) => {
+        setHw(event.target.value);
+    };
 
     //Selector de curso 
     const [course, setCourse] = useState('');
     const handleSelection = (event) => {
         setCourse(event.target.value);
-        // console.log(course)
     };
 
     //State date pickers
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
-
 
     /*API region */
 
@@ -49,22 +59,17 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             mode: 'cors',
         }
 
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
                 const response = await fetch(`${batmanAPI}courses`, options);
                 const responseData = await response.json();
                 setCourseRequest(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
         fetchData();
     }, []);
-
-    // console.log(coursesData)
 
     //GET group information
     const [groupsData, setGroup] = useState([]);
@@ -77,17 +82,16 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             mode: 'cors',
         }
 
-        let userID = "L00000001"
         let term = "current"
 
         const fetchData = async () => {
             if (course) {
                 try {
-                    const response = await fetch(`${batmanAPI}groups?id=${userID}&term=${term}`, options);
+                    const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
                     const responseData = await response.json();
                     setGroup(responseData);
                 } catch (error) {
-                    // console.error(error);
+                    console.error(error);
                 }
             }
         };
@@ -99,13 +103,10 @@ export const CreateHomework = ({ open, close, schoolID }) => {
         groups.push({
             id_group: group.id_group,
             id_course: group.id_course,
-            // course_name: group.course_name,
+            course_name: group.course_name,
             checked: true
         })
     ))
-
-    // console.log("groupsData",groupsData)
-    // console.log("cursos", course)
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
@@ -118,9 +119,6 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             mode: 'cors',
         }
 
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             if (course) {
                 try {
@@ -128,12 +126,13 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
-                    // console.error(error); .push({id:, n_questions: })
+                    console.error(error);
                 }
             }
         };
         fetchData();
     }, [course]);
+    console.log(modulesData)
 
     let modules = [];
     modulesData.map((module) => (
@@ -168,14 +167,12 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                 })
                 : null
         ))
-        console.log("Request modules", requestModules)
         groups.map((group) => (
             (group.checked && (group.id_course === course))
                 ? requestGroups.push(
                     group.id_group)
                 : null
         ))
-        console.log("Request groups", requestGroups)
 
         const options = {
             method: 'POST',
@@ -193,16 +190,11 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                 "modules_questions": requestModules
             })
         }
-        console.log(options)
         fetch(`${batmanAPI}createhw`, options)
             .then(response => {
-                // console.log("createHomeworkRequest", response)
                 if (response.status === 201) {
-                    // console.log(respose)
-                    throw new Error('Grupo creado');
+                    close();
                 }
-
-                console.log(respose)
             })
             .catch(error => {
                 console.log(error)
@@ -215,6 +207,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
     useEffect(() => {
         if (close) {
+            setHw('');
             setCourse('');
             setStartDate(null);
             setEndDate(null);
@@ -309,7 +302,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                                         }}
                                         name='hwname'
                                         value={hwname}
-                                        onChange={onInputChange}
+                                        onChange={handleHw}
 
                                     />
                                 </FormControl>
@@ -569,10 +562,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
                     <Grid item xs={6} id="crear tarea" align="right">
 
                         <Button
-                            onClick={() => {
-                                createHomeworkRequest();
-                                close();
-                            }}
+                            onClick={createHomeworkRequest}
                             type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Crear tarea
                         </Button>
