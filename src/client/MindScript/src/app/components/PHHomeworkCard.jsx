@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import * as React from 'react';
 
 export const PHHomeworkCard = ({ data }) => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
 
     //Importante para EditHomework
     const [editData, setData] = useState(null);
@@ -44,7 +46,7 @@ export const PHHomeworkCard = ({ data }) => {
         const fetchData = async () => {
 
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${data[0]}`, options);
+                const response = await fetch(`${batmanAPI}groupmodules/${data[0]}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
 
@@ -76,8 +78,9 @@ export const PHHomeworkCard = ({ data }) => {
 
             };
             console.log(id)
-            const response = await fetch(`http://34.16.137.250:8002/homework/${id}`, options);
-            console.log(response)
+            const response = await fetch(`${batmanAPI}homework/${id}`, options);
+            setModule(prevData => prevData.filter(hw => hw.id !== id));
+            return response;
 
 
         } catch (error) {
@@ -139,7 +142,7 @@ export const PHHomeworkCard = ({ data }) => {
 
                                 <Grid>
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modulesData} />
-                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />
+                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleDelete={handleDelete}/>
                                     <IconButton
                                         onClick={() => {
                                             setData(homework)

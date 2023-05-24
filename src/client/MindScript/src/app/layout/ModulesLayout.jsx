@@ -1,14 +1,12 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
-import { useState, useEffect } from 'react';
-import { useForm } from '../../hooks/useForm';
+import { useState } from 'react';
 
+export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
 
-export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages, modules }) => {
     //Importante para EditHomework
     const [editData, setData] = useState(null);
-    console.log("editData modules lay button", editData)
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);
@@ -26,29 +24,7 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
         setOpenDeleteHomework(false);
     }
 
-
-
-    const handleDelete = async (id) => {
-        // console.log(id);
-        try {
-            const options = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'cors',
-
-            };
-            console.log(id)
-            const response = await fetch(`http://34.16.137.250:8002/homework/${id}`, options);
-            console.log(response)
-
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
+    
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />

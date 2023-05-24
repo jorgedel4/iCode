@@ -4,16 +4,7 @@ import { Add, Delete } from '@mui/icons-material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { useState } from 'react';
-import { GroupHomework } from './GroupHomework';
-import { AddModuleHomework } from './AddModuleHomework';
-import { CounterCell } from './CounterCell';
 import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
@@ -94,7 +85,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
 
     // console.log("POST Register Homework", createHomework)
-    console.log("Modules", modulesData)
 
     /*end API region */
 
@@ -285,42 +275,20 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
         setTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
     };
-
-
-
     /* Fin de test cases */
 
+    /*File upload section */
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-    // Preview de prueba para saber si se guardan los archivos (se borra mas adelante)
-    const [selectedFile, setSelectedFile] = useState()
-    const [preview, setPreview] = useState()
+        reader.onload = (event) => {
+            const fileContent = event.target.result;
+            console.log(fileContent); // Do something with the file content
+        };
 
-    // create a preview as a side effect, whenever selected file is changed
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(undefined)
-            return
-        }
-
-        const objectUrl = URL.createObjectURL(selectedFile)
-        setPreview(objectUrl)
-
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl)
-    }, [selectedFile])
-
-    const onSelectFile = e => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setSelectedFile(undefined)
-            return
-        }
-
-        // I've kept this example simple by using the first image instead of multiple
-        setSelectedFile(e.target.files[0])
-        // console.log(selectedFile)
-    }
-    // Termina la parte de prueba
-
+        reader.readAsText(file);
+    };
 
     return (
         <Modal
@@ -359,7 +327,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Typography>
                 </Grid>
 
-
+                {/* Primera Seccion */}
                 <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
 
                     <Grid container justifyContent="center" sx={{
@@ -574,12 +542,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 Subir Archivo
                                 <input
                                     type="file"
+                                    id="file-upload"
+                                    accept=".json"
                                     hidden
-                                    onChange={onSelectFile}
-                                    // onChange={(event) => console.log(event.target.files)}
+                                    onChange={handleFileUpload}
+                                // onChange={(event) => console.log(event.target.files)}
                                 />
-                                {/* {selectedFile &&  <img src={preview} /> } */}
-                                {selectedFile &&  console.log(selectedFile) }
+
                             </Button>
 
                         </Grid>
