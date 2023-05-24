@@ -57,7 +57,6 @@ HTTP/1.1 200 OK Content-Type: application/json
 }
 ```
 
-
 <p style= "font-weight: bold;">Peticion Para Pregunta de Modulo</p>
 
 GET 
@@ -90,21 +89,23 @@ GET
 
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
 | :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
-| student_id   | string    | si                                           | ID del estudiante al que se busca evaluar su avance en la tarea                  |
-| homework_id  | string    | si                                           | ID de la tarea a la que se referencia         | 
+| id_student   | string    | si                                           | ID del estudiante al que se busca evaluar su avance en la tarea                  |
+| id_homework  | string    | si                                           | ID de la tarea a la que se referencia         | 
 
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
 
 <h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
 
+<p style= "font-weight: bold;">Peticion</p>
 GET 
 34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
 
+
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
+(En formato JSON) Arreglo de objetos que representan el progreso de la tarea. De cuentan con los siguientes campos:
+| Campo          | Tipo                  | Descripcion                                                         |
+| -------------- | --------------------- | ------------------------------------------------------------------: |
+| total          | int                   | Cantidad total de preguntas habilitadas para la tarea                                         |
+| progress       | int                   | Cantidad de preguntas para esa tarea resueltas con exito                                |
 
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
@@ -116,27 +117,7 @@ HTTP/1.1 200 OK Content-Type: application/json
 <p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
 <p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
-=======
 
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
-
-GET 
-34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
-
-HTTP/1.1 200 OK Content-Type: application/json
-``` json
-{
-    "progress": "67%"
-}
-```
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
 _____________________________________________________
@@ -145,7 +126,7 @@ _____________________________________________________
 <h3 style="color:#0000FF;">/requestQuestion</h3>
 
 <h3 style="color:#b5ffe1;">Descripción</h3>
-SOlicitud para agregar una pregunta a la base de datos
+Solicitud para agregar una pregunta a la base de datos
 
 <h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 POST
@@ -220,7 +201,7 @@ El contenido del archivo file.json debe contener una estructura de arreglos como
 ]
 ```
 
-Donde cada arreglo representa una pregunta, y cada arrgelo contiene la siguiente informacion:
+Donde cada arreglo representa una pregunta, y cada arreglo contiene la siguiente informacion:
 
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
 | :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
@@ -268,6 +249,7 @@ student, homework, question, attempt_status
 | homework         | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
 | question         | string    | si                                           | ID de la pregunta que se intenta                        |
 | attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
+| attempt_time     | int64     | si                                           | Tiempo en segundos que le toma al estudiante realizar la pregunta|
 
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
@@ -285,14 +267,15 @@ Peticion POST 34.125.0.99:8003/hwQuestionAttempt Content-Type: application/json
     "student": "A01731511",
     "homework": "H0000000000000000002",
     "question": "CQ000000000000000002",
-    "attempt_status": "FAI"
+    "attempt_status": "PAS",
+    "attempt_time": 1568
 }
 ```
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 <p style= "font-weight: bold;">Respuesta</p>
 
-HTTP/1.1 201 Created
+HTTP/1.1 200 Ok
 
 _____________________________________________________
 <h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Modulo</h2>
@@ -315,7 +298,7 @@ student, grupo, question, attempt_status
 | grupo            | string    | si                                           | ID del grupo                                            | 
 | question         | string    | si                                           | ID de la pregunta que se intenta                        |
 | attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
-
+| attempt_time     | int64     | si                                           | Tiempo en segundos que le toma al estudiante realizar la pregunta|
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 En caso de que el intento de la pregunta de un modulo se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de questionAtempts.
@@ -332,16 +315,15 @@ Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json
     "student": "A01731511",
     "grupo": "G000000003",
     "question": "CQ000000000000000002",
-    "attempt_status": "FAI"
+    "attempt_status": "PAS",
+    "attempt_time": 1568
 }
 ```
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 <p style= "font-weight: bold;">Respuesta</p>
 
-HTTP/1.1 201 Created
-
-
+HTTP/1.1 200 Ok
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Eliminación</h1>
 ________________________________________________________________

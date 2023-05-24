@@ -142,6 +142,7 @@ CREATE TABLE questionAttempts (
     grupo           CHAR(10)    NOT NULL,
     question        CHAR(20)    NOT NULL,
     attempt_status  CHAR(3)     NOT NULL,
+    attempt_time    TIME        NOT NULL,
     attempt_date    TIMESTAMP   NOT NULL,
 
     FOREIGN KEY (student) REFERENCES students(matricula) ON DELETE CASCADE,
@@ -154,6 +155,7 @@ CREATE TABLE hw_questionAttempts (
     homework        CHAR(20)    NOT NULL,
     question        CHAR(20)    NOT NULL,
     attempt_status  CHAR(3)     NOT NULL,
+    attempt_time    TIME        NOT NULL,
     attempt_date    TIMESTAMP   NOT NULL,
 
     FOREIGN KEY (student) REFERENCES students(matricula) ON DELETE CASCADE,

@@ -3,6 +3,7 @@ package write
 import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/structs"
+	"elPadrino/RIDDLE/packages/util"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -29,8 +30,15 @@ func ModQuestAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		//Format the time for the seconds
+		tiempo, err := util.SecondsToTime(req.AttemptTime)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		//Query de inserciona la base de datos
-		baseQuery := "INSERT INTO questionAttempts(student, grupo, question, attempt_status, attempt_date) VALUES (?, ?, ?, ?, ?)"
+		baseQuery := "INSERT INTO questionAttempts(student, grupo, question, attempt_status, attempt_time, attempt_date) VALUES (?, ?, ?, ?, ?, ?)"
 
 		//Prepara genera un puntero
 		stmt, err := mysqlDB.Prepare(baseQuery)
@@ -43,7 +51,7 @@ func ModQuestAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 		//Generate the time of submittion
 		now := time.Now()
 
-		_, err = stmt.Exec(req.Student, req.Group, req.IdQuestion, req.AttemptStatus, now)
+		_, err = stmt.Exec(req.Student, req.Group, req.IdQuestion, req.AttemptStatus, tiempo, now)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			if err.Error() == "Error 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`icode`.`questions`, CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `professors` (`nomina`) ON DELETE CASCADE)" {
