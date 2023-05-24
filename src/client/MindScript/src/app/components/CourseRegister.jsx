@@ -5,6 +5,8 @@ import { useForm } from '../../hooks/useForm';
 
 
 export const CourseRegister = ({ open, close, setCount, count }) => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const [requestVal, setValue] = useState('')
 
     const [error, setError] = useState(null);
@@ -31,7 +33,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8002/enrollstudent', options)
+        fetch(`${batmanAPI}enrollstudent`, options)
             .then((response) => {
                 if (response.status === 409) {
                     throw new Error('Ya estás enrolado prro');

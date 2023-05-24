@@ -1,121 +1,102 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import { ModulesLayout } from "../../layout"
 import { SModuleCard } from '../../components'
-// import { PModuleCard } from '../../components'
+import { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
+import { useParams } from 'react-router-dom';
 
 export const SModulesPage = () => {
+    let params = useParams()
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const home = '/student/home'
-    const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+    const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
 
-    const homeworkData = [
-        {
-            title: 'Lunes',
-            homework: [ //Tareas que se entregen el lunes de esa semana
-                {
-                    work: 'Tarea 1' //nombre de la tarea
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Martes',
-            homework: [
-            ]
-        },
-        {
-            title: 'Miercoles',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Jueves',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Viernes',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Sabado',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
-        },
-        {
-            title: 'Domingo',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-            ]
+    // console.log(useParams().group)
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    var schoolID;
+    if (user !== null) {
+        // console.log("Student modules user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Matrícula A00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Matrícula ", schoolID)
+    }
+
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
+
+    //API para obtener los datos de las tarjeras de modulos
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
         }
-    ]
 
-    const modules = [
-        {
-            name: 'Variables',
-            noQuestions: 5,
-            progress: 3,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: true
-        },
-        {
-            name: 'Condicionales',
-            noQuestions: 10,
-            progress: 3,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: false 
-        },
-        {
-            name: 'Ciclos While',
-            noQuestions: 5,
-            progress: 4,
-            openDate: '23/01/2023',
-            closeDate: '23/02/2023',
-            block: true 
-        },
-    ]
+        // const group = "G000000001";
+        const group = params.group;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}groupmodules/${group}?user_id=${schoolID}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    //API para obtener los datos de las tareas de la semana
+    const [homeworkData, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // const group = "G000000001";
+        const group = params.group;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=week&group=${group}&group_by=week`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
-        <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName}>
+        <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-                {modules.map((module, index) => (
-                    <Grid item key={index} xs={12} md={4}>
-                        <SModuleCard module={module} index={index} />
-                    </Grid>
-                ))}
+                {modulesData != null && modulesData != undefined ?
+                    modulesData.map((module, index) => (
+                        <Grid item key={index} xs={12} md={4}>
+                            {module.progress === 100? modulesData[index+1].locked=false : null}
+                            <SModuleCard module={module} index={index} />
+                        </Grid>
+                    ))
+                :null}
             </Grid>
         </ModulesLayout>
     )

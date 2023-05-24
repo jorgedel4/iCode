@@ -4,12 +4,12 @@ import { NavBar, CoursesCard, ActionButton, HomeworkBoard, SHHomeworkCard, PHHom
 import { SignalWifiStatusbarNullSharp } from '@mui/icons-material';
 import { getAuth } from "firebase/auth";
 
-export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, home }) => {
+export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, home, pages }) => {
 
 
     return (
         <Grid container padding={5} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
-            <NavBar/>
+            <NavBar pages={pages}/>
 
             <Grid item xs={12} md={3} lg={5} xl={6} sx={{mt:5}}>
                 { children }
@@ -24,7 +24,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                             {student?
                                 <>
                                     {homeworkData.map((data, index) => (
-                                        <SHHomeworkCard key={ index }  data={ data } />
+                                        <SHHomeworkCard key={ index }  data={ data } index= { index } />
                                     ))}
                                 </>
                         
@@ -34,6 +34,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                                         <PHHomeworkCard key={ index }  data={ data } />
                                     ))}
                                 </>
+                                // null
                             }
                         </List>
 

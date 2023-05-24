@@ -1,12 +1,35 @@
 import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/material'
 import { HomeLayout } from '../../layout/HomeLayout';
-import { CoursesCard, ActionButton, CreateGroup, CreateHomework } from '../../components'
+import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components'
 import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
 
 export const PHomePage = () => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    
 
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    var schoolID;
+    if (user !== null) {
+        // console.log("Professor home user info", user)
+        //Desestructuración de user
+        const { email, displayName, emailVerified, uid } = user
+        //Nómina L00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Nómina ", schoolID)
+    }
+    console.log("Nómina ", schoolID)
+
+    const pages = [
+        { name: 'Home', route: '/professor/home' },
+        { name: 'Profile', route: '/professor/profile' },
+    ]
+
+    //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
         const options = {
@@ -17,12 +40,12 @@ export const PHomePage = () => {
             mode: 'cors',
         }
 
-        let userID = "L00000001"
+        // let userID = "L00000001"
         let term = "all"
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options);
+                const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -48,63 +71,55 @@ export const PHomePage = () => {
         setOpenCreateHomework(false);
     }
 
+    //Funciones para abrir la modal de Crear Curso
+    const [openCreateQuestion, setOpenCreateQuestion] = useState(false);
+    const showModalCreateQuestion= () => { setOpenCreateQuestion(true); }
+    const closeModalCreateQuestion = () => {
+        setOpenCreateQuestion(false);
+    }
+
     //Dynamic modal view
     const home = '/professor/home'
     const modules = '/professor/modules' //El nombren se debe de sacar desde la pagina home
 
-
-    const homeworkData = [
-        {
-            title: 'Curso A',
-            homework: [ //Tareas que se entregen del curso A
-                {
-                    work: 'Tarea 1' //nombre de la tarea
-                },
-                {
-                    work: 'Tarea 2'
-                },
-                {
-                    work: 'Quiz 1'
-                },
-            ]
-        },
-        {
-            title: 'Curso B',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Quiz 2'
-                },
-            ]
-        },
-        {
-            title: 'Curso C',
-            homework: [
-                {
-                    work: 'Tarea 1'
-                },
-                {
-                    work: 'Tarea 2'
-                },
-                {
-                    work: 'Quiz 1'
-                },
-            ]
+    //API para obtener los datos de las tareas de la semana
+    const [homeworkData, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
         }
-    ]
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log("this is homework data", homeworkData)
+
+    const homework = Object.entries(homeworkData)
 
     const request = handleEditorDidMount()
 
     return (
         <Grid container justifyContent='center' alignItems='center'>
 
-            <HomeLayout groupsData={groupsData} homeworkData={homeworkData} hwBTitle={'Asignaciones en Curso'} home={home}>
+            <HomeLayout groupsData={groupsData} homeworkData={homework} hwBTitle={'Asignaciones en Curso'} home={home} pages={pages}>
 
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />
                 <CreateHomework open={openCreateHomework} close={closeModalCreateHomework} />
+                <CreateQuestion open={openCreateQuestion} close={closeModalCreateQuestion} />
 
                 <Grid container columnSpacing={40} rowSpacing={5}>
 
@@ -143,7 +158,7 @@ export const PHomePage = () => {
 
                     <Grid item xs={12} md={4}>
                         <ActionButton >
-                            <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                            <CardActionArea onClick={showModalCreateQuestion} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
                                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
@@ -185,7 +200,7 @@ const handleEditorDidMount = async () => {
     // let userID = "A01551955"
     // let term = "current"
 
-    // fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options)
+    // fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options)
     // .then(response => response.json())
     // // .then(data => console.log("aqui\n", data))
     // .then(data => setGroup(data))

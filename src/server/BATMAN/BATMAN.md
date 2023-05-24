@@ -4,7 +4,7 @@ Funciona como un conector entre la BBDD en MySQL y el cliente, incorporando la l
 
 ## URL Base
 
-`34.125.0.99:8002`
+`34.16.137.250:8002`
 
 ## Endpoints de creacion
 
@@ -27,12 +27,103 @@ En caso de que se haya enrolado al estudiante de forma exitosa, se regresa unica
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/enrollstudent
+POST 34.16.137.250:8002/enrollstudent
 Content-Type: application/json
 ``` json
 {
     "student": "A01551955",
     "group": "G000000000"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
+### `/module`
+#### Descripcion
+Crear un nuevo modulo para un curso dado
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro   | Tipo        | Obligatorio | Descripcion                                   |
+|------------ | ----------- | ----------- | --------------------------------------------- |
+| course      | string      | si          | ID del curso al que pertenece el modulo       |
+| nombre      | string      | si          | Nombre del modulo                             |
+
+#### Respuesta
+En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.16.137.250:8002/module
+Content-Type: application/json
+``` json
+{
+    "course": "TC1030",
+    "nombre": "Modulo TEST"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
+### `/createhw`
+#### Descripcion
+Crear una nueva tarea para un grupo
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                                     |
+|------------------ | --------------------- | ----------- | --------------------------------------------------------------- |
+| group             | [ string ]            | si          | Arreglo de IDs de los grupos a los que se agregara la tarea     |
+| hw_name           | string                | si          | Nombre de la tarea                                              |
+| open_date         | string                | si          | Fecha de apertura de la tarea                                   |
+| close_date        | string                | si          | Fecha de cierre de la tarea                                     |
+| modules_questions | [ modulesQuestions ]  | si          | Arreglo que representa las preguntas de cada modulo en la tarea |
+
+El arreglo `modulesQuestions` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                                           |
+|-------------- | ----------- | ----------- | --------------------------------------------------------------------- |
+| module        | string      | si          | Modulo que se quiere agregar a la tarea                               |
+| n_questions   | int         | si          | Numero de preguntas requeridas para completar este modulo en la tarea |
+
+#### Respuesta
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+Nota: Se genera una tarea (con ID unico) por cada grupo dado, pero todas estas tienen la misma configuracion inicial
+
+#### Ejemplo
+**Peticion**
+POST 34.16.137.250:8002/createhw
+Content-Type: application/json
+``` json
+{
+    "groups": [
+        "G000000001",
+        "G000000002"
+    ],
+    "hw_name": "Tarea 3: Mas practicas :)",
+    "open_date": "2023-05-11T00:00:00Z",
+    "close_date": "2023-05-14T00:00:00Z",
+    "modules_questions": [
+        {
+            "module": "M0000000000000000002",
+            "n_questions": 1
+        },
+        {
+            "module": "M0000000000000000003",
+            "n_questions": 2
+        }
+    ]
 }
 ```
 
@@ -60,7 +151,7 @@ En caso de que se haya enrolado al estudiante de forma exitosa, se regresa unica
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/registercampus
+POST 34.16.137.250:8002/registercampus
 Content-Type: application/json
 ``` json
 {
@@ -96,7 +187,7 @@ En caso de que se haya registrado el periodo de forma exitosa, se regresa unicam
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/registerterm
+POST 34.16.137.250:8002/registerterm
 Content-Type: application/json
 ``` json
 {
@@ -139,7 +230,7 @@ En caso de que se haya creado el grupo de forma exitosa, se regresa unicamente u
 
 #### Ejemplo
 **Peticion**
-POST 34.125.0.99:8002/registergroup
+POST 34.16.137.250:8002/registergroup
 Content-Type: application/json
 ``` json
 {
@@ -168,7 +259,135 @@ HTTP/1.1 201 Created
 
 ---
 
+### `/registeruser`
+#### Descripcion
+Registrar a un nuevo usuario
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                                    |
+|-------------- | ----------- | ----------- | ---------------------------------------------- |
+| id            | string      | si          | ID (matricula o nomina) del usuario a crear    |
+| campus        | string      | si          | ID del campus al que pertenece                 |
+| name          | string      | si          | Nombre del usuario                             |
+| flast_name    | string      | si          | Apellido paterno                               |
+| slast_name    | string      | si          | Apellido materno                               |
+
+#### Respuesta
+En caso de que se haya registrado al usuario de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.16.137.250:8002/registeruser
+Content-Type: application/json
+``` json
+{
+    "id": "A01551957",
+    "campus": "PUE",
+    "name": "Jaime",
+    "flast_name": "Estrada",
+    "slast_name": "Calleros"
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+---
+
+### `/course`
+#### Descripcion
+Registrar un nuevo curso
+
+#### Metodo de HTTP
+`POST`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro     | Tipo        | Obligatorio | Descripcion                     |
+|-------------- | ----------- | ----------- | ------------------------------- |
+| id            | string      | si          | ID del curso a crear            |
+| name          | string      | si          | Nombre del curso                |
+| modules       | [ string ]  | si          | Nombre de los modulos del curso |
+
+#### Respuesta
+En caso de que se haya registrado al curso de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+
+#### Ejemplo
+**Peticion**
+POST 34.125.0.99:8002/course
+Content-Type: application/json
+``` json
+{
+    "id": "TC1021",
+    "name": "Sepultura de batos",
+    "modules": [
+        "Intro a leetcode",
+        "Leetcode 2"
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 201 Created
+
+
+
 ## Endpoints de lectura
+
+### `/courses`
+#### Descripcion
+Todos los cursos que se tienen registrados
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+No se necesitan parametros
+
+#### Respuesta
+(En formato JSON) Arreglo de objetos que representan los cursos. Cada curso cuenta con los siguientes campos
+| Campo          | Tipo                  | Descripcion                               |
+| -------------- | --------------------- | ----------------------------------------- |
+| id             | string                | Identificador del campus                  |
+| name           | string                | Nombre del campus                         |
+
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8002/campus
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "campus_id": "CSF",
+        "campus_name": "Santa Fe"
+    },
+    {
+        "campus_id": "GDL",
+        "campus_name": "Guadalajara"
+    },
+    {
+        "campus_id": "HID",
+        "campus_name": "Hidalgo"
+    },
+    {
+        "campus_id": "MTY",
+        "campus_name": "Monterrey"
+    },
+    {
+        "campus_id": "PUE",
+        "campus_name": "Puebla"
+    }
+]
+```
+
+---
 ### `/courses`
 #### Descripcion
 Todos los cursos que se tienen registrados
@@ -189,7 +408,7 @@ No se necesitan parametros
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/courses
+GET 34.16.137.250:8002/courses
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -235,7 +454,7 @@ Estudiantes inscritos en un grupo
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/enrolledstudents/G000000001
+GET 34.16.137.250:8002/enrolledstudents/G000000001
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -291,7 +510,7 @@ Grupos que impate e/o impatio un profesor. O en los que esta/estaba inscrito un 
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/groups?id=A01551955&term=current
+GET 34.16.137.250:8002/groups?id=A01551955&term=current
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -353,7 +572,7 @@ Tareas que un estudiante tiene asignadas. O tareas que un profesor ha asignado a
 
 #### Ejemplo (group_by=group)
 **Peticion**
-GET 34.125.0.99:8002/homework?id=A01551955&time=week&group=all&group_by=group
+GET 34.16.137.250:8002/homework?id=A01551955&time=week&group=all&group_by=group
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -378,7 +597,7 @@ Content-Type: application/json
 
 #### Ejemplo (group_by=week)
 **Peticion**
-GET 34.125.0.99:8002/homework?id=A01551955&time=week&group=all&group_by=week
+GET 34.16.137.250:8002/homework?id=A01551955&time=week&group=all&group_by=week
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -435,7 +654,7 @@ Listado de preguntas que han sido solicitadas para ser agregadas al banco de pre
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all
+GET 34.16.137.250:8002/questionrequests?question_type=all&requested_by=all&course=all&status=all
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -501,7 +720,9 @@ Usarios que estan dados de alta en la plataforma
 (En formato JSON) Se regresa un arreglo de estudiantes. Cada estudiante tiene los siguientes campos
 | Campo            | Tipo                  | Descripcion                                  |
 | ---------------- | --------------------- | ----------------------                       |
-| name             | string                | Nombre completo del usuario                  |
+| first_name       | string                | Nombre del usuario                           |
+| flast_name       | string                | Apellido paterno                             |
+| slast_name       | string                | Apellido materno                             |
 | id               | string                | ID del usuario                               |
 | campus           | string                | Campus del usuario                           |
 | email            | string                | Correo del usuario                           |
@@ -509,7 +730,7 @@ Usarios que estan dados de alta en la plataforma
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/users?user_type=student&campus=all&id=all&name=all
+GET 34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -568,7 +789,7 @@ Periodos academicos registrados
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/terms?has_started=false
+GET 34.16.137.250:8002/terms?has_started=false
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -622,7 +843,7 @@ Modulos de un grupo
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/groupmodules/G000000001?user_id=A01551955
+GET 34.16.137.250:8002/groupmodules/G000000001?user_id=A01551955
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -685,7 +906,7 @@ Modulos de un grupo
 
 #### Ejemplo
 **Peticion**
-GET 34.125.0.99:8002/coursemodules/TC1028
+GET 34.16.137.250:8002/coursemodules/TC1028
 
 **Respuesta**
 HTTP/1.1 200 OK
@@ -710,4 +931,289 @@ Content-Type: application/json
 
 ## Endpoints de actualizacion
 
+### `/togglemodulestate`
+#### Descripcion
+Cambia el estado del modulo de un grupo (bloqueado o desbloqueado)
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion     |
+|------------------ | --------------------- | ----------- | --------------- |
+| group             | string                | si          | ID del grupo    |
+| module            | string                | si          | ID del modulo   |
+
+#### Respuesta
+En caso de que el estado del modulo haya sido cambiado de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/togglemodulestate
+Content-Type: application/json
+``` json
+{
+    "module": "M0000000000000000003",
+    "group": "G000000001"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/user/{userID}`
+#### Descripcion
+Modifica la informacion de un usuario
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro    | Tipo        | Obligatorio | Descripcion            |
+|------------- | ----------- | ----------- | ---------------------- |
+| campus       | string      | no          | ID del nuevo campus    |
+| name         | string      | no          | Nuevo nombre           |
+| flast_name   | string      | no          | Nuevo apellido paterno |
+| slast_name   | string      | no          | Nuevo apellido materno |
+
+#### Respuesta
+En caso de que se haya modificado la información del usuario de forma exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/user/S00000001
+Content-Type: application/json
+``` json
+{
+    "name": "Samuel",
+    "flast_name": "Garcia"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/homework/{homeworkID}`
+#### Descripcion
+Modifica la configuracion de una tarea
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                 | Obligatorio | Descripcion            |
+|------------------ | -------------------- | ----------- | ---------------------- |
+| name              | string               | no          | Nombre de la tarea     |
+| open_date         | string               | no          | Fecha de apertura      |
+| close_date        | string               | no          | Fecha de cierre        |
+| modules_questions | [ modulesQuestions ] | no          | Arreglo que representa las preguntas de cada modulo en la tarea |
+
+El arreglo `modulesQuestions` debiese de contener unicamente objetos con las siguientes propiedades
+| Parametro     | Tipo        | Obligatorio | Descripcion                                                           |
+|-------------- | ----------- | ----------- | --------------------------------------------------------------------- |
+| module        | string      | si          | Modulo que se quiere agregar a la tarea                               |
+| n_questions   | int         | si          | Numero de preguntas requeridas para completar este modulo en la tarea |
+
+#### Respuesta
+En caso de que se haya modificado la configuración de la tarea de forma exitosa, se regresa únicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/homework/H0000000000000000001
+Content-Type: application/json
+``` json
+{
+    "name": "hello world",
+    "modules_questions": [
+        {
+            "module": "M0000000000000000001",
+            "n_questions": 12
+        },
+        {
+            "module": "M0000000000000000002",
+            "n_questions": 3
+        }
+    ]
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
 ## Endpoints de eliminacion
+
+### `/homework/{homeworkID}`
+#### Descripcion
+Elimina una tarea, al igual que todas las configuraciones e intentos de los estudiantes de esta
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `homeworkID` (obligatorio): ID la tarea a eliminar.
+
+#### Respuesta
+En caso de que se haya eliminado la tarea de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/homework/H0000000000000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/user/{userID}`
+#### Descripcion
+Elimina a un usuario de la BBDD.
+Importante: De momento se hace una eliminacion en cascada, es decir, todo lo relacionado (ya sea directa o indirectamente) al usuario que se borro.
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `userID` (obligatorio): ID del usuario a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/user/A01231212
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/unenrollstudent`
+#### Descripcion
+Desenrola a un estudiante de un grupo.
+Nota: Al desenrolar a un estudiante de un grupo, se eliminan todos los intentos de preguntas de tareas y modulos que haya realizado para este grupo
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro         | Tipo                  | Obligatorio | Descripcion                                         |
+|------------------ | --------------------- | ----------- | --------------------------------------------------- |
+| group             | string                | si          | ID del grupo del que se desea desenrolar al alumno  |
+| student           | string                | si          | Matricula del alumno a desenrolar                   |
+
+#### Respuesta
+En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/user/unenrollstudent
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/group/{groupID}`
+#### Descripcion
+Elimina a un grupo
+Nota: Al eliminar a un grupo, se eliminan en cascada los registros de las demas tablas que tengan alguna relacion con el grupo que se elimino (en cascada)
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `groupID` (obligatorio): ID del grupo a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al grupo de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/group/G000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/course/{courseID}`
+#### Descripcion
+Elimina a un curso
+Nota: La eliminación en la BBDD es en cascada, por lo que se borraran los contenidos de otras tablas que tengan alguna relación con el curso borrado. Esto incluye grupos, preguntas y modulos
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `courseID` (obligatorio): ID del curso a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al curso de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/course/TC1028
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/module/{moduleID}`
+#### Descripcion
+Elimina a un modulo
+Nota: La eliminación en la BBDD es en cascada, por lo que se borraran los contenidos de otras tablas que tengan alguna relación con el modulo borrado. Esto incluye preguntas e intentos de estas
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `moduleID` (obligatorio): ID del modulo a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al curso de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/module/M0000000000000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/campus/{campusID}`
+#### Descripcion
+Elimina a un campus
+
+#### Metodo de HTTP
+`DELETE`
+
+#### Parametros
+(Mediante el variables de la URL)
+* `campusID` (obligatorio): ID del campus a eliminar
+
+#### Respuesta
+En caso de que se haya eliminado al campus de manera exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+DELETE 34.16.137.250:8002/campus/PUE
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+4152 3140 2307 4720

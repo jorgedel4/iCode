@@ -16,6 +16,8 @@ import { CounterCell } from './CounterCell';
 
 export const CreateGroup = ({ open, close }) => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -46,7 +48,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/terms`, options);
+                const response = await fetch(`${batmanAPI}terms`, options);
                 const responseData = await response.json();
                 setTerm(responseData);
             } catch (error) {
@@ -73,7 +75,7 @@ export const CreateGroup = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const response = await fetch(`${batmanAPI}courses`, options);
                 const responseData = await response.json();
                 setCourse(responseData);
             } catch (error) {
@@ -100,7 +102,7 @@ export const CreateGroup = ({ open, close }) => {
         const fetchData = async () => {
             if (selectedCourse) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${selectedCourse}`, options);
+                    const response = await fetch(`${batmanAPI}coursemodules/${selectedCourse}`, options);
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
@@ -141,7 +143,7 @@ export const CreateGroup = ({ open, close }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8002/registergroup', options)
+        fetch(`${batmanAPI}registergroup`, options)
             .then(response => {
                 console.log(response)
                 if (response.status === 201) {

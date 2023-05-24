@@ -7,39 +7,41 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/jorgedel4/iCode/packages/consts"
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Get registered users
 func Users(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Setting up headers for CORS (not needed after full deployment)
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
+		// Read needed variables from url parameters
 		var req structs.UsersReq
 		req.UserType = r.URL.Query().Get("user_type")
 		req.Campus = r.URL.Query().Get("campus")
 		req.ID = r.URL.Query().Get("id")
 		req.Name = r.URL.Query().Get("name")
 
+		// Select the users of a certain type
 		baseQuery := fmt.Sprintf("SELECT * FROM %ss", req.UserType)
 		var selectors []string
 		var values []interface{}
 
+		// Filter by campus
 		if req.Campus != "all" {
 			selectors = append(selectors, "campus = ?")
 			values = append(values, req.Campus)
 		}
 
-		id_columns := make(map[string]string)
-		id_columns["admin"] = "id_admin"
-		id_columns["professor"] = "nomina"
-		id_columns["student"] = "matricula"
-
+		// Filter by ID
 		if req.ID != "all" {
-			selectors = append(selectors, fmt.Sprintf("%s = ?", id_columns[req.UserType]))
+			selectors = append(selectors, fmt.Sprintf("%s = ?", consts.DBUsersIDColumn[req.UserType]))
 			values = append(values, req.ID)
 		}
 
+		// Filter by name
 		if req.Name != "all" {
 			selectors = append(selectors, "CONCAT(first_name, ' ', flast_name, ' ', slast_name) = ?")
 			values = append(values, req.Name)
@@ -52,6 +54,7 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 			query = baseQuery
 		}
 
+		// Execute query
 		rows, err := mysqlDB.Query(query, values...)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
@@ -59,25 +62,28 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 
-		var users []structs.User
+		// Iterate over returned users and store them
+		users := make([]structs.User, 0)
+		
 		for rows.Next() {
 			var user structs.User
-			var first_name, flast_name, slast_name string
-			if err := rows.Scan(&user.ID, &user.Campus, &first_name, &flast_name, &slast_name); err != nil {
+			if err := rows.Scan(&user.ID, &user.Campus, &user.FirstName, &user.FLastName, &user.SLastName); err != nil {
 				http.Error(w, "Error reading results", http.StatusInternalServerError)
 				return
 			}
-			user.Name = fmt.Sprintf("%s %s %s", first_name, flast_name, slast_name)
+			// Fix this later :)
 			user.Email = fmt.Sprintf("%s@tec.mx", user.ID)
 			users = append(users, user)
 		}
 
+		// Encode users slice into JSON
 		usersJSON, err := json.Marshal(users)
 		if err != nil {
 			http.Error(w, "Error parsing response", http.StatusInternalServerError)
 			return
 		}
 
+		// Return response and close connection
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(usersJSON)

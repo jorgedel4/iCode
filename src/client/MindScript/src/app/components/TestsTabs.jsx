@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { CheckCircleOutlineRounded, HighlightOffRounded } from '@mui/icons-material'
 
 //Datos necesarios para los tabs
+
 function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const { value, index, children, ...other } = props;
 
     return (
         <div
@@ -17,12 +18,14 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Grid sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    <Typography component="div">{children}</Typography>
                 </Grid>
             )}
         </div>
     );
 }
+
+
 
 TabPanel.propTypes = {
     children: PropTypes.node,

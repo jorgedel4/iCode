@@ -10,13 +10,17 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Get registered terms
 func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
+		// Query to select terms
 		baseQuery := `SELECT * FROM terms`
 		var selectors[] string
 
+		// Variable to filter by wheter or not a course has started
 		hasStarted := r.URL.Query().Get("has_started")
 
 		if hasStarted == "false" {
@@ -32,6 +36,7 @@ func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 		query := fmt.Sprintf("%s %s %s", baseQuery, selector, orderBy)
 
+		// Execute query
 		rows, err := mysqlDB.Query(query)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
@@ -39,6 +44,7 @@ func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 
+		// Iterate over terms and store them
 		var terms []structs.Term
 		for rows.Next() {
 			var term structs.Term
@@ -49,12 +55,14 @@ func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 			terms = append(terms, term)
 		}
 
+		// Encode terms slice into JSON
 		termsJSON, err := json.Marshal(terms)
 		if err != nil {
 			http.Error(w, "Error parsing response", http.StatusInternalServerError)
 			return
 		}
 
+		// Return response and close connection
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(termsJSON)

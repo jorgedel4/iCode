@@ -19,7 +19,7 @@ export const RequestCard = ({ request, setSelected, selected }) => {
                     <CardActionArea>
                         <CardContent sx={{ pt: 2, pb: 2 }}>
                             <Typography sx={{ color: 'appDark.text', fontSize: 15 }} >
-                                Solicitud por: {request.name}
+                                Solicitud por: {request.requesters_name}
                             </Typography>
                             <Typography sx={{ color: 'appDark.text', fontSize: 15 }}>
                                 Clase: {request.course}

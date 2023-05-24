@@ -1,4 +1,4 @@
-import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem } from '@mui/material'
+import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -13,53 +13,210 @@ import { useState } from 'react';
 import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { CounterCell } from './CounterCell';
+import { useEffect } from 'react';
+import { useForm } from '../../hooks/useForm';
 
 
-export const CreateHomework = ({ open, close }) => {
-    const [count, setCount] = useState(0);
+export const CreateHomework = ({ open, close, schoolID }) => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
+    //Prueba
+    const checked = true;
+
+    //Nombre de la tarea
+    const { hwname, onInputChange } = useForm({
+        hwname: '',
+    });
+
+    //Selector de curso 
     const [course, setCourse] = useState('');
     const handleSelection = (event) => {
         setCourse(event.target.value);
-    };
-    const [group, setGroup] = useState('');
-    const handleGroupSelection = (event) => {
-        setGroup(event.target.value);
+        // console.log(course)
     };
 
-    //Manejar Seleccionar grupo
-    const removeGroup = (event) => {
-        setGroup(event.target.value);
+    //State date pickers
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
+
+
+    /*API region */
+
+    //GET course information
+    const [coursesData, setCourseRequest] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}courses`, options);
+                const responseData = await response.json();
+                setCourseRequest(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    // console.log(coursesData)
+
+    //GET group information
+    const [groupsData, setGroup] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        let userID = "L00000001"
+        let term = "current"
+
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`${batmanAPI}groups?id=${userID}&term=${term}`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    // console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+
+    let groups = [];
+    groupsData.map((group) => (
+        groups.push({
+            id_group: group.id_group,
+            id_course: group.id_course,
+            // course_name: group.course_name,
+            checked: true
+        })
+    ))
+
+    // console.log("groupsData",groupsData)
+    // console.log("cursos", course)
+
+    //GET modules information
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`${batmanAPI}coursemodules/${course}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    // console.error(error); .push({id:, n_questions: })
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+
+    let modules = [];
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true
+        })
+    ))
+
+    // //POST Create Homework
+
+    const createHomework = {
+        hw_name: hwname,
+        startDate: startDate,
+        endDate: endDate,
+    }
+
+    // console.log("POST Register Homework", createHomework)
+
+    const createHomeworkRequest = async () => {
+        let requestModules = [];
+        let requestGroups = [];
+
+        modules.map((module) => (
+            module.checked
+                ? requestModules.push({
+                    module: module.id,
+                    n_questions: module.n_questions,
+                })
+                : null
+        ))
+        console.log("Request modules", requestModules)
+        groups.map((group) => (
+            (group.checked && (group.id_course === course))
+                ? requestGroups.push(
+                    group.id_group)
+                : null
+        ))
+        console.log("Request groups", requestGroups)
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+
+                "groups": requestGroups,
+                "hw_name": createHomework.hw_name,
+                "open_date": createHomework.startDate,
+                "close_date": createHomework.endDate,
+                "modules_questions": requestModules
+            })
+        }
+        console.log(options)
+        fetch(`${batmanAPI}createhw`, options)
+            .then(response => {
+                // console.log("createHomeworkRequest", response)
+                if (response.status === 201) {
+                    // console.log(respose)
+                    throw new Error('Grupo creado');
+                }
+
+                console.log(respose)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     };
-    const addGroup = (event) => {
-        setGroup(event.target.value);
-    };
 
 
-    const coursesList = [
-        'TC1028',
-        'TC1030',
-        'TC10030B',
-    ]
-    const groupList = [
-        'grupo1',
-        'grupo2',
-    ]
 
-    const modules = [
-        {
-            courseName: "Variables",
-            exNum: 0
-        },
-        {
-            courseName: "Condicionales",
-            exNum: 0
-        },
+    /*end API region */
 
-    ]
-
-    //State date picker
-    const [date, setDate] = useState(null);
 
     return (
         <Modal
@@ -144,7 +301,9 @@ export const CreateHomework = ({ open, close }) => {
                                                 },
                                             }
                                         }}
-
+                                        name='hwname'
+                                        value={hwname}
+                                        onChange={onInputChange}
 
                                     />
                                 </FormControl>
@@ -179,7 +338,7 @@ export const CreateHomework = ({ open, close }) => {
                                         },
                                     }}
                                 >
-                                    {coursesList.map((course) => (
+                                    {coursesData.map((course) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -188,10 +347,10 @@ export const CreateHomework = ({ open, close }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            key={course}
-                                            value={course}
+                                            key={course.id}
+                                            value={course.id}
                                         >
-                                            {course}
+                                            {course.id} {course.name}
                                         </MenuItem>
                                     ))}
 
@@ -237,7 +396,7 @@ export const CreateHomework = ({ open, close }) => {
                                         svg: { color: 'appDark.text' },
                                     }}
 
-                                    value={date} onChange={(newValue) => setDate(newValue)} />
+                                    value={startDate} onChange={(newValue) => setStartDate(newValue)} />
                             </LocalizationProvider>
 
                         </Grid>
@@ -280,20 +439,30 @@ export const CreateHomework = ({ open, close }) => {
                                         svg: { color: 'appDark.text' },
                                     }}
 
-                                    value={date} onChange={(newValue) => setDate(newValue)} />
+                                    value={endDate} onChange={(newValue) => setEndDate(newValue)} />
                             </LocalizationProvider>
 
                         </Grid>
 
                         {/* SelectorY - Grupos en donde se despliega la tarea */}
-                        <Grid item xs={10} id="Grupo">
-                            <GroupHomework />
-                            <Grid item id="cancelar">
-                                <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
-                                    Cancelar
-                                </Button>
-                            </Grid>
+                        <Grid item xs={10}
+                            id="Grupo"
+                            sx={{
+                                color: "appDark.text",
+                                top: 0,
+                                bgcolor: "appDark.bgBox",
+                                mt: 3,
+                                borderRadius: 2,
+                            }}>
+                            <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
+                            {groups.map((group) => (
+                                group.id_course == course
+                                    ? <GroupHomework key={group.id_group} group={group} />
+                                    : null
+                            ))}
+
                         </Grid>
+
                     </Grid>
                 </Grid>
 
@@ -316,13 +485,67 @@ export const CreateHomework = ({ open, close }) => {
                     }}>
 
                         <Grid item xs={10} >
-                            <AddModuleHomework data={modules} />
-                            <Grid item id="cancelar" align="right">
 
-                                <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                                    Crear tarea
-                                </Button>
-                            </Grid>
+                            {/* Tabla de ejercicios de modulos */}
+                            <TableContainer sx={{
+                                height: "49vh", //to do no me pegues
+                                my: 2,
+                                borderRadius: 2,
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}
+                            >
+                                <Table sx={{ width: 1 }} aria-label="simple table">
+                                    <TableHead sx={{ overflowX: "initial" }}>
+                                        <TableRow>
+                                            <TableCell
+                                                align="left"
+                                                sx={{
+                                                    color: "appDark.text",
+                                                    position: "sticky",
+                                                    top: 0,
+                                                    bgcolor: "primary.main",
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                Módulos
+                                            </TableCell>
+                                            <TableCell
+                                                align="right"
+                                                sx={{
+                                                    color: "appDark.text",
+                                                    position: "sticky",
+                                                    top: 0,
+                                                    bgcolor: "primary.main",
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                Ejercicios
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+
+                                    <TableBody>
+                                        {modules.map((module) => (
+                                            <>
+                                                <AddModuleHomework key={module.id} module={module} />
+                                            </>
+                                        ))}
+                                    </TableBody>
+
+                                </Table>
+                            </TableContainer>
+
+
                         </Grid>
 
                         {/* end container segunda seccion */}
@@ -330,6 +553,21 @@ export const CreateHomework = ({ open, close }) => {
 
                 </Grid>
 
+                <Grid container justifyContent='center' sx={{ mx: 5.5, mb: 2 }}>
+                    <Grid item xs={6} id="cancelar" >
+
+                        <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
+                            Cancelar
+                        </Button>
+                    </Grid>
+                    <Grid item xs={6} id="crear tarea" align="right">
+
+                        <Button onClick={createHomeworkRequest} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                            Crear tarea
+                        </Button>
+                    </Grid>
+
+                </Grid>
             </Grid>
 
         </Modal>

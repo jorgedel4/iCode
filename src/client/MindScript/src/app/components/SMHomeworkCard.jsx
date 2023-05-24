@@ -1,8 +1,21 @@
 import { Card, Collapse, List, ListItem, ListItemButton, ListItemText, Typography, Grid, IconButton } from '@mui/material'
-import { DeleteOutline, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import * as React from 'react';
 
-export const SMHomeworkCard = ({ data }) => {
+export const SMHomeworkCard = ({ data, index }) => {
+
+    //Array de los dias de la semana
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
+
+    //Variables para sacar el dia de la entrega
+    const d = new Date();
+    let day = d.getDay();
+    var today = day + index;
+
+    if (today > 6) {
+        today = today - 7;
+    }
+
 
     const [open, setOpen] = React.useState(false);
 
@@ -34,9 +47,9 @@ export const SMHomeworkCard = ({ data }) => {
                 ]}
             >
                 {open ? <ExpandLess sx={{ color: 'appDark.icon' }} /> : <ExpandMore sx={{ color: 'appDark.icon' }} />}
-                <ListItemText sx={{ color: 'appDark.text' }} primary={ data.title } />
+                <ListItemText sx={{ color: 'appDark.text' }} primary={ days[today] } />
                 <Grid sx={{ borderRadius: '20px', border: 2, borderColor: 'appDark.icon' }}>
-                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my:.1, mx:1.1 }}>{ data.homework.length }</Typography>
+                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my:.1, mx:1.1 }}>{ data.length }</Typography>
                 </Grid>
 
             </ListItemButton>
@@ -51,11 +64,11 @@ export const SMHomeworkCard = ({ data }) => {
                     disablePadding
                 >
 
-                    {data.homework.map((homework, indexH) => (
+                    {data.map((homework, indexH) => (
                         <Grid container key={ indexH }>
                             <ListItem disablePadding>
                                 <ListItemButton>
-                                    <ListItemText sx={{ pl: 4 }} primary={ homework.work } />
+                                    <ListItemText sx={{ pl: 4 }} primary={ homework.hw_name } />
                                 </ListItemButton>
                             </ListItem>
                         </Grid>
