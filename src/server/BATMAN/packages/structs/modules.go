@@ -40,3 +40,9 @@ type NewModule struct {
 	Course string `json:"course"`
 	Name   string `json:"nombre"`
 }
+
+type UpdateModuleNQuestionsReq struct {
+	Group      string `json:"group"`
+	Module     string `json:"module"`
+	NQuestions int    `json:"n_questions"`
+}
