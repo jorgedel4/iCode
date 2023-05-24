@@ -30,7 +30,6 @@ export const PModulesPage = () => {
         { name: 'Home', route: '/professor/home' },
         { name: 'Profile', route: '/professor/profile' },
     ]
-    const navigate = useNavigate()
     const gestion = () => {
         navigate('/professor/management/'+params.group)
     }
