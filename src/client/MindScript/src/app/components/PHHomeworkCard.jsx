@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react';
 import * as React from 'react';
 
 export const PHHomeworkCard = ({ data }) => {
+
     //Importante para EditHomework
     const [editData, setData] = useState(null);
+
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);
@@ -24,7 +26,37 @@ export const PHHomeworkCard = ({ data }) => {
         setOpenDeleteHomework(false);
     }
 
-    const modules = []
+    const [modulesData, setModule] = useState([]);
+    // useEffect(() => {
+    const updateHomeworkRequest = async () => {
+
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "A01551955"
+        // let term = "current"
+
+        const fetchData = async () => {
+
+            try {
+                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${data[0]}`, options);
+                const responseData = await response.json();
+                setModule(responseData);
+
+            } catch (error) {
+                // console.error(error);
+            }
+
+        };
+        fetchData();
+    }
+    // },);
+
 
     const [open, setOpen] = React.useState(false);
 
@@ -84,9 +116,12 @@ export const PHHomeworkCard = ({ data }) => {
 
 
                                 <Grid>
+                                    < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modulesData} />
+                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />
                                     <IconButton
                                         onClick={() => {
                                             setData(homework)
+                                            updateHomeworkRequest()
                                             showModalEditHomework()
                                         }}
                                         sx={{ borderRadius: 0 }}>
@@ -95,6 +130,7 @@ export const PHHomeworkCard = ({ data }) => {
 
                                     <IconButton
                                         onClick={() => {
+
                                             setData(homework)
                                             showModalDeleteHomework()
                                         }} sx={{ borderRadius: 0 }}>
@@ -105,8 +141,6 @@ export const PHHomeworkCard = ({ data }) => {
                         </Grid>
 
                     ))}
-                    < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
-                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />
 
 
                 </List>

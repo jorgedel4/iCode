@@ -18,7 +18,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '30vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
 
-    console.log("Edit data fuck", editData);
+    // console.log("Edit data fuck", editData);
     //State date pickers
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -33,7 +33,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
         hwname: '',
     });
 
-    console.log("Data rara", modules)
+    // console.log("Data rara", modules)
 
 
     const updateHomework = {
@@ -42,11 +42,10 @@ export const EditHomework = ({ open, close, editData, modules }) => {
         endDate: endDate,
     }
 
-    console.log("updateRequest", updateHomework)
+    // console.log("updateRequest", updateHomework)
 
     const updateHomeworkRequest = async () => {
         let requestModules = [];
-        console.log(modules)
 
         modules.map((module) => (
             module.checked
@@ -57,7 +56,7 @@ export const EditHomework = ({ open, close, editData, modules }) => {
                 })
                 : null
         ))
-        console.log("Request modules", requestModules)
+        // console.log("Request modules", requestModules)
 
         const options = {
             method: 'PATCH',
