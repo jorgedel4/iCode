@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
 
 export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, home, pages }) => {
 
-
+    console.log("homeworkdata home", homeworkData);
     return (
         <Grid container padding={5} spacing={0} sx={{minHeight:'100vh', bgcolor: 'primary.main'}}>
             <NavBar pages={pages}/>
@@ -20,7 +20,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                     <HomeworkBoard xs={-1} >
                         <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
 
-                        <List>
+                        <List> 
                             {student?
                                 <>
                                     {homeworkData.map((data, index) => (

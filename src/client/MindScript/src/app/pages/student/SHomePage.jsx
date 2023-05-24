@@ -116,6 +116,7 @@ useEffect(() => {
     const fetchData = async () => {
         try {
             const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
+            console.log(response)
             const responseData = await response.json();
             setHomework(responseData);
         } catch (error) {
@@ -126,123 +127,8 @@ useEffect(() => {
     fetchData();
 }, []);
 
-// const homeworkData = [
-//     {
-//         title: 'Lunes',
-//         homework: [ //Tareas que se entregen el lunes de esa semana
-//             {
-//                 group: 'Curso A', //nombre del grupo que tiene la tarea
-//                 work: 'Tarea 1' //nombre de la tarea
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Martes',
-//         homework: [
-//             {
-//                 group: 'Curso B',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso B',
-//                 work: 'Quiz 2'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Miercoles',
-//         homework: [
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Jueves',
-//         homework: [
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Viernes',
-//         homework: [
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Sabado',
-//         homework: [
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Domingo',
-//         homework: [
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 1'
-//             },
-//             {
-//                 group: 'Curso A',
-//                 work: 'Tarea 2'
-//             },
-//             {
-//                 group: 'Curso C',
-//                 work: 'Quiz 1'
-//             },
-//         ]
-//     }
-// ]
+console.log("student homepage", homeworkData)
+
 
 return (
     <HomeLayout homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} home={home} pages={pages} >
