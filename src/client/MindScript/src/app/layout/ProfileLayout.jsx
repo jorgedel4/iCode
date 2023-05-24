@@ -10,7 +10,7 @@ export const ProfileLayout = ({ children, pages }) => {
     if (user !== null) {
         //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        schoolID = (user.email).substring(0, 8);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
     }
     console.log(user)
 

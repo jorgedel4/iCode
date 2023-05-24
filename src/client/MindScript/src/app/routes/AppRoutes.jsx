@@ -4,6 +4,7 @@ import { SHomePage, SModulesPage, PHomePage, ARequest, PModulesPage, MultiOpt, P
 import { WorkEnv } from "../pages/student/WorkEnv"
 import { AManage } from "../pages"
 import { ASyllabus } from "../pages/admin/ASyllabus"
+import { PDashboard } from "../pages/professor/PDashboard"
 
 export const AppRoutes = () => {
   return (
@@ -19,6 +20,8 @@ export const AppRoutes = () => {
         <Route path="professor/modules" element={ <PModulesPage /> } />
         <Route path="professor/modules/:group/:course" element={ <PModulesPage /> } />
         <Route path="professor/management" element={ <PManage /> } />
+        <Route path="professor/management/:group/:course" element={ <PManage /> } />
+        <Route path="professor/dashboard" element={ <PDashboard /> } />
         <Route path="professor/profile" element={ <PProfile /> } />
         <Route path="admin/management" element={ <AManage /> } />
         <Route path="admin/syllabus" element={ <ASyllabus /> } />        
