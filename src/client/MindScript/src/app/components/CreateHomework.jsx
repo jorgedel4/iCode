@@ -1,4 +1,4 @@
-import { Grid, InputLabel, Modal, FormControlLabel, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -7,12 +7,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { useState } from 'react';
 import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
-import { CounterCell } from './CounterCell';
 import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
@@ -146,7 +143,8 @@ export const CreateHomework = ({ open, close, schoolID }) => {
             id: module.id,
             name: module.name,
             n_questions: 0,
-            checked: true
+            checked: true,
+            key: module.id
         })
     ))
 

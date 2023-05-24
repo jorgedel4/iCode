@@ -1,14 +1,6 @@
 import { Grid, InputLabel, Modal, Button, Typography, MenuItem, useTheme, useMediaQuery } from '@mui/material'
-
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import Paper from '@mui/material/Paper';
-
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useState, useEffect } from 'react';
 
@@ -147,8 +139,7 @@ export const CreateGroup = ({ open, close }) => {
             .then(response => {
                 console.log(response)
                 if (response.status === 201) {
-                    close()
-                    throw new Error('Grupo creado');
+                    close();
                 }
 
             })
@@ -266,11 +257,9 @@ export const CreateGroup = ({ open, close }) => {
                 </Grid>
 
                 <Grid item xs={10}>
-                    {modulesData != null && (
+                    {modulesData !== null && (
                         <CounterCell data={modulesData} onUpdateRows={handleUpdateRows} />
                     )}
-
-
                 </Grid>
 
 
@@ -331,8 +320,7 @@ export const CreateGroup = ({ open, close }) => {
                         <Grid item id="crearGrupo" >
                             <Button
                                 onClick={() => {
-                                    createGroupRequest;
-                                    close();
+                                    createGroupRequest();
                                 }}
                                 type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                 Crear Grupo

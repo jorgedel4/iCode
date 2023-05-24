@@ -22,7 +22,6 @@ export const PHomePage = () => {
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Nómina ", schoolID)
     }
-    console.log("Nómina ", schoolID)
 
     const pages = [
         { name: 'Home', route: '/professor/home' },
@@ -54,7 +53,7 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [groupsData]);
 
 
     //Funciones para abrir la modal de Crear Curso
@@ -104,8 +103,7 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, []);
-    console.log("this is homework data", homeworkData)
+    }, [groupsData]);
 
     const homework = Object.entries(homeworkData)
 
