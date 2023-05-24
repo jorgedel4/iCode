@@ -6,30 +6,6 @@ import { getAuth } from "firebase/auth";
 
 export const RemoveButton = ({ open, close, editData, confirmationText, handleDelete }) => {
 
-    // const handleDelete = async (hw_id) => {
-    //     // console.log(id);
-    //     try {
-    //         const options = {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             mode: 'cors',
-
-    //         };
-    //         console.log(hw_id)
-    //         const response = await fetch(`http://34.16.137.250:8002/homework/${hw_id}`, options);
-    //         console.log(response)
-
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
-    console.log("editData remove button",editData)
-
-
     return (
         <Modal
             id="Modal prrona Eliminar "
