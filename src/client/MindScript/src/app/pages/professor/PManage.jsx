@@ -60,7 +60,7 @@ export const PManage = () => {
 
       };
 
-      const response = await fetch(`${batmanAPI}user/unenrollstudent`, options);
+      const response = await fetch(`${batmanAPI}unenrollstudent`, options);
       setUser(prevData => prevData.filter(user => user.id !== id));
 
       return response;
