@@ -392,3 +392,89 @@ BEGIN
     RETURN question;
 END $$
 DELIMITER ;
+
+
+DELIMITER $$
+CREATE FUNCTION ChangeCourseName (
+    course_id CHAR(20),
+    new_name VARCHAR(50)
+) RETURNS INT
+BEGIN
+    DECLARE name_appearance INT;
+    SET name_appearance = 0;
+
+    SELECT COUNT(*) INTO name_appearance
+    FROM courses
+    WHERE course_name = new_name;
+
+    IF name_appearance = 0 THEN
+        UPDATE courses
+        SET course_name = new_name
+        WHERE id_course = course_id;
+        RETURN 0;
+    ELSE
+        RETURN 1;
+    END IF;
+END$$
+DELIMITER ;
+
+
+
+
+-- DELIMITER $$
+-- CREATE FUNCTION HWStatus(
+--     homework_id CHAR(20),
+--     student_id CHAR(9)
+-- )
+-- END$$
+-- DELIMITER ;
+
+
+
+-- DELIMITER $$
+-- CREATE FUNCTION StudentHomeworkStatus(
+--     group_id CHAR(20),
+--     student_id CHAR(9)
+-- ) RETURNS JSON
+-- BEGIN
+--     DECLARE HWJSON JSON;
+
+--     SELECT JSON_ARRAYAGG (
+--         JSON_OBJECT (
+--             'hw_name', h.hw_name,
+--             'status', HWStatus(h.id_homework, student_id)
+--         )
+--     )
+--     INTO HWJSON
+--     FROM homework h
+--     WHERE h.grupo = group_id;
+-- END$$
+-- DELIMITER ;
+
+
+
+-- DELIMITER $$
+-- CREATE FUNCTION GroupHomeworkStatus(
+--     group_id CHAR(20)
+-- ) RETURNS JSON
+-- BEGIN
+--     DECLARE studentHWJSON JSON;
+
+--     SELECT JSON_ARRAYAGG(
+--         JSON_OBJECT (
+--             'matricula', s.matricula,
+--             'first_name', s.first_name,
+--             'flast_name', s.flast_name,
+--             'slast_name', s.slast_name,
+--             'homework', 
+--         )
+--     )
+--     INTO studentHWJSON
+--     FROM enrollments e
+--     JOIN students s ON e.student = s.matricula
+--     WHERE e.grupo = group_id;
+
+--     RETURN studentHWJSON;
+-- END$$
+-- DELIMITER ;
+

@@ -64,6 +64,7 @@ func main() {
 	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")
 	r.HandleFunc("/user/{userID}", update.User(mysqlDB)).Methods("PATCH")
 	r.HandleFunc("/homework/{homeworkID}", update.Homework(mysqlDB)).Methods("PATCH")
+	r.HandleFunc("/coursename", update.CourseName(mysqlDB)).Methods("PATCH")
 
 	// Delete operations
 	r.HandleFunc("/homework/{homeworkID}", remove.Homework(mysqlDB)).Methods("DELETE")
