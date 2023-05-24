@@ -127,8 +127,6 @@ useEffect(() => {
     fetchData();
 }, []);
 
-console.log("student homepage", homeworkData)
-
 
 return (
     <HomeLayout homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} home={home} pages={pages} >

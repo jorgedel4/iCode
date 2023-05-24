@@ -330,9 +330,10 @@ export const CreateGroup = ({ open, close }) => {
                         </Grid>
                         <Grid item id="crearGrupo" >
                             <Button
-                                // Lo de abajo estaba en onclick pero no se para que era
-                                // () => {setCount(count + 1)}
-                                onClick={createGroupRequest}
+                                onClick={() => {
+                                    createGroupRequest;
+                                    close();
+                                }}
                                 type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                 Crear Grupo
                             </Button>

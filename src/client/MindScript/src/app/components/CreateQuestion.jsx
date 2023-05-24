@@ -97,6 +97,36 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     /*end API region */
 
+    // Preview de prueba para saber si se guardan los archivos (se borra mas adelante)
+    const [selectedFile, setSelectedFile] = useState()
+    const [preview, setPreview] = useState()
+
+    // create a preview as a side effect, whenever selected file is changed
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(undefined)
+            return
+        }
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreview(objectUrl)
+
+        // free memory when ever this component is unmounted
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
+
+    const onSelectFile = e => {
+        if (!e.target.files || e.target.files.length === 0) {
+            setSelectedFile(undefined)
+            return
+        }
+
+        // I've kept this example simple by using the first image instead of multiple
+        setSelectedFile(e.target.files[0])
+        // console.log(selectedFile)
+    }
+    // Termina la parte de prueba
+
 
     return (
         <Modal
@@ -268,6 +298,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         type="input"
                                         label="Descripción de la pregunta"
                                         placeholder="Descripción"
+                                        multiline={true}
                                         sx={{
                                             color: 'appDark.text',
                                             '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -338,7 +369,11 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 <input
                                     type="file"
                                     hidden
+                                    onChange={onSelectFile}
+                                    // onChange={(event) => console.log(event.target.files)}
                                 />
+                                {/* {selectedFile &&  <img src={preview} /> } */}
+                                {selectedFile &&  console.log(selectedFile) }
                             </Button>
 
                         </Grid>

@@ -30,6 +30,10 @@ export const PModulesPage = () => {
         { name: 'Home', route: '/professor/home' },
         { name: 'Profile', route: '/professor/profile' },
     ]
+    const gestion = () => {
+        navigate('/professor/management/'+params.group)
+    }
+
 
     //API para obtener los datos de las tarjeras de modulos
     const [modulesData, setModule] = useState([]);
@@ -91,10 +95,11 @@ export const PModulesPage = () => {
     console.log(homeworkData)
     const homework = Object.values(homeworkData)
 
+
+
     return (
         <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-
                 <Grid item xs={12} md={4}>
 
                     <Card sx={{
@@ -130,3 +135,4 @@ export const PModulesPage = () => {
         </ModulesLayout>
     )
 }
+

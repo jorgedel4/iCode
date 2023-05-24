@@ -57,7 +57,7 @@ export const PManage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          "group": "G000000001",
+          "group": params.group,
           "student": id
         }),
         mode: 'cors',
