@@ -4,12 +4,14 @@ import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
-export const PModulesPage = (props) => {
-    const home = '/professor/home'
-    const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+export const PModulesPage = () => {
     let params = useParams()
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
+    const home = '/professor/home'
+    const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
 
     //Current user info
     const auth = getAuth();
@@ -50,7 +52,7 @@ export const PModulesPage = (props) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groupmodules/${group}`, options);
+                const response = await fetch(`${batmanAPI}groupmodules/${group}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
@@ -74,16 +76,15 @@ export const PModulesPage = (props) => {
             mode: 'cors',
         }
 
-        //  const group = "G000000001";
         const group = params.group;
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=${group}&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
-                console.error(error);
+                // console.error(error);
             }
         };
 
@@ -92,6 +93,7 @@ export const PModulesPage = (props) => {
 
 
 
+    console.log(homeworkData)
     const homework = Object.values(homeworkData)
 
 
@@ -110,7 +112,7 @@ export const PModulesPage = (props) => {
                         ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 }
                     }}
                     >
-                        <CardActionArea onClick={gestion} sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
+                        <CardActionArea component={Link} to={`/professor/management/${params.group}/${params.course}`} sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
                             <CardContent sx={{ pt: 4, pb: 6 }}>
 
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />

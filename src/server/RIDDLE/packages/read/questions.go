@@ -5,13 +5,11 @@ import (
 	"elPadrino/RIDDLE/packages/structs"
 	"elPadrino/RIDDLE/packages/util"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
 func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		//Permitir que cualquier origen ingrese a este recurso
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -20,9 +18,6 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 		req.Student = r.URL.Query().Get("id_student")     //Matricula
 		req.Assigment = r.URL.Query().Get("id_assigment") //Modulo o Tarea
 		req.Group = r.URL.Query().Get("id_group")         //Grupo
-		req.Module = r.URL.Query().Get("id_module")       //Modulo
-
-		// parametro de grupo
 
 		//Verificar que los params sean cumplidos
 		if req.Student == "" || req.Assigment == "" {
@@ -30,61 +25,41 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		/* 		var res structs.ResultQuestion
-		 */
-		//Tomar primer caracter de un string
-		if req.Assigment[0] == 'M' {
+		var question structs.ResultQuestion
+		var err error
 
+		// Pregunta de modulo
+		if req.Assigment[0] == 'M' {
 			if req.Group == "" {
 				http.Error(w, "Error reading Group", http.StatusBadRequest)
 				return
 			}
 
 			//Llamar funcion para preguntas de modulos
-			res, err := util.MoQuestions(w, req, mysqlDB)
+			question, err = util.MoQuestions(req, mysqlDB)
 			if err != nil {
-				log.Println(err.Error())
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-
-			//convertir las estructuras
-			hwreqsJSON, err := json.Marshal(res)
-			if err != nil {
-				http.Error(w, "Error parsing response", http.StatusInternalServerError)
-				return
-			}
-
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			w.Write(hwreqsJSON)
-			w.(http.Flusher).Flush()
-			w.(http.CloseNotifier).CloseNotify()
-
+			// Pregunta de tarea
 		} else if req.Assigment[0] == 'H' {
-
-			if req.Module == "" {
-				http.Error(w, "Error reading Group", http.StatusBadRequest)
-				return
-			}
-
-			log.Println("SIuiuiu")
-			//Llamar funcion para preguntas de grupos
-			res, _ := util.HwQuestions(w, req, mysqlDB)
-
-			//convertir las estructuras
-			hwreqsJSON, err := json.Marshal(res)
+			question, err = util.HWQuestion(req, mysqlDB)
 			if err != nil {
-				http.Error(w, "Error parsing response", http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			w.Write(hwreqsJSON)
-			w.(http.Flusher).Flush()
-			w.(http.CloseNotifier).CloseNotify()
-
 		}
 
+		questionJSON, err := json.Marshal(question)
+		if err != nil {
+			http.Error(w, "Error retrieving question", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(questionJSON)
+		w.(http.Flusher).Flush()
+		w.(http.CloseNotifier).CloseNotify()
 	}
 }

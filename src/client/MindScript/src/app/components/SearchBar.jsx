@@ -1,4 +1,4 @@
-import { PersonSearch, Search } from '@mui/icons-material'
+import { Flag, PersonSearch, ScreenSearchDesktop, Search, TravelExplore } from '@mui/icons-material'
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 import React from 'react'
 
@@ -11,7 +11,7 @@ export const SearchBar = ({ setSearchQuery, name, placeholder }) => {
             <InputLabel sx={{
                 color: 'appDark.text',
                 '&.Mui-focused': {
-                    color: 'appDark.text' //change label color
+                    color: 'appDark.text', //change label color
                 }
             }}>{name}</InputLabel>
             <OutlinedInput
@@ -20,12 +20,10 @@ export const SearchBar = ({ setSearchQuery, name, placeholder }) => {
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
-                            // onClick={handleClickShowPassword}
-                            // onMouseDown={handleMouseDownPassword}
                             edge="end"
                             sx={{ color: 'appDark.icon' }}
                         >
-                            {name == 'Nombre' ? <PersonSearch /> : <Search />}
+                            {name == 'Nombre' ? <PersonSearch /> : name == 'Matrícula/Nómina' ? <Search /> : name == 'Materia' ? <ScreenSearchDesktop /> : name == 'Id' ? <Flag /> : <TravelExplore />}
 
                         </IconButton>
                     </InputAdornment>
@@ -35,15 +33,16 @@ export const SearchBar = ({ setSearchQuery, name, placeholder }) => {
                 sx={{
                     color: 'appDark.text',
                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'appDark.box', //change border color on hover
+                        borderColor: 'appDark.box', // change border color on hover
                     },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'appDark.box', //change border color when focused
+                    '&:focus-within .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'appDark.box', // change border color to transparent when focused
+                    },
+                    '&:not(:focus):not(:focus-within) .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'appDark.box', // change border color to white when not focused
                     },
                     borderRadius: 5,
-                    border: 1
                 }}
-
             />
         </FormControl>
     )

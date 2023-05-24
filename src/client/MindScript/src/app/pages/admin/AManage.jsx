@@ -1,17 +1,20 @@
 import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar } from '../../components';
+import { NavBar, SearchBar, RemoveButton } from '../../components';
 import { Delete, Edit, Save } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
 
 export const AManage = () => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 200;
     const [editMode, setEditMode] = useState(false);
     const [editRow, setEditRow] = useState(null);
+    const [editData, setEditData] = useState(null);
     var editRowParams;
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
@@ -22,6 +25,13 @@ export const AManage = () => {
     const [buttonStudentSelected, setButtonStudentSelected] = useState(false);
     const [buttonProfessorSelected, setButtonProfessorSelected] = useState(false);
     const [buttonAdminSelected, setButtonAdminSelected] = useState(false);
+
+    //Funciones para abrir la modal de Eliminar Usuario
+    const [openDeleteUser, setOpenDeleteUser] = useState(false);
+    const showModalDeleteUser = () => { setOpenDeleteUser(true); }
+    const closeModalDeleteUser = () => {
+        setOpenDeleteUser(false);
+    }
 
     //Current user info
     const auth = getAuth();
@@ -51,7 +61,7 @@ export const AManage = () => {
         }
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/users?user_type=student&campus=all&id=all&name=all`, options);
+                const response = await fetch(`${batmanAPI}users?user_type=student&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setStudent(responseData);
             } catch (error) {
@@ -74,7 +84,7 @@ export const AManage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/users?user_type=professor&campus=all&id=all&name=all`, options);
+                const response = await fetch(`${batmanAPI}users?user_type=professor&campus=all&id=all&name=all`, options);
                 const responseData = await response.json();
                 setProfessor(responseData);
             } catch (error) {
@@ -87,22 +97,22 @@ export const AManage = () => {
 
     const handlePatch = async (id) => {
         try {
-            console.log(editRowParams)
             const options = {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "name": `${editRowParams.first_name}`,
-                    "flast_name": `${editRowParams.flast_name}`,
-                    "slast_name": `${editRowParams.flast_name}`,
-                    "campus": `${editRowParams.campus}`
+                    "name": editRowParams.first_name,
+                    "flast_name": editRowParams.flast_name,
+                    "slast_name": editRowParams.slast_name,
+                    "campus": editRowParams.campus
                 }),
                 mode: 'cors',
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
+            const response = await fetch(`${batmanAPI}user/${id}`, options);
+            return response.json;
         } catch (error) {
             console.error(error);
         }
@@ -135,15 +145,20 @@ export const AManage = () => {
             if (row.id === params.id) {
                 prevData = row;
                 setEditMode(false);
-                return { ...row, editMode: false, first_name: params.first_name, flast_name: params.flast_name, slast_name: params.slast_name, campus: params.campus };
+                return {
+                    ...row, editMode: false,
+                    first_name: params.first_name.charAt(0).toUpperCase() + params.first_name.slice(1),
+                    flast_name: params.flast_name.charAt(0).toUpperCase() + params.flast_name.slice(1),
+                    slast_name: params.slast_name.charAt(0).toUpperCase() + params.slast_name.slice(1),
+                    campus: params.campus.toUpperCase()
+                };
             } else {
                 return row;
             }
         });
         setFilter(updatedData);
         if (prevData !== params) {
-            const row = () => updatedData.find(row => row.id === params.id);
-            console.log(row)
+            editRowParams = updatedData.find(row => row.id === params.id);
             handlePatch(params.id);
         }
     };
@@ -159,9 +174,10 @@ export const AManage = () => {
 
             };
 
-            const response = await fetch(`http://34.16.137.250:8002/user/${id}`, options);
-            const data = await response.json();
-            return data
+            const response = await fetch(`${batmanAPI}user/${id}`, options);
+            setStudent(prevData => prevData.filter(user => user.id !== id));
+            setProfessor(prevData => prevData.filter(user => user.id !== id));
+            return response;
 
         } catch (error) {
             console.error(error);
@@ -233,7 +249,14 @@ export const AManage = () => {
                             <Edit />
                         </IconButton>
                     )}
-                    <IconButton onClick={() => handleDelete(params.row.id)} aria-label="delete" sx={{ color: 'appDark.icon', mx: 2 }}>
+                    <IconButton
+                        onClick={() => {
+                            showModalDeleteUser();
+                            setEditData(params.row.id)
+                        }}
+
+                        aria-label="delete"
+                        sx={{ color: 'appDark.icon', mx: 2 }}>
                         <Delete />
                     </IconButton>
                 </>
@@ -241,10 +264,11 @@ export const AManage = () => {
 
         },
     ];
-
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <RemoveButton open={openDeleteUser} close={closeModalDeleteUser} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este usuario?" />
+
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
@@ -269,10 +293,13 @@ export const AManage = () => {
                                 bgcolor: buttonStudentSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonStudentSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonStudentSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Estudiante
@@ -290,10 +317,13 @@ export const AManage = () => {
                                 bgcolor: buttonProfessorSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonProfessorSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonProfessorSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Profesor
@@ -311,10 +341,13 @@ export const AManage = () => {
                                 bgcolor: buttonAdminSelected ? 'appDark.adminButton' : 'transparent',
                             },
                             '&:focus': {
-                                borderColor: buttonAdminSelected ? 'primary.main' : 'appDark.box',
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonAdminSelected ? 'transparent' : 'appDark.box',
                             },
                             borderRadius: 5,
-                            border: 0.5
+                            border: 1
                         }}
                     >
                         Admin
@@ -327,6 +360,7 @@ export const AManage = () => {
                     disableColumnMenu
                     disableSelectionOnClick
                     disableHear
+                    hideFooterPagination
                     rows={dataFiltered}
                     columns={columns}
                     isCellEditable={(params) => editRow === params.row.id}

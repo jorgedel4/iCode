@@ -11,12 +11,14 @@ Funcionando como un conector entre las BBDDs (MongoDB y MySQL) y el cliente.
 <h2 style="color:#65b891;">URL BASE</h2>
 34.16.137.250:8003
 
-<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de modulo</h2>
+<h1 style="color:#B5FFE1;">ENDPOINTS de Lectura</h1>
+________________________________________________________________
+<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de Modulo o Tarea</h2>
 
 <h3 style="color:#0000FF;">/questions</h3>
 
 <h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
+Solicitar una pregunta nueva, puede ser de una tarea  de un modulo
 
 <h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 GET
@@ -27,42 +29,58 @@ GET
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
 | :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
 | id_student   | string    | si                                           | ID del estudiante que pide preguntas                   |
-| id_assigment | string    | si                                           | ID del modulo desde la que se hace la peticion         | 
-| id_group     | string    | si                                           | ID del grupo al que pertene el estudiante              |
+| id_assigment | string    | si                                           | ID del modulo o Tarea desde la que se hace la peticion | 
+| id_group     | string    | solo en caso de pregunta de modulo           | ID del grupo al que pertene el estudiante              |
 
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
-la informacion de la pregunta a resolver.
+<h3 style="color:#b5ffe1;">Respuesta para ambos casos</h3>
+(En formato JSON) Arreglo de objetos que representan a la pregunta recibida. Cada estudiante cuenta con los siguientes camposos estudiante
+| Campo          | Tipo                  | Descripcion                                                         |
+| -------------- | --------------------- | ------------------------------------------------------------------: |
+| id_pregunta    | string                | ID de la pregunta obtenida                                          |
+| type           | string                | Tipo de la pregunta (codep o multi)                                 |
+| info           | string                | Informacion de la pregunta (descripcion, inputs y outputs, etc)     |
 
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
-
+<h3 style="color:#b5ffe1;">Ejemplos</h3>
+<p style= "font-weight: bold;">Peticion Para Pregunta de Tarea</p>
 
 GET 
-34.16.137.250:8003/questions?id_student=A01551955&id_assigment=M0000000000000000001&id_group=G000000001
+34.16.137.250:8003/questions?id_assigment=H0000000000000000001&id_student=A01551955
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
-[
-    {
-        "IdPregunta": "CQ000000000000000001",
-        "Type": "codep",
-        "Info": "{\"hinputs\": [[\"2\"], [\"4\"]], \"sinputs\": [[\"3\"], [\"6\"]], \"houtputs\": [\"4\", \"16\"], \"language\": \"python\", \"soutputs\": [\"9\", \"36\"], \"timeoutSec\": 10, \"description\": \"Double a number\", \"initialCode\": \"\", \"forbiddenFunctions\": []}",
-        "Status": "FAI"
-    }
-]
+{
+    "id_pregunta": "CQ000000000000000005",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}"
+}
 ```
 
-_____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT de solicitud de preguntas de tareas</h2>
 
-<h3 style="color:#0000FF;">/questions</h3>
+<p style= "font-weight: bold;">Peticion Para Pregunta de Modulo</p>
+
+GET 
+34.16.137.250:8003/questions?id_assigment=H0000000000000000001&id_student=A01551955&id_group=G000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "id_pregunta": "CQ000000000000000004",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}"
+}
+```
+
+_______________________________________________
+<h2 style="color:#65b891;">ENDPOINT para revisar progreso de una tarea</h2>
+
+<h3 style="color:#0000FF;">/statusHomework</h3>
 
 <h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitar el tipo de pregunta e informacion JSON de cada pregunta de un modulo
+Solicitar el porcentaje de avance de una tarea para un estudiante dado
 
 <h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 GET
@@ -70,42 +88,57 @@ GET
 <h3 style="color:#b5ffe1;">Parámetros</h3>
 (Mediante el URL)
 
-| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
-| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| id_student   | string    | si                                           | ID del estudiante que pide preguntas                    |
-| id_assigment | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
-| id_module    | string    | si                                           | ID del grupo al que pertene el estudiante               |
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| student_id   | string    | si                                           | ID del estudiante al que se busca evaluar su avance en la tarea                  |
+| homework_id  | string    | si                                           | ID de la tarea a la que se referencia         | 
+
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de realizar una busqueda exitosa, se desplegara el tipo de pregunta, seguido del JSON que contiene
-la informacion de la pregunta a resolver y su status.
+En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
 
 <h3 style="color:#b5ffe1;">Ejemplo</h3>
 <p style= "font-weight: bold;">Peticion</p>
 
-
 GET 
-34.16.137.250:8003/questions?id_student=A01551955&id_assigment=H0000000000000000001&id_module=M0000000000000000001
+34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 <p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
+{
+    "total": 3,
+    "progress": 2
+}
+```
+<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
+<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
-[
-    {
-        "IdPregunta": "CQ000000000000000003",
-        "Type": "codep",
-        "Info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a function that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        "Status": "PEN"
-    }
-]
+=======
 
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+En caso de realizar una busqueda exitosa, se regresara un objeto de tipo JSON con la etiqueta "progress"
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+<p style= "font-weight: bold;">Peticion</p>
+
+GET 
+34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+<p style= "font-weight: bold;">Respuesta</p>
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "progress": "67%"
+}
 ```
 
-
-
+<h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
 _____________________________________________________
 <h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador desde interfaz</h2>
 
@@ -307,3 +340,75 @@ Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json
 <p style= "font-weight: bold;">Respuesta</p>
 
 HTTP/1.1 201 Created
+
+
+
+<h1 style="color:#B5FFE1;">ENDPOINTS de Eliminación</h1>
+________________________________________________________________
+<h2 style="color:#65b891;">ENDPOINT rechazo de pregunta del profesor por admin</h2>
+
+<h3 style="color:#0000FF;">/declineQuestionRequest/{questionID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos no debe
+ser admitida
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+DELETE
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+Response 
+HTTP/1.1 200 OK 
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+DELETE 
+34.16.137.250:8003/declineQuestionRequest/CQ000000000000000004
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK 
+
+
+<h1 style="color:#B5FFE1;">ENDPOINTS de Actualización</h1>
+________________________________________________________________
+
+<h2 style="color:#65b891;">ENDPOINT aceptación de pregunta del profesor por admin</h2>
+
+<h3 style="color:#0000FF;">/aproveQuestionRequest/{questionID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos si debe
+ser admitida
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+PATCH
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+Response 
+HTTP/1.1 200 OK 
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+DELETE 
+34.16.137.250:8003/aproveQuestionRequest/CQ000000000000000004
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK 

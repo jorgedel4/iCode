@@ -8,6 +8,7 @@ import { useForm } from '../../hooks/useForm';
 export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages, modules }) => {
     //Importante para EditHomework
     const [editData, setData] = useState(null);
+    console.log("editData modules lay button", editData)
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);
@@ -27,11 +28,30 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
 
 
 
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
 
+            };
+            console.log(id)
+            const response = await fetch(`http://34.16.137.250:8002/homework/${id}`, options);
+            console.log(response)
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
+            <NavBar pages={pages} />
 
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
@@ -78,19 +98,21 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                     <Typography>{data.hw_name}</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <IconButton onClick={() => {
-                                                        setData(data)
-                                                        showModalEditHomework()
-                                                    }} sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setData(data)
+                                                            showModalEditHomework()
+                                                        }} sx={{ color: 'appDark.icon' }}>
                                                         <Edit />
                                                     </IconButton>
                                                 </Grid>
 
                                                 <Grid item xs={1}>
-                                                    <IconButton onClick={() => {
-                                                        setData(data)
-                                                        showModalDeleteHomework()
-                                                    }} sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setData(data.hw_id)
+                                                            showModalDeleteHomework()
+                                                        }} sx={{ color: 'appDark.icon' }}>
                                                         <DeleteOutline />
                                                     </IconButton>
                                                 </Grid>
@@ -99,10 +121,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                             </Grid>
                                         ))
                                         : null}
-                                        
+
 
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
-                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" />
+                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleDelete={handleDelete} />
 
                                 </>
                             }

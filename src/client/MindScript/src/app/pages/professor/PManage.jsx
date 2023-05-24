@@ -1,14 +1,25 @@
-import { Grid, useTheme, useMediaQuery, IconButton } from '@mui/material';
+import { Grid, useTheme, useMediaQuery, IconButton, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { NavBar, SearchBar } from '../../components';
+import { NavBar, SearchBar, RemoveButton } from '../../components';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete } from '@mui/icons-material';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+
 
 export const PManage = () => {
-  // console.log(this.props.location.state.group)
-  let params = useParams()
-  
+  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+  let params = useParams();
+
+
+  const [editData, setIdData] = useState(null);
+
+  //Funciones para abrir la modal de Eliminar estudiante
+  const [openRemoveStudent, setOpenRemoveStudent] = useState(false);
+  const showModalRemoveStudent = () => { setOpenRemoveStudent(true); }
+  const closeModalRemoveStudent = () => {
+    setOpenRemoveStudent(false);
+  }
+
   //GET term information
   const [usersData, setUser] = useState([]);
   useEffect(() => {
@@ -19,12 +30,14 @@ export const PManage = () => {
       },
       mode: 'cors',
     }
-    // console.log(group)
-    const group = params.group;
+
+
+    // let userID = "A01551955"
+    // let term = "current"
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://34.16.137.250:8002/enrolledstudents/${group}`, options);
+        const response = await fetch(`${batmanAPI}enrolledstudents/${params.group}`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {
@@ -36,26 +49,31 @@ export const PManage = () => {
   }, []);
 
   const handleDelete = async (id) => {
+    // console.log(id);
     try {
       const options = {
-          method: 'DELETE',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            "group": `${params.group}`,
-            "student": `${id}`
-          }),
-          mode: 'cors',
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "group": params.group,
+          "student": id
+        }),
+        mode: 'cors',
 
       };
 
-      const response = await fetch(`http://34.16.137.250:8002/unenrollstudent`, options);
+      const response = await fetch(`${batmanAPI}unenrollstudent`, options);
+      setUser(prevData => prevData.filter(user => user.id !== id));
+
+      return response;
 
     } catch (error) {
       console.error(error);
-    }    
+    }
   };
+
 
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -82,9 +100,13 @@ export const PManage = () => {
       align: 'center',
       headerAlign: 'center',
       mx: 10,
-      renderCell: (data) => (
+      renderCell: (params) => (
         <>
-          <IconButton onClick={() => handleDelete(data.row.id)} aria-label="delete" sx={{ color: 'appDark.icon' }}>
+          <IconButton onClick={() => {
+            setIdData(params.row.id);
+            showModalRemoveStudent();
+          }}
+            aria-label="delete" sx={{ color: 'appDark.icon' }}>
             <Delete />
           </IconButton>
         </>
@@ -95,6 +117,13 @@ export const PManage = () => {
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
       <NavBar pages={pages} />
+      < RemoveButton open={openRemoveStudent} close={closeModalRemoveStudent} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta usuario?" handleDelete={handleDelete} />
+
+      <Grid item xs={12} sx={{ mt: 4, height: '1vh' }}>
+        <Button component={Link} to={`/professor/modules/${params.group}/${params.course}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
+          {'< Modulos'}
+        </Button>
+      </Grid>
       <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
         <Grid item xs={12} sm={6} lg={6}>
           <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
@@ -114,8 +143,6 @@ export const PManage = () => {
   )
 }
 
-const handleEdit = (id) => {
-};
 
 const filterData = (nameQuery, idQuery, usersData) => {
   if (!nameQuery && !idQuery) {

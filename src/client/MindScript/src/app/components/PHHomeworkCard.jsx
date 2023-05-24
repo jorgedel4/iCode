@@ -64,6 +64,28 @@ export const PHHomeworkCard = ({ data }) => {
         setOpen(!open);
     };
 
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+
+            };
+            console.log(id)
+            const response = await fetch(`http://34.16.137.250:8002/homework/${id}`, options);
+            console.log(response)
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
 
         <Card
@@ -130,8 +152,7 @@ export const PHHomeworkCard = ({ data }) => {
 
                                     <IconButton
                                         onClick={() => {
-
-                                            setData(homework)
+                                            setData(homework.hw_id)
                                             showModalDeleteHomework()
                                         }} sx={{ borderRadius: 0 }}>
                                         <DeleteOutline />
