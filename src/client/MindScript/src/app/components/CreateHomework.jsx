@@ -132,7 +132,6 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
-    console.log(modulesData)
 
     let modules = [];
     modulesData.map((module) => (
