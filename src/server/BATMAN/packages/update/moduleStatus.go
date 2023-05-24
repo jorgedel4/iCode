@@ -9,10 +9,12 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Toggles the status (locked or unlocked) of a module
 func ModuleStatus(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		// Reading request's body (returns a slice of bytes, not usable yet)
+
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
@@ -25,6 +27,7 @@ func ModuleStatus(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Query to switch the module's status
 		query := `UPDATE moduleConfigs
 		SET locked = NOT locked
 		WHERE grupo = ?
@@ -57,6 +60,7 @@ func ModuleStatus(mysqlDB *sql.DB) http.HandlerFunc {
 
 		tx.Commit()
 
+		// Return response and close connection
 		w.WriteHeader(http.StatusOK)
 		w.(http.Flusher).Flush()
 		w.(http.CloseNotifier).CloseNotify()

@@ -14,41 +14,32 @@ import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { CounterCell } from './CounterCell';
 import { useEffect } from 'react';
+import { useForm } from '../../hooks/useForm';
 
 
-export const CreateHomework = ({ open, close }) => {
-    const [count, setCount] = useState(0);
+export const CreateHomework = ({ open, close, schoolID }) => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
-    //Selector de curso
+    //Prueba
+    const checked = true;
+
+    //Nombre de la tarea
+    const { hwname, onInputChange } = useForm({
+        hwname: '',
+    });
+
+    //Selector de curso 
     const [course, setCourse] = useState('');
     const handleSelection = (event) => {
         setCourse(event.target.value);
         // console.log(course)
     };
 
-    //State date picker
-    const [date, setDate] = useState(null);
+    //State date pickers
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
 
-
-    const modules = [
-        {
-            courseName: "Variables",
-            exNum: 0,
-            checked: false
-        },
-        {
-            courseName: "Condicionales",
-            exNum: 0,
-            checked: true
-        },
-        {
-            courseName: "Ciclo for",
-            exNum: 0,
-            checked: true
-        },
-
-    ]
 
     /*API region */
 
@@ -68,7 +59,7 @@ export const CreateHomework = ({ open, close }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/courses`, options);
+                const response = await fetch(`${batmanAPI}courses`, options);
                 const responseData = await response.json();
                 setCourseRequest(responseData);
             } catch (error) {
@@ -97,7 +88,7 @@ export const CreateHomework = ({ open, close }) => {
         const fetchData = async () => {
             if (course) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/groups?id=${userID}&term=${term}`, options);
+                    const response = await fetch(`${batmanAPI}groups?id=${userID}&term=${term}`, options);
                     const responseData = await response.json();
                     setGroup(responseData);
                 } catch (error) {
@@ -108,7 +99,17 @@ export const CreateHomework = ({ open, close }) => {
         fetchData();
     }, [course]);
 
-    // console.log("ADFaf",groupsData)
+    let groups = [];
+    groupsData.map((group) => (
+        groups.push({
+            id_group: group.id_group,
+            id_course: group.id_course,
+            // course_name: group.course_name,
+            checked: true
+        })
+    ))
+
+    // console.log("groupsData",groupsData)
     // console.log("cursos", course)
 
     //GET modules information
@@ -128,63 +129,89 @@ export const CreateHomework = ({ open, close }) => {
         const fetchData = async () => {
             if (course) {
                 try {
-                    const response = await fetch(`http://34.125.0.99:8002/coursemodules/${course}`, options);
+                    const response = await fetch(`${batmanAPI}coursemodules/${course}`, options);
                     const responseData = await response.json();
                     setModule(responseData);
                 } catch (error) {
-                    // console.error(error);
+                    // console.error(error); .push({id:, n_questions: })
                 }
             }
         };
         fetchData();
     }, [course]);
-    console.log("ADFaf", modulesData)
-    console.log("cursos", course)
 
-    // //POST Create Group
+    let modules = [];
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true
+        })
+    ))
 
-    // const registerGroup = {
-    //     course_id: selectedCourse,
-    //     term_id: selectedTerm,
-    //     professor_id: "L00000001",
-    //     modules_confs: rows,
-    // }
-    // // console.log(registerGroup)
-    // const createGroupRequest = async () => {
+    // //POST Create Homework
 
-    //     const options = {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
+    const createHomework = {
+        hw_name: hwname,
+        startDate: startDate,
+        endDate: endDate,
+    }
 
-    //         },
-    //         mode: 'no-cors',
-    //         body: JSON.stringify({
-    //             // "id": "test/test/2",
-    //             // "code": "def smallest(a, b):\n\treturn a if a < b else b"
+    // console.log("POST Register Homework", createHomework)
 
-    //             "course_id": registerGroup.course_id,
-    //             "term_id": registerGroup.term_id,
-    //             "professor_id": registerGroup.professor_id,
-    //             "modules_confs": registerGroup.modules_confs
+    const createHomeworkRequest = async () => {
+        let requestModules = [];
+        let requestGroups = [];
 
-    //         })
-    //     }
+        modules.map((module) => (
+            module.checked
+                ? requestModules.push({
+                    module: module.id,
+                    n_questions: module.n_questions,
+                })
+                : null
+        ))
+        console.log("Request modules", requestModules)
+        groups.map((group) => (
+            (group.checked && (group.id_course === course))
+                ? requestGroups.push(
+                    group.id_group)
+                : null
+        ))
+        console.log("Request groups", requestGroups)
 
-    //     fetch('http://34.125.0.99:8002/registergroup', options)
-    //         .then(response => {
-    //             console.log(response)
-    //             if (response.status === 201) {
-    //                 close()
-    //                 throw new Error('Grupo creado');
-    //             }
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
 
-    //         })
-    //         .catch(error => {
-    //             console.log(error)
-    //         })
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
 
-    // };
+                "groups": requestGroups,
+                "hw_name": createHomework.hw_name,
+                "open_date": createHomework.startDate,
+                "close_date": createHomework.endDate,
+                "modules_questions": requestModules
+            })
+        }
+        console.log(options)
+        fetch(`${batmanAPI}createhw`, options)
+            .then(response => {
+                // console.log("createHomeworkRequest", response)
+                if (response.status === 201) {
+                    // console.log(respose)
+                    throw new Error('Grupo creado');
+                }
+
+                console.log(respose)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    };
 
 
 
@@ -274,7 +301,9 @@ export const CreateHomework = ({ open, close }) => {
                                                 },
                                             }
                                         }}
-
+                                        name='hwname'
+                                        value={hwname}
+                                        onChange={onInputChange}
 
                                     />
                                 </FormControl>
@@ -367,7 +396,7 @@ export const CreateHomework = ({ open, close }) => {
                                         svg: { color: 'appDark.text' },
                                     }}
 
-                                    value={date} onChange={(newValue) => setDate(newValue)} />
+                                    value={startDate} onChange={(newValue) => setStartDate(newValue)} />
                             </LocalizationProvider>
 
                         </Grid>
@@ -410,7 +439,7 @@ export const CreateHomework = ({ open, close }) => {
                                         svg: { color: 'appDark.text' },
                                     }}
 
-                                    value={date} onChange={(newValue) => setDate(newValue)} />
+                                    value={endDate} onChange={(newValue) => setEndDate(newValue)} />
                             </LocalizationProvider>
 
                         </Grid>
@@ -426,7 +455,7 @@ export const CreateHomework = ({ open, close }) => {
                                 borderRadius: 2,
                             }}>
                             <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
-                            {groupsData.map((group) => (
+                            {groups.map((group) => (
                                 group.id_course == course
                                     ? <GroupHomework key={group.id_group} group={group} />
                                     : null
@@ -506,8 +535,10 @@ export const CreateHomework = ({ open, close }) => {
                                     </TableHead>
 
                                     <TableBody>
-                                        {modulesData.map((module) => (
-                                            <AddModuleHomework key={module.id} module={module} />
+                                        {modules.map((module) => (
+                                            <>
+                                                <AddModuleHomework key={module.id} module={module} />
+                                            </>
                                         ))}
                                     </TableBody>
 
@@ -531,7 +562,7 @@ export const CreateHomework = ({ open, close }) => {
                     </Grid>
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                        <Button onClick={createHomeworkRequest} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Crear tarea
                         </Button>
                     </Grid>

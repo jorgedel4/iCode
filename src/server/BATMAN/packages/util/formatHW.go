@@ -8,7 +8,9 @@ import (
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
+// Returns json of homework formatted according to the groupBy parameter 
 func FormatHomework(results []interface{}, accountType string, groupBy string) ([]byte, error) {
+	// Returns a map, where the key is the group and the value is an array of homework for that group
 	if groupBy == "group" {
 		result := make(map[string][]interface{})
 
@@ -24,6 +26,7 @@ func FormatHomework(results []interface{}, accountType string, groupBy string) (
 		
 		return json.Marshal(result)
 
+	// Returns a slice, where the first index are the homework that close today, the second the ones that close tomorrow and so on for the following week
 	} else if groupBy == "week" {
 		result := make([][]interface{}, 7)
 		for i := 0; i < 7; i++ {

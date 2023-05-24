@@ -106,7 +106,10 @@ INSERT INTO modules VALUES
 INSERT INTO moduleConfigs VALUES
     ("M0000000000000000001", "G000000001", 3, TRUE),
     ("M0000000000000000002", "G000000001", 3, TRUE),
-    ("M0000000000000000003", "G000000001", 3, TRUE);
+    ("M0000000000000000003", "G000000001", 3, TRUE),
+    ("M0000000000000000001", "G000000003", 2, TRUE),
+    ("M0000000000000000002", "G000000003", 3, FALSE),
+    ("M0000000000000000003", "G000000003", 1, TRUE);
 
 INSERT INTO questions VALUES
     ("CQ000000000000000001", "M0000000000000000001", "codep", '{"description": "Double a number", "hinputs": [["2"], ["4"]], "houtputs": ["4", "16"], "sinputs": [["3"], ["6"]], "soutputs": ["9", "36"], "timeoutSec": 10, "forbiddenFunctions": [], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
@@ -120,12 +123,13 @@ INSERT INTO questions VALUES
     ("CQ000000000000000009", "M0000000000000000003", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP");
 
 INSERT INTO homework VALUES
-    ("H0000000000000000001", "G000000001", "Tarea 1: Condicionales", '2023-05-05 00:00:00', '2023-05-10 00:00:00'),
-    ("H0000000000000000002", "G000000001", "Tarea 2: Condicionales", '2023-05-11 00:00:00', '2023-05-16 00:00:00');
+    ("H0000000000000000001", "G000000001", "Tarea 1: Condicionales", '2023-05-05 00:00:00', '2023-05-26 00:00:00'),
+    ("H0000000000000000002", "G000000001", "Tarea 2: Condicionales", '2023-05-11 00:00:00', '2023-05-25 00:00:00');
 
 INSERT INTO homeworkConfigs VALUES
     ("H0000000000000000001", "M0000000000000000001", 2),
-    ("H0000000000000000001", "M0000000000000000002", 1);
+    ("H0000000000000000001", "M0000000000000000002", 1),
+    ("H0000000000000000002", "M0000000000000000003", 5);
 
 INSERT INTO hw_questionAttempts VALUES
     ("A01551955", "H0000000000000000001", "CQ000000000000000001", "PAS", '2023-04-14 12:43:23'),

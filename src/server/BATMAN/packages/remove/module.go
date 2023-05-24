@@ -7,8 +7,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Delete module
 func Module(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		moduleID := mux.Vars(r)["moduleID"]
 
 		query := `DELETE FROM modules

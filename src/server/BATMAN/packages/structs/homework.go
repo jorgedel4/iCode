@@ -38,3 +38,10 @@ type NewHWReq struct {
 	CloseDate        time.Time        `json:"close_date"`
 	ModulesQuestions []ModuleQuestion `json:"modules_questions"`
 }
+
+type UpdateHWReq struct {
+	Name             string           `json:"name"`
+	OpenDate         time.Time        `json:"open_date"`
+	CloseDate        time.Time        `json:"close_date"`
+	ModulesQuestions []ModuleQuestion `json:"modules_questions"`
+}

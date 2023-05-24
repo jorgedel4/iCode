@@ -75,7 +75,7 @@ export const SHHomeworkCard = ({ data, index }) => {
                                     <ListItemText sx={{ pl: 4 }} primary={ homework.hw_name } />
 
                                 </ListItemButton>
-                            </ListItem>
+                            </ListItem> 
                         </Grid>
 
                     ))}

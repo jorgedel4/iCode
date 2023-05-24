@@ -3,10 +3,16 @@ import { ModulesLayout } from "../../layout"
 import { SModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
+import { useParams } from 'react-router-dom';
 
 export const SModulesPage = () => {
+    let params = useParams()
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const home = '/student/home'
-    const groupName = 'TC1028 (Gpo. 404)' //El nombren se debe de sacar desde la pagina home
+    const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
+
+    // console.log(useParams().group)
 
     //Current user info
     const auth = getAuth();
@@ -21,7 +27,10 @@ export const SModulesPage = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    const pages = ['Home', 'Profile']
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
 
     //API para obtener los datos de las tarjeras de modulos
     const [modulesData, setModule] = useState([]);
@@ -34,9 +43,12 @@ export const SModulesPage = () => {
             mode: 'cors',
         }
 
+        // const group = "G000000001";
+        const group = params.group;
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/groupmodules/G000000001?user_id=${schoolID}`, options);
+                const response = await fetch(`${batmanAPI}groupmodules/${group}?user_id=${schoolID}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
@@ -58,11 +70,12 @@ export const SModulesPage = () => {
             mode: 'cors',
         }
 
-        const group = "G000000001";
+        // const group = "G000000001";
+        const group = params.group;
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.125.0.99:8002/homework?id=${schoolID}&time=week&group=${group}&group_by=week`, options);
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=week&group=${group}&group_by=week`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
@@ -76,12 +89,14 @@ export const SModulesPage = () => {
     return (
         <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-                {modulesData.map((module, index) => (
-                    <Grid item key={index} xs={12} md={4}>
-                        {module.progress === 100? modulesData[index+1].locked=false : null}
-                        <SModuleCard module={module} index={index} />
-                    </Grid>
-                ))}
+                {modulesData != null && modulesData != undefined ?
+                    modulesData.map((module, index) => (
+                        <Grid item key={index} xs={12} md={4}>
+                            {module.progress === 100? modulesData[index+1].locked=false : null}
+                            <SModuleCard module={module} index={index} />
+                        </Grid>
+                    ))
+                :null}
             </Grid>
         </ModulesLayout>
     )

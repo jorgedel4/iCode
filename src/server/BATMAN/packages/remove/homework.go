@@ -7,10 +7,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Delete homework
 func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		hwID := mux.Vars(r)["homeworkID"]
 
+		// Start transaction
+		// Needed since multiple operations are made in cascade from SQL
 		tx, err := mysqlDB.Begin()
 		if err != nil {
 			http.Error(w, "Error deleting homework", http.StatusInternalServerError)

@@ -1,16 +1,24 @@
 import { Grid, Button, Typography } from '@mui/material'
 import * as React from 'react';
-import { QuestionsDropdown, TestsTabs } from '../../components';
-import { useState } from 'react';
+import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
+import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 
-
 export const WorkEnv = ({ onPrueba }) => {
+
+    const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
+
 
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
+    const [timerValue, setTimerValue] = useState(0);
+    const [resetTimer, setResetTimer] = useState(false);
+
+
     if (user !== null) {
         // console.log("Student work env user info", user)
         //Desestructuración de user
@@ -19,6 +27,7 @@ export const WorkEnv = ({ onPrueba }) => {
         const schoolID = (user.email).substring(0, 8);
         // console.log("Matrícula ", schoolID)
     }
+
 
     const questions = [
         'Pregunta 1',
@@ -32,6 +41,35 @@ export const WorkEnv = ({ onPrueba }) => {
         'Pregunta 9',
         'Pregunta #',
     ];
+
+    //API para obtener la info de los grupos
+    const [homework, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        // let userID = "L00000001"
+        let term = "all"
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}groups?id=${schoolID}&term=${term}`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
 
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
@@ -59,9 +97,10 @@ export const WorkEnv = ({ onPrueba }) => {
             })
         }
 
-        fetch('http://34.125.0.99:8001/exec', options)
+        fetch(`${codeAPI}exec`, options)
             .then(response => {
                 // console.log(response)
+                setResetTimer(true);
                 return response.json()
             })
             .then(json => {
@@ -73,40 +112,52 @@ export const WorkEnv = ({ onPrueba }) => {
             })
 
     };
-
-    console.log(fetchResponse)
-
-    //Objeto para test
-    const tests = [
-        {
-            status: true,
-            feed: "djchdjdjds"
-        },
-        {
-            status: true,
-            feed: "djdkjdidweifujsd"
-        },
-        {
-            status: false,
-            feed: "djkdjsldjdkendjcs"
-        }
-
-    ]
+    const printsec = () => {
+        console.log(timerValue)
+    }
 
     return (
-        <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
+        <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
             <Grid item xs={4}>
-                <Grid container px={1} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
+                <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
                     {/* Hw Description*/}
                     <Grid item xs={12}>
-                        <Typography>Descripción prrona
-                            Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+                        <Grid container py={2} alignItems='center'>
+                            <Grid item xs={12} md={10}>
+                                <Typography variant='h5'>
+                                    Descripción
+                                </Typography>
+                            </Grid>
+                            <Grid item align='right' xs={12} md={2}>
+                                <Timer setTimerValue={setTimerValue} resetTimer={resetTimer} setResetTimer={setResetTimer} />
 
-                            You may assume that each input would have exactly one solution, and you may not use the same element twice.
 
-                            You can return the answer in any order.
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} >
+                            <Typography textAlign='justify' sx={{
+                                overflowY: 'scroll',
+                                height: '45vh',
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}>
+                                Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
 
-                        </Typography>
+                                You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+                                You can return the answer in any order.
+
+                            </Typography>
+                        </Grid>
                     </Grid>
 
                     <Grid container alignItems='flex-end'>
@@ -115,9 +166,10 @@ export const WorkEnv = ({ onPrueba }) => {
                         </Grid>
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={handleEditorDidMount} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+                            <Button onClick={() => { handleEditorDidMount(); printsec(); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
                                 Submit
                             </Button>
+
                         </Grid>
                     </Grid>
                 </Grid>

@@ -66,16 +66,54 @@ export const RegisterPage = () => {
   } = useForm(formData, formValidations);
 
 
+  /*----------- end AUTH region ------*/
+  
+  const registrationRequest = async () => {
+    
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        
+      },
+      mode: 'no-cors',
+      body: JSON.stringify({
+        
+        "id": formState.id,
+        "campus": formState.campus,
+        "name": formState.displayName,
+        "flast_name": formState.firstLastName,
+        "slast_name": formState.secondLastName
+        
+      })
+    }
+    console.log(options)
+    fetch('http://34.16.137.250:8002/registeruser', options)
+    .then(response => {
+      // console.log("createHomeworkRequest", response)
+      if (response.status === 201) {
+        // console.log(respose)
+        throw new Error('Usuario creado');
+      }
+      
+      console.log(respose)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  };
+  
+  
   const onSubmit = (event) => {
+
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
     dispatch(startCreatingUserWithEmailPassword(formState));
-    /*console.log(formState); formState nos trae el objeto con los valores rellenos*/
+    // console.log(formState); //formState nos trae el objeto con los valores rellenos
+    registrationRequest()
   }
-  /*----------- end AUTH region ------*/
-
-
+  
   return (
     <AuthLayout title="Registro">
       <form onSubmit={onSubmit}>

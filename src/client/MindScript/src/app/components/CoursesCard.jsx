@@ -14,7 +14,7 @@ export const CoursesCard = ({ group, index, modules}) => {
                 boxShadow: '5px 5px 0px 5px rgba(0, 0, 0, 0.1)',
                 ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 } }}
             >
-                <CardActionArea href={modules}>
+                <CardActionArea href={modules+"/"+group.id_group+"/"+group.id_course }>
                     <Grid sx={{ backgroundColor: `${colors[color]}`, height: 40 }} />
                     <CardContent sx={{ pt: 4, pb: 6 }}>
                         <Typography xs={6} sx={{ color: 'appDark.text', fontSize: 22, fontWeight: 405 }} >

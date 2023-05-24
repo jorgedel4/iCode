@@ -8,8 +8,11 @@ import (
 	"github.com/jorgedel4/iCode/packages/consts"
 )
 
+// Delete user and all of its dependencies
 func User(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		userID := mux.Vars(r)["userID"]
 
 		if userID == "" {
@@ -19,6 +22,7 @@ func User(mysqlDB *sql.DB) http.HandlerFunc {
 
 		accountType := consts.AccountTypes[userID[0]]
 
+		// Deletion on cascade from SQL, must be a transaction
 		tx, err := mysqlDB.Begin()
 		if err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)

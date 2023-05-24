@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Delete course
 func Course(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
