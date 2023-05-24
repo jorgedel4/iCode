@@ -80,16 +80,14 @@ export const PModulesPage = () => {
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
         fetchData();
     }, []);
-    console.log(homeworkData)
 
     const handleDelete = async (id) => {
-        // console.log(id);
         try {
             const options = {
                 method: 'DELETE',
@@ -101,7 +99,9 @@ export const PModulesPage = () => {
             };
             console.log(id)
             const response = await fetch(`${batmanAPI}homework/${id}`, options);
-            setHomework(prevData => [prevData[0].filter(hw => hw.hw_id !== id), ...prevData.slice(1)]);
+            setHomework(Object.keys(homeworkData).map((key) =>
+                homeworkData[key].filter(hw => hw.hw_id !== id)
+            ))
             return response;
 
 
@@ -109,11 +109,7 @@ export const PModulesPage = () => {
             console.error(error);
         }
     };
-
-
     const homework = Object.values(homeworkData)
-
-
 
     return (
         <ModulesLayout home={home} homeworkData={homework} handleDelete={handleDelete} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
@@ -153,4 +149,3 @@ export const PModulesPage = () => {
         </ModulesLayout>
     )
 }
-

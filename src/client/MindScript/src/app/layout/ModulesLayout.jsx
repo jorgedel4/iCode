@@ -1,13 +1,9 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
-import { useState, useEffect } from 'react';
-import { useForm } from '../../hooks/useForm';
-
+import { useState } from 'react';
 
 export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
-
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     //Importante para EditHomework
     const [editData, setData] = useState(null);
@@ -27,8 +23,6 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
     const closeModalDeleteHomework = () => {
         setOpenDeleteHomework(false);
     }
-
-
 
     
     return (
