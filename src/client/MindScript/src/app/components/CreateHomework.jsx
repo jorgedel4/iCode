@@ -21,9 +21,7 @@ export const CreateHomework = ({ open, close, schoolID }) => {
     const checked = true;
 
     //Nombre de la tarea
-    const { hwname, onInputChange } = useForm({
-        hwname: '',
-    });
+    const { hwname, onInputChange } = useState('');
 
     //Selector de curso 
     const [course, setCourse] = useState('');
@@ -214,6 +212,16 @@ export const CreateHomework = ({ open, close, schoolID }) => {
 
 
     /*end API region */
+
+    useEffect(() => {
+        if (close) {
+            setCourse('');
+            setStartDate(null);
+            setEndDate(null);
+            setGroup([]);
+            setModule([]);
+        }
+    }, [open]);
 
 
     return (

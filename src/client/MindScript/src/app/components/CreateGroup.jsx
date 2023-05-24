@@ -17,6 +17,7 @@ export const CreateGroup = ({ open, close }) => {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [rows, setRows] = useState([]);
+
     // callback function to update rows variable
     const handleUpdateRows = (updatedRows) => {
         setRows(updatedRows);
@@ -175,6 +176,14 @@ export const CreateGroup = ({ open, close }) => {
     const [date, setDate] = useState(null);
     // console.log(selectedCourse)
     // console.log(selectedTerm)
+
+    useEffect(() => {
+        if (close) {
+            setSelectedCourse(null);
+            setSelectedTerm(null);
+            setModule([]);
+        }
+    }, [open]);
 
     return (
         <Modal
