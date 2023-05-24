@@ -4,11 +4,11 @@ import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 export const PModulesPage = () => {
     let params = useParams()
-  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const home = '/professor/home'
     const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
@@ -30,10 +30,14 @@ export const PModulesPage = () => {
         { name: 'Home', route: '/professor/home' },
         { name: 'Profile', route: '/professor/profile' },
     ]
+    const gestion = () => {
+        navigate('/professor/management/'+params.group)
+    }
 
-     //API para obtener los datos de las tarjeras de modulos
-     const [modulesData, setModule] = useState([]);
-     useEffect(() => {
+
+    //API para obtener los datos de las tarjeras de modulos
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
         const options = {
             method: 'GET',
             headers: {
@@ -54,13 +58,13 @@ export const PModulesPage = () => {
                 // console.error(error);
             }
         };
- 
+
         fetchData();
-     }, []);
+    }, []);
 
     // console.log("modulos" + modulesData)
 
-     //API para obtener los datos de las tareas
+    //API para obtener los datos de las tareas
     const [homeworkData, setHomework] = useState([]);
     useEffect(() => {
         const options = {
@@ -91,10 +95,11 @@ export const PModulesPage = () => {
     console.log(homeworkData)
     const homework = Object.values(homeworkData)
 
+
+
     return (
         <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
-
                 <Grid item xs={12} md={4}>
 
                     <Card sx={{
@@ -106,7 +111,7 @@ export const PModulesPage = () => {
                         ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 }
                     }}
                     >
-                        <CardActionArea sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
+                        <CardActionArea component={Link} to={`/professor/management/${params.group}/${params.course}`} sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
                             <CardContent sx={{ pt: 4, pb: 6 }}>
 
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
@@ -122,11 +127,12 @@ export const PModulesPage = () => {
                 {modulesData != null && modulesData != undefined ?
                     modulesData.map((module, index) => (
                         <Grid item key={index} xs={12} md={4}>
-                            <PModuleCard module={module} index={index} group={params.group}/>
+                            <PModuleCard module={module} index={index} group={params.group} />
                         </Grid>
-                ))
-                : null}
+                    ))
+                    : null}
             </Grid>
         </ModulesLayout>
     )
 }
+
