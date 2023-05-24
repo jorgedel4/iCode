@@ -60,8 +60,8 @@ INSERT INTO students VALUES
 
 INSERT INTO grupos VALUES
     ("G000000001", "TC1028", "L00000001", "FJ23"),
-    ("G000000002", "TC1030", "L00000001", "FJ23"),
-    ("G000000003", "TC1031", "L00000001", "FJ23"),
+    ("G000000002", "TC1031", "L00000001", "FJ23"),
+    ("G000000003", "TC1028", "L00000001", "IV23"),
     ("G000000004", "TC1028", "L00000002", "FJ23"),
     ("G000000005", "TC1030", "L00000002", "FJ23"),
     ("G000000006", "TC1031", "L00000003", "IV23"),
@@ -103,31 +103,13 @@ INSERT INTO modules VALUES
     ("M0000000000000000008", "TC1031", "Busqueda binaria"),
     ("M0000000000000000009", "TC1031", "Arbol binario");
 
-
 INSERT INTO moduleConfigs VALUES
     ("M0000000000000000001", "G000000001", 3, TRUE),
     ("M0000000000000000002", "G000000001", 3, TRUE),
     ("M0000000000000000003", "G000000001", 3, TRUE),
     ("M0000000000000000001", "G000000003", 2, TRUE),
     ("M0000000000000000002", "G000000003", 3, FALSE),
-    ("M0000000000000000003", "G000000003", 1, TRUE),
-    ("M0000000000000000004", "G000000001", 3, TRUE),
-    ("M0000000000000000005", "G000000001", 3, TRUE),
-    ("M0000000000000000006", "G000000001", 3, TRUE),
-    ("M0000000000000000004", "G000000003", 2, TRUE),
-    ("M0000000000000000005", "G000000003", 3, FALSE),
-    ("M0000000000000000006", "G000000003", 1, TRUE),
-    ("M0000000000000000007", "G000000001", 3, TRUE),
-    ("M0000000000000000008", "G000000001", 3, TRUE),
-    ("M0000000000000000009", "G000000001", 3, TRUE),
-    ("M0000000000000000007", "G000000003", 2, TRUE),
-    ("M0000000000000000008", "G000000003", 3, FALSE),
-    ("M0000000000000000009", "G000000003", 1, TRUE),
-    ("M0000000000000000002", "G000000002", 3, FALSE),
-    ("M0000000000000000004", "G000000002", 3, FALSE),
-    ("M0000000000000000005", "G000000002", 3, FALSE),
-    ("M0000000000000000008", "G000000002", 3, FALSE),
-    ("M0000000000000000006", "G000000002", 3, FALSE);
+    ("M0000000000000000003", "G000000003", 1, TRUE);
 
 INSERT INTO questions VALUES
     ("CQ000000000000000001", "M0000000000000000001", "codep", '{"description": "Double a number", "hinputs": [["2"], ["4"]], "houtputs": ["4", "16"], "sinputs": [["3"], ["6"]], "soutputs": ["9", "36"], "timeoutSec": 10, "forbiddenFunctions": [], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
@@ -138,39 +120,15 @@ INSERT INTO questions VALUES
     ("CQ000000000000000006", "M0000000000000000002", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
     ("CQ000000000000000007", "M0000000000000000003", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
     ("CQ000000000000000008", "M0000000000000000003", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000009", "M0000000000000000003", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000010", "M0000000000000000004", "codep", '{"description": "Double a number", "hinputs": [["2"], ["4"]], "houtputs": ["4", "16"], "sinputs": [["3"], ["6"]], "soutputs": ["9", "36"], "timeoutSec": 10, "forbiddenFunctions": [], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000011", "M0000000000000000004", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000012", "M0000000000000000004", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000013", "M0000000000000000005", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000014", "M0000000000000000005", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000015", "M0000000000000000005", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000016", "M0000000000000000006", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000017", "M0000000000000000006", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000018", "M0000000000000000006", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000019", "M0000000000000000007", "codep", '{"description": "Double a number", "hinputs": [["2"], ["4"]], "houtputs": ["4", "16"], "sinputs": [["3"], ["6"]], "soutputs": ["9", "36"], "timeoutSec": 10, "forbiddenFunctions": [], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000020", "M0000000000000000007", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000021", "M0000000000000000007", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000022", "M0000000000000000008", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000023", "M0000000000000000008", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000024", "M0000000000000000008", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000025", "M0000000000000000009", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000026", "M0000000000000000009", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP"),
-    ("CQ000000000000000027", "M0000000000000000009", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP");
+    ("CQ000000000000000009", "M0000000000000000003", "codep", '{"description": "create a function that returns the biggest number", "hinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "houtputs": ["9", "7"], "sinputs": [["4", "3", "1", "9", "2"], ["2", "0", "7"]], "soutputs": ["9", "7"], "timeoutSec": 10, "forbiddenFunctions": ["sum"], "initialCode": "", "language": "python"}', 'L00000001', '2023-04-15 00:00:00', "APP");
 
 INSERT INTO homework VALUES
-    ("H0000000000000000001", "G000000001", "Tarea 1: Condicionales", '2023-05-05 00:00:00', '2023-05-25 00:00:00'),
-    ("H0000000000000000002", "G000000001", "Tarea 2: For", '2023-05-11 00:00:00', '2023-05-24 00:00:00'),
-    ("H0000000000000000003", "G000000002", "Tarea 1: Condicionales", '2023-05-05 00:00:00', '2023-05-28 00:00:00'),
-    ("H0000000000000000004", "G000000002", "Tarea 2: For", '2023-05-05 00:00:00', '2023-05-26 00:00:00'),
-    ("H0000000000000000005", "G000000003", "Tarea 1: If", '2023-05-05 00:00:00', '2023-05-27 00:00:00'),
-    ("H0000000000000000006", "G000000003", "Tarea 2: While", '2023-05-05 00:00:00', '2023-05-30 00:00:00');
+    ("H0000000000000000001", "G000000001", "Tarea 1: Condicionales", '2023-05-05 00:00:00', '2023-05-10 00:00:00'),
+    ("H0000000000000000002", "G000000001", "Tarea 2: Condicionales", '2023-05-11 00:00:00', '2023-05-16 00:00:00');
 
 INSERT INTO homeworkConfigs VALUES
     ("H0000000000000000001", "M0000000000000000001", 2),
     ("H0000000000000000001", "M0000000000000000002", 1),
-    ("H0000000000000000004", "M0000000000000000005", 1),
-    ("H0000000000000000003", "M0000000000000000004", 1),
     ("H0000000000000000002", "M0000000000000000003", 5);
 
 INSERT INTO hw_questionAttempts VALUES
