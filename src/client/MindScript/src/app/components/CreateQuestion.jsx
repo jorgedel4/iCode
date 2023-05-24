@@ -87,36 +87,18 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     /*end API region */
 
-    // Preview de prueba para saber si se guardan los archivos (se borra mas adelante)
-    const [selectedFile, setSelectedFile] = useState()
-    const [preview, setPreview] = useState()
+    /*File upload section */
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-    // create a preview as a side effect, whenever selected file is changed
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(undefined)
-            return
-        }
+        reader.onload = (event) => {
+            const fileContent = event.target.result;
+            console.log(fileContent); // Do something with the file content
+        };
 
-        const objectUrl = URL.createObjectURL(selectedFile)
-        setPreview(objectUrl)
-
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl)
-    }, [selectedFile])
-
-    const onSelectFile = e => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setSelectedFile(undefined)
-            return
-        }
-
-        // I've kept this example simple by using the first image instead of multiple
-        setSelectedFile(e.target.files[0])
-        // console.log(selectedFile)
-    }
-    // Termina la parte de prueba
-
+        reader.readAsText(file);
+    };
 
     return (
         <Modal
@@ -155,7 +137,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Typography>
                 </Grid>
 
-
+                {/* Primera Seccion */}
                 <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
 
                     <Grid container justifyContent="center" sx={{
@@ -358,12 +340,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 Subir Archivo
                                 <input
                                     type="file"
+                                    id="file-upload"
+                                    accept=".json"
                                     hidden
-                                    onChange={onSelectFile}
-                                    // onChange={(event) => console.log(event.target.files)}
+                                    onChange={handleFileUpload}
+                                // onChange={(event) => console.log(event.target.files)}
                                 />
-                                {/* {selectedFile &&  <img src={preview} /> } */}
-                                {selectedFile &&  console.log(selectedFile) }
+
                             </Button>
 
                         </Grid>

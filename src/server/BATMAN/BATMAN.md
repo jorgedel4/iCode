@@ -1081,6 +1081,42 @@ Content-Type: application/json
 **Respuesta**
 HTTP/1.1 200 OK
 
+---
+
+### `/modulenquestions`
+#### Descripcion
+Modifica el numero de preguntas requeridas para un modulo dentro de un grupo
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro    | Tipo        | Obligatorio | Descripcion                        |
+|------------- | ----------- | ----------- | ---------------------------------- |
+| group        | string      | si          | Grupo al cual pertenece el modulo  |
+| module       | string      | si          | Modulo a modificar                 |
+| n_questions  | int         | si          | Nueva cantidad de pregutnas        |
+
+
+#### Respuesta
+En caso de que se haya modificado el numero de preguntas requeridas para dado modulo de forma exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/modulenquestions
+Content-Type: application/json
+``` json
+{
+    "group": "G000000001",
+    "module": "M0000000000000000001",
+    "n_questions": 5
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
 ## Endpoints de eliminacion
 
 ### `/homework/{homeworkID}`
