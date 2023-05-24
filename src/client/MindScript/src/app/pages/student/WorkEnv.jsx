@@ -15,6 +15,7 @@ export const WorkEnv = ({ onPrueba }) => {
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid, responseInfo;
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
 
@@ -22,9 +23,9 @@ export const WorkEnv = ({ onPrueba }) => {
     if (user !== null) {
         // console.log("Student work env user info", user)
         //Desestructuración de user
-        const { email, displayName, emailVerified, uid } = user
+        ({ email, displayName, emailVerified, uid } = user);
         //Matrícula A00000000
-        const schoolID = (user.email).substring(0, 8);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
 
@@ -53,12 +54,9 @@ export const WorkEnv = ({ onPrueba }) => {
             mode: 'cors',
         }
 
-        // let userID = "L00000001"
-        let term = "all"
-
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}groups?id=${schoolID}&term=${term}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=H0000000000000000001&id_student=${schoolID}`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
@@ -69,7 +67,9 @@ export const WorkEnv = ({ onPrueba }) => {
         fetchData();
     }, []);
 
-
+    if (homework.info !== undefined) {
+        responseInfo = JSON.parse(homework.info);
+    }
 
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
@@ -77,7 +77,7 @@ export const WorkEnv = ({ onPrueba }) => {
     //Objeto para codeExec
     const hwData = {
         code: content,
-        id: 'CQ000000000000000001',
+        id: homework.id_pregunta,
     }
 
     const handleEditorDidMount = async () => {
@@ -150,12 +150,9 @@ export const WorkEnv = ({ onPrueba }) => {
                                     borderRadius: 2,
                                 },
                             }}>
-                                Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
-
-                                You may assume that each input would have exactly one solution, and you may not use the same element twice.
-
-                                You can return the answer in any order.
-
+                                {responseInfo !== undefined && (
+                                    responseInfo.description
+                                )}
                             </Typography>
                         </Grid>
                     </Grid>
