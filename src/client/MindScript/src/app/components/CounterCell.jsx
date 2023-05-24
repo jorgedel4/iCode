@@ -46,9 +46,9 @@ export function CounterCell({ data, onUpdateRows }) {
       n_questions: counts[module.name] || 0,
     }));
     setRowData(val)
-  }, [counts]);
+    onUpdateRows(val);
+  }, [counts, data, onUpdateRows]);
   // console.log(rowsData);
-  onUpdateRows(rowsData);
 
 
   return (

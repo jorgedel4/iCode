@@ -71,6 +71,28 @@ export const WorkEnv = ({ onPrueba }) => {
         responseInfo = JSON.parse(homework.info);
     }
 
+    const [progress, setProgress] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=H0000000000000000001`, options);
+                const responseData = await response.json();
+                setProgress(responseData);
+            } catch (error) {
+                // console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
@@ -189,8 +211,15 @@ export const WorkEnv = ({ onPrueba }) => {
                     <Grid item xs={12}
                         sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
                     >
+                        <Grid container alignItems='center' sx={{height:'1vh'}}>
+                            <Grid item xs={10}>
+                                <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
+                            </Grid>
+                            <Grid item xs={2} align='right'>
+                                <Typography sx={{ color: 'appDark.text' }}>{progress.progress}/{progress.total}</Typography>
+                            </Grid>
 
-                        <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
+                        </Grid>
                         {showComponent && (
                             <TestsTabs tests={fetchResponse} />
                         )}

@@ -11,3 +11,8 @@ type NewCourseReq struct {
 	Name    string   `json:"name"`
 	Modules []string `json:"modules"`
 }
+
+type UpdateCourneNameReq struct {
+	ID      string `json:"id"`
+	NewName string `json:"new_name"`
+}

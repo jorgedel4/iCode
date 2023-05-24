@@ -73,7 +73,7 @@ export function AddModuleHomework({ module }) {
                     scope="row"
                 >
                     <Grid item xs={10} >
-                        <FormControl fullwidth="true" variant="filled">
+                        <FormControl fullWidth variant="filled">
                             {/* CheckBox */}
                             <FormControlLabel
                                 value="end"

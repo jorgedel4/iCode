@@ -22,7 +22,6 @@ export const PHomePage = () => {
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Nómina ", schoolID)
     }
-    console.log("Nómina ", schoolID)
 
     const pages = [
         { name: 'Home', route: '/professor/home' },
@@ -54,7 +53,7 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [groupsData]);
 
 
     //Funciones para abrir la modal de Crear Curso
@@ -104,12 +103,9 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, []);
-    console.log("this is homework data", homeworkData)
+    }, [groupsData]);
 
     const homework = Object.entries(homeworkData)
-
-    const request = handleEditorDidMount()
 
     return (
         <Grid container justifyContent='center' alignItems='center'>
@@ -184,28 +180,3 @@ export const PHomePage = () => {
         </Grid>
     )
 }
-
-
-const handleEditorDidMount = async () => {
-
-    // const options = {
-    //   method: 'GET',
-    //   headers: {
-    //     'Accept': 'application/json',
-
-    //   },
-    //   mode: 'cors',
-    // }
-
-    // let userID = "A01551955"
-    // let term = "current"
-
-    // fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options)
-    // .then(response => response.json())
-    // // .then(data => console.log("aqui\n", data))
-    // .then(data => setGroup(data))
-    // .catch(error => console.error(error));
-
-
-
-};

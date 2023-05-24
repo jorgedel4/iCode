@@ -1,10 +1,12 @@
 import { Button, Grid, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react';
-import { NavBar, RequestCard } from '../../components'
+import { NavBar, RequestCard, RemoveButton } from '../../components'
 import { getAuth } from "firebase/auth";
 
 export const ARequest = () => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
 
     //Current user info
     const auth = getAuth();
@@ -50,7 +52,26 @@ export const ARequest = () => {
 
         fetchData();
     }, []);
-    // console.log(requestsData)
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ "id": id })
+                mode: 'cors',
+
+            };
+
+            const response = await fetch(`${riddleAPI}declineQuestionRequest/${id}`, options);
+            setRequest(prevData => prevData.filter(request => request.id !== id));
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const [selected, setSelected] = useState(null);
     const handleCardSelection = (id) => {
@@ -60,6 +81,12 @@ export const ARequest = () => {
             setSelected(id);
         }
     };
+    //Funciones para abrir la modal de Eliminar estudiante
+    const [openDeleteRequest, setOpenDeleteRequest] = useState(false);
+    const showModalDeleteRequest = () => { setOpenDeleteRequest(true); }
+    const closeModalDeleteRequest = () => {
+        setOpenDeleteRequest(false);
+    }
     const selectedRequest = selected !== null ? requestsData.find((r) => r.id === selected) : null;
     // console.log(selectedRequest)
     var js, hinputs, sinputs;
@@ -91,6 +118,8 @@ export const ARequest = () => {
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            < RemoveButton open={openDeleteRequest} close={closeModalDeleteRequest} editData={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleDelete={handleDelete} />
+
             <Grid item xs={4} sx={{
                 mt: 5,
                 height: '90vh',
@@ -273,6 +302,7 @@ export const ARequest = () => {
                                 </Grid>
                                 <Grid item>
                                     <Button type="submit"
+                                        onClick={showModalDeleteRequest}
                                         sx={{
                                             color: 'appDark.text',
                                             bgcolor: 'transparent',

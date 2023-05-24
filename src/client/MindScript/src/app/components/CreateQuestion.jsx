@@ -3,16 +3,7 @@ import { Grid, InputLabel, useTheme, useMediaQuery, Modal, FormControlLabel, Out
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { useState } from 'react';
-import { GroupHomework } from './GroupHomework';
-import { AddModuleHomework } from './AddModuleHomework';
-import { CounterCell } from './CounterCell';
 import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
@@ -93,7 +84,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
 
     // console.log("POST Register Homework", createHomework)
-    console.log("Modules", modulesData)
 
     /*end API region */
 

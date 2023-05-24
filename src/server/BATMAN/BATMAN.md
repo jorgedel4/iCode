@@ -1047,6 +1047,40 @@ Content-Type: application/json
 **Respuesta**
 HTTP/1.1 200 OK
 
+---
+
+### `/coursename`
+#### Descripcion
+Modifica el nombre de un usuario
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro    | Tipo        | Obligatorio | Descripcion            |
+|------------- | ----------- | ----------- | ---------------------- |
+| id           | string      | si          | ID del curso a editar  |
+| new_name     | string      | si          | Nuevo nombre del curso |
+
+#### Respuesta
+En caso de que se haya modificado la información del usuario de forma exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+En caso de que ya exista un curso con ese nombre, se regresa un codigo HTTP 409 (Conflict)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/coursename
+Content-Type: application/json
+``` json
+{
+    "id": "TC1028",
+    "new_name": "Intro a progra"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
 ## Endpoints de eliminacion
 
 ### `/homework/{homeworkID}`
