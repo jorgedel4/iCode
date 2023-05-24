@@ -116,8 +116,8 @@ useEffect(() => {
     const fetchData = async () => {
         try {
             const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
-            console.log(response)
             const responseData = await response.json();
+            console.log(responseData)
             setHomework(responseData);
         } catch (error) {
             // console.error(error);
