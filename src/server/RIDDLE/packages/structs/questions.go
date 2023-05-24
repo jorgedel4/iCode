@@ -27,4 +27,5 @@ type ModQuestAttempt struct {
 	Group         string `json:"grupo"`
 	IdQuestion    string `json:"question"`
 	AttemptStatus string `json:"attempt_status"`
+	AttemptTime   int64  `json:"attempt_time"`
 }
