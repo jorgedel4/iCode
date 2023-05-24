@@ -20,6 +20,7 @@ export const AppRoutes = () => {
         <Route path="professor/modules" element={ <PModulesPage /> } />
         <Route path="professor/modules/:group/:course" element={ <PModulesPage /> } />
         <Route path="professor/management" element={ <PManage /> } />
+        <Route path="professor/management/:group/:course" element={ <PManage /> } />
         <Route path="professor/dashboard" element={ <PDashboard /> } />
         <Route path="professor/profile" element={ <PProfile /> } />
         <Route path="admin/management" element={ <AManage /> } />
