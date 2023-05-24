@@ -31,7 +31,7 @@ export const PModulesPage = () => {
         { name: 'Profile', route: '/professor/profile' },
     ]
     const gestion = () => {
-        navigate('/professor/management/'+params.group)
+        navigate('/professor/management/' + params.group)
     }
 
 
@@ -46,7 +46,6 @@ export const PModulesPage = () => {
             mode: 'cors',
         }
 
-        //  const group = "G000000001";
         const group = params.group;
 
         const fetchData = async () => {
@@ -61,8 +60,6 @@ export const PModulesPage = () => {
 
         fetchData();
     }, []);
-
-    // console.log("modulos" + modulesData)
 
     //API para obtener los datos de las tareas
     const [homeworkData, setHomework] = useState([]);
@@ -89,16 +86,37 @@ export const PModulesPage = () => {
 
         fetchData();
     }, []);
-
-
-
     console.log(homeworkData)
+
+    const handleDelete = async (id) => {
+        // console.log(id);
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+
+            };
+            console.log(id)
+            const response = await fetch(`${batmanAPI}homework/${id}`, options);
+            setHomework(prevData => [prevData[0].filter(hw => hw.hw_id !== id), ...prevData.slice(1)]);
+            return response;
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     const homework = Object.values(homeworkData)
 
 
 
     return (
-        <ModulesLayout home={home} homeworkData={homework} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
+        <ModulesLayout home={home} homeworkData={homework} handleDelete={handleDelete} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
                 <Grid item xs={12} md={4}>
 
