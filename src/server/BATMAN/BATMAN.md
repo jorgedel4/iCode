@@ -1116,7 +1116,7 @@ En caso de que se haya eliminado al usuario de manera exitosa, se regresa unicam
 
 #### Ejemplo
 **Peticion**
-DELETE 34.16.137.250:8002/user/unenrollstudent
+DELETE 34.16.137.250:8002/unenrollstudent
 
 **Respuesta**
 HTTP/1.1 200 OK
