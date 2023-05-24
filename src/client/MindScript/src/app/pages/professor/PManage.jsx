@@ -110,7 +110,6 @@ export const PManage = () => {
     },
   ];
 
-
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
       <NavBar pages={pages} />
