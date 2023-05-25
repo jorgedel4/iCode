@@ -73,8 +73,6 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             });
     };
 
-    console.log(requestVal)
-
     const onSubmit = (event) => {
         event.preventDefault();
     }
