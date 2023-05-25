@@ -1,7 +1,9 @@
 import React from 'react'
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link as RouterLink, useSubmit } from "react-router-dom"
-import { Alert, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
+import { Alert, Button, Checkbox, FormControl, MenuItem, FormGroup, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material"
+import Select from '@mui/material/Select';
+
 import { FormatUnderlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from '../../hooks/useForm';
 import { AuthLayout } from "../layout/AuthLayout"
@@ -9,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { startCreatingUserWithEmailPassword } from '../../store/auth';
 
 export const RegisterPage = () => {
-
+  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
   //Functions for covering password
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -29,7 +31,6 @@ export const RegisterPage = () => {
     password: '',
     confirmation: '',
   }
-
   const formValidations = {
     /*personalizado del tutorial, hay herramientas externas para hacer validaciones
     //son arreglos, 1 param es el valor que ingresa el user, el segundo es el mensaje de error por si no se cumple la validacion, se las vamos a pasar a la función de useForm
@@ -39,10 +40,19 @@ export const RegisterPage = () => {
     password: [(value) => value.length >= 6, 'El password debe de tener al menos 6 caracteres'],
     confirmation: [(value) => value === password, 'Tu confirmación es diferente a tu contraseña'],
     displayName: [(value) => value.length >= 1, 'Tu nombre es requerido'],
-    campus: [(value) => value === value.toUpperCase(), 'Ingresa las 3 primeras letras de tu campus en mayúscula'],
+    // campus: [(value) => value === selectedCampus, 'Ingresa las 3 primeras letras de tu campus en mayúscula'],
     // firstLastName: [(value) => value.length >= 2, 'Error del primer apellido'],
+
   }
   // var prueba = 12;
+
+  // const campusList = ["PUE", "GLD", "MTY"]
+  //Selector de Campus 
+  const [selectedCampus, setCampus] = useState('');
+  const handleCampusSelection = (event) => {
+    setCampus(event.target.value);
+  };
+
 
   const dispatch = useDispatch();
 
@@ -67,43 +77,72 @@ export const RegisterPage = () => {
 
 
   /*----------- end AUTH region ------*/
-  
+
+
+  /*API region */
+  const [campusList, setCampusList] = useState([]);
+
+
+  useEffect(() => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      mode: 'cors',
+    }
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${batmanAPI}campus`, options);
+        const responseData = await response.json();
+        setCampusList(responseData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const registrationRequest = async () => {
-    
+
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        
+
       },
       mode: 'no-cors',
       body: JSON.stringify({
-        
+
         "id": formState.id,
-        "campus": formState.campus,
+        "campus": selectedCampus,
         "name": formState.displayName,
         "flast_name": formState.firstLastName,
         "slast_name": formState.secondLastName
-        
+
       })
     }
     console.log(options)
     fetch('http://34.16.137.250:8002/registeruser', options)
-    .then(response => {
-      // console.log("createHomeworkRequest", response)
-      if (response.status === 201) {
-        // console.log(respose)
-        throw new Error('Usuario creado');
-      }
-      
-      console.log(respose)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+      .then(response => {
+        // console.log("createHomeworkRequest", response)
+        if (response.status === 201) {
+          // console.log(respose)
+          throw new Error('Usuario creado');
+        }
+
+        console.log(respose)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   };
+
   
-  
+
+  /*End API region */
+
   const onSubmit = (event) => {
 
     event.preventDefault();
@@ -113,7 +152,7 @@ export const RegisterPage = () => {
     // console.log(formState); //formState nos trae el objeto con los valores rellenos
     registrationRequest()
   }
-  
+
   return (
     <AuthLayout title="Registro">
       <form onSubmit={onSubmit}>
@@ -314,7 +353,7 @@ export const RegisterPage = () => {
           </Grid>
 
           {/* Campus*/}
-          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+          {/* <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
             <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }}>
               <InputLabel
                 required
@@ -345,6 +384,66 @@ export const RegisterPage = () => {
                 onChange={onInputChange}
                 error={!!campusValid && formSubmitted}
               />
+            </FormControl>
+            <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
+              {formSubmitted && <FormHelperText error>{campusValid}</FormHelperText>}
+            </Grid>
+          </Grid> */}
+
+
+          <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 1 }} >
+
+              <InputLabel id="campusSelectorInputLabel"
+                sx={{
+                  color: 'appDark.text',
+                  '&:hover': {
+                    color: 'appDark.text' //change label color
+                  },
+                  '&.Mui-focused': {
+                    color: 'appDark.text' //change label color
+                  }
+                }}
+              >Campus</InputLabel>
+
+              <Select
+
+                required
+                id="campusSelector"
+                value={selectedCampus}
+                onChange={handleCampusSelection}
+                sx={{
+                  borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' },
+                  '&.Mui-focused .MuiSelect-outlined': {
+                    borderColor: 'error' //change label color
+                  }
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      bgcolor: 'appDark.bgBox',
+                    },
+                  },
+                }}
+              >
+                {campusList.map((campus) => (
+                  <MenuItem
+                    sx={{
+                      color: "appDark.text",
+                      bgcolor: 'appDark.bgBox',
+                      '&:hover': {
+                        bgcolor: 'appDark.selectHover' //change label color
+                      },
+                    }}
+                    key={campus.campus_id}
+                    value={campus.campus_id}
+                  >
+                    {campus.campus_id}
+                  </MenuItem>
+                ))}
+
+              </Select>
+
             </FormControl>
             <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
               {formSubmitted && <FormHelperText error>{campusValid}</FormHelperText>}
