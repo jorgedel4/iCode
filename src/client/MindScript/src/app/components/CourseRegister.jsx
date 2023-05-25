@@ -82,6 +82,7 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
     useEffect(() => {
         if (close) {
             setValue('');
+            setError(null);
         }
     }, [open]);
 
