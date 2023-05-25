@@ -12,7 +12,6 @@ export const ProfileLayout = ({ children, pages }) => {
         ({ email, displayName, emailVerified, uid } = user);
         schoolID = (user.email).substring(0, 9).toUpperCase();
     }
-    console.log(user)
 
     return (
         <Grid container justifyContent='center' alignItems='center' align='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
