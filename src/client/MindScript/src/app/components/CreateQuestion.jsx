@@ -601,7 +601,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                     ':hover': { backgroundColor: 'secondary.main', opacity: 0.9 }
                                 }}
                             >
-                                <Grid container justifyContent="center" alignItems="center">
+                                <Grid container justifyContent="center" alignItems="center" align='center'>
                                     <Grid item xs={12} justifyContent="center">
 
                                         <UploadFile sx={{ color: 'appDark.icon', fontSize: 100, fontWeight: 80, my: 2 }} />
