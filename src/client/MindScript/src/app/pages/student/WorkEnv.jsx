@@ -211,7 +211,7 @@ export const WorkEnv = ({ onPrueba }) => {
                     <Grid item xs={12}
                         sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
                     >
-                        <Grid container alignItems='center' sx={{height:'1vh'}}>
+                        <Grid container alignItems='center' sx={{height:'4vh'}}>
                             <Grid item xs={10}>
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
                             </Grid>

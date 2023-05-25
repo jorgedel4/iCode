@@ -15,7 +15,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-    const containerWidth = isXLargeScreen ? '80vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
+    const containerWidth = isXLargeScreen ? '80vw' : isLargeScreen ? '90vw' : isMediumScreen ? '80vw' : '95vw';
 
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
