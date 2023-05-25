@@ -1,5 +1,5 @@
 import { Grid, InputLabel, useTheme, useMediaQuery, Modal, FormControlLabel, OutlinedInput, Button, IconButton, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Delete, LoopSharp } from '@mui/icons-material';
 
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
+import { UploadFile } from '@mui/icons-material'
 
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
@@ -16,6 +17,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '80vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
 
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     //Prueba
     const checked = true;
 
@@ -37,6 +40,54 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         setQType(event.target.value);
         console.log(qtype)
     };
+
+    const modulesDummy = ["For loops", "Condicionales", "Basics"]
+
+    const questionTypes = ["codep", "multi"]
+    const createQuestion = {
+        qdescription: qdescription,
+        module: "M0000000000000000001",
+        q_type: qtype,
+        info: "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+        created_by: schoolID
+
+    }
+    // console.log(schoolID)
+
+
+    /*API region */
+    //POST question request from JSON file
+
+    const requestAQuestion = async () => {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+            mode: 'cors',
+            body: JSON.stringify({
+                "module": "M0000000000000000001",
+                "q_type": createQuestion.q_type,
+                "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
+                "created_by": createQuestion.created_by
+            })
+
+
+        }
+        console.log(options)
+        fetch(`${riddleAPI}requestQuestion  `, options)
+            .then(response => {
+                if (response.status === 201) {
+                    close();
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    };
+
+
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
@@ -78,10 +129,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     // //POST Create Homework
 
-    const createQuestion = {
-        qdescription: qdescription,
-
-    }
 
 
     // console.log("POST Register Homework", createHomework)
@@ -166,7 +213,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     <Grid container alignItems="center" justifyContent="center">
                         <Grid item xs={10}>
                             <Grid container>
-                                <Grid item xs={6} sx={{pr: 1}}>
+                                <Grid item xs={6} sx={{ pr: 1 }}>
                                     <FormControl
                                         sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
                                     >
@@ -208,10 +255,10 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                     </FormControl>
                                 </Grid>
 
-                                <Grid item xs={6} sx={{pr: 1}}>
+                                <Grid item xs={6} sx={{ pr: 1 }}>
                                     <FormControl
                                         sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                    <InputLabel
+                                        <InputLabel
                                             required
                                             sx={{
                                                 color: 'appDark.text',
@@ -285,7 +332,9 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         reader.onload = (event) => {
             const fileContent = event.target.result;
             console.log(fileContent); // Do something with the file content
+            console.log(JSON.stringify(fileContent))
         };
+        // console.log(file)
 
         reader.readAsText(file);
     };
@@ -376,7 +425,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         },
                                     }}
                                 >
-                                    {modulesData.map((module) => (
+                                    {modulesDummy.map((module) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -385,10 +434,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            key={module.id}
-                                            value={module.id}
+                                            // key={module.id}
+                                            // value={module.id}
+                                            key={module}
+                                            value={module}
                                         >
-                                            {module.id} {module.name}
+                                            {/* {module.id} {module.name} */}
+                                            {module}
                                         </MenuItem>
                                     ))}
 
@@ -425,7 +477,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         },
                                     }}
                                 >
-                                    {modulesData.map((course) => (
+                                    {questionTypes.map((qtype) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -434,10 +486,10 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            key={course.id}
-                                            value={course.id}
+                                            key={qtype}
+                                            value={qtype}
                                         >
-                                            {course.id} {course.name}
+                                            {qtype}
                                         </MenuItem>
                                     ))}
 
@@ -487,7 +539,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
                         {/* SelectorY - TestCases */}
                         <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
                                 Casos de Prueba
                             </Typography>
                         </Grid>
@@ -507,7 +559,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 borderRadius: 2,
                             },
                         }}>
-                            {console.log("test cases",testCases)}
+                            {/* {console.log("test cases",testCases)} */}
                             {testCases.map((testCase) => testCase.jsx)}
 
                         </Grid>
@@ -516,30 +568,51 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 </Grid>
 
                 {/* Segunda Seccion */}
-                <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }}>
-                    <Grid container justifyContent="center" sx={{
-                        overflowY: 'scroll',
-                        height: '60vh',
-                        "&::-webkit-scrollbar": {
-                            width: 5,
-                        },
-                        "&::-webkit-scrollbar-track": {
-                            backgroundColor: "secondary.main",
-                            borderRadius: 2,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "appDark.scrollBar",
-                            borderRadius: 2,
-                        },
-                    }}>
+                <Grid item xs={12} lg={6} md={6} sx={{ mt: 2 }} >
+                    <Grid container alignItems="center" justifyContent="center"
+                        sx={{
+                            overflowY: 'scroll',
+                            height: '60vh',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
 
-                        <Grid item xs={10} >
+                        <Grid item xs={10} alignContent="center" justifyContent="center">
 
-                            <Button
+                            <Button xs={12}
+                                alignContent="center"
                                 variant="contained"
                                 component="label"
+                                sx={{
+                                    width: "30vw",
+                                    height: "30vh",
+                                    backgroundColor: 'secondary.main',
+                                    borderRadius: '10px',
+                                    boxShadow: '5px 5px 5px 5px rgba(0.1, 0.1, 0.1, 0.1)',
+                                    ':hover': { backgroundColor: 'secondary.main', opacity: 0.9 }
+                                }}
                             >
-                                Subir Archivo
+                                <Grid container justifyContent="center" alignItems="center">
+                                    <Grid item xs={12} justifyContent="center">
+
+                                        <UploadFile sx={{ color: 'appDark.icon', fontSize: 100, fontWeight: 80, my: 2 }} />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
+                                            Subir Archivo
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+
                                 <input
                                     type="file"
                                     id="file-upload"
@@ -548,7 +621,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                     onChange={handleFileUpload}
                                 // onChange={(event) => console.log(event.target.files)}
                                 />
-
                             </Button>
 
                         </Grid>
@@ -567,7 +639,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Grid>
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                        <Button type="submit" onClick={requestAQuestion} variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             Enviar solicitud
                         </Button>
                     </Grid>
