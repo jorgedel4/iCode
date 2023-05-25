@@ -164,7 +164,7 @@ export const ASyllabus = () => {
             <RemoveButton open={openDeleteCourse} close={closeModalDeleteCourse} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este curso?" />
 
             <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
-            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
+            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} setSyllabus={setSyllabus} />
             <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} />
 
             <Grid item xs={12} md={12} lg={9}>

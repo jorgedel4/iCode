@@ -3,7 +3,7 @@ import { Grid, InputLabel, Modal, OutlinedInput, Button, Typography, MenuItem, u
 import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from 'react';
 
-export const EditCourse = ({ open, close, params }) => {
+export const EditCourse = ({ open, close, params, setSyllabus }) => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
@@ -91,7 +91,7 @@ export const EditCourse = ({ open, close, params }) => {
                 <div style={{ padding: 10, justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
                     <div style={{ backgroundColor: theme.palette.error.main, marginTop: 15, borderRadius: 5 }}>
                         <IconButton
-                            sx={{ color: 'appDark.icon'}}
+                            sx={{ color: 'appDark.icon' }}
                             onClick={() => handleDeleteModule(module.id)}
                         >
                             <Delete />
@@ -102,7 +102,13 @@ export const EditCourse = ({ open, close, params }) => {
             </div >
         )) : null;
 
+    const[name, setName]=useState(null);
+    // setName(params.name);
 
+    const handleName = (event, id) => {
+        console.log(id)
+        setName(event.target.value);
+    };
 
 
     return (
@@ -154,6 +160,7 @@ export const EditCourse = ({ open, close, params }) => {
                                     label="ID del Curso"
                                     placeholder="TC1028"
                                     value={params.id}
+                                    readOnly
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -186,7 +193,8 @@ export const EditCourse = ({ open, close, params }) => {
                                     type="input"
                                     label="Nombre del Curso"
                                     placeholder="Pensamiento Computacional"
-                                    value={params.name}
+                                    value={name}
+                                    onChange={(event) => handleName(event,params.id)}
                                     sx={{
                                         color: 'appDark.text',
                                         '&:hover .MuiOutlinedInput-notchedOutline': {
