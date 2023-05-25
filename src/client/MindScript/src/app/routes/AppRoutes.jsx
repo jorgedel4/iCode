@@ -25,6 +25,7 @@ export const AppRoutes = () => {
       <Route path="student/workenv" element={<WorkEnv />} />
       <Route path="student/multiopt" element={<MultiOpt />} />
       <Route path="student/profile" element={<SProfile />} />
+      <Route path="auth/login" element={<SProfile />} />
       <Route path="/*" element={<SHomePage />} />
 
       {/* Las de admin por ahora se dejan */}
@@ -44,6 +45,7 @@ export const AppRoutes = () => {
       <Route path="professor/management/:group/:course" element={<PManage />} />
       <Route path="professor/dashboard" element={<PDashboard />} />
       <Route path="professor/profile" element={<PProfile />} />
+      <Route path="auth/login" element={<PProfile />} />
       <Route path="/*" element={<PHomePage />} />
 
       {/* Las de admin por ahora se dejan */}
