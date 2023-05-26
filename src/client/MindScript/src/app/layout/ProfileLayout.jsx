@@ -1,46 +1,104 @@
-import { Grid, Typography, useTheme } from '@mui/material'
-import { NavBar } from '../components'
+import React, { useState, useEffect } from 'react';
+import { Grid, Typography, useTheme, Fade } from '@mui/material';
+import { NavBar } from '../components';
 import { getAuth } from "firebase/auth";
 import { Link } from "react-router-dom";
 
 export const ProfileLayout = ({ children, pages }) => {
-    const theme = useTheme();
-    const auth = getAuth();
-    const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid;
-    if (user !== null) {
-        //Desestructuración de user
-        ({ email, displayName, emailVerified, uid } = user);
-        schoolID = (user.email).substring(0, 9).toUpperCase();
+  const theme = useTheme();
+  const auth = getAuth();
+  const user = auth.currentUser;
+  let schoolID, email, displayName, emailVerified, uid;
+  if (user !== null) {
+    ({ email, displayName, emailVerified, uid } = user);
+    schoolID = (user.email).substring(0, 9).toUpperCase();
+  }
+  const { route } = pages.find(route => route.name === "Home");
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [
+    '/1.svg',
+    '/2.svg',
+    '/3.svg',
+    '/4.svg',
+    '/5.svg',
+    '/6.svg',
+  ];
+
+  useEffect(() => {
+    if (currentImageIndex < images.length - 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex(prevIndex => prevIndex + 1);
+      }, 150); // Change the time interval (in milliseconds) as per your preference
+
+      return () => {
+        clearInterval(interval);
+      };
     }
-    const { route } = pages.find(route => route.name === "Home");
+  }, [currentImageIndex, images.length]);
 
-    return (
-        <Grid container justifyContent='center' alignItems='center' align='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <NavBar pages={pages} />
+  const isLastImage = currentImageIndex === images.length - 1;
+  const [showWelcome, setWelcome] = useState(false);
 
-            <Grid item>
-                <img src="/MindScript.svg" width="480" />
-            </Grid>
+  useEffect(() => {
+    if (isLastImage) {
+      const delay = setTimeout(() => {
+        setWelcome(true);
+      }, 300); // Change the delay time (in milliseconds) as per your preference
 
-            <Grid item xs={12}>
-                <Typography sx={{ color: 'appDark.text', fontSize: 50 }}>
-                    ¡Bienvenido(a), {displayName}!
-                </Typography>
-            </Grid>
+      return () => {
+        clearTimeout(delay);
+      };
+    }
+  }, [isLastImage]);
 
-            <Grid item xs={12}>
-                <Typography sx={{ color: 'appDark.text', fontSize: 20 }}>
-                    Comienza a descubrir todo lo que el aprendizaje computacional tiene reservado para ti
-                </Typography>
-            </Grid>
+  return (
+    <Grid
+      container
+      justifyContent='center'
+      alignItems='center'
+      alignContent='center'
+      spacing={0}
+      sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}
+    >
+      <NavBar pages={pages} />
 
-            <Grid item xs={12} sx={{mt:2}}>
-                <Link to={route} style={{color: theme.palette.appDark.text}} >
-                    Comenzar
-                </Link>
-            </Grid>
+      <Grid item>
+        <Fade in={true}>
+          <img
+            src={images[currentImageIndex]}
+            alt="Transition Image"
+            style={{
+              width: '480px',
+            }}
+          />
+        </Fade>
+      </Grid>
 
-        </Grid>
-    )
-}
+      <Grid item xs={12} align='center'>
+        <Fade in={showWelcome}>
+          <Typography sx={{ color: 'appDark.text', fontSize: 50 }}>
+            ¡Bienvenido(a), {displayName}!
+          </Typography>
+        </Fade>
+      </Grid>
+
+      <Grid item xs={12} align='center'>
+        <Fade in={showWelcome}>
+          <Typography sx={{ color: 'appDark.text', fontSize: 20 }}>
+            Comienza a descubrir todo lo que el aprendizaje computacional tiene reservado para ti
+          </Typography>
+        </Fade>
+      </Grid>
+
+      <Grid item xs={12} align='center' sx={{ mt: 2 }}>
+        <Fade in={showWelcome}>
+          <Link to={route} style={{ color: theme.palette.appDark.text }}>
+            Comenzar
+          </Link>
+        </Fade>
+      </Grid>
+    </Grid>
+  );
+};
+
