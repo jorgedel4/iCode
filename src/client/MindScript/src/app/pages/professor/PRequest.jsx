@@ -33,61 +33,89 @@ export const PRequest = () => {
         fetchData();
     }, []);
 
-    const handleDelete = async (id) => {
-        // console.log(id);
-        try {
-            const options = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // body: JSON.stringify({ "id": id })
-                mode: 'cors',
-
-            };
-
-            const response = await fetch(`${riddleAPI}declineQuestionRequest/${id}`, options);
-            setRequest(prevData => prevData.filter(request => request.id !== id));
-            return response;
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     // Searchbar
     const [moduleQuery, setModuleQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     const [dataFiltered, setFilter] = useState([]);
 
 
-    const [buttonAccepted, setButtonStudentSelected] = useState(false);
-    const [buttonPending, setButtonProfessorSelected] = useState(false);
-    const [buttonRejected, setButtonAdminSelected] = useState(false);
+    const [buttonAccepted, setButtonAccepted] = useState(false);
+    const [buttonPending, setButtonPending] = useState(false);
+    const [buttonRejected, setButtonRejected] = useState(false);
+    const [buttonCode, setButtonCode] = useState(false);
+    const [buttonMultiOpt, setButtonMultiOpt] = useState(false);
+
     useEffect(() => {
-        const filteredData = filterData(moduleQuery, idQuery, buttonAccepted ? requestsData.filter(request => request.status === 'APP') : buttonPending ? requestsData.filter(request => request.status === 'PEN') : buttonRejected ? requestsData.filter(request => request.status === 'REJ') : requestsData);
+        let filteredData = requestsData;
+
+        if (buttonAccepted) {
+            filteredData = filteredData.filter(request => request.status === 'APP');
+        } else if (buttonPending) {
+            filteredData = filteredData.filter(request => request.status === 'PEN');
+        } else if (buttonRejected) {
+            filteredData = filteredData.filter(request => request.status === 'REJ');
+        } else if (buttonCode) {
+            filteredData = filteredData.filter(request => request.type === 'codep');
+        } else if (buttonMultiOpt) {
+            filteredData = filteredData.filter(request => request.type === 'multi');
+        }
+
+        if (buttonAccepted && buttonCode) {
+            filteredData = filteredData.filter(request => request.status === 'APP' && request.type === 'codep');
+        } else if (buttonAccepted && buttonMultiOpt) {
+            filteredData = filteredData.filter(request => request.status === 'APP' && request.type === 'multi');
+        }
+
+        if (buttonPending && buttonCode) {
+            filteredData = filteredData.filter(request => request.status === 'PEN' && request.type === 'codep');
+        } else if (buttonPending && buttonMultiOpt) {
+            filteredData = filteredData.filter(request => request.status === 'PEN' && request.type === 'multi');
+        }
+
+        if (buttonRejected && buttonCode) {
+            filteredData = filteredData.filter(request => request.status === 'REJ' && request.type === 'codep');
+        } else if (buttonRejected && buttonMultiOpt) {
+            filteredData = filteredData.filter(request => request.status === 'REJ' && request.type === 'multi');
+        }
+
+        filteredData = filterData(moduleQuery, idQuery, filteredData);
         setFilter(filteredData);
-    }, [moduleQuery, idQuery, buttonAccepted, buttonPending, buttonRejected, requestsData]);
+    }, [moduleQuery, idQuery, buttonAccepted, buttonPending, buttonRejected, buttonCode, buttonMultiOpt, requestsData]);
+
 
     const handleButtonAccepted = () => {
-        setButtonStudentSelected(!buttonAccepted);
-        setButtonProfessorSelected(false);
-        setButtonAdminSelected(false);
+        setButtonAccepted(!buttonAccepted);
+        setButtonPending(false);
+        setButtonRejected(false);
         setSelected(null);
     };
 
     const handleButtonPending = () => {
-        setButtonProfessorSelected(!buttonPending);
-        setButtonStudentSelected(false);
-        setButtonAdminSelected(false);
+        setButtonPending(!buttonPending);
+        setButtonAccepted(false);
+        setButtonRejected(false);
         setSelected(null);
     };
 
     const handleButtonRejected = () => {
-        setButtonAdminSelected(!buttonRejected);
-        setButtonProfessorSelected(false);
-        setButtonStudentSelected(false);
+        setButtonRejected(!buttonRejected);
+        setButtonPending(false);
+        setButtonAccepted(false);
         setSelected(null);
     };
+
+    const handleButtonCode = () => {
+        setButtonCode(!buttonCode);
+        setButtonMultiOpt(false);
+        setSelected(null);
+    };
+
+    const handleButtonMultiOpt = () => {
+        setButtonMultiOpt(!buttonMultiOpt);
+        setButtonCode(false);
+        setSelected(null);
+    };
+
     // 
 
     //Current user info
@@ -110,7 +138,7 @@ export const PRequest = () => {
 
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-    const containerHeight = isLargeScreen ? 100 : isMediumScreen ? 100 : 150;
+    const containerHeight = isLargeScreen ? 100 : isMediumScreen ? 130 : 170;
 
 
 
@@ -122,14 +150,8 @@ export const PRequest = () => {
             setSelected(id);
         }
     };
-    //Funciones para abrir la modal de Eliminar estudiante
-    const [openDeleteRequest, setOpenDeleteRequest] = useState(false);
-    const showModalDeleteRequest = () => { setOpenDeleteRequest(true); }
-    const closeModalDeleteRequest = () => {
-        setOpenDeleteRequest(false);
-    }
+
     const selectedRequest = selected !== null ? requestsData.find((r) => r.id === selected) : null;
-    // console.log(selectedRequest)
     var js, hinputs, sinputs;
     const formattedHInputs = {};
     const formattedSInputs = {};
@@ -159,7 +181,6 @@ export const PRequest = () => {
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            < RemoveButton open={openDeleteRequest} close={closeModalDeleteRequest} editData={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleDelete={handleDelete} />
 
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight, ml: 1 }}>
                 <Grid item xs={12} sm={6}>
@@ -170,7 +191,7 @@ export const PRequest = () => {
                     <SearchBar searchQuery={moduleQuery} name={'Modulo'} placeholder={'For Loop'} setSearchQuery={setModuleQuery} />
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={4} md={2}>
                     <Button
                         fullWidth
                         onClick={handleButtonAccepted}
@@ -194,7 +215,7 @@ export const PRequest = () => {
                     </Button>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={4} md={2}>
                     <Button
                         fullWidth
                         onClick={handleButtonPending}
@@ -218,7 +239,7 @@ export const PRequest = () => {
                     </Button>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={4} md={2}>
                     <Button
                         fullWidth
                         onClick={handleButtonRejected}
@@ -239,6 +260,54 @@ export const PRequest = () => {
                         }}
                     >
                         Rechazadas
+                    </Button>
+                </Grid>
+
+                <Grid item xs={5} md={3}>
+                    <Button
+                        fullWidth
+                        onClick={handleButtonCode}
+                        sx={{
+                            color: 'appDark.text',
+                            bgcolor: buttonCode ? 'appDark.adminButton' : 'transparent',
+                            '&:hover': {
+                                bgcolor: buttonCode ? 'appDark.adminButton' : 'transparent',
+                            },
+                            '&:focus': {
+                                borderColor: buttonCode ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonCode ? 'transparent' : 'appDark.box',
+                            },
+                            borderRadius: 5,
+                            border: 1
+                        }}
+                    >
+                        Código
+                    </Button>
+                </Grid>
+
+                <Grid item xs={5} md={3}>
+                    <Button
+                        fullWidth
+                        onClick={handleButtonMultiOpt}
+                        sx={{
+                            color: 'appDark.text',
+                            bgcolor: buttonMultiOpt ? 'appDark.adminButton' : 'transparent',
+                            '&:hover': {
+                                bgcolor: buttonMultiOpt ? 'appDark.adminButton' : 'transparent',
+                            },
+                            '&:focus': {
+                                borderColor: buttonMultiOpt ? 'transparent' : 'appDark.box',
+                            },
+                            '&:not(:focus):not(:focus-within)': {
+                                borderColor: buttonMultiOpt ? 'transparent' : 'appDark.box',
+                            },
+                            borderRadius: 5,
+                            border: 1
+                        }}
+                    >
+                        Opción Múltiple
                     </Button>
                 </Grid>
 
