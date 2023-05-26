@@ -338,7 +338,7 @@ HTTP/1.1 201 Created
 
 ## Endpoints de lectura
 
-### `/courses`
+### `/campus`
 #### Descripcion
 Todos los cursos que se tienen registrados
 

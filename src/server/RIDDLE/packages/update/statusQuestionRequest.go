@@ -36,7 +36,7 @@ func UpdateStatus(mysqlDB *sql.DB) http.HandlerFunc {
 		//Check if the question exist
 		// If no rows were affected, the questionID doesn't exist
 		if rowsAffected == 0 {
-			http.Error(w, "Question not found", http.StatusNotFound)
+			http.Error(w, "Question is already aproved", http.StatusNotFound)
 			return
 		}
 
