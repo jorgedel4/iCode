@@ -1,9 +1,10 @@
-import { Grid, Button, Typography } from '@mui/material'
+import { Grid, Button, Typography, useTheme } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
 import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
+import { Link } from 'react-router-dom';
 
 export const WorkEnv = ({ onPrueba }) => {
 
@@ -11,7 +12,7 @@ export const WorkEnv = ({ onPrueba }) => {
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
 
-
+    const theme = useTheme();
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
@@ -28,20 +29,6 @@ export const WorkEnv = ({ onPrueba }) => {
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
-
-
-    const questions = [
-        'Pregunta 1',
-        'Pregunta 2',
-        'Pregunta 3',
-        'Pregunta 4',
-        'Pregunta 5',
-        'Pregunta 6',
-        'Pregunta 7',
-        'Pregunta 8',
-        'Pregunta 9',
-        'Pregunta #',
-    ];
 
     //API para obtener la info de los grupos
     const [homework, setHomework] = useState([]);
@@ -102,6 +89,11 @@ export const WorkEnv = ({ onPrueba }) => {
         id: homework.id_pregunta,
     }
 
+    //Request new question enpoint
+    const requestNextQuestion = async () => {
+        console.log("Next Question")
+    }
+
     const handleEditorDidMount = async () => {
 
         const options = {
@@ -146,14 +138,15 @@ export const WorkEnv = ({ onPrueba }) => {
                     <Grid item xs={12}>
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
-                                <Typography variant='h5'>
+                                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
+                                    {'< Regresar'}
+                                </Button>
+                                <Typography variant='h5' sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 20 }}>
                                     Descripción
                                 </Typography>
                             </Grid>
                             <Grid item align='right' xs={12} md={2}>
                                 <Timer setTimerValue={setTimerValue} resetTimer={resetTimer} setResetTimer={setResetTimer} />
-
-
                             </Grid>
                         </Grid>
                         <Grid item xs={12} >
@@ -181,7 +174,9 @@ export const WorkEnv = ({ onPrueba }) => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <QuestionsDropdown questions={questions} qName={'Pregunta #'} />
+                            <Button onClick={requestNextQuestion} variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                                Siguiente Pregunta
+                            </Button>
                         </Grid>
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
@@ -211,7 +206,7 @@ export const WorkEnv = ({ onPrueba }) => {
                     <Grid item xs={12}
                         sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
                     >
-                        <Grid container alignItems='center' sx={{height:'4vh'}}>
+                        <Grid container alignItems='center' sx={{ height: '4vh' }}>
                             <Grid item xs={10}>
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
                             </Grid>
