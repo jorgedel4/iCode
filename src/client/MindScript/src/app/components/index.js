@@ -22,5 +22,6 @@ export * from './EditHomework';
 export * from './CreateQuestion';
 export * from './CreateCourse';
 export * from './EditCourse';
+export * from './EditModuleNQ';
 export * from './AddModuleCourse';
 export * from './Timer';
