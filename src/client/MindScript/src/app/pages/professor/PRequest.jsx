@@ -33,8 +33,6 @@ export const PRequest = () => {
         fetchData();
     }, []);
 
-    console.log(requestsData)
-
     const handleDelete = async (id) => {
         // console.log(id);
         try {
@@ -66,7 +64,7 @@ export const PRequest = () => {
     const [buttonPending, setButtonProfessorSelected] = useState(false);
     const [buttonRejected, setButtonAdminSelected] = useState(false);
     useEffect(() => {
-        const filteredData = filterData(moduleQuery, idQuery, buttonAccepted ? requestsData.filter(request => request.status === 'approved') : buttonPending ? requestsData.filter(request => request.status === 'pending') : buttonRejected ? requestsData.filter(request => request.status === 'rejected') : requestsData);
+        const filteredData = filterData(moduleQuery, idQuery, buttonAccepted ? requestsData.filter(request => request.status === 'APP') : buttonPending ? requestsData.filter(request => request.status === 'PEN') : buttonRejected ? requestsData.filter(request => request.status === 'REJ') : requestsData);
         setFilter(filteredData);
     }, [moduleQuery, idQuery, buttonAccepted, buttonPending, buttonRejected, requestsData]);
 
@@ -74,18 +72,21 @@ export const PRequest = () => {
         setButtonStudentSelected(!buttonAccepted);
         setButtonProfessorSelected(false);
         setButtonAdminSelected(false);
+        setSelected(null);
     };
 
     const handleButtonPending = () => {
         setButtonProfessorSelected(!buttonPending);
         setButtonStudentSelected(false);
         setButtonAdminSelected(false);
+        setSelected(null);
     };
 
     const handleButtonRejected = () => {
         setButtonAdminSelected(!buttonRejected);
         setButtonProfessorSelected(false);
         setButtonStudentSelected(false);
+        setSelected(null);
     };
     // 
 
@@ -135,7 +136,7 @@ export const PRequest = () => {
 
     if (selectedRequest != null) {
         js = JSON.parse(selectedRequest.info)
-        console.log(js)
+        js.status = selectedRequest.status
         hinputs = js.hinputs
         sinputs = js.sinputs
         for (const [key, value] of Object.entries(hinputs)) {
@@ -155,7 +156,6 @@ export const PRequest = () => {
             }
         }
     }
-    // console.log(js)
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
@@ -276,20 +276,30 @@ export const PRequest = () => {
                         bgcolor: 'secondary.main',
                     }}>
                         <Grid item xs={12} paddingX={5} sx={{ mt: '5vh' }}>
-                            <Grid container justifyContent='space-between' alignItems='center'>
-                                <Grid item xs={10}>
-
-                                <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
-                                    Detalles del Problema
-                                </Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                <Typography sx={{ color: 'appDark.text', fontSize: 20 }} >
-                                    {filterData.status}
-                                </Typography>
-
+                            <Grid container justifyContent='space-between'>
+                                <Grid item xs={6}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
+                                        Detalles del Problema
+                                    </Typography>
                                 </Grid>
 
+                                <Grid item xs={6} align='right'>
+                                    {js.status === 'APP' && (
+                                        <Typography sx={{ color: 'appDark.approved', fontSize: 25 }} >
+                                            Aceptado
+                                        </Typography>
+                                    )}
+                                    {js.status === 'PEN' && (
+                                        <Typography sx={{ color: 'appDark.pending', fontSize: 25 }} >
+                                            Pendiente
+                                        </Typography>
+                                    )}
+                                    {js.status === 'REJ' && (
+                                        <Typography sx={{ color: 'appDark.rejected', fontSize: 25 }} >
+                                            Rechazado
+                                        </Typography>
+                                    )}
+                                </Grid>
                             </Grid>
                         </Grid>
 
