@@ -66,7 +66,7 @@ export const PRequest = () => {
     const [buttonPending, setButtonProfessorSelected] = useState(false);
     const [buttonRejected, setButtonAdminSelected] = useState(false);
     useEffect(() => {
-        const filteredData = filterData(moduleQuery, idQuery, buttonAccepted ? requestsData.filter(request => request.status==='APP') : buttonPending ? requestsData.filter(request => request.status==='PEN') : buttonRejected ? requestsData.filter(request => request.status==='REJ') : requestsData);
+        const filteredData = filterData(moduleQuery, idQuery, buttonAccepted ? requestsData.filter(request => request.status === 'approved') : buttonPending ? requestsData.filter(request => request.status === 'pending') : buttonRejected ? requestsData.filter(request => request.status === 'rejected') : requestsData);
         setFilter(filteredData);
     }, [moduleQuery, idQuery, buttonAccepted, buttonPending, buttonRejected, requestsData]);
 
@@ -135,6 +135,7 @@ export const PRequest = () => {
 
     if (selectedRequest != null) {
         js = JSON.parse(selectedRequest.info)
+        console.log(js)
         hinputs = js.hinputs
         sinputs = js.sinputs
         for (const [key, value] of Object.entries(hinputs)) {
@@ -160,7 +161,7 @@ export const PRequest = () => {
             <NavBar pages={pages} />
             < RemoveButton open={openDeleteRequest} close={closeModalDeleteRequest} editData={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleDelete={handleDelete} />
 
-            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight, ml:1 }}>
+            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight, ml: 1 }}>
                 <Grid item xs={12} sm={6}>
                     <SearchBar searchQuery={idQuery} name={'Id'} placeholder={'TC1028'} setSearchQuery={setIdQuery} />
                 </Grid>
@@ -275,9 +276,21 @@ export const PRequest = () => {
                         bgcolor: 'secondary.main',
                     }}>
                         <Grid item xs={12} paddingX={5} sx={{ mt: '5vh' }}>
-                            <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
-                                Detalles del Problema
-                            </Typography>
+                            <Grid container justifyContent='space-between' alignItems='center'>
+                                <Grid item xs={10}>
+
+                                <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
+                                    Detalles del Problema
+                                </Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                <Typography sx={{ color: 'appDark.text', fontSize: 20 }} >
+                                    {filterData.status}
+                                </Typography>
+
+                                </Grid>
+
+                            </Grid>
                         </Grid>
 
                         <Grid item xs={12} sx={{
