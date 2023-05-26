@@ -57,7 +57,7 @@ export const SModulesPage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [modulesData]);
 
     //API para obtener los datos de las tareas de la semana
     const [homeworkData, setHomework] = useState([]);
@@ -84,7 +84,7 @@ export const SModulesPage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [homeworkData]);
 
     return (
         <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>

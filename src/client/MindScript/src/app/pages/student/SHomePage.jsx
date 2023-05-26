@@ -100,7 +100,7 @@ useEffect(() => {
     };
 
     fetchData();
-}, []);
+}, [groupsData]);
 
 //API para obtener los datos de las tareas de la semana
 const [homeworkData, setHomework] = useState([]);
@@ -117,7 +117,6 @@ useEffect(() => {
         try {
             const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=week&group=all&group_by=week`, options);
             const responseData = await response.json();
-            console.log(responseData)
             setHomework(responseData);
         } catch (error) {
             // console.error(error);
@@ -125,7 +124,7 @@ useEffect(() => {
     };
 
     fetchData();
-}, []);
+}, [homeworkData]);
 
 
 return (

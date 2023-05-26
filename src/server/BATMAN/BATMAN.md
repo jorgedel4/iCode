@@ -338,7 +338,7 @@ HTTP/1.1 201 Created
 
 ## Endpoints de lectura
 
-### `/courses`
+### `/campus`
 #### Descripcion
 Todos los cursos que se tienen registrados
 
@@ -634,7 +634,7 @@ Listado de preguntas que han sido solicitadas para ser agregadas al banco de pre
 * `question_type` (obligatorio): Tipo de pregunta de las solicitudes. 'all' para todos los tipos, 'multi' para preguntas de opcion multiple y 'codep' para preguntas de codigo
 * `requested_by` (obligatorio): ID del profesor que solicito agregar dicha pregunta. 'all' para todos los profesores
 * `course` (obligatorio): ID del curso del que se desean las peticiones. 'all' para todos los cursos
-* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'passed' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
+* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'approved' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
 
 #### Respuestas
 (En formato JSON) Independientemente de la forma en la que se agrupan las tareas, cada una tiene los siguientes campos
@@ -1075,6 +1075,42 @@ Content-Type: application/json
 {
     "id": "TC1028",
     "new_name": "Intro a progra"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+
+---
+
+### `/modulenquestions`
+#### Descripcion
+Modifica el numero de preguntas requeridas para un modulo dentro de un grupo
+
+#### Metodo de HTTP
+`PATCH`
+
+#### Parametros
+(Mediante el body de la peticion)
+| Parametro    | Tipo        | Obligatorio | Descripcion                        |
+|------------- | ----------- | ----------- | ---------------------------------- |
+| group        | string      | si          | Grupo al cual pertenece el modulo  |
+| module       | string      | si          | Modulo a modificar                 |
+| n_questions  | int         | si          | Nueva cantidad de pregutnas        |
+
+
+#### Respuesta
+En caso de que se haya modificado el numero de preguntas requeridas para dado modulo de forma exitosa, se regresa unicamente un codigo HTTP 200 (OK)
+
+#### Ejemplo
+**Peticion**
+PATCH 34.16.137.250:8002/modulenquestions
+Content-Type: application/json
+``` json
+{
+    "group": "G000000001",
+    "module": "M0000000000000000001",
+    "n_questions": 5
 }
 ```
 

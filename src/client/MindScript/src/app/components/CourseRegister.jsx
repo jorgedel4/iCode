@@ -1,22 +1,40 @@
 import { Grid, InputLabel, Modal, OutlinedInput, Button, FormHelperText, FormControl, Typography } from '@mui/material'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
-import { useState, useEffect, React } from 'react';
-import { useForm } from '../../hooks/useForm';
+import { useState, React, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
+
 
 
 export const CourseRegister = ({ open, close, setCount, count }) => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid;
+    if (user !== null) {
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+    }
 
     const [requestVal, setValue] = useState('')
 
     const [error, setError] = useState(null);
     const enrollData = {
         group: requestVal,
-        student: "A07136662"
+        student: schoolID
     }
+    // const handleInputChange = (event) => {
+    //     const limitedValue = inputValue.substring(0, 10); // Limit the input value to 10 characters
+    //     setValue(event.target.value);
+    // };
     const handleInputChange = (event) => {
-        setValue(event.target.value);
+        const inputValue = event.target.value;
+        const limitedValue = inputValue.substring(0, 10); // Limit the input value to 10 characters
+        setValue(limitedValue);
     };
+
 
 
 
@@ -55,34 +73,16 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             });
     };
 
-    console.log(requestVal)
-
-    //Course Key input state and validations
-    // const formData = {
-    //     courseKey: requestVal,
-    // }
-    // console.log("ayuda")
-    // const formValidations = { //Aqui value lo buscamos en la DB si viene vacío regresamos false y sale el error todo
-    //     courseKey: [(value) => value.includes(200), 'Ya existe'],
-    // }
-    // const { courseKey, courseKeyValid, isFormValid, formState, onInputChange } = useForm(formData, formValidations, requestVal);
-    // // console.log(courseKey)
-    // const [formSubmitted, setFormSubmitted] = useState(false);
-    // //courseKeyValid solo contiene el mensaje de error 
-    // // console.log(courseKeyValid);
-    // console.log(formData.courseKey)
-
     const onSubmit = (event) => {
         event.preventDefault();
-        // setFormSubmitted(true);
-        // console.log(formState);
-        // if (!isFormValid) return;
-
-        // setCount(1)
     }
-    // console.log(count);
 
-
+    useEffect(() => {
+        if (close) {
+            setValue('');
+            setError(null);
+        }
+    }, [open]);
 
     return (
         <Modal
@@ -145,13 +145,13 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
                                                 }
                                             }}
                                             // name='courseKey'
-                                            value={requestVal}
+                                            value={requestVal.toUpperCase()}
                                             onChange={handleInputChange}
                                         // error={!!courseKeyValid && formSubmitted}
 
                                         />
                                     </FormControl>
-                                    {error && (<FormHelperText sx={{color:'error.main', padding:1}}>{error}</FormHelperText>)}
+                                    {error && (<FormHelperText sx={{ color: 'error.main', padding: 1 }}>{error}</FormHelperText>)}
 
                                     <Grid item sx={{ bgcolor: 'transparent', ml: 1 }}>
                                         {/* {formSubmitted && <FormHelperText error>{courseKeyValid}</FormHelperText>} */}

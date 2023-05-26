@@ -13,3 +13,9 @@ var DBUsersIDColumn = map[string]string{
 	"student": "matricula",
 	"admin": "id_admin",
 }
+
+var QuestionReqStatus = map[string]string{
+	"approved": "APP",
+	"rejected": "REJ",
+	"pending": "PEN",
+}
