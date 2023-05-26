@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/read"
-	"elPadrino/RIDDLE/packages/remove"
 	"elPadrino/RIDDLE/packages/update"
 	"elPadrino/RIDDLE/packages/write"
 	"fmt"
@@ -48,11 +47,9 @@ func main() {
 	r.HandleFunc("/modQuestionAttempt", write.ModQuestAttempt(mysqlDB)).Methods("POST")
 	r.HandleFunc("/hwQuestionAttempt", write.HwQuestionAttempt(mysqlDB)).Methods("POST")
 
-	//Delete operations
-	r.HandleFunc("/declineQuestionRequest/{questionID}", remove.DeclineRequest(mysqlDB)).Methods("DELETE")
-
 	//Update operations
 	r.HandleFunc("/aproveQuestionRequest/{questionID}", update.UpdateStatus(mysqlDB)).Methods("PATCH")
+	r.HandleFunc("/declineQuestionRequest/{questionID}", update.DeclineRequest(mysqlDB)).Methods("PATCH")
 
 	//Check status and PORT
 	log.Println("Starting RIDDLE on", os.Getenv("PORT"))
