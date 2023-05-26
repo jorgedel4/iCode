@@ -24,3 +24,5 @@ export * from './CreateCourse';
 export * from './EditCourse';
 export * from './AddModuleCourse';
 export * from './Timer';
+export * from './AddTestCasesIC';
+export * from './AddTestCasesOC';

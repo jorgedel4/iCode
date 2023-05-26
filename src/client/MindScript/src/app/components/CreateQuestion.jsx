@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
+import { AddTestCasesOC } from './';
+
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
     const theme = useTheme();
@@ -90,191 +92,38 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
 
     /* Datos necesarios para la interfaz de los test cases */
-    //Para la seccion de input
-    const [testCases, setTestCase] = useState([]);
-    const [testCasesInput, setInput] = useState([]);
+    //Tal vez se usan 
+        // const [testCasesI, setTestCaseI] = useState([]);
+        // const [testCasesO, setTestCaseO] = useState([]);
+
+    const [hinputs, setHinputs] = useState([]);
+    const changeHinputs = (newHinput) => {
+        setHinputs(newHinput);
+    }
+
+    const [sinputs, setSinputs] = useState([]);
+    const changeSinputs = (newSinput) => {
+        setSinputs(newSinput);
+    }
+
+    const [houtputs, setHoutputs] = useState([]);
+    const changeHoutputs = (newHoutput) => {
+        setHoutputs(newHoutput);
+    }
+
+    const [soutputs, setSoutputs] = useState([]);
+    const changeSoutputs = (newSoutput) => {
+        setSoutputs(newSoutput);
+    }
 
     useEffect(() => {
-        if (open) {
-            addTestCaseControl();
-        } else {
-            setTestCase([]);
-            setInput([]);
+        if (!open) {
+            setHinputs([]);
+            setSinputs([]);
+            setHoutputs([]);
+            setSoutputs([]);
         }
     }, [open]);
-
-    const handleTestCaseChangeI = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    console.log("ekedkwld", testCase)
-                    return {
-                        ...testCase,
-                        input: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const handleTestCaseChangeO = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    return {
-                        ...testCase,
-                        output: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const deleteTestCaseControl = (testCaseId) => {
-        setTestCase((prevTestCases) => {
-            if (prevTestCases.length === 1 && prevTestCases[0].key === testCaseId) {
-                return prevTestCases;
-            }
-
-            const updatedTestCases = prevTestCases.filter((testCase) => testCase.key !== testCaseId);
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const addTestCaseControl = () => {
-        const id = Date.now();
-        const newTestCase = {
-            key: id,
-            jsx: (
-                <Grid item xs={12} key={id}>
-                    <Grid container alignItems="center" justifyContent="center">
-                        <Grid item xs={10}>
-                            <Grid container>
-                                <Grid item xs={6} sx={{pr: 1}}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
-                                    >
-                                        <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Input
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Input"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeI(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={6} sx={{pr: 1}}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                    <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Output
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Output"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeO(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2} sx={{ mt: 2 }}>
-                            <Grid container align="center" justifyContent="space-around">
-                                <Grid item xs={7} sx={{ bgcolor: 'appDark.button', borderRadius: 2 }}>
-                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addTestCaseControl}>
-                                        <Add />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={7} sx={{ bgcolor: 'error.main', borderRadius: 2, mt: 2 }}>
-                                    <IconButton
-                                        sx={{ color: 'appDark.icon' }}
-                                        onClick={() => deleteTestCaseControl(id)}
-                                    >
-                                        <Delete />
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            ),
-        };
-
-        setTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
-    };
     /* Fin de test cases */
 
     /*File upload section */
@@ -487,12 +336,12 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
                         {/* SelectorY - TestCases */}
                         <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
-                                Casos de Prueba
+                            <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                Caso de Prueba Visible
                             </Typography>
                         </Grid>
 
-                        <Grid item xs={10} sx={{
+                        <Grid container xs={10} align="center" justifyContent="space-around" sx={{
                             overflowY: 'scroll',
                             height: '25vh',
                             "&::-webkit-scrollbar": {
@@ -507,9 +356,48 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 borderRadius: 2,
                             },
                         }}>
-                            {console.log("test cases",testCases)}
-                            {testCases.map((testCase) => testCase.jsx)}
+                            
+                            {/* <Grid item xs={5}>
+                                <AddTestCasesOC open={open} changeTestCase={changeSinputs} type={"input"}/>
+                            </Grid> */}
+                            {/* <Grid item xs={5}> */}
+                                <AddTestCasesOC open={open} changeTestCase={changeSoutputs} type={"output"}/>
+                            {/* </Grid> */}
+                            {/* {console.log("sinputs", sinputs)} */}
+                            {console.log("soutputs", soutputs)}
 
+                        </Grid>
+                        
+                        <Grid item xs={10}>
+                            <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                Caso de Prueba Oculto
+                            </Typography>
+                        </Grid>
+
+                        <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                            overflowY: 'scroll',
+                            height: '25vh',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
+                            {/* <Grid item xs={5}>
+                                <AddTestCasesOC open={open} changeTestCase={changeHinputs} type={"input"}/>
+                            </Grid> */}
+                            {/* <Grid item xs={5}> */}
+                                <AddTestCasesOC open={open} changeTestCase={changeHoutputs} type={"output"}/>
+                            {/* </Grid> */}
+                            {/* <AddTestCasesOC/> */}
+                            {/* {console.log("hinputs", hinputs)}
+                            {console.log("houtputs", houtputs)} */}
                         </Grid>
 
                     </Grid>
@@ -567,7 +455,11 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     </Grid>
                     <Grid item xs={6} id="crear tarea" align="right">
 
-                        <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                        <Button 
+                        type="submit" 
+                        // onClick={(console.log("hinputs",hinputs))}
+                        variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}
+                        >
                             Enviar solicitud
                         </Button>
                     </Grid>
