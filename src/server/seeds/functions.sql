@@ -395,6 +395,7 @@ END $$
 DELIMITER ;
 
 
+
 DELIMITER $$
 CREATE FUNCTION ChangeCourseName (
     course_id CHAR(20),
@@ -418,7 +419,6 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
-
 
 
 

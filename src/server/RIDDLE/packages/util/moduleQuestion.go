@@ -3,51 +3,33 @@ package util
 import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/structs"
-
-	"fmt"
-	"strings"
+	"errors"
 )
 
 func ModuleQuestion(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.ResultQuestion, error) {
-
-	baseQuery := `SELECT q.id_question, q.q_type, q.info
-	FROM questions q`
-
-	var selectors []string
-	var values []interface{}
-
-	selectors = append(selectors, "current_status = ?")
-	values = append(values, "APP")
-
-	selectors = append(selectors, "module = ?")
-	values = append(values, req.Assigment)
-
-	selectors = append(selectors, "id_question = ModuleQuestionID(?,?,?)")
-	values = append(values, req.Group)
-	values = append(values, req.Assigment)
-	values = append(values, req.Student)
-
-	//Complete the Query
-	var query string
-	if len(selectors) > 0 {
-		query = fmt.Sprintf("%s WHERE %s LIMIT 1", baseQuery, strings.Join(selectors, " AND "))
-	} else {
-		query = baseQuery
-	}
-
-	//Launch the query to the DB
-	rows, err := mysqlDB.Query(query, values...)
+	var question structs.ResultQuestion
+	// Por alguna razon se tiene que sacar el ID primero, porque si se llama a la funcion desde el select a veces no da resultados
+	var id string
+	idQuery := `SELECT ModuleQuestionID(?, ?, ?)`
+	err := mysqlDB.QueryRow(idQuery, req.Group, req.Assigment, req.Student).Scan(&id)
 	if err != nil {
-		return structs.ResultQuestion{}, err
-	}
-	defer rows.Close() //Close the conection
-
-	var result structs.ResultQuestion
-	for rows.Next() {
-		if err = rows.Scan(&result.IdPregunta, &result.Type, &result.Info); err != nil {
-			return structs.ResultQuestion{}, err
-		}
+		return question, err
 	}
 
-	return result, nil
+	query := `SELECT id_question, q_type, info
+	FROM questions
+	WHERE id_question = ?`
+
+	err = mysqlDB.QueryRow(query, id).Scan(&question.IdPregunta, &question.Type, &question.Info)
+	if err != nil {
+		return question, err
+	}
+
+	// No questions avaliable
+	if question.IdPregunta == "" {
+		return question, errors.New("no more questions available")
+	}
+
+	return question, nil
 }
+
