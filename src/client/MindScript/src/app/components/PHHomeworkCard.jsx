@@ -1,7 +1,7 @@
 import { Card, Collapse, List, ListItem, ListItemButton, ListItemText, Typography, Grid, IconButton } from '@mui/material'
 import { DeleteOutline, Edit, ExpandLess, ExpandMore, HomeWork } from '@mui/icons-material'
-import { EditHomework, RemoveButton } from '../components';
-import { useState, useEffect } from 'react';
+import { EditHomework, Confirmation } from '../components';
+import { useState } from 'react';
 import * as React from 'react';
 
 export const PHHomeworkCard = ({ data }) => {
@@ -142,7 +142,7 @@ export const PHHomeworkCard = ({ data }) => {
 
                                 <Grid>
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modulesData} />
-                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleDelete={handleDelete}/>
+                                    < Confirmation open={openDeleteHomework} close={closeModalDeleteHomework} id={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleFunction={handleDelete} confirmationTextButton="Eliminar"/>
                                     <IconButton
                                         onClick={() => {
                                             setData(homework)

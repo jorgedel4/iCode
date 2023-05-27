@@ -17,7 +17,7 @@ export * from './CourseRegister';
 export * from './RequestCard';
 export * from './TestsTabs';
 export * from './OptionButton';
-export * from './RemoveButton';
+export * from './Confirmation';
 export * from './EditHomework';
 export * from './CreateQuestion';
 export * from './CreateCourse';

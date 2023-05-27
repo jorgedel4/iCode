@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, IconButton, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { NavBar, SearchBar, RemoveButton } from '../../components';
+import { NavBar, SearchBar, Confirmation } from '../../components';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete } from '@mui/icons-material';
 import { useParams, Link } from 'react-router-dom';
@@ -117,7 +117,7 @@ export const PManage = () => {
   return (
     <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
       <NavBar pages={pages} />
-      < RemoveButton open={openRemoveStudent} close={closeModalRemoveStudent} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta usuario?" handleDelete={handleDelete} />
+      < Confirmation open={openRemoveStudent} close={closeModalRemoveStudent} id={editData} confirmationText="¿Esta seguro que desea eliminar esta usuario?" handleFunction={handleDelete} confirmationTextButton="Eliminar" />
 
       <Grid item xs={12} sx={{ mt: 4, height: '1vh' }}>
         <Button component={Link} to={`/professor/modules/${params.group}/${params.course}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>

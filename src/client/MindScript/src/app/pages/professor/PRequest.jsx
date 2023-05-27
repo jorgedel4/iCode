@@ -1,6 +1,6 @@
 import { Button, Grid, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState, useEffect } from 'react';
-import { NavBar, RequestCard, RemoveButton, SearchBar } from '../../components'
+import { NavBar, RequestCard, SearchBar } from '../../components'
 import { getAuth } from "firebase/auth";
 
 export const PRequest = () => {
@@ -123,12 +123,9 @@ export const PRequest = () => {
     const user = auth.currentUser;
     let schoolID, email, displayName, emailVerified, uid;
     if (user !== null) {
-        // console.log("AdminRequest user info", user)
         //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user)
-        //Nómina L00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
-        // console.log("Nómina ", schoolID)
     }
 
     const pages = [
