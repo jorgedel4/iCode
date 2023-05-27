@@ -1,12 +1,14 @@
 import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/material'
 import { HomeLayout } from '../../layout/HomeLayout';
-import { CoursesCard, ActionButton, CreateGroup, CreateHomework } from '../../components'
+import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components'
 import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
 export const PHomePage = () => {
     const theme = useTheme();
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    
 
     //Current user info
     const auth = getAuth();
@@ -22,7 +24,10 @@ export const PHomePage = () => {
     }
     console.log("Nómina ", schoolID)
 
-    const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
+    const pages = [
+        { name: 'Home', route: '/professor/home' },
+        { name: 'Profile', route: '/professor/profile' },
+    ]
 
     //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);
@@ -40,7 +45,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/groups?id=${schoolID}&term=${term}`, options);
+                const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
                 const responseData = await response.json();
                 setGroup(responseData);
             } catch (error) {
@@ -66,6 +71,13 @@ export const PHomePage = () => {
         setOpenCreateHomework(false);
     }
 
+    //Funciones para abrir la modal de Crear Curso
+    const [openCreateQuestion, setOpenCreateQuestion] = useState(false);
+    const showModalCreateQuestion= () => { setOpenCreateQuestion(true); }
+    const closeModalCreateQuestion = () => {
+        setOpenCreateQuestion(false);
+    }
+
     //Dynamic modal view
     const home = '/professor/home'
     const modules = '/professor/modules' //El nombren se debe de sacar desde la pagina home
@@ -83,7 +95,7 @@ export const PHomePage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://34.16.137.250:8002/homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
+                const response = await fetch(`${batmanAPI}homework?id=${schoolID}&time=future&group=all&group_by=group`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
@@ -96,8 +108,6 @@ export const PHomePage = () => {
 
     const homework = Object.entries(homeworkData)
 
-    const request = handleEditorDidMount()
-
     return (
         <Grid container justifyContent='center' alignItems='center'>
 
@@ -106,6 +116,7 @@ export const PHomePage = () => {
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />
                 <CreateHomework open={openCreateHomework} close={closeModalCreateHomework} />
+                <CreateQuestion open={openCreateQuestion} close={closeModalCreateQuestion} schoolID = {schoolID}/>
 
                 <Grid container columnSpacing={40} rowSpacing={5}>
 
@@ -144,7 +155,7 @@ export const PHomePage = () => {
 
                     <Grid item xs={12} md={4}>
                         <ActionButton >
-                            <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                            <CardActionArea onClick={showModalCreateQuestion} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
                                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
@@ -170,28 +181,3 @@ export const PHomePage = () => {
         </Grid>
     )
 }
-
-
-const handleEditorDidMount = async () => {
-
-    // const options = {
-    //   method: 'GET',
-    //   headers: {
-    //     'Accept': 'application/json',
-
-    //   },
-    //   mode: 'cors',
-    // }
-
-    // let userID = "A01551955"
-    // let term = "current"
-
-    // fetch(`http://34.16.137.250:8002/groups?id=${userID}&term=${term}`, options)
-    // .then(response => response.json())
-    // // .then(data => console.log("aqui\n", data))
-    // .then(data => setGroup(data))
-    // .catch(error => console.error(error));
-
-
-
-};

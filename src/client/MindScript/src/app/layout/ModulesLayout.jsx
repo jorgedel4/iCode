@@ -1,9 +1,10 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
-import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
-import { useState, useEffect } from 'react';
+import { NavBar, HomeworkBoard, SMHomeworkCard, Confirmation, EditHomework } from '../components'
+import { useState } from 'react';
 
-export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle, groupName, pages, modules }) => {
+export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
+
     //Importante para EditHomework
     const [editData, setData] = useState(null);
 
@@ -23,13 +24,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
         setOpenDeleteHomework(false);
     }
 
-
-   
-
-
+    
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
-            <RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} />
+            <NavBar pages={pages} />
 
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
@@ -76,16 +74,21 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                                     <Typography>{data.hw_name}</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <IconButton onClick={() => {
-                                                        setData(data)
-                                                        showModalEditHomework()
-                                                    }} sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setData(data)
+                                                            showModalEditHomework()
+                                                        }} sx={{ color: 'appDark.icon' }}>
                                                         <Edit />
                                                     </IconButton>
                                                 </Grid>
 
                                                 <Grid item xs={1}>
-                                                    <IconButton sx={{ color: 'appDark.icon' }}>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setData(data.hw_id)
+                                                            showModalDeleteHomework()
+                                                        }} sx={{ color: 'appDark.icon' }}>
                                                         <DeleteOutline />
                                                     </IconButton>
                                                 </Grid>
@@ -95,8 +98,10 @@ export const ModulesLayout = ({ children, home, homeworkData, student, hwBTitle,
                                         ))
                                         : null}
 
-                                        < EditHomework open={openEditHomework} close={closeModalEditHomework}  editData={editData} modules={modules}/>
-                                   
+
+                                    < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
+                                    < Confirmation open={openDeleteHomework} close={closeModalDeleteHomework} id={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleFunction={handleDelete} confirmationTextButton="Eliminar" />
+
                                 </>
                             }
                         </List>

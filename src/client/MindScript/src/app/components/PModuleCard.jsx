@@ -1,6 +1,8 @@
 import { Card, CardContent, CardActions, Typography, Grid, IconButton } from '@mui/material'
 import { Edit, LockOutlined, LockOpenRounded } from '@mui/icons-material'
 import * as React from 'react';
+import { useState } from 'react'
+// import { EditModuleNQ } from './EditModuleNQ';
 
 export const PModuleCard = ({ module, index, group }) => {
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
@@ -35,6 +37,7 @@ export const PModuleCard = ({ module, index, group }) => {
 
     return(
         <Grid>
+            {/* < EditModuleNQ open={openModalEditModule} close={closeModalEditModule} moduleData={module} group={group} /> */}
             <Card
                 sx={{
                     width: 260,

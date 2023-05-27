@@ -20,3 +20,7 @@ export * from './OptionButton';
 export * from './RemoveButton';
 export * from './EditHomework';
 export * from './Confirmation';
+export * from './CreateCourse';
+export * from './AddModuleCourse';
+export * from './EditCourse';
+export * from './CreateQuestion';
