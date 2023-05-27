@@ -1,24 +1,11 @@
 import { Button, Grid, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react';
-import { NavBar, RequestCard, RemoveButton } from '../../components'
-import { getAuth } from "firebase/auth";
+import { NavBar, RequestCard, Confirmation } from '../../components'
 
 export const ARequest = () => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
-
-    //Current user info
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (user !== null) {
-        // console.log("AdminRequest user info", user)
-        //Desestructuración de user
-        const { email, displayName, emailVerified, uid } = user
-        //Nómina L00000000
-        const schoolID = (user.email).substring(0, 8);
-        // console.log("Nómina ", schoolID)
-    }
     const pages = [
         { name: 'Gestion de Usuarios', route: '/admin/management' },
         { name: 'Solicitudes', route: '/admin/request' },
@@ -37,35 +24,48 @@ export const ARequest = () => {
             mode: 'cors',
         }
 
-        // let userID = "A01551955"
-        // let term = "current"
-
         const fetchData = async () => {
             try {
-                const response = await fetch(`${batmanAPI}questionrequests?question_type=all&requested_by=all&course=all&status=all`, options);
+                const response = await fetch(`${batmanAPI}questionrequests?question_type=all&requested_by=all&course=all&status=pending`, options);
                 const responseData = await response.json();
                 setRequest(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
         fetchData();
     }, []);
-    const handleDelete = async (id) => {
-        // console.log(id);
+    const handleDecline = async (id) => {
         try {
             const options = {
-                method: 'DELETE',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // body: JSON.stringify({ "id": id })
                 mode: 'cors',
 
             };
 
             const response = await fetch(`${riddleAPI}declineQuestionRequest/${id}`, options);
+            setRequest(prevData => prevData.filter(request => request.id !== id));
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleApprove = async (id) => {
+        try {
+            const options = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+            };
+
+            const response = await fetch(`${riddleAPI}aproveQuestionRequest/${id}`, options);
             setRequest(prevData => prevData.filter(request => request.id !== id));
             return response;
         } catch (error) {
@@ -81,14 +81,20 @@ export const ARequest = () => {
             setSelected(id);
         }
     };
-    //Funciones para abrir la modal de Eliminar estudiante
-    const [openDeleteRequest, setOpenDeleteRequest] = useState(false);
-    const showModalDeleteRequest = () => { setOpenDeleteRequest(true); }
-    const closeModalDeleteRequest = () => {
-        setOpenDeleteRequest(false);
+    //Funciones para abrir la modal de Eliminar solicitud
+    const [openDeclineRequest, setOpenDeclineRequest] = useState(false);
+    const showModalDeclineRequest = () => { setOpenDeclineRequest(true); }
+    const closeModalDeclineRequest = () => {
+        setOpenDeclineRequest(false);
     }
+    //Funciones para abrir la modal de Aceptar solicitud
+    const [openApproveRequest, setOpenApproveRequest] = useState(false);
+    const showModalApproveRequest = () => { setOpenApproveRequest(true); }
+    const closeModalApproveRequest = () => {
+        setOpenApproveRequest(false);
+    }
+
     const selectedRequest = selected !== null ? requestsData.find((r) => r.id === selected) : null;
-    // console.log(selectedRequest)
     var js, hinputs, sinputs;
     const formattedHInputs = {};
     const formattedSInputs = {};
@@ -114,11 +120,12 @@ export const ARequest = () => {
             }
         }
     }
-    // console.log(js)
+
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            < RemoveButton open={openDeleteRequest} close={closeModalDeleteRequest} editData={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleDelete={handleDelete} />
+            < Confirmation open={openDeclineRequest} close={closeModalDeclineRequest} id={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleFunction={handleDecline} confirmationTextButton="Eliminar" />
+            < Confirmation open={openApproveRequest} close={closeModalApproveRequest} id={selected} confirmationText="¿Esta seguro que desea aceptar esta solicitud?" handleFunction={handleApprove} confirmationTextButton="Aceptar" />
 
             <Grid item xs={4} sx={{
                 mt: 5,
@@ -289,6 +296,7 @@ export const ARequest = () => {
                             <Grid container justifyContent='flex-end' columnSpacing={5} padding='5vh'>
                                 <Grid item>
                                     <Button type="submit"
+                                        onClick={showModalApproveRequest}
                                         sx={{
                                             color: 'appDark.text',
                                             bgcolor: 'transparent',
@@ -302,7 +310,7 @@ export const ARequest = () => {
                                 </Grid>
                                 <Grid item>
                                     <Button type="submit"
-                                        onClick={showModalDeleteRequest}
+                                        onClick={showModalDeclineRequest}
                                         sx={{
                                             color: 'appDark.text',
                                             bgcolor: 'transparent',

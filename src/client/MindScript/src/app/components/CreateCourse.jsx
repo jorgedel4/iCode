@@ -87,8 +87,8 @@ export const CreateCourse = ({ open, close, onCreateCourse }) => {
 
     const handleIdChange = (event) => {
         const { value } = event.target;
-        const capitalizedValue = value.toUpperCase();
-        setId(capitalizedValue);
+        const validValue = value.toUpperCase().substring(0,6);
+        setId(validValue);
     };
 
     const handleCourseChange = (event) => {

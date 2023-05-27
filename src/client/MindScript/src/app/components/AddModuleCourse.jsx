@@ -34,30 +34,6 @@ export function AddModuleCourse({ open, close, course }) {
         }
     }, [open]);
 
-    const [modulesData, setSelectedModule] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        const fetchData = async () => {
-            if (selectedCourse) {
-                try {
-                    const response = await fetch(`${batmanAPI}coursemodules/${selectedCourse}`, options);
-                    const responseData = await response.json();
-                    setSelectedModule(responseData);
-                } catch (error) {
-                    // console.error(error);
-                }
-            }
-        };
-        fetchData();
-    }, [selectedCourse]);
-
     const handleModuleChange = (moduleId, event) => {
         setModule((prevModules) => {
             const updatedModules = prevModules.map((module) => {
