@@ -4,20 +4,16 @@ import { useForm } from '../../hooks/useForm';
 import { getAuth } from "firebase/auth";
 
 
-export const RemoveButton = ({ open, close, editData, confirmationText, handleDelete }) => {
+export const Confirmation = ({ open, close, id, confirmationText, handleFunction, confirmationTextButton }) => {
 
     return (
         <Modal
-            id="Modal prrona Eliminar "
             open={open}
             onClose={close}
-            aria-labelledby="Eliminar"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-
-                id="Grid container Unirse curso"
-                justifyContent='center'
+                justifyContent='space-around'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
@@ -48,7 +44,7 @@ export const RemoveButton = ({ open, close, editData, confirmationText, handleDe
 
                         <Button
                             onClick={() => {
-                                const response = handleDelete(editData);
+                                const response = handleFunction(id);
                                 response
                                     .then(data => {
                                         if (data.ok) {
@@ -61,7 +57,7 @@ export const RemoveButton = ({ open, close, editData, confirmationText, handleDe
                                     })
                             }}
                             type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                            Eliminar
+                            {confirmationTextButton}
                         </Button>
                     </Grid>
                 </Grid>

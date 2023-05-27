@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, Button, Typography, CardActionArea, CardContent, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar, ActionButton, EditCourse, AddModuleCourse, RemoveButton } from '../../components';
+import { NavBar, SearchBar, ActionButton, EditCourse, AddModuleCourse, Confirmation } from '../../components';
 import { AddCircleOutline, Delete, Edit, NoteAddOutlined } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
@@ -161,10 +161,10 @@ export const ASyllabus = () => {
     return (
         <Grid container alignItems='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            <RemoveButton open={openDeleteCourse} close={closeModalDeleteCourse} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este curso?" />
+            <Confirmation open={openDeleteCourse} close={closeModalDeleteCourse} handleFunction={handleDelete} id={editData} confirmationText="¿Está seguro que desea eliminar este curso?" confirmationTextButton="Eliminar"/>
 
             <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
-            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
+            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} setSyllabus={setSyllabus} />
             <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} />
 
             <Grid item xs={12} md={12} lg={9}>

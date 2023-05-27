@@ -1,6 +1,6 @@
 import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
-import { NavBar, HomeworkBoard, SMHomeworkCard, RemoveButton, EditHomework } from '../components'
+import { NavBar, HomeworkBoard, SMHomeworkCard, Confirmation, EditHomework } from '../components'
 import { useState } from 'react';
 
 export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
@@ -100,7 +100,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
 
 
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
-                                    < RemoveButton open={openDeleteHomework} close={closeModalDeleteHomework} editData={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleDelete={handleDelete} />
+                                    < Confirmation open={openDeleteHomework} close={closeModalDeleteHomework} id={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleFunction={handleDelete} confirmationTextButton="Eliminar" />
 
                                 </>
                             }

@@ -25,18 +25,12 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
         group: requestVal,
         student: schoolID
     }
-    // const handleInputChange = (event) => {
-    //     const limitedValue = inputValue.substring(0, 10); // Limit the input value to 10 characters
-    //     setValue(event.target.value);
-    // };
+   
     const handleInputChange = (event) => {
         const inputValue = event.target.value;
         const limitedValue = inputValue.substring(0, 10); // Limit the input value to 10 characters
         setValue(limitedValue);
     };
-
-
-
 
     const enrollButton = async () => {
         const options = {

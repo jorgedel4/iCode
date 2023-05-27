@@ -1,6 +1,6 @@
 import { Grid, useTheme, useMediaQuery, Button, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { NavBar, SearchBar, RemoveButton } from '../../components';
+import { NavBar, SearchBar, Confirmation } from '../../components';
 import { Delete, Edit, Save } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAuth } from "firebase/auth";
@@ -267,9 +267,9 @@ export const AManage = () => {
     return (
         <Grid container alignContent='center' justifyContent='center' padding={3} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            <RemoveButton open={openDeleteUser} close={closeModalDeleteUser} handleDelete={handleDelete} editData={editData} confirmationText="¿Está seguro que desea eliminar este usuario?" />
+            <Confirmation open={openDeleteUser} close={closeModalDeleteUser} handleFunction={handleDelete} id={editData} confirmationText="¿Está seguro que desea eliminar este usuario?" confirmationTextButton="Eliminar" />
 
-            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
+            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight}}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
                 </Grid>
