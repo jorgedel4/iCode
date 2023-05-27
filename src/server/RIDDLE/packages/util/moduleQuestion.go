@@ -32,4 +32,3 @@ func ModuleQuestion(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.Result
 
 	return question, nil
 }
-
