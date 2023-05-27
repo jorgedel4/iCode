@@ -13,13 +13,12 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 		//Permitir que cualquier origen ingrese a este recurso
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		//Leer el contenido del body de la peticion, si hay error lo guarda en unavariable
 		var req structs.SelectQuestion
-		req.Student = r.URL.Query().Get("id_student")     //Matricula
-		req.Assigment = r.URL.Query().Get("id_assigment") //Modulo o Tarea
-		req.Group = r.URL.Query().Get("id_group")         //Grupo
+		req.Student = r.URL.Query().Get("id_student")
+		req.Assigment = r.URL.Query().Get("id_assigment") // Modulo o Tarea
+		req.Group = r.URL.Query().Get("id_group")         
 
-		//Verificar que los params sean cumplidos
+		// Verificar que los params hayan sido dados (si no lo fueron, go les asigna un string vacio - "")
 		if req.Student == "" || req.Assigment == "" {
 			http.Error(w, "Error reading parameters from url", http.StatusBadRequest)
 			return
@@ -36,7 +35,7 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 
 			//Llamar funcion para preguntas de modulos
-			question, err = util.MoQuestions(req, mysqlDB)
+			question, err = util.ModuleQuestion(req, mysqlDB)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return

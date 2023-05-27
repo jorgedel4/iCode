@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func MoQuestions(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.ResultQuestion, error) {
+func ModuleQuestion(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.ResultQuestion, error) {
 
 	baseQuery := `SELECT q.id_question, q.q_type, q.info
 	FROM questions q`
