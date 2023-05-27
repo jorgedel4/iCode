@@ -1,4 +1,4 @@
-import { Grid, InputLabel,useTheme, useMediaQuery, Modal, OutlinedInput, Button, FormHelperText, FormControl, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+import { Grid, InputLabel, useTheme, useMediaQuery, Modal, OutlinedInput, Button, FormHelperText, FormControl, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { useState, useEffect, React } from 'react';
 import { useForm } from '../../hooks/useForm';
@@ -18,19 +18,70 @@ export const EditHomework = ({ open, close, editData, modules }) => {
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '30vw' : isLargeScreen ? '50vw' : isMediumScreen ? '60vw' : '95vw';
 
-    console.log(editData);
+    // console.log("Edit data fuck", editData);
     //State date pickers
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    //this
 
 
     const onSubmit = (event) => {
         event.preventDefault();
     }
     // console.log(data)
+    //Nombre de la tarea
+    const { hwname, onInputChange } = useForm({
+        hwname: '',
+    });
+
+    // console.log("Data rara", modules)
 
 
-    console.log("Data rara", modules)
+    const updateHomework = {
+        hw_name: hwname,
+        startDate: startDate,
+        endDate: endDate,
+    }
+
+    // console.log("updateRequest", updateHomework)
+
+    const updateHomeworkRequest = async () => {
+        let requestModules = [];
+
+        modules.map((module) => (
+            module.checked
+                ? requestModules.push({
+                    module: module.id,
+                    // module_name: module.name,
+                    n_questions: module.n_questions,
+                })
+                : null
+        ))
+        // console.log("Request modules", requestModules)
+
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                "name": updateHomework.hw_name,
+                "modules_questions": requestModules,
+                "open_date": updateHomework.startDate,
+                "close_date": updateHomework.endDate
+            })
+        }
+
+        fetch(`http://34.16.137.250:8002/homework/${editData.hw_id}`, options)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                // console.log(error)
+            })
+
+    };
 
 
     return (
@@ -57,7 +108,44 @@ export const EditHomework = ({ open, close, editData, modules }) => {
                         <Grid item xs={12}>
                             <Typography id="modal-hw-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
                                 {editData.hw_name}
+
                             </Typography>
+                        </Grid>
+
+                        <Grid item xs={10} >
+                            <Grid container>
+                                <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%' }}>
+                                    <InputLabel sx={{
+                                        color: 'appDark.text',
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}>Nuevo nombre de la tarea</InputLabel>
+                                    <OutlinedInput
+                                        type="input"
+                                        label="Nombre de la Tarea"
+                                        placeholder={editData.hw_name}
+                                        sx={{
+                                            color: 'appDark.text',
+                                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'appDark.box', //change border color on hover
+                                            },
+                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'appDark.box', //change border color when focused
+                                            },
+                                            '&.MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'transparent',
+                                                },
+                                            }
+                                        }}
+                                        name='hwname'
+                                        value={hwname}
+                                        onChange={onInputChange}
+
+                                    />
+                                </FormControl>
+                            </Grid>
                         </Grid>
 
                         {/* Module checklist */}
@@ -240,8 +328,13 @@ export const EditHomework = ({ open, close, editData, modules }) => {
                                     </Grid>
                                     <Grid item xs={6} id="crear tarea" align="right">
 
-                                        <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                                            Crear tarea
+                                        <Button
+                                            onClick={() => {
+                                                updateHomeworkRequest();
+                                                close();
+                                            }}
+                                            type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                                            Actualizar tarea
                                         </Button>
                                     </Grid>
 

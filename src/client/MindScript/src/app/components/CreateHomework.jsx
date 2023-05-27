@@ -17,6 +17,7 @@ import { getAuth } from "firebase/auth";
 
 export const CreateHomework = ({ open, close }) => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN
+    //this
 
         //Current user info
         const auth = getAuth();

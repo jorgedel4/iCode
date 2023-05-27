@@ -19,3 +19,4 @@ export * from './TestsTabs';
 export * from './OptionButton';
 export * from './RemoveButton';
 export * from './EditHomework';
+export * from './Confirmation';

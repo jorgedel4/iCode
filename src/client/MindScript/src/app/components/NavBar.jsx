@@ -1,15 +1,12 @@
 import { Brightness6, LogoutOutlined } from '@mui/icons-material'
 import { AppBar, Button, Toolbar, IconButton, Grid, Typography, Menu, MenuItem, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { startLogout } from '../../store/auth';
 import { GridMenuIcon } from '@mui/x-data-grid';
 
-// const pages = ['Home', 'Profile']
-// const pages = ['Gestion de Usuarios', 'Solicitudes', 'Plan de Estudios']
-
 export const NavBar = ({ drawerWidth = 240, pages }) => {
-
     const dispatch = useDispatch();
     const [menuAnchor, setMenuAnchor] = useState(null);
     const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('md'));
@@ -65,9 +62,9 @@ export const NavBar = ({ drawerWidth = 240, pages }) => {
                                     }}
                                 >
                                     {pages.map((page) =>
-                                        <MenuItem key={page} onClick={handleMenuClose}>
-                                            <Button fullWidth sx={{ color: 'appDark.text' }}>
-                                                {page}
+                                        <MenuItem key={page.name} onClick={handleMenuClose}>
+                                            <Button fullWidth component={Link} to={page.route} sx={{ color: 'appDark.text' }}>
+                                                {page.name}
                                             </Button>
                                         </MenuItem>
                                     )}
@@ -78,9 +75,9 @@ export const NavBar = ({ drawerWidth = 240, pages }) => {
                         <Grid item>
                             <Grid container justifyContent='flex-end'>
                                 {pages.map((page) =>
-                                    <Grid item key={page} sx={{ ml: 1 }}>
-                                        <Button sx={{ color: 'appDark.text' }}>
-                                            {page}
+                                    <Grid item key={page.name} sx={{ ml: 1 }}>
+                                        <Button component={Link} to={page.route} sx={{ color: 'appDark.text' }}>
+                                            {page.name}
                                         </Button>
                                     </Grid>
                                 )}

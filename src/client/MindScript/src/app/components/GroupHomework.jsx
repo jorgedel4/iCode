@@ -19,8 +19,8 @@ export const GroupHomework = ({ group }) => {
 
     return (
         <Grid container justifyContent="space-between" alignItems='center' >
-            <Grid item xs={8} fullwidth="true" >
-                <FormControl fullwidth="true" variant="filled">
+            <Grid item xs={8} >
+                <FormControl fullWidth variant="filled">
                     {/* CheckBox */}
                     <FormControlLabel
                         value="end"
