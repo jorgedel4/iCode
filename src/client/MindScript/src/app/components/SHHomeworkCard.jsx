@@ -22,22 +22,23 @@ export const SHHomeworkCard = ({ data, index }) => {
         setOpen(!open);
     };
 
+
     return (
 
         <Card
             sx={[
                 { borderRadius: '0px', boxShadow: 'none', mb: 2, width: 350 },
                 open && {
-                    borderRadius: '12px', 
+                    borderRadius: '12px',
                 }
             ]}
         >
-            <ListItemButton 
+            <ListItemButton
                 onClick={handleClick}
                 sx={[
-                    { 
-                    backgroundColor: 'secondary.main' ,
-                    ':hover': { backgroundColor: 'secondary.main', opacity: 0.9 }
+                    {
+                        backgroundColor: 'secondary.main',
+                        ':hover': { backgroundColor: 'secondary.main', opacity: 0.9 }
                     },
                     open && {
                         backgroundColor: '#62569D',
@@ -46,9 +47,9 @@ export const SHHomeworkCard = ({ data, index }) => {
                 ]}
             >
                 {open ? <ExpandLess sx={{ color: 'appDark.icon' }} /> : <ExpandMore sx={{ color: 'appDark.icon' }} />}
-                <ListItemText sx={{ color: 'appDark.text' }} primary={ days[today] } />
+                <ListItemText sx={{ color: 'appDark.text' }} primary={days[today]} />
                 <Grid sx={{ borderRadius: '20px', border: 2, borderColor: 'appDark.icon' }}>
-                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my:.1, mx:1.1 }}>{ data.length }</Typography>
+                    <Typography sx={{ color: 'appDark.icon', fontWeight: 'bold', my: .1, mx: 1.1 }}>{data.length}</Typography>
                 </Grid>
 
             </ListItemButton>
@@ -64,18 +65,20 @@ export const SHHomeworkCard = ({ data, index }) => {
                 >
 
                     {data.map((homework, indexH) => (
-                        <Grid container key={ indexH }>
+                        <Grid container key={indexH}>
                             <ListItem disablePadding>
-                                <ListItemButton>
+                                <ListItemButton 
+                                >
 
                                     <Grid sx={{ borderRadius: '12px', backgroundColor: '#6D7483', mr: 2 }} >
-                                        <Typography sx={{ color: 'appDark.text', mx: 2 }}>{ homework.group_id }</Typography>
+                                        <Typography sx={{ color: 'appDark.text', mx: 2 }}>{homework.group_id}</Typography>
                                     </Grid>
 
-                                    <ListItemText sx={{ pl: 4 }} primary={ homework.hw_name } />
+                                    <ListItemText 
+                                        sx={{ pl: 4 }} primary={homework.hw_name} />
 
                                 </ListItemButton>
-                            </ListItem> 
+                            </ListItem>
                         </Grid>
 
                     ))}

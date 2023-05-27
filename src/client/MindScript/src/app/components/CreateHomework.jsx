@@ -166,12 +166,14 @@ export const CreateHomework = ({ open, close }) => {
                 })
                 : null
         ))
+        console.log(requestGroups)
         groups.map((group) => (
             (group.checked && (group.id_course === course))
                 ? requestGroups.push(
                     group.id_group)
                 : null
         ))
+        console.log(requestModules)
 
         const options = {
             method: 'POST',
