@@ -634,7 +634,7 @@ Listado de preguntas que han sido solicitadas para ser agregadas al banco de pre
 * `question_type` (obligatorio): Tipo de pregunta de las solicitudes. 'all' para todos los tipos, 'multi' para preguntas de opcion multiple y 'codep' para preguntas de codigo
 * `requested_by` (obligatorio): ID del profesor que solicito agregar dicha pregunta. 'all' para todos los profesores
 * `course` (obligatorio): ID del curso del que se desean las peticiones. 'all' para todos los cursos
-* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'passed' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
+* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'approved' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
 
 #### Respuestas
 (En formato JSON) Independientemente de la forma en la que se agrupan las tareas, cada una tiene los siguientes campos

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/jorgedel4/iCode/packages/consts"
 	"github.com/jorgedel4/iCode/packages/structs"
 )
 
@@ -59,7 +60,12 @@ func QuestionReqs(mysqlDB *sql.DB) http.HandlerFunc {
 		// Filter by questions' status
 		if req.Status != "all" {
 			selectors = append(selectors, "q.current_status = ?")
-			values = append(values, req.Status)
+			questionStatus, ok := consts.QuestionReqStatus[req.Status]
+			if !ok {
+				http.Error(w, "Invalid question status", http.StatusBadRequest)
+				return
+			}
+			values = append(values, questionStatus)
 		}
 
 		var query string
@@ -79,7 +85,7 @@ func QuestionReqs(mysqlDB *sql.DB) http.HandlerFunc {
 		defer rows.Close()
 
 		// Iterate over returned questions to store them
-		var results []structs.QuestionReq
+		results := make([]structs.QuestionReq, 0)
 		for rows.Next() {
 			var result structs.QuestionReq
 			if err = rows.Scan(&result.ID, &result.Type, &result.Info, &result.RequestersID, &result.RequestersName, &result.Course, &result.CourseName, &result.Module, &result.Status, &result.SubmittedOn); err != nil {

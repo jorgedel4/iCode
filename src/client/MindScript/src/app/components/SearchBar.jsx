@@ -23,7 +23,7 @@ export const SearchBar = ({ setSearchQuery, name, placeholder }) => {
                             edge="end"
                             sx={{ color: 'appDark.icon' }}
                         >
-                            {name == 'Nombre' ? <PersonSearch /> : name == 'Matrícula/Nómina' ? <Search /> : name == 'Materia' ? <ScreenSearchDesktop /> : name == 'Id' ? <Flag /> : <TravelExplore />}
+                            {name == 'Nombre' ? <PersonSearch /> : name == 'Matrícula/Nómina' ? <Search /> : name == 'Materia' ? <ScreenSearchDesktop /> : name == 'Id' ? <Flag /> : name == 'Campus' ? <TravelExplore /> : <Search />}
 
                         </IconButton>
                     </InputAdornment>
