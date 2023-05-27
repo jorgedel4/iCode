@@ -59,6 +59,10 @@ export const ASyllabus = () => {
         setSyllabus(prevData => [...prevData, newCourse]);
     };
 
+    const handleAddModule = (newModule, id) => {
+        setSyllabus(prevData => [...prevData.filter(course => course.id !== id), newModule]);
+    };
+
     //Funciones para abrir la modal de Crear Curso
     const [openCreateCourse, setOpenCreateCourse] = useState(false);
     const showModalCreateCourse = () => { setOpenCreateCourse(true); }
@@ -165,7 +169,7 @@ export const ASyllabus = () => {
 
             <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
             <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
-            <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} />
+            <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} onAddModule={handleAddModule}/>
 
             <Grid item xs={12} md={12} lg={9}>
                 <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>

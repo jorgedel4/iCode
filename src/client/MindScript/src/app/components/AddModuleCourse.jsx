@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import { useEffect } from 'react'
 
 
-export function AddModuleCourse({ open, close, course }) {
+export function AddModuleCourse({ open, close, course, onAddModule }) {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
@@ -18,7 +18,6 @@ export function AddModuleCourse({ open, close, course }) {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [modules, setModule] = useState([]);
     const [modulesInput, setInput] = useState([]);
-
 
     const handleCourseSelection = (event) => {
         setSelectedCourse(event.target.value);
@@ -33,6 +32,40 @@ export function AddModuleCourse({ open, close, course }) {
             setSelectedCourse(null);
         }
     }, [open]);
+
+    const handleAddModule = async () => {
+        if (!selectedCourse || modulesInput.some((input) => !input)) {
+            return;
+        }
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "course": selectedCourse,
+                    "modules": modulesInput
+                }),
+                mode: 'cors',
+            };
+
+            const response = await fetch(`${batmanAPI}modules`, options);
+            console.log(response)
+            if (response.ok) {
+                close();
+                const courseData = {
+                    id: selectedCourse,
+                    name: course.name,
+                    n_modules: modulesInput.length,
+                };
+                onAddModule(courseData, selectedCourse);
+            }
+            return response;
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     const handleModuleChange = (moduleId, event) => {
         setModule((prevModules) => {
@@ -221,7 +254,7 @@ export function AddModuleCourse({ open, close, course }) {
                         </Grid>
 
                         <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
                                 Módulos
                             </Typography>
                         </Grid>
@@ -257,7 +290,7 @@ export function AddModuleCourse({ open, close, course }) {
                             </Button>
                         </Grid>
                         <Grid item xs={6} id="crear tarea">
-                            <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                            <Button onClick={handleAddModule} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                                 Guardar
                             </Button>
                         </Grid>
