@@ -41,9 +41,9 @@ HTTP/1.1 201 Created
 
 ---
 
-### `/module`
+### `/modules`
 #### Descripcion
-Crear un nuevo modulo para un curso dado
+Agrega uno o varios modulos a un curso
 
 #### Metodo de HTTP
 `POST`
@@ -53,10 +53,11 @@ Crear un nuevo modulo para un curso dado
 | Parametro   | Tipo        | Obligatorio | Descripcion                                   |
 |------------ | ----------- | ----------- | --------------------------------------------- |
 | course      | string      | si          | ID del curso al que pertenece el modulo       |
-| nombre      | string      | si          | Nombre del modulo                             |
+| modules     | [ string ]  | si          | Nombre de los modulos a agregar               |
 
 #### Respuesta
-En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created).
+En caso de que el conjunto de modulos a agregar contenga uno ya existente o hayan duplicados en el conjunto se regresa un codigo HTTP 409 (Conflict)
 
 #### Ejemplo
 **Peticion**
