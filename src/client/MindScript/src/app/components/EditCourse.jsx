@@ -4,7 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import { useState, useEffect } from 'react';
 import { Confirmation } from './Confirmation';
 
-export const EditCourse = ({ open, close, params, setSyllabus }) => {
+export const EditCourse = ({ open, close, params }) => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
@@ -43,13 +43,13 @@ export const EditCourse = ({ open, close, params, setSyllabus }) => {
                 },
                 body: JSON.stringify({
                     "id": id,
-                    "new_name": "nuevo"
+                    "new_name": newCourseName
                 }),
                 mode: 'cors',
             };
 
             const response = await fetch(`${batmanAPI}coursename`, options);
-            return response.json;
+            return response;
         } catch (error) {
             console.error(error);
         }
@@ -140,7 +140,6 @@ export const EditCourse = ({ open, close, params, setSyllabus }) => {
     }, [params?.name, params?.id]);
 
 
-    console.log(courseId)
 
     return (
         <>
@@ -169,7 +168,7 @@ export const EditCourse = ({ open, close, params, setSyllabus }) => {
 
                     <Grid item xs={10}>
                         <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, mt: 2, ml: 1 }}>
-                            Información General
+                            Información General {params.id}
                         </Typography>
                     </Grid>
 
@@ -178,40 +177,6 @@ export const EditCourse = ({ open, close, params, setSyllabus }) => {
                             py: 2,
                             height: '60vh',
                         }}>
-
-                            <Grid item xs={10} >
-                                <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 1 }}>
-                                    <InputLabel sx={{
-                                        color: 'appDark.text',
-                                        '&.Mui-focused': {
-                                            color: 'appDark.text' //change label color
-                                        }
-                                    }}>ID del Curso</InputLabel>
-                                    <OutlinedInput
-                                        type="input"
-                                        label="ID del Curso"
-                                        placeholder="TC1028"
-                                        value={params.id}
-                                        readOnly
-                                        sx={{
-                                            color: 'appDark.text',
-                                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                borderColor: 'appDark.box', //change border color on hover
-                                            },
-                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                borderColor: 'appDark.box', //change border color when focused
-                                            },
-                                            '&.MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    borderColor: 'transparent',
-                                                },
-                                            }
-                                        }}
-
-
-                                    />
-                                </FormControl>
-                            </Grid>
 
                             <Grid item xs={10} >
                                 <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 1 }}>

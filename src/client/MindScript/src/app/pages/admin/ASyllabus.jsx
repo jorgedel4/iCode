@@ -32,7 +32,7 @@ export const ASyllabus = () => {
         };
 
         fetchData();
-    }, []);
+    }, [syllabusData]);
 
     const handleDelete = async (id) => {
         // console.log(id);
@@ -164,7 +164,7 @@ export const ASyllabus = () => {
             <Confirmation open={openDeleteCourse} close={closeModalDeleteCourse} handleFunction={handleDelete} id={editData} confirmationText="¿Está seguro que desea eliminar este curso?" confirmationTextButton="Eliminar"/>
 
             <CreateCourse open={openCreateCourse} close={closeModalCreateCourse} onCreateCourse={handleCreateCourse} />
-            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} setSyllabus={setSyllabus} />
+            <EditCourse open={openEditCourse} close={closeModalEditCourse} params={rowParams} />
             <AddModuleCourse open={openAddModule} close={closeModalAddModule} course={syllabusData} />
 
             <Grid item xs={12} md={12} lg={9}>
