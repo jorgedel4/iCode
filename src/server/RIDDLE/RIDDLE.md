@@ -33,7 +33,7 @@ GET
 | id_group     | string    | solo en caso de pregunta de modulo           | ID del grupo al que pertene el estudiante              |
 
 <h3 style="color:#b5ffe1;">Respuesta para ambos casos</h3>
-(En formato JSON) Arreglo de objetos que representan a la pregunta recibida. Cada estudiante cuenta con los siguientes camposos estudiante
+(En formato JSON)
 | Campo          | Tipo                  | Descripcion                                                         |
 | -------------- | --------------------- | ------------------------------------------------------------------: |
 | id_pregunta    | string                | ID de la pregunta obtenida                                          |
@@ -117,6 +117,47 @@ HTTP/1.1 200 OK Content-Type: application/json
 <p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
 <p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
+_______________________________________________
+
+<h3 style="color:#0000FF;">/freemodequestion/{moduleID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Regresa una pregunta aleatoria del modulo dado, independientemente de si el estudiante ya la ha contestado anteriormente
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+GET
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante variables de ruta)
+
+| Parametro  | Tipo      | Obligatorio    | Decripcion                                             |
+| :---------:| :-------: | :------------: | :----------------------------------------------------: |
+| moduleID   | string    | si             | ID del modulo del que se requiere la pregunta          |
+
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+<p style= "font-weight: bold;">Peticion</p>
+GET 
+34.16.137.250:8003/freemodequestion/M0000000000000000001
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+(En formato JSON) 
+| Campo          | Tipo                  | Descripcion                                                         |
+| -------------- | --------------------- | ------------------------------------------------------------------: |
+| id_pregunta    | string                | ID de la pregunta obtenida                                          |
+| type           | string                | Tipo de la pregunta (codep o multi)                                 |
+| info           | string                | Informacion de la pregunta (descripcion, inputs y outputs, etc)     |
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "id_pregunta": "CQ000000000000000001",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"2\"], [\"4\"]], \"sinputs\": [[\"3\"], [\"6\"]], \"houtputs\": [\"4\", \"16\"], \"language\": \"python\", \"soutputs\": [\"9\", \"36\"], \"timeoutSec\": 10, \"description\": \"Double a number\", \"initialCode\": \"\", \"forbiddenFunctions\": []}"
+}
+```
 
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>

@@ -422,6 +422,25 @@ DELIMITER ;
 
 
 
+DELIMITER $$
+CREATE FUNCTION RandomModeModuleQuestionID (
+    module_id CHAR(20)
+) RETURNS CHAR(20)
+BEGIN
+    DECLARE question CHAR(20);
+    
+    SELECT id_question INTO question
+    FROM questions
+    WHERE module = module_id
+    ORDER BY RAND()
+    LIMIT 1;
+
+    RETURN question;
+END$$
+DELIMITER ;
+
+
+
 -- DELIMITER $$
 -- CREATE FUNCTION HWStatus(
 --     homework_id CHAR(20),

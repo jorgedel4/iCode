@@ -40,6 +40,7 @@ func main() {
 
 	//Read operations
 	r.HandleFunc("/questions", read.Questions(mysqlDB)).Methods("GET")
+	r.HandleFunc("/freemodequestion/{moduleID}", read.FreemodeQuestion(mysqlDB)).Methods("GET")
 	r.HandleFunc("/statusHomework", read.StatusHomework(mysqlDB)).Methods("GET")
 
 	//Write operations
