@@ -27,11 +27,6 @@ export const AppRoutes = () => {
       <Route path="student/profile" element={<SProfile />} />
       <Route path="auth/login" element={<SProfile />} />
       <Route path="/*" element={<SHomePage />} />
-
-      {/* Las de admin por ahora se dejan */}
-      <Route path="admin/management" element={<AManage />} />
-      <Route path="admin/syllabus" element={<ASyllabus />} />
-      <Route path="admin/request" element={<ARequest />} />
     </>
   );
 
@@ -48,11 +43,6 @@ export const AppRoutes = () => {
       <Route path="professor/request" element={<PRequest />} />
       <Route path="auth/login" element={<PProfile />} />
       <Route path="/*" element={<PHomePage />} />
-
-      {/* Las de admin por ahora se dejan */}
-      <Route path="admin/management" element={<AManage />} />
-      <Route path="admin/syllabus" element={<ASyllabus />} />
-      <Route path="admin/request" element={<ARequest />} />
     </>
   );
 
@@ -61,6 +51,7 @@ export const AppRoutes = () => {
       <Route path="admin/management" element={<AManage />} />
       <Route path="admin/syllabus" element={<ASyllabus />} />
       <Route path="admin/request" element={<ARequest />} />
+      <Route path="/*" element={<AManage />} />
     </>
   );
 
@@ -68,7 +59,7 @@ export const AppRoutes = () => {
     <Routes>
       {schoolID === "A" && renderStudentRoutes()}
       {schoolID === "L" && renderProfessorRoutes()}
-      {schoolID === "ADMINID" && renderAdminRoutes()}
+      {schoolID === "S" && renderAdminRoutes()}
     </Routes>
   );
 };

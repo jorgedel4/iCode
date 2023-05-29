@@ -74,7 +74,7 @@ export const RegisterPage = () => {
     //son arreglos, 1 param es el valor que ingresa el user, el segundo es el mensaje de error por si no se cumple la validacion, se las vamos a pasar a la función de useForm
     //si una de estas no se cumple el formulario no va a ser válido*/
     id: [
-      (value) => value.includes("A0") || value.includes("L0"),
+      (value) => value.includes("A0") || value.includes("L0") || value.includes("S0"),
       "Ingresa tu matrícula o nómina",
     ], //deben ser los mismos nombres del objeto del formulario
     email: [

@@ -207,7 +207,7 @@ export const ASyllabus = () => {
 
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={10}>
                         <ActionButton >
                             <CardActionArea onClick={showAddModule} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
