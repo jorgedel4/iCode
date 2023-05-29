@@ -177,7 +177,6 @@ export const ARequest = () => {
 
             </Grid>
 
-
             <Grid item xs={8} sx={{ mt: 5 }}>
                 {selectedRequest != null && selectedRequest.type === 'codep' && (
                     <Grid container sx={{
