@@ -1,36 +1,47 @@
-import { Grid, Button, Typography, useTheme } from '@mui/material'
+// --------------------------------------------------------------------
+// ** file="SProfile.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
+
+// ------------ # Imports region -----------------
+
+// Core components from MUI
 import * as React from 'react';
-import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
 import { useState, useEffect } from 'react';
+import { Button, Grid, Typography, useTheme } from '@mui/material'
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
-import { Link } from 'react-router-dom';
+
+// MindScript Components
+import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
+
+// ------------ ## End Imports region ------------
 
 export const WorkEnv = ({ onPrueba }) => {
 
+    // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-
-
     const theme = useTheme();
-    //Current user info
-    const auth = getAuth();
-    const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid, responseInfo;
+
+    //Timer States
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
 
-
+    // Current user data
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid, responseInfo;
     if (user !== null) {
-        // console.log("Student work env user info", user)
-        //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        //Matrícula A00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Student work env user info", user)
         // console.log("Matrícula ", schoolID)
     }
 
-    //API para obtener la info de los grupos
+    // ------------ # API region ------------
+
+    //GET - Obtaining student's groups information
     const [homework, setHomework] = useState([]);
     useEffect(() => {
         const options = {
@@ -41,13 +52,15 @@ export const WorkEnv = ({ onPrueba }) => {
             mode: 'cors',
         }
 
+        const homeworkID = "H0000000000000000001";
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=H0000000000000000001&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
@@ -58,6 +71,7 @@ export const WorkEnv = ({ onPrueba }) => {
         responseInfo = JSON.parse(homework.info);
     }
 
+    //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
     useEffect(() => {
         const options = {
@@ -67,9 +81,11 @@ export const WorkEnv = ({ onPrueba }) => {
             },
             mode: 'cors',
         }
+        const homeworkID = "H0000000000000000001";
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=H0000000000000000001`, options);
+                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
             } catch (error) {
@@ -80,16 +96,13 @@ export const WorkEnv = ({ onPrueba }) => {
         fetchData();
     }, []);
 
+
+
+    //POST - Request for obtaining new question
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
-    //Objeto para codeExec
-    const hwData = {
-        code: content,
-        id: homework.id_pregunta,
-    }
 
-    //Request new question enpoint
     const requestNextQuestion = async () => {
         console.log("Next Question")
     }
@@ -128,6 +141,13 @@ export const WorkEnv = ({ onPrueba }) => {
     };
     const printsec = () => {
         console.log(timerValue)
+    }
+
+
+    //Objeto para codeExec esto debe de ir mas arriba?
+    const hwData = {
+        code: content,
+        id: homework.id_pregunta,
     }
 
     return (
@@ -204,8 +224,7 @@ export const WorkEnv = ({ onPrueba }) => {
                     </Grid>
                     {/* Terminal*/}
                     <Grid item xs={12}
-                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
-                    >
+                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}>
                         <Grid container alignItems='center' sx={{ height: '4vh' }}>
                             <Grid item xs={10}>
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
@@ -215,6 +234,7 @@ export const WorkEnv = ({ onPrueba }) => {
                             </Grid>
 
                         </Grid>
+                        {/* Displaying TestCases */}
                         {showComponent && (
                             <TestsTabs tests={fetchResponse} />
                         )}
