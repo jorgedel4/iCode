@@ -37,14 +37,14 @@ func Questions(mysqlDB *sql.DB) http.HandlerFunc {
 			//Llamar funcion para preguntas de modulos
 			question, err = util.ModuleQuestion(req, mysqlDB)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Error retrieving question", http.StatusInternalServerError)
 				return
 			}
 			// Pregunta de tarea
 		} else if req.Assigment[0] == 'H' {
 			question, err = util.HWQuestion(req, mysqlDB)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Error retrieving question", http.StatusInternalServerError)
 				return
 			}
 		}
