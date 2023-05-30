@@ -6,62 +6,62 @@ import FormControl from '@mui/material/FormControl';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export const AddTestCasesIC = ({open, changeTestCase, type}) => {
-    const [testCases, setTestCase] = useState([]);
-    const [testCasesInput, setInput] = useState([]);
+export const AddMultiQ = ({open, changeMultiQ, type}) => {
+    const [multiQs, setMultiQ] = useState([]);
+    const [multiQsInput, setInput] = useState([]);
 
     useEffect(() => {
         if (open) {
-            addTestCaseControl();
+            addMultiQControl();
         } else {
-            setTestCase([]);
+            setMultiQ([]);
             setInput([]);
         }
     }, [open]);
 
     //Para la seccion de input
-    const handleTestCaseChange = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
+    const handleMultiQChange = (multiQId, event) => {
+        setMultiQ((prevMultiQs) => {
+            const updatedMultiQs = prevMultiQs.map((multiQ) => {
+                if (multiQ.key === multiQId) {
                     return {
-                        ...testCase,
-                        input: event.target.value,
+                        ...multiQ,
+                        opcion: event.target.value,
                     };
                 }
-                return testCase;
+                return multiQ;
             });
 
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
+            const updatedInputs = updatedMultiQs.map((multiQ) => multiQ.input);
             setInput(updatedInputs);
 
-            // {console.log("asksajsaklxjsa",updatedTestCases)}
-            changeTestCase(updatedTestCases);
-            // changeTestCase=updatedTestCases;
-            return updatedTestCases;
+            // {console.log("asksajsaklxjsa",updatedMultiQs)}
+            changeMultiQ(updatedMultiQs);
+            // changeMultiQ=updatedMultiQs;
+            return updatedMultiQs;
         });
     };
 
-    const deleteTestCaseControl = (testCaseId) => {
-        setTestCase((prevTestCases) => {
-            if (prevTestCases.length === 1 && prevTestCases[0].key === testCaseId) {
-                return prevTestCases;
+    const deleteMultiQControl = (multiQId) => {
+        setMultiQ((prevMultiQs) => {
+            if (prevMultiQs.length === 1 && prevMultiQs[0].key === multiQId) {
+                return prevMultiQs;
             }
 
-            const updatedTestCases = prevTestCases.filter((testCase) => testCase.key !== testCaseId);
+            const updatedMultiQs = prevMultiQs.filter((multiQ) => multiQ.key !== multiQId);
 
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
+            const updatedInputs = updatedMultiQs.map((multiQ) => multiQ.input);
             setInput(updatedInputs);
 
-            changeTestCase(updatedTestCases);
-            // changeTestCase=updatedTestCases;
-            return updatedTestCases;
+            changeMultiQ(updatedMultiQs);
+            // changeMultiQ=updatedMultiQs;
+            return updatedMultiQs;
         });
     };
 
-    const addTestCaseControl = () => {
+    const addMultiQControl = () => {
         const id = Date.now();
-        const newTestCase = {
+        const newMultiQ = {
             key: id,
             jsx: (
                 <Grid item xs={11} key={id}
@@ -81,15 +81,15 @@ export const AddTestCasesIC = ({open, changeTestCase, type}) => {
                                         height: 100
                                     }}
                                 >
-                                    {"Añadir "+type}
+                                    {"Añadir opción"}
                                 </InputLabel>
                                 <OutlinedInput
                                     type="input"
                                     label="Nombre del Curso"
-                                    placeholder="Input"
+                                    placeholder="Opción"
                                     multiline={true}
-                                    value={testCases.input}
-                                    onChange={(event) => handleTestCaseChange(id, event)}
+                                    value={multiQs.opcion}
+                                    onChange={(event) => handleMultiQChange(id, event)}
                                     sx={{
                                         color: 'appDark.text',
                                         height: 100,
@@ -112,14 +112,14 @@ export const AddTestCasesIC = ({open, changeTestCase, type}) => {
                         <Grid item xs={3} sx={{ mt: 2 }}>
                             <Grid container justifyContent="space-around">
                                 <Grid item xs={12} sx={{ bgcolor: 'appDark.button', borderRadius: 2, ml: 2 }}>
-                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addTestCaseControl}>
+                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addMultiQControl}>
                                         <Add />
                                     </IconButton>
                                 </Grid>
                                 <Grid item justifyContent="center" xs={12} sx={{ bgcolor: 'error.main', borderRadius: 2, mt: 2, ml: 2 }}>
                                     <IconButton
                                         sx={{ color: 'appDark.icon' }}
-                                        onClick={() => deleteTestCaseControl(id)}
+                                        onClick={() => deleteMultiQControl(id)}
                                     >
                                         <Delete />
                                     </IconButton>
@@ -131,16 +131,16 @@ export const AddTestCasesIC = ({open, changeTestCase, type}) => {
             ),
         };
 
-        setTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
-        // changeTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
+        setMultiQ((prevMultiQs) => [...prevMultiQs, newMultiQ]);
+        // changeMultiQ((prevMultiQs) => [...prevMultiQs, newMultiQ]);
     };
 
     return (
         // <Grid item xs={5}>
-        //     {console.log("test cases",testCases)}
-        //     {testCases.map((testCase) => testCase.jsx)}
+        //     {console.log("test cases",multiQs)}
+        //     {multiQs.map((multiQ) => multiQ.jsx)}
         //  </Grid>
-            (testCases.map((testCase) => testCase.jsx))
+            (multiQs.map((multiQ) => multiQ.jsx))
         
     )
 }

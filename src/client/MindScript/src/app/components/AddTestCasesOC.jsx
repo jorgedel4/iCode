@@ -31,21 +31,39 @@ export const AddTestCasesOC = ({open, changeTestCase, type}) => {
     //    return <AddTestCasesIC open={open} changeTestCase={changeTestCaseI} type={"input"} onChange={console.log("se esta actualizando")}/>
     // }
 
-    // const callInput = <AddTestCasesIC open={open} changeTestCase={changeTestCaseI} type={"input"} onChange={console.log("se esta actualizando")}/>
+    const callInput = <AddTestCasesIC open={open} changeTestCase={changeTestCaseI} type={"input"} />
+
+    // setInterval(function(){ 
+    //     //code goes here that will be run every 5 seconds.
+    //     testCases.map((testCase) => {
+    //         (testCase.input).map((oldI) => {
+    //             (callInput._owner.memoizedState.next.next.baseState).map((newI) => {
+    //                 if ((oldI.key === newI.key) && (oldI.input != newI.imput)){
+    //                     oldI = newI;
+    //                     // console.log("old ", oldI.input, "new ", newI.input)
+    //                 }
+    //             })
+    //         })
+    //     })    
+    // }, 2000);
+
+
+    
+        
 
     //Para la seccion de input
     const handleTestCaseChange = (testCaseId, event) => {
-        // callInput;
+        // console.log("ddddd",callInput._owner.memoizedState.next.next.baseState);
         setTestCase((prevTestCases) => {
             const updatedTestCases = prevTestCases.map((testCase) => {
                 if (testCase.key === testCaseId) {
-                    {console.log("testCasesI",testCasesI)}
+                    // {console.log("testCasesI",testCasesI)}
                     // testCase.jsx
                     return {
                         ...testCase,
                         output: event.target.value,
-                        input: testCasesI,
-                        // input: callInput,
+                        // input: testCasesI,
+                        input: callInput._owner.memoizedState.next.next.baseState,
                     };
                 }
                 return testCase;
@@ -100,9 +118,9 @@ export const AddTestCasesOC = ({open, changeTestCase, type}) => {
                             mt: 2
                         }}
                     >
-                        {/* {callInput} */}
-                        <AddTestCasesIC open={open} changeTestCase={changeTestCaseI} type={"input"} onChange={console.log("se esta actualizando")}/>
-                        {console.log("testCasesI",testCasesI)}
+                        {callInput}
+                        {/* <AddTestCasesIC open={open} changeTestCase={changeTestCaseI} type={"input"} onChange={console.log("se esta actualizando")}/> */}
+                        {/* {console.log("testCasesI",testCasesI)} */}
                     </Grid>
                     <Grid item xs={5} key={id} sx={{mt: 2}}>
                         <Grid container alignItems="center" justifyContent="center">
@@ -128,7 +146,10 @@ export const AddTestCasesOC = ({open, changeTestCase, type}) => {
                                         placeholder="Input"
                                         multiline={true}
                                         value={testCases.output}
-                                        onChange={(event) => handleTestCaseChange(id, event)}
+                                        onChange={(event) =>
+                                            setInterval(function(){ 
+                                                handleTestCaseChange(id, event)
+                                            }, 2000)}
                                         sx={{
                                             color: 'appDark.text',
                                             height: 100,

@@ -9,9 +9,12 @@ import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
 import { AddTestCasesOC } from './';
+import { AddMultiQ } from './';
 
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
@@ -20,6 +23,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     //Prueba
     const checked = true;
+    const tipo = 'multip'
 
     //Description
     const { qdescription, onInputChange } = useForm({
@@ -39,44 +43,72 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         setQType(event.target.value);
         console.log(qtype)
     };
+    // setQType('multiQ'); // Se borra
+
+    //Selector de curso 
+    const [course, setCourse] = useState('');
+    const handleCourseSelection = (event) => {
+        setCourse(event.target.value);
+    };
+
+    //GET course information
+    const [coursesData, setCourseRequest] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}courses`, options);
+                const responseData = await response.json();
+                setCourseRequest(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-    //     // let userID = "A01551955"
-    //     // let term = "current"
-
-    //     const fetchData = async () => {
-    //         if (course) {
-    //             try {
-    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-    //                 const responseData = await response.json();
-    //                 setModule(responseData);
-    //             } catch (error) {
-    //                 // console.error(error); .push({id:, n_questions: })
-    //             }
-    //         }
-    //     };
-    //     fetchData();
-    // }, [course]);
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`${batmanAPI}coursemodules/${course}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
 
     let modules = [];
-    // modulesData.map((module) => (
-    //     modules.push({
-    //         id: module.id,
-    //         name: module.name,
-    //         n_questions: 0,
-    //         checked: true
-    //     })
-    // ))
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true,
+            key: module.id
+        })
+    ))
 
     // //POST Create Homework
 
@@ -96,32 +128,26 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         // const [testCasesI, setTestCaseI] = useState([]);
         // const [testCasesO, setTestCaseO] = useState([]);
 
-    const [hinputs, setHinputs] = useState([]);
-    const changeHinputs = (newHinput) => {
-        setHinputs(newHinput);
+    const [sTestCases, setSTestCase] = useState([]);
+    const changeSTestCase = (newSTestCase) => {
+        setSTestCase(newSTestCase);
     }
 
-    const [sinputs, setSinputs] = useState([]);
-    const changeSinputs = (newSinput) => {
-        setSinputs(newSinput);
+    const [hTestCases, setHTestCase] = useState([]);
+    const changeHTestCase = (newHTestCase) => {
+        setHTestCase(newHTestCase);
     }
 
-    const [houtputs, setHoutputs] = useState([]);
-    const changeHoutputs = (newHoutput) => {
-        setHoutputs(newHoutput);
-    }
-
-    const [soutputs, setSoutputs] = useState([]);
-    const changeSoutputs = (newSoutput) => {
-        setSoutputs(newSoutput);
-    }
+    const [multiQ, setMultiQ] = useState([]);
+    const [cMultiQ, setCMultiQ] = useState([]);
 
     useEffect(() => {
         if (!open) {
-            setHinputs([]);
-            setSinputs([]);
-            setHoutputs([]);
-            setSoutputs([]);
+            setSTestCase([]);
+            setHTestCase([]);
+            setCourse('');
+            setMultiQ([]);
+            setCMultiQ([]);
         }
     }, [open]);
     /* Fin de test cases */
@@ -138,6 +164,23 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
         reader.readAsText(file);
     };
+
+    const handleUpload = (TC_1, TC_2) => {
+        const multiq = [];
+        const multiqC = [];
+
+        TC_1.map((tc) => {
+            multiq.push(tc.opcion)
+        })
+
+        TC_2.map((tc) => {
+            multiq.push(tc.opcion)
+            multiqC.push(tc.opcion)
+        })
+
+        console.log("todas", multiq)
+        console.log("correctas", multiqC)
+    }
 
     return (
         <Modal
@@ -195,6 +238,53 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             borderRadius: 2,
                         },
                     }}>
+
+                        <Grid item xs={10}>
+                            <FormControl variant="filled" sx={{ mt: 3, width: '100%' }}>
+                                <InputLabel id="courseSelectorInputLabel"
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Curso</InputLabel>
+
+                                <Select
+                                    id="courseSelector"
+                                    value={course}
+                                    onChange={handleCourseSelection}
+                                    sx={{ borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {coursesData.map((course) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={course.id}
+                                            value={course.id}
+                                        >
+                                            {course.id} {course.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
 
 
                         {/* Module Selector */}
@@ -334,71 +424,131 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             </Grid>
                         </Grid>
 
-                        {/* SelectorY - TestCases */}
-                        <Grid item xs={10}>
-                            <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
-                                Caso de Prueba Visible
-                            </Typography>
-                        </Grid>
+                        {tipo == 'codep' ?
+                            // SelectorY - TestCases para codigo
+                            <>
+                            <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Caso de Prueba Visible
+                                </Typography>
+                            </Grid>
 
-                        <Grid container xs={10} align="center" justifyContent="space-around" sx={{
-                            overflowY: 'scroll',
-                            height: '25vh',
-                            "&::-webkit-scrollbar": {
-                                width: 5,
-                            },
-                            "&::-webkit-scrollbar-track": {
-                                backgroundColor: "secondary.main",
-                                borderRadius: 2,
-                            },
-                            "&::-webkit-scrollbar-thumb": {
-                                backgroundColor: "appDark.scrollBar",
-                                borderRadius: 2,
-                            },
-                        }}>
+                            <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                overflowY: 'scroll',
+                                height: '25vh',
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}>
+                                
+                                {/* <Grid item xs={5}>
+                                    <AddTestCasesOC open={open} changeTestCase={changeSinputs} type={"input"}/>
+                                </Grid> */}
+                                {/* <Grid item xs={5}> */}
+                                    {/* <AddTestCasesOC open={open} changeTestCase={changeSTestCase} type={"output"}/> */}
+                                {/* </Grid> */}
+                                {/* {console.log("sinputs", sinputs)} */}
+                                {/* {console.log("soutputs", sTestCases)} */}
+
+                            </Grid>
                             
-                            {/* <Grid item xs={5}>
-                                <AddTestCasesOC open={open} changeTestCase={changeSinputs} type={"input"}/>
-                            </Grid> */}
-                            {/* <Grid item xs={5}> */}
-                                <AddTestCasesOC open={open} changeTestCase={changeSoutputs} type={"output"}/>
-                            {/* </Grid> */}
-                            {/* {console.log("sinputs", sinputs)} */}
-                            {console.log("soutputs", soutputs)}
+                            <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Caso de Prueba Oculto
+                                </Typography>
+                            </Grid>
 
-                        </Grid>
+                            <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                overflowY: 'scroll',
+                                height: '25vh',
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}>
+                                {/* <Grid item xs={5}>
+                                    <AddTestCasesOC open={open} changeTestCase={changeHinputs} type={"input"}/>
+                                </Grid> */}
+                                {/* <Grid item xs={5}> */}
+                                    {/* <AddTestCasesOC open={open} changeTestCase={changeHTestCase} type={"output"}/> */}
+                                {/* </Grid> */}
+                                {/* <AddTestCasesOC/> */}
+                                {/* {console.log("hinputs", hinputs)}
+                                {console.log("houtputs", houtputs)} */}
+                            </Grid>
+                            </>
+
+                        :   
+                            // SelectorY - TestCases para preguntas multpiles
+                            <>
+                                <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Opciones Incorrectas
+                                </Typography>
+                                
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                   <AddMultiQ open={open} changeMultiQ={setMultiQ} type={"output"}/> 
+                                   {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+                                <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Opciones Correctas
+                                </Typography>
+                                
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                   <AddMultiQ open={open} changeMultiQ={setCMultiQ} type={"output"}/> 
+                                   {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+                            </>
+                        }
                         
-                        <Grid item xs={10}>
-                            <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
-                                Caso de Prueba Oculto
-                            </Typography>
-                        </Grid>
-
-                        <Grid container xs={10} align="center" justifyContent="space-around" sx={{
-                            overflowY: 'scroll',
-                            height: '25vh',
-                            "&::-webkit-scrollbar": {
-                                width: 5,
-                            },
-                            "&::-webkit-scrollbar-track": {
-                                backgroundColor: "secondary.main",
-                                borderRadius: 2,
-                            },
-                            "&::-webkit-scrollbar-thumb": {
-                                backgroundColor: "appDark.scrollBar",
-                                borderRadius: 2,
-                            },
-                        }}>
-                            {/* <Grid item xs={5}>
-                                <AddTestCasesOC open={open} changeTestCase={changeHinputs} type={"input"}/>
-                            </Grid> */}
-                            {/* <Grid item xs={5}> */}
-                                <AddTestCasesOC open={open} changeTestCase={changeHoutputs} type={"output"}/>
-                            {/* </Grid> */}
-                            {/* <AddTestCasesOC/> */}
-                            {/* {console.log("hinputs", hinputs)}
-                            {console.log("houtputs", houtputs)} */}
-                        </Grid>
 
                     </Grid>
                 </Grid>
@@ -456,8 +606,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     <Grid item xs={6} id="crear tarea" align="right">
 
                         <Button 
-                        type="submit" 
-                        // onClick={(console.log("hinputs",hinputs))}
+                        // type="submit" 
+                        onClick={handleUpload(multiQ, cMultiQ)}
                         variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}
                         >
                             Enviar solicitud
