@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"elPadrino/RIDDLE/packages/read"
-	"elPadrino/RIDDLE/packages/remove"
 	"elPadrino/RIDDLE/packages/update"
 	"elPadrino/RIDDLE/packages/write"
 	"fmt"
@@ -41,18 +40,18 @@ func main() {
 
 	//Read operations
 	r.HandleFunc("/questions", read.Questions(mysqlDB)).Methods("GET")
+	r.HandleFunc("/freemodequestion/{moduleID}", read.FreemodeQuestion(mysqlDB)).Methods("GET")
 	r.HandleFunc("/statusHomework", read.StatusHomework(mysqlDB)).Methods("GET")
+	r.HandleFunc("/statusModule", read.StatusModule(mysqlDB)).Methods("GET")
 
 	//Write operations
 	r.HandleFunc("/requestQuestion", write.RequestQuestion(mysqlDB)).Methods("POST")
 	r.HandleFunc("/modQuestionAttempt", write.ModQuestAttempt(mysqlDB)).Methods("POST")
 	r.HandleFunc("/hwQuestionAttempt", write.HwQuestionAttempt(mysqlDB)).Methods("POST")
 
-	//Delete operations
-	r.HandleFunc("/declineQuestionRequest/{questionID}", remove.DeclineRequest(mysqlDB)).Methods("DELETE")
-
 	//Update operations
 	r.HandleFunc("/aproveQuestionRequest/{questionID}", update.UpdateStatus(mysqlDB)).Methods("PATCH")
+	r.HandleFunc("/declineQuestionRequest/{questionID}", update.DeclineRequest(mysqlDB)).Methods("PATCH")
 
 	//Check status and PORT
 	log.Println("Starting RIDDLE on", os.Getenv("PORT"))

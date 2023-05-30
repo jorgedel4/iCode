@@ -6,20 +6,19 @@ import (
 	"errors"
 )
 
-func HWQuestion(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.ResultQuestion, error) {
+func ModuleQuestion(req structs.SelectQuestion, mysqlDB *sql.DB) (structs.ResultQuestion, error) {
 	var question structs.ResultQuestion
 	// Por alguna razon se tiene que sacar el ID primero, porque si se llama a la funcion desde el select a veces no da resultados
 	var id string
-	idQuery := `SELECT HomeworkQuestionID(?, ?)`
-	err := mysqlDB.QueryRow(idQuery, req.Assigment, req.Student).Scan(&id)
+	idQuery := `SELECT ModuleQuestionID(?, ?, ?)`
+	err := mysqlDB.QueryRow(idQuery, req.Group, req.Assigment, req.Student).Scan(&id)
 	if err != nil {
 		return question, err
 	}
 
 	query := `SELECT id_question, q_type, info
 	FROM questions
-	WHERE id_question = ?
-	LIMIT 1`
+	WHERE id_question = ?`
 
 	err = mysqlDB.QueryRow(query, id).Scan(&question.IdPregunta, &question.Type, &question.Info)
 	if err != nil {

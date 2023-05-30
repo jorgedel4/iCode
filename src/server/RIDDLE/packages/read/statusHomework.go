@@ -24,27 +24,17 @@ func StatusHomework(mysqlDB *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		var progress structs.Progress
 		query := `SELECT GetTotalQuestions(?, ?), GetCorrectQuestion(?, ?);`
 
-		var progress int
-		var total int
-		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID, req.StudentID, req.HomeworkID).Scan(&total, &progress)
+		err := mysqlDB.QueryRow(query, req.StudentID, req.HomeworkID, req.StudentID, req.HomeworkID).Scan(&progress.Needed, &progress.Answered)
 		if err != nil {
 			http.Error(w, "Error executing query", http.StatusInternalServerError)
 			return
 		}
 
-		// Create a response struct
-		response := struct {
-			Total    int `json:"total"`
-			Progress int `json:"progress"`
-		}{
-			Total:    total,
-			Progress: progress,
-		}
-
 		// Encode the response struct into JSON
-		responseJSON, err := json.Marshal(response)
+		responseJSON, err := json.Marshal(progress)
 		if err != nil {
 			http.Error(w, "Error parsing response", http.StatusInternalServerError)
 			return

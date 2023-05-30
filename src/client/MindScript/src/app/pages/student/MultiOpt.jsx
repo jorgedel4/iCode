@@ -1,31 +1,47 @@
-import { Grid, Button, Typography } from '@mui/material'
-import { NavBar, QuestionsDropdown, OptionButton } from '../../components'
+// --------------------------------------------------------------------
+// ** file="MultiOpt.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
+
+// ------------ # Imports region ------------
+
+// Core components from MUI
+import { Button, Grid, Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
+
+// MindScript Components
+import { NavBar, OptionButton, QuestionsDropdown } from '../../components';
+
+// ------------ ## End Imports region ------------
+
 
 export const MultiOpt = () => {
 
-    //Current user info
+    // Initial States and Variables 
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
+
+    //Current user data
     const auth = getAuth();
     const user = auth.currentUser;
     const schoolID = (user.email).substring(0, 9);
     if (user !== null) {
-        // console.log("Student home user info", user)
-        //Desestructuración de user
+        // Desestructuración de user
         const { email, displayName, emailVerified, uid } = user
-        //Matrícula A00000000
+        // console.log("Student home user info", user)
         // console.log("Matrícula ", schoolID)
     }
 
+
+    // ------------ # API region ------------
 
     const group = 'TC1028 (Gpo. 404)'
     const module = 'Variables'
     const qNumber = 'Pregunta #'
     const qContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-
-    const pages = [
-        { name: 'Home', route: '/student/home' },
-        { name: 'Profile', route: '/student/profile' },
-    ]
 
     const questions = [
         'Pregunta 1',
@@ -46,6 +62,11 @@ export const MultiOpt = () => {
         'AbCdfvfvdvdv',
         'aBcDffgfffv'
     ]
+
+    // ------------ ## End API region -------
+
+    // ------- # Functions and Events region -------
+    // ---- ## End Functions and Events region -----
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>

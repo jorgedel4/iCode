@@ -1,6 +1,8 @@
 import { Card, CardContent, CardActions, Typography, Grid, IconButton } from '@mui/material'
 import { Edit, LockOutlined, LockOpenRounded } from '@mui/icons-material'
 import * as React from 'react';
+import { useState } from 'react'
+import { EditModuleNQ } from './EditModuleNQ';
 
 export const PModuleCard = ({ module, index, group }) => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
@@ -9,9 +11,17 @@ export const PModuleCard = ({ module, index, group }) => {
     const color = index - (colors.length * parseInt(index / colors.length));
     const [status, setBlock] = React.useState(module.locked)
 
+
+    //Funciones para abrir la modal de Editar modulo
+    const [openModalEditModule, setOpenModalEditModule] = useState(false);
+    const showModalEditModule = () => { setOpenModalEditModule(true); }
+    const closeModalEditModule = () => {
+        setOpenModalEditModule(false);
+    }
+
     const changeStatus = () => {
         setBlock(!status);
-        
+
         //API para modificar si un modulo esta bloqueado o no
         const options = {
             method: 'PATCH',
@@ -35,8 +45,11 @@ export const PModuleCard = ({ module, index, group }) => {
 
     };
 
-    return(
+
+
+    return (
         <Grid>
+            < EditModuleNQ open={openModalEditModule} close={closeModalEditModule} moduleData={module} group={group} />
             <Card
                 sx={{
                     width: 260,
@@ -48,31 +61,31 @@ export const PModuleCard = ({ module, index, group }) => {
             >
 
                 <Grid sx={[
-                        { 
-                            backgroundColor: `${colors[color]}`, height: 35
-                        },
-                        status && {
-                            backgroundColor: "#6D7483", height: 35 
-                        }
-                    ]}
+                    {
+                        backgroundColor: `${colors[color]}`, height: 35
+                    },
+                    status && {
+                        backgroundColor: "#6D7483", height: 35
+                    }
+                ]}
                 />
 
                 <CardActions disableSpacing>
-                    <IconButton
-                    > 
-                        <Edit sx={{ color: 'appDark.icon'}} />
+                    <IconButton onClick={showModalEditModule}
+                    >
+                        <Edit sx={{ color: 'appDark.icon' }} />
                     </IconButton>
 
                     <IconButton
-                        sx={{ ml: 20}}
+                        sx={{ ml: 20 }}
                         onClick={changeStatus}
                     >
                         {status ?
-                            <LockOutlined sx={{ color: 'appDark.icon'}} />
-                        :
-                            <LockOpenRounded sx={{ color: 'appDark.icon'}}/>
-                        } 
-                    </IconButton>      
+                            <LockOutlined sx={{ color: 'appDark.icon' }} />
+                            :
+                            <LockOpenRounded sx={{ color: 'appDark.icon' }} />
+                        }
+                    </IconButton>
                 </CardActions>
 
                 <CardContent
@@ -80,7 +93,7 @@ export const PModuleCard = ({ module, index, group }) => {
                 >
 
                     <Typography sx={{ color: 'appDark.text', fontSize: 26, fontWeight: 405 }} >
-                        {module.name}      
+                        {module.name}
                     </Typography>
 
                 </CardContent>

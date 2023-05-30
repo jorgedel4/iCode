@@ -41,9 +41,9 @@ HTTP/1.1 201 Created
 
 ---
 
-### `/module`
+### `/modules`
 #### Descripcion
-Crear un nuevo modulo para un curso dado
+Agrega uno o varios modulos a un curso
 
 #### Metodo de HTTP
 `POST`
@@ -53,10 +53,11 @@ Crear un nuevo modulo para un curso dado
 | Parametro   | Tipo        | Obligatorio | Descripcion                                   |
 |------------ | ----------- | ----------- | --------------------------------------------- |
 | course      | string      | si          | ID del curso al que pertenece el modulo       |
-| nombre      | string      | si          | Nombre del modulo                             |
+| modules     | [ string ]  | si          | Nombre de los modulos a agregar               |
 
 #### Respuesta
-En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created)
+En caso de que se haya agregado el modulo de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created).
+En caso de que el conjunto de modulos a agregar contenga uno ya existente o hayan duplicados en el conjunto se regresa un codigo HTTP 409 (Conflict)
 
 #### Ejemplo
 **Peticion**
@@ -338,7 +339,7 @@ HTTP/1.1 201 Created
 
 ## Endpoints de lectura
 
-### `/courses`
+### `/campus`
 #### Descripcion
 Todos los cursos que se tienen registrados
 
@@ -634,7 +635,7 @@ Listado de preguntas que han sido solicitadas para ser agregadas al banco de pre
 * `question_type` (obligatorio): Tipo de pregunta de las solicitudes. 'all' para todos los tipos, 'multi' para preguntas de opcion multiple y 'codep' para preguntas de codigo
 * `requested_by` (obligatorio): ID del profesor que solicito agregar dicha pregunta. 'all' para todos los profesores
 * `course` (obligatorio): ID del curso del que se desean las peticiones. 'all' para todos los cursos
-* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'passed' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
+* `status` (obligatorio): Estatus en el que se encuentran las preguntas. 'all' para todas, 'approved' para las aprovadas, 'rejected' para las rechazadas y 'pending' para las que aun no han sido evaluadas
 
 #### Respuestas
 (En formato JSON) Independientemente de la forma en la que se agrupan las tareas, cada una tiene los siguientes campos

@@ -36,9 +36,9 @@ type SwitchModStatusReq struct {
 	Module string `json:"module"`
 }
 
-type NewModule struct {
-	Course string `json:"course"`
-	Name   string `json:"nombre"`
+type NewModulesReq struct {
+	Course  string   `json:"course"`
+	Modules []string `json:"modules"`
 }
 
 type UpdateModuleNQuestionsReq struct {

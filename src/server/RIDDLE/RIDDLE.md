@@ -33,7 +33,7 @@ GET
 | id_group     | string    | solo en caso de pregunta de modulo           | ID del grupo al que pertene el estudiante              |
 
 <h3 style="color:#b5ffe1;">Respuesta para ambos casos</h3>
-(En formato JSON) Arreglo de objetos que representan a la pregunta recibida. Cada estudiante cuenta con los siguientes camposos estudiante
+(En formato JSON)
 | Campo          | Tipo                  | Descripcion                                                         |
 | -------------- | --------------------- | ------------------------------------------------------------------: |
 | id_pregunta    | string                | ID de la pregunta obtenida                                          |
@@ -97,26 +97,110 @@ GET
 
 <p style= "font-weight: bold;">Peticion</p>
 GET 
-34.16.137.250:8003/statusHomework?student_id=A01551955&homework_id=H0000000000000000001
+34.16.137.250:8003/statusHomework?id_student=A01551955&id_homework=H0000000000000000001
 
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-(En formato JSON) Arreglo de objetos que representan el progreso de la tarea. De cuentan con los siguientes campos:
-| Campo          | Tipo                  | Descripcion                                                         |
-| -------------- | --------------------- | ------------------------------------------------------------------: |
-| total          | int                   | Cantidad total de preguntas habilitadas para la tarea                                         |
-| progress       | int                   | Cantidad de preguntas para esa tarea resueltas con exito                                |
+(En formato JSON)
+| Campo          | Tipo                  | Descripcion                                                                      |
+| -------------- | --------------------- | -------------------------------------------------------------------------------: |
+| needed         | int                   | Numero de preguntas necesarias para completar la tarea                           |
+| answered       | int                   | Numero de preguntas que han sido resuletas por el alumno para esa tarea          |
 
 HTTP/1.1 200 OK Content-Type: application/json
 ``` json
 {
-    "total": 3,
-    "progress": 2
+    "needed": 5,
+    "answered": 0
 }
 ```
 <p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
 <p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
+_______________________________________________
+<h3 style="color:#0000FF;">/statusModule</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Progreso de modulo de un estudiante
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+GET
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante variables de URL)
+
+| Parametro    | Tipo      | Obligatorio    | Decripcion                                    |
+| :---------:  | :-------: | :------------: | :-------------------------------------------: |
+| student      | string    | si             | Matricula del estudiante                      |
+| module       | string    | si             | ID del modulo del que se consulta el progreso | 
+| group        | string    | si             | ID del grupo del modulo                       | 
+
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+<p style= "font-weight: bold;">Peticion</p>
+GET 
+34.16.137.250:8003/statusModule?student=A01551955&module=M0000000000000000002&group=G000000001
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+(En formato JSON)
+| Campo          | Tipo                  | Descripcion                                                                      |
+| -------------- | --------------------- | -------------------------------------------------------------------------------: |
+| needed         | int                   | Numero de preguntas necesarias para completar el modulo                          |
+| answered       | int                   | Numero de preguntas que han sido resuletas por el alumno para ese modulo y grupo |
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "needed": 3,
+    "answered": 0
+}
+```
+<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
+<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
+
+_______________________________________________
+
+<h3 style="color:#0000FF;">/freemodequestion/{moduleID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Regresa una pregunta aleatoria del modulo dado, independientemente de si el estudiante ya la ha contestado anteriormente
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+GET
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante variables de ruta)
+
+| Parametro  | Tipo      | Obligatorio    | Decripcion                                             |
+| :---------:| :-------: | :------------: | :----------------------------------------------------: |
+| moduleID   | string    | si             | ID del modulo del que se requiere la pregunta          |
+
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+<p style= "font-weight: bold;">Peticion</p>
+GET 
+34.16.137.250:8003/freemodequestion/M0000000000000000001
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+(En formato JSON) 
+| Campo          | Tipo                  | Descripcion                                                         |
+| -------------- | --------------------- | ------------------------------------------------------------------: |
+| id_pregunta    | string                | ID de la pregunta obtenida                                          |
+| type           | string                | Tipo de la pregunta (codep o multi)                                 |
+| info           | string                | Informacion de la pregunta (descripcion, inputs y outputs, etc)     |
+
+HTTP/1.1 200 OK Content-Type: application/json
+``` json
+{
+    "id_pregunta": "CQ000000000000000001",
+    "type": "codep",
+    "info": "{\"hinputs\": [[\"2\"], [\"4\"]], \"sinputs\": [[\"3\"], [\"6\"]], \"houtputs\": [\"4\", \"16\"], \"language\": \"python\", \"soutputs\": [\"9\", \"36\"], \"timeoutSec\": 10, \"description\": \"Double a number\", \"initialCode\": \"\", \"forbiddenFunctions\": []}"
+}
+```
 
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Escritura</h1>
@@ -126,7 +210,7 @@ _____________________________________________________
 <h3 style="color:#0000FF;">/requestQuestion</h3>
 
 <h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitud para agregar una pregunta a la base de datos
+Solicitud de carga de preguntas por profesor a la plataforma
 
 <h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
 POST
@@ -142,7 +226,7 @@ POST
 | created_by   | string    | si                                           | ID del profesor que realiza la peticion                 |
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
+En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 200 (Ok) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
 
 <h3 style="color:#b5ffe1;">Ejemplo</h3>
 <p style= "font-weight: bold;">Peticion</p>
@@ -151,38 +235,20 @@ En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente u
 POST
 Peticion POST 34.16.137.250:8003/requestQuestion Content-Type: application/json 
 
+Siempre se pide un arreglo de objetos de tipo JSON, en el caso de la interfaz en la que el profesor solo carga una pregunta a la vez, se espera a traves del body un arreglo con un solo objeto en su interior, como el que se muestra a continuacion:
+
 ```json
-{
-    "module": "M0000000000000000001",
-    "q_type": "codep",
-    "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-    "created_by": "L00000003"
-}
+[
+    {
+        "module": "M0000000000000000001",
+        "q_type": "codep",
+        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
+        "created_by": "L00000003"
+    }
+]
 ```
 
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
-
-HTTP/1.1 201 Created
-
-_____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT de solicitud de carga de Preguntas a Administrador desde file.json</h2>
-
-<h3 style="color:#0000FF;">/requestQuestion</h3>
-
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitud para agregar una pregunta o preguntas a la base de datos a traves de un file.json
-
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-POST
-
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el Body)
-
-Se recibe un archivo llamado "file.json" el cual puede contener 1 o mas objetos de tipo json, donde cada uno de estos representa
-una pregunta en especifico.
-
-El contenido del archivo file.json debe contener una estructura de arreglos como el siguiente:
+Cuando se cargan preguntas a traves de un archivo, desde el frontend se recibe un arreglo de multiples objetos de tipo json, como el ejemplo a continuacion:
 
 ```json
 [
@@ -193,41 +259,19 @@ El contenido del archivo file.json debe contener una estructura de arreglos como
         "created_by": "L00000003"
     },
     {
-        "module": "M0000000000000000002",
-        "q_type": "multi",
+        "module": "M0000000000000000001",
+        "q_type": "codep",
         "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
         "created_by": "L00000003"
     }
 ]
 ```
 
-Donde cada arreglo representa una pregunta, y cada arreglo contiene la siguiente informacion:
-
-| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
-| :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| module       | string    | si                                           | ID del modulo al que pertenece la pregunta              |
-| q_type       | string    | si                                           | Tipo de pregunta a cargar                               | 
-| info         | string    | si                                           | String con info de toda la pregunta                     |
-| created_by   | string    | si                                           | ID del profesor que realiza la peticion                 |
-
 <h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega la pregunta o preguntas a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
 
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
+HTTP/1.1 200 Ok
 
-
-POST
-Peticion POST 34.125.0.99:8003/requestQuestion Content-Type: application/json 
-
-<h3>file.json</h3>
-
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
-
-HTTP/1.1 201 Created
-
+Esto indica que la pregunta ha sio cargada a la base de datos dentro de la tabla de questions con un status de PEN para su aprovacion o rechazo por el administrador.
 _____________________________________________________
 <h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Tarea</h2>
 
@@ -325,40 +369,6 @@ Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json
 
 HTTP/1.1 200 Ok
 
-<h1 style="color:#B5FFE1;">ENDPOINTS de Eliminación</h1>
-________________________________________________________________
-<h2 style="color:#65b891;">ENDPOINT rechazo de pregunta del profesor por admin</h2>
-
-<h3 style="color:#0000FF;">/declineQuestionRequest/{questionID}</h3>
-
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos no debe
-ser admitida
-
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-DELETE
-
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el URL)
-
-| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
-| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
-| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
-
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-Response 
-HTTP/1.1 200 OK 
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-
-DELETE 
-34.16.137.250:8003/declineQuestionRequest/CQ000000000000000004
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-
-HTTP/1.1 200 OK 
-
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Actualización</h1>
 ________________________________________________________________
@@ -390,6 +400,40 @@ HTTP/1.1 200 OK
 
 DELETE 
 34.16.137.250:8003/aproveQuestionRequest/CQ000000000000000004
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+
+HTTP/1.1 200 OK 
+
+_______________________________________________
+
+<h2 style="color:#65b891;">ENDPOINT rechazo de pregunta del profesor por admin</h2>
+
+<h3 style="color:#0000FF;">/declineQuestionRequest/{questionID}</h3>
+
+<h3 style="color:#b5ffe1;">Descripción</h3>
+Cuando el Administrador considera que una pregunta de propuesta para ser cargada a la base de datos no debe
+ser admitida
+
+<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
+PATCH
+
+<h3 style="color:#b5ffe1;">Parámetros</h3>
+(Mediante el URL)
+
+| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
+| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
+| questionID   | string    | si                                           | ID de la pregunta que debe ser eliminada de la base de datos                 |
+
+
+<h3 style="color:#b5ffe1;">Respuesta</h3>
+Response 
+HTTP/1.1 200 OK 
+
+<h3 style="color:#b5ffe1;">Ejemplo</h3>
+
+UPDATE
+34.16.137.250:8003/declineQuestionRequest/CQ000000000000000005
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 

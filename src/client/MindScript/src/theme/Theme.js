@@ -27,7 +27,10 @@ export const Theme = createTheme({
             selectHover: "#404655",
             scrollBar: "#A4A6A5",
             progressBar: '#21AE2F',
-            progressBg: '#6D7483'
+            progressBg: '#6D7483',
+            approved: '#0F0',
+            rejected: '#F00',
+            pending: '#FFD700'
         }
     },
     components: {

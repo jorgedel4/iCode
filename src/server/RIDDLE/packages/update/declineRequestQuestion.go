@@ -1,4 +1,4 @@
-package remove
+package update
 
 import (
 	"database/sql"
@@ -16,7 +16,8 @@ func DeclineRequest(mysqlDB *sql.DB) http.HandlerFunc {
 		//Example: localhost:8003//declineQuestionRequest/CQ000000000000001
 		questionID := mux.Vars(r)["questionID"]
 
-		query := `DELETE FROM questions
+		query := `UPDATE questions
+		SET current_status = "REJ"
 		WHERE id_question = ?`
 
 		result, err := mysqlDB.Exec(query, questionID)

@@ -98,27 +98,28 @@ CREATE FUNCTION InsertModule(
     module_id CHAR(20),
     course_id CHAR(10),
     module_name VARCHAR(30)
-) RETURNS CHAR(50)
+) RETURNS INT
 BEGIN
-    DECLARE module_exists INT;
-    DECLARE error_message CHAR(50);
+    DECLARE repeated INT;
+    DECLARE exit_code INT;
 
     -- Verificar si ya existe un módulo con el mismo nombre y curso
-    SELECT COUNT(*) INTO module_exists
+    SELECT COUNT(*) INTO repeated
     FROM modules
-    WHERE nombre = module_name AND course = course_id;
+    WHERE nombre = module_name 
+    AND course = course_id;
 
-    IF module_exists > 0 THEN
-        SET error_message = 'Module already exists for the given course';
+    IF repeated != 0 THEN
+        SET exit_code = 1;
     ELSE
         -- Insertar el nuevo módulo
         INSERT INTO modules (id_module, course, nombre)
         VALUES (module_id, course_id, module_name);
         
-        SET error_message = '';
+        SET exit_code = 0;
     END IF;
 
-    RETURN error_message;
+    RETURN exit_code;
 END $$
 DELIMITER ;
 
@@ -394,6 +395,7 @@ END $$
 DELIMITER ;
 
 
+
 DELIMITER $$
 CREATE FUNCTION ChangeCourseName (
     course_id CHAR(20),
@@ -418,6 +420,24 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+
+DELIMITER $$
+CREATE FUNCTION RandomModeModuleQuestionID (
+    module_id CHAR(20)
+) RETURNS CHAR(20)
+BEGIN
+    DECLARE question CHAR(20);
+    
+    SELECT id_question INTO question
+    FROM questions
+    WHERE module = module_id
+    ORDER BY RAND()
+    LIMIT 1;
+
+    RETURN question;
+END$$
+DELIMITER ;
 
 
 
