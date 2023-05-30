@@ -1,5 +1,6 @@
 import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/material'
 import { HomeLayout } from '../../layout/HomeLayout';
+import { Link } from 'react-router-dom';
 import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components'
 import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
@@ -8,7 +9,7 @@ import { getAuth } from "firebase/auth";
 export const PHomePage = () => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-    
+
 
     //Current user info
     const auth = getAuth();
@@ -22,7 +23,6 @@ export const PHomePage = () => {
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Nómina ", schoolID)
     }
-    console.log("schoolid ", schoolID)
 
     const pages = [
         { name: 'Home', route: '/professor/home' },
@@ -73,10 +73,11 @@ export const PHomePage = () => {
 
     //Funciones para abrir la modal de Crear Curso
     const [openCreateQuestion, setOpenCreateQuestion] = useState(false);
-    const showModalCreateQuestion= () => { setOpenCreateQuestion(true); }
+    const showModalCreateQuestion = () => { setOpenCreateQuestion(true); }
     const closeModalCreateQuestion = () => {
         setOpenCreateQuestion(false);
     }
+
 
     //Dynamic modal view
     const home = '/professor/home'
@@ -116,7 +117,7 @@ export const PHomePage = () => {
                 {/* Modales */}
                 <CreateGroup open={open} close={closeModal} />
                 <CreateHomework open={openCreateHomework} close={closeModalCreateHomework} />
-                <CreateQuestion open={openCreateQuestion} close={closeModalCreateQuestion} schoolID = {schoolID}/>
+                <CreateQuestion open={openCreateQuestion} close={closeModalCreateQuestion} schoolID={schoolID} />
 
                 <Grid container columnSpacing={40} rowSpacing={5}>
 
@@ -159,10 +160,25 @@ export const PHomePage = () => {
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
                                     <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
                                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
-                                        Solicitudes
+                                        Mandar Solicitud
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
+                        </ActionButton>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                        <ActionButton >
+                            <Link to='/professor/request' style={{ textDecoration: 'none' }}>
+                                <CardActionArea sx={{ height: 207, textAlign: "center" }}>
+                                    <CardContent sx={{ pt: 4, pb: 6 }}>
+                                        <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
+                                        <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
+                                            Ver Solicitudes
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Link>
                         </ActionButton>
                     </Grid>
 

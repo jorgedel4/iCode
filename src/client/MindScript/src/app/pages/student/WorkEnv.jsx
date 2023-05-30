@@ -9,11 +9,7 @@ import { useLocation } from 'react-router-dom';
 
 export const WorkEnv = () => {
     const location = useLocation();
-    console.log(location)
     const data = location.state?.data;
-
-
-    console.log(data)
 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
@@ -138,15 +134,17 @@ export const WorkEnv = () => {
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
+            <Grid item xs={12}>
+                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                    {'< Regresar'}
+                </Button>
+            </Grid>
             <Grid item xs={4}>
                 <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
                     {/* Hw Description*/}
                     <Grid item xs={12}>
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
-                                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
-                                    {'< Regresar'}
-                                </Button>
                                 <Typography variant='h5' sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 20 }}>
                                     Descripción
                                 </Typography>

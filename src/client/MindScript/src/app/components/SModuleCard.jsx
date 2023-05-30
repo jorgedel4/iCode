@@ -1,11 +1,9 @@
 import { Card, CardContent, CardActionArea, Typography, Grid, IconButton, LinearProgress } from '@mui/material'
 import { linearProgressClasses } from '@mui/material/LinearProgress';
 import { LockOutlined } from '@mui/icons-material'
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 import { Link } from 'react-router-dom';
-
-
 
 export const SModuleCard = ({ module, index, group }) => {
 
