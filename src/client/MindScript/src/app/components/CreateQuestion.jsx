@@ -9,8 +9,14 @@ import { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { UploadFile } from '@mui/icons-material'
 
+import { AddTestCasesOC } from './';
+import { AddTestCases } from './';
+import { AddMultiQ } from './';
+
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
+    
+
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
@@ -21,17 +27,18 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     //Prueba
     const checked = true;
+    const tipo = 'codep'
 
     //Description
     const { qdescription, onInputChange } = useForm({
         qdescription: '',
     });
 
-    //Selector de curso 
+    //Selector de modulo
     const [qmodule, setQModule] = useState('');
     const handleQModuleSelection = (event) => {
         setQModule(event.target.value);
-        console.log(qmodule)
+        // console.log(qmodule)
     };
 
     //Selector de tipo de pregunta 
@@ -40,6 +47,36 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         setQType(event.target.value);
         console.log(qtype)
     };
+    // setQType('multiQ'); // Se borra
+
+    //Selector de curso 
+    const [course, setCourse] = useState('');
+    const handleCourseSelection = (event) => {
+        setCourse(event.target.value);
+    };
+
+    //GET course information
+    const [coursesData, setCourseRequest] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}courses`, options);
+                const responseData = await response.json();
+                setCourseRequest(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const modulesDummy = ["For loops", "Condicionales", "Basics"]
 
@@ -84,6 +121,15 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     /*API region */
     //POST question request from JSON file
 
+
+
+
+    // console.log(schoolID)
+
+
+    /*API region */
+    //POST question request from JSON file
+
     const requestAQuestion = async () => {
         // console.log("this is it",formatedInfo)
         const options = {
@@ -121,41 +167,39 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
 
-    //     // let userID = "A01551955"
-    //     // let term = "current"
-
-    //     const fetchData = async () => {
-    //         if (course) {
-    //             try {
-    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-    //                 const responseData = await response.json();
-    //                 setModule(responseData);
-    //             } catch (error) {
-    //                 // console.error(error); .push({id:, n_questions: })
-    //             }
-    //         }
-    //     };
-    //     fetchData();
-    // }, [course]);
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`${batmanAPI}coursemodules/${course}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
 
     let modules = [];
-    // modulesData.map((module) => (
-    //     modules.push({
-    //         id: module.id,
-    //         name: module.name,
-    //         n_questions: 0,
-    //         checked: true
-    //     })
-    // ))
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true,
+            key: module.id
+        })
+    ))
 
     // //POST Create Homework
 
@@ -167,193 +211,44 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
 
     /* Datos necesarios para la interfaz de los test cases */
-    //Para la seccion de input
-    const [testCases, setTestCase] = useState([]);
-    const [testCasesInput, setInput] = useState([]);
+
+    const [multiQ, setMultiQ] = useState([]);
+    const [cMultiQ, setCMultiQ] = useState([]);
+    const [testCasesS, setTestCaseS] = useState([]);
+    const [testCasesH, setTestCaseH] = useState([]);
+    // const [testCasesInput, setInput] = useState([]);
 
     useEffect(() => {
         if (open) {
-            addTestCaseControl();
-        } else {
-            setTestCase([]);
-            setInput([]);
+            setTestCaseS([]);
+            setTestCaseH([]);
+            setCourse('');
+            setMultiQ([]);
+            setCMultiQ([]);
+            setQType('');
+            setQModule('');
         }
     }, [open]);
 
-    const handleTestCaseChangeI = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    console.log("ekedkwld", testCase)
-                    return {
-                        ...testCase,
-                        input: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const handleTestCaseChangeO = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    return {
-                        ...testCase,
-                        output: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const deleteTestCaseControl = (testCaseId) => {
-        setTestCase((prevTestCases) => {
-            if (prevTestCases.length === 1 && prevTestCases[0].key === testCaseId) {
-                return prevTestCases;
-            }
-
-            const updatedTestCases = prevTestCases.filter((testCase) => testCase.key !== testCaseId);
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const addTestCaseControl = () => {
-        const id = Date.now();
-        const newTestCase = {
-            key: id,
-            jsx: (
-                <Grid item xs={12} key={id}>
-                    <Grid container alignItems="center" justifyContent="center">
-                        <Grid item xs={10}>
-                            <Grid container>
-                                <Grid item xs={6} sx={{ pr: 1 }}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
-                                    >
-                                        <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Input
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Input"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeI(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={6} sx={{ pr: 1 }}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                        <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Output
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Output"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeO(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2} sx={{ mt: 2 }}>
-                            <Grid container align="center" justifyContent="space-around">
-                                <Grid item xs={7} sx={{ bgcolor: 'appDark.button', borderRadius: 2 }}>
-                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addTestCaseControl}>
-                                        <Add />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={7} sx={{ bgcolor: 'error.main', borderRadius: 2, mt: 2 }}>
-                                    <IconButton
-                                        sx={{ color: 'appDark.icon' }}
-                                        onClick={() => deleteTestCaseControl(id)}
-                                    >
-                                        <Delete />
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            ),
-        };
-
-        setTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
-    };
     /* Fin de test cases */
 
+
+    const handleUpload = (TC_1, TC_2) => {
+        const multiq = [];
+        const multiqC = [];
+
+        TC_1.map((tc) => {
+            multiq.push(tc.opcion)
+        })
+
+        TC_2.map((tc) => {
+            multiq.push(tc.opcion)
+            multiqC.push(tc.opcion)
+        })
+
+        console.log("todas", multiq)
+        console.log("correctas", multiqC)
+    }
 
     return (
         <Modal
@@ -412,6 +307,53 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                         },
                     }}>
 
+                        <Grid item xs={10}>
+                            <FormControl variant="filled" sx={{ mt: 3, width: '100%' }}>
+                                <InputLabel id="courseSelectorInputLabel"
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Curso</InputLabel>
+
+                                <Select
+                                    id="courseSelector"
+                                    value={course}
+                                    onChange={handleCourseSelection}
+                                    sx={{ borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {coursesData.map((course) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={course.id}
+                                            value={course.id}
+                                        >
+                                            {course.id} {course.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
 
                         {/* Module Selector */}
                         <Grid item xs={10}>
@@ -441,7 +383,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         },
                                     }}
                                 >
-                                    {modulesDummy.map((module) => (
+                                    {modulesData.map((module) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -450,13 +392,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            // key={module.id}
-                                            // value={module.id}
-                                            key={module}
-                                            value={module}
+                                            key={module.id}
+                                            value={module.id}
+                                            // key={module}
+                                            // value={module}
                                         >
-                                            {/* {module.id} {module.name} */}
-                                            {module}
+                                            {module.id} {module.name}
+                                            {/* {module} */}
                                         </MenuItem>
                                     ))}
 
@@ -553,32 +495,145 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             </Grid>
                         </Grid>
 
-                        {/* SelectorY - TestCases */}
-                        <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
-                                Casos de Prueba
-                            </Typography>
-                        </Grid>
+                        {qtype == 'codep' ?
+                            // SelectorY - TestCases para codigo
+                            <>
+                            <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Caso de Prueba Visible
+                                </Typography>
+                            </Grid>
 
-                        <Grid item xs={10} sx={{
-                            overflowY: 'scroll',
-                            height: '25vh',
-                            "&::-webkit-scrollbar": {
-                                width: 5,
-                            },
-                            "&::-webkit-scrollbar-track": {
-                                backgroundColor: "secondary.main",
-                                borderRadius: 2,
-                            },
-                            "&::-webkit-scrollbar-thumb": {
-                                backgroundColor: "appDark.scrollBar",
-                                borderRadius: 2,
-                            },
-                        }}>
-                            {/* {console.log("test cases",testCases)} */}
-                            {testCases.map((testCase) => testCase.jsx)}
+                            <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                overflowY: 'scroll',
+                                height: '25vh',
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}>
+                                
+                                {/* <Grid item xs={5}>
+                                    <AddTestCasesOC open={open} changeTestCase={changeSinputs} type={"input"}/>
+                                </Grid> */}
+                                {/* <Grid item xs={5}> */}
+                                    {/* <AddTestCasesOC open={open} changeTestCase={changeSTestCase} type={"output"}/> */}
+                                {/* </Grid> */}
+                                {/* {console.log("sinputs", sinputs)} */}
+                                {/* {console.log("soutputs", sTestCases)} */}
 
-                        </Grid>
+                                {/* {testCases.map((testCase) => testCase.jsx)} */}
+
+                                <AddTestCases open={open} changeTestCase={setTestCaseS} />
+                                {console.log("prueba de casos S",testCasesS)}
+
+                            </Grid>
+                            
+                            <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Caso de Prueba Oculto
+                                </Typography>
+                            </Grid>
+
+                            <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                overflowY: 'scroll',
+                                height: '25vh',
+                                "&::-webkit-scrollbar": {
+                                    width: 5,
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "secondary.main",
+                                    borderRadius: 2,
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "appDark.scrollBar",
+                                    borderRadius: 2,
+                                },
+                            }}>
+                                {/* <Grid item xs={5}>
+                                    <AddTestCasesOC open={open} changeTestCase={changeHinputs} type={"input"}/>
+                                </Grid> */}
+                                {/* <Grid item xs={5}> */}
+                                    {/* <AddTestCasesOC open={open} changeTestCase={changeHTestCase} type={"output"}/> */}
+                                {/* </Grid> */}
+                                {/* <AddTestCasesOC/> */}
+                                {/* {console.log("hinputs", hinputs)}
+                                {console.log("houtputs", houtputs)} */}
+
+                                <AddTestCases open={open} changeTestCase={setTestCaseH} />
+                                {console.log("prueba de casos H",testCasesH)}
+                            </Grid>
+                            </>
+
+                        :   
+                            null
+                        }
+                        { qtype == "multi" ?
+                            // SelectorY - TestCases para preguntas multpiles
+                            <>
+                                <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Opciones Incorrectas
+                                </Typography>
+                                
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                   <AddMultiQ open={open} changeMultiQ={setMultiQ} type={"output"}/> 
+                                   {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+                                <Grid item xs={10}>
+                                <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt:2 }}>
+                                    Opciones Correctas
+                                </Typography>
+                                
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                   <AddMultiQ open={open} changeMultiQ={setCMultiQ}/> 
+                                   {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+                            </>
+                        :
+                            null
+                        }
+                        
+                        
 
                     </Grid>
                 </Grid>
