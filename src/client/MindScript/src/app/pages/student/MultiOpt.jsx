@@ -8,19 +8,20 @@ export const MultiOpt = () => {
     const location = useLocation();
     const data = location.state?.data;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-    let responseInfo;
-
-    //Current user info
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const schoolID = (user.email).substring(0, 9);
-    if (user !== null) {
-        // console.log("Student home user info", user)
-        //Desestructuración de user
-        const { email, displayName, emailVerified, uid } = user
-        //Matrícula A00000000
-        // console.log("Matrícula ", schoolID)
-    }
+    
+     //Current user info
+     const auth = getAuth();
+     const user = auth.currentUser;
+     let schoolID, email, displayName, emailVerified, uid, responseInfo;
+ 
+     if (user !== null) {
+         // console.log("Student work env user info", user)
+         //Desestructuración de user
+         ({ email, displayName, emailVerified, uid } = user);
+         //Matrícula A00000000
+         schoolID = (user.email).substring(0, 9).toUpperCase();
+         // console.log("Matrícula ", schoolID)
+     }
 
 
     const group = 'TC1028 (Gpo. 404)'
@@ -46,6 +47,7 @@ export const MultiOpt = () => {
     ];
 
     const [homework, setHomework] = useState([]);
+    
     useEffect(() => {
         const options = {
             method: 'GET',
@@ -71,6 +73,7 @@ export const MultiOpt = () => {
     if (homework.info !== undefined) {
         responseInfo = JSON.parse(homework.info);
     }
+
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
