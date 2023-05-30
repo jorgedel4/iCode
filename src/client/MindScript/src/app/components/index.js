@@ -28,3 +28,4 @@ export * from './Timer';
 export * from './AddTestCasesIC';
 export * from './AddTestCasesOC';
 export * from './AddMultiQ';
+export * from './AddTestCases';
