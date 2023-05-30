@@ -5,9 +5,6 @@ import { AManage } from "../pages";
 import { ASyllabus } from "../pages/admin/ASyllabus";
 import { PDashboard } from "../pages/professor/PDashboard";
 import { getAuth } from "firebase/auth";
-import { useState } from 'react';
-import { VariableContext } from "./VariableContext";
-
 
 export const AppRoutes = () => {
   const auth = getAuth();
@@ -18,8 +15,6 @@ export const AppRoutes = () => {
     ({ email, displayName, emailVerified, uid } = user);
     schoolID = email.substring(0, 1).toUpperCase();
   }
-
-  const [params, setParams] = useState(null);
 
   const renderStudentRoutes = () => (
     <>
@@ -61,12 +56,10 @@ export const AppRoutes = () => {
   );
 
   return (
-    <VariableContext.Provider value={{ params, setParams }}>
-      <Routes>
-        {schoolID === "A" && renderStudentRoutes()}
-        {schoolID === "L" && renderProfessorRoutes()}
-        {schoolID === "S" && renderAdminRoutes()}
-      </Routes>
-    </VariableContext.Provider>
+    <Routes>
+      {schoolID === "A" && renderStudentRoutes()}
+      {schoolID === "L" && renderProfessorRoutes()}
+      {schoolID === "S" && renderAdminRoutes()}
+    </Routes>
   );
 };

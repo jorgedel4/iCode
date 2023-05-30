@@ -2,12 +2,13 @@ import { Card, CardContent, CardActionArea, Typography, Grid, IconButton, Linear
 import { linearProgressClasses } from '@mui/material/LinearProgress';
 import { LockOutlined } from '@mui/icons-material'
 import { useContext, useState, useEffect } from 'react';
-import { VariableContext } from '../routes/VariableContext';
 import { getAuth } from "firebase/auth";
 import { Link } from 'react-router-dom';
 
 
+
 export const SModuleCard = ({ module, index, group }) => {
+
     const { params, setParams } = useContext(VariableContext);
 
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
@@ -50,8 +51,8 @@ export const SModuleCard = ({ module, index, group }) => {
         fetchData();
     }, []);
 
+    const val = { id: module.id, group: group, type: question.type };
     const handleClick = () => {
-        const val = { id: module.id, group: group, type: question.type };
         setParams(val);
         localStorage.setItem('params', JSON.stringify(params));
     };
@@ -67,7 +68,7 @@ export const SModuleCard = ({ module, index, group }) => {
                 ':hover': !module.locked && { backgroundColor: 'secondary.main', opacity: 0.8 }
             }}
             >
-                <Link to={question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""} style={{ textDecoration: 'none' }}>
+                <Link to={{pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : "", state:{data: val}} } style={{ textDecoration: 'none' }}>
                     <CardActionArea
                         onClick={handleClick}
                         disabled={module.locked ? true : false}

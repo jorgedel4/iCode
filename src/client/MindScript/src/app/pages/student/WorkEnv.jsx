@@ -5,9 +5,13 @@ import { useState, useEffect, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 import { Link } from 'react-router-dom';
-import { VariableContext } from '../../routes/VariableContext';
+import { useLocation } from 'react-router-dom';
+
 
 export const WorkEnv = ({ onPrueba }) => {
+    const location = useLocation();
+    const data = location.state?.data;
+
     const { params, setParams } = useContext(VariableContext);
     useEffect(() => {
         const storedVariable = localStorage.getItem('params');
@@ -17,7 +21,7 @@ export const WorkEnv = ({ onPrueba }) => {
     }, []);
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-    console.log(params)
+    console.log(data)
 
     const theme = useTheme();
     //Current user info
