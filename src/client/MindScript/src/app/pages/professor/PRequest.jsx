@@ -5,8 +5,6 @@ import { getAuth } from "firebase/auth";
 
 export const PRequest = () => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-
     const theme = useTheme();
 
     // Api region
@@ -31,7 +29,7 @@ export const PRequest = () => {
         };
 
         fetchData();
-    }, []);
+    }, [requestsData]);
 
     // Searchbar
     const [moduleQuery, setModuleQuery] = useState("");
@@ -149,29 +147,53 @@ export const PRequest = () => {
     };
 
     const selectedRequest = selected !== null ? requestsData.find((r) => r.id === selected) : null;
-    var js, hinputs, sinputs;
+    var js, hinputs, sinputs, options, correctOptions;
     const formattedHInputs = {};
     const formattedSInputs = {};
+    const formattedOptions = {};
+    const formattedCorrectOptions = {};
 
     if (selectedRequest != null) {
-        js = JSON.parse(selectedRequest.info)
-        js.status = selectedRequest.status
-        hinputs = js.hinputs
-        sinputs = js.sinputs
-        for (const [key, value] of Object.entries(hinputs)) {
-            if (Array.isArray(value)) {
-                const formattedValue = value.map(arr => arr[0]).join(',');
-                formattedHInputs[key] = formattedValue;
-            } else {
-                formattedHInputs[key] = value;
+        js = JSON.parse(selectedRequest.info);
+        js.status = selectedRequest.status;
+        if (selectedRequest.type === 'codep') {
+            hinputs = js.hinputs
+            sinputs = js.sinputs
+            for (const [key, value] of Object.entries(hinputs)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedHInputs[key] = formattedValue;
+                } else {
+                    formattedHInputs[key] = value;
+                }
+            }
+            for (const [key, value] of Object.entries(sinputs)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedSInputs[key] = formattedValue;
+                } else {
+                    formattedSInputs[key] = value;
+                }
             }
         }
-        for (const [key, value] of Object.entries(sinputs)) {
-            if (Array.isArray(value)) {
-                const formattedValue = value.map(arr => arr[0]).join(',');
-                formattedSInputs[key] = formattedValue;
-            } else {
-                formattedSInputs[key] = value;
+        if (selectedRequest.type === 'multi') {
+            options = js.options
+            correctOptions = js.correct_option
+            for (const [key, value] of Object.entries(options)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedOptions[key] = formattedValue;
+                } else {
+                    formattedOptions[key] = value;
+                }
+            }
+            for (const [key, value] of Object.entries(correctOptions)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedCorrectOptions[key] = formattedValue;
+                } else {
+                    formattedCorrectOptions[key] = value;
+                }
             }
         }
     }
@@ -337,7 +359,7 @@ export const PRequest = () => {
             </Grid>
 
             <Grid item xs={8} sx={{ mt: 2 }}>
-                {selectedRequest != null && (
+                {selectedRequest != null && selectedRequest.type === 'codep' && (
                     <Grid container sx={{
                         bgcolor: 'secondary.main',
                     }}>
@@ -370,7 +392,7 @@ export const PRequest = () => {
                         </Grid>
 
                         <Grid item xs={12} sx={{
-                            height: '60vh',
+                            height: '65vh',
                             overflowY: 'scroll',
                             "&::-webkit-scrollbar": {
                                 width: 5,
@@ -496,9 +518,113 @@ export const PRequest = () => {
                             </Grid>
 
                         </Grid>
-
                     </Grid>
+                )}
 
+                {selectedRequest != null && selectedRequest.type === 'multi' && (
+                    <Grid container sx={{
+                        bgcolor: 'secondary.main',
+                    }}>
+                        <Grid item xs={12} paddingX={5} sx={{ mt: '5vh' }}>
+                            <Grid container justifyContent='space-between'>
+                                <Grid item xs={6}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
+                                        Detalles del Problema
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={6} align='right'>
+                                    {js.status === 'APP' && (
+                                        <Typography sx={{ color: 'appDark.approved', fontSize: 25 }} >
+                                            Aceptado
+                                        </Typography>
+                                    )}
+                                    {js.status === 'PEN' && (
+                                        <Typography sx={{ color: 'appDark.pending', fontSize: 25 }} >
+                                            Pendiente
+                                        </Typography>
+                                    )}
+                                    {js.status === 'REJ' && (
+                                        <Typography sx={{ color: 'appDark.rejected', fontSize: 25 }} >
+                                            Rechazado
+                                        </Typography>
+                                    )}
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{
+                            height: '65vh',
+                            overflowY: 'scroll',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
+                            <Grid container spacing={0} paddingX={8}>
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Pregunta</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.question}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Número de Opciones</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.n_options}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Opciones</li>
+                                    </Typography>
+                                    {Object.entries(formattedOptions).map(([key, value]) => (
+                                        <div key={key}>
+                                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                                {value}
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Respuesta Correcta</li>
+                                    </Typography>
+                                    {Object.entries(formattedCorrectOptions).map(([key, value]) => (
+                                        <div key={key}>
+                                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                                {value}
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Explicación</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.explanation}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+
+                        </Grid>
+                    </Grid>
                 )}
             </Grid>
         </Grid >

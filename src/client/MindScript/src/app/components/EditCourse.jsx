@@ -8,11 +8,16 @@ export const EditCourse = ({ open, close, params }) => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
-    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerWidth = isLargeScreen ? 40 : isMediumScreen ? 70 : 90;
 
+    const [error, setError] = useState(null);
     const [modulesData, setModule] = useState([]);
+    const [copyModulesData, setCopyModule] = useState([]);
+    const [idData, setId] = useState([]);
+    const [nameData, setName] = useState([]);
+
     useEffect(() => {
         const options = {
             method: 'GET',
@@ -26,13 +31,37 @@ export const EditCourse = ({ open, close, params }) => {
                 const response = await fetch(`${batmanAPI}coursemodules/${params.id}`, options);
                 const responseData = await response.json();
                 setModule(responseData);
+                setCopyModule(responseData);
             } catch (error) {
                 console.error(error);
             }
         };
 
         fetchData();
-    }, [params.id]);
+    }, [params.id, open]);
+
+    const handlePrevDelete = (id) => {
+        setId(prevData => [...prevData, id]);
+        return setModule(prevData => prevData.filter(module => module.id !== id));
+    }
+
+    const handleDelete = async (id) => {
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+
+            };
+            const response = await fetch(`${batmanAPI}module/${id}`, options);
+            setModule(prevData => prevData.filter(module => module.id !== id));
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const handlePatch = async (id) => {
         try {
@@ -53,25 +82,30 @@ export const EditCourse = ({ open, close, params }) => {
         } catch (error) {
             console.error(error);
         }
-    };
+    }
 
-    const handleDeleteModule = async (id) => {
-        try {
-            const options = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'cors',
+    const handleFunctions = async (id) => {
+        const idCourse = id[0];
+        const idModules = id.slice(1);
+        let response;
 
-            };
-
-            const response = await fetch(`${batmanAPI}module/${id}`, options);
-            setModule(prevData => prevData.filter(module => module.id !== id));
-            return response.json;
-        } catch (error) {
-            console.error(error);
+        if (modulesData !== copyModulesData) {
+            await Promise.all(
+                idModules.map(async (idMod) => {
+                    response = await handleDelete(idMod);
+                })
+            );
         }
+
+        if (nameData !== newCourseName) {
+            response = await handlePatch(idCourse);
+        }
+
+        if(response.ok){
+            close();
+        }
+
+        return response;
     };
 
     const moduleControls = Array.isArray(modulesData) && modulesData.length > 0 ?
@@ -114,7 +148,7 @@ export const EditCourse = ({ open, close, params }) => {
                     <div style={{ backgroundColor: theme.palette.error.main, marginTop: 15, borderRadius: 5 }}>
                         <IconButton
                             sx={{ color: 'appDark.icon' }}
-                            onClick={() => handleDeleteModule(module.id)}
+                            onClick={() => handlePrevDelete(module.id)}
                         >
                             <Delete />
                         </IconButton>
@@ -132,18 +166,17 @@ export const EditCourse = ({ open, close, params }) => {
     }
 
     const [newCourseName, setNewCourseName] = useState(params?.name || '');
-    const [courseId, setCourseId] = useState(params?.id || '');
 
     useEffect(() => {
+        setName(params?.name || '');
         setNewCourseName(params?.name || '');
-        setCourseId(params?.id || '');
+        setId([params?.id] || []);
+        setError(null);
     }, [params?.name, params?.id]);
-
-
 
     return (
         <>
-            <Confirmation open={openEditCourse} close={closeModalEditCourse} handleFunction={handlePatch} id={courseId} confirmationText="¿Está seguro que desea guardar los cambios?" confirmationTextButton="Guardar" />
+            <Confirmation open={openEditCourse} close={closeModalEditCourse} handleFunction={handleFunctions} id={idData} confirmationText="¿Está seguro que desea guardar los cambios?" confirmationTextButton="Guardar" />
             <Modal
                 open={open}
                 onClose={close}

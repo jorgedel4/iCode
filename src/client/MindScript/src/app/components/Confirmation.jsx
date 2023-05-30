@@ -1,10 +1,20 @@
-import { Grid, InputLabel, Modal, OutlinedInput, Button, FormHelperText, FormControl, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
-import { useState, useEffect, React } from 'react';
-import { useForm } from '../../hooks/useForm';
-import { getAuth } from "firebase/auth";
+import { Grid, Modal, Button, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { React } from 'react';
 
 
 export const Confirmation = ({ open, close, id, confirmationText, handleFunction, confirmationTextButton }) => {
+    const theme = useTheme();
+
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    const containerWidth = isLargeScreen ? '30vw' : isMediumScreen ? '50vw' : '80vw';
+
+    const handleButtonClick = async () => {
+        const response = await handleFunction(id);
+        if (response && response.ok) {
+            close();
+        }
+    };
 
     return (
         <Modal
@@ -13,16 +23,15 @@ export const Confirmation = ({ open, close, id, confirmationText, handleFunction
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                justifyContent='space-around'
+                justifyContent='center'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
                     boxShadow: 10,
-                    width: '30vw',
-
+                    width: containerWidth,
                 }}>
 
-                <Grid item xs={12} id="PrimeraSección">
+                <Grid item xs={12}>
 
                     <Typography id="modal-hw-title" align='center' variant="h6" component="h2" sx={{ color: 'appDark.text', fontSize: 25, fontWeight: 700, mt: 4 }}>
                         {confirmationText}
@@ -31,31 +40,17 @@ export const Confirmation = ({ open, close, id, confirmationText, handleFunction
                 </Grid>
 
                 {/* Botones */}
-                <Grid container justifyContent='center' sx={{ my: 3, mx: 5.5 }}>
-                    <Grid item xs={6} id="cancelar" >
-
+                <Grid container sx={{ my: 3, mx: 5.5 }}>
+                    <Grid item xs={6} align='center'>
                         <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
                             Cancelar
                         </Button>
 
                     </Grid>
 
-                    <Grid item xs={6} id="crear tarea" align="right">
-
+                    <Grid item xs={6} align='center'>
                         <Button
-                            onClick={() => {
-                                const response = handleFunction(id);
-                                response
-                                    .then(data => {
-                                        if (data.ok) {
-                                            close();
-                                        }
-                                        return data.json;
-                                    })
-                                    .catch(error => {
-                                        console.log(error)
-                                    })
-                            }}
+                            onClick={handleButtonClick}
                             type="submit" variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
                             {confirmationTextButton}
                         </Button>

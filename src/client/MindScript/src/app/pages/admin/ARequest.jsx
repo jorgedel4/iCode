@@ -95,28 +95,52 @@ export const ARequest = () => {
     }
 
     const selectedRequest = selected !== null ? requestsData.find((r) => r.id === selected) : null;
-    var js, hinputs, sinputs;
+    var js, hinputs, sinputs, options, correctOptions;
     const formattedHInputs = {};
     const formattedSInputs = {};
+    const formattedOptions = {};
+    const formattedCorrectOptions = {};
 
     if (selectedRequest != null) {
-        js = JSON.parse(selectedRequest.info)
-        hinputs = js.hinputs
-        sinputs = js.sinputs
-        for (const [key, value] of Object.entries(hinputs)) {
-            if (Array.isArray(value)) {
-                const formattedValue = value.map(arr => arr[0]).join(',');
-                formattedHInputs[key] = formattedValue;
-            } else {
-                formattedHInputs[key] = value;
+        js = JSON.parse(selectedRequest.info);
+        if (selectedRequest.type === 'codep') {
+            hinputs = js.hinputs
+            sinputs = js.sinputs
+            for (const [key, value] of Object.entries(hinputs)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedHInputs[key] = formattedValue;
+                } else {
+                    formattedHInputs[key] = value;
+                }
+            }
+            for (const [key, value] of Object.entries(sinputs)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedSInputs[key] = formattedValue;
+                } else {
+                    formattedSInputs[key] = value;
+                }
             }
         }
-        for (const [key, value] of Object.entries(sinputs)) {
-            if (Array.isArray(value)) {
-                const formattedValue = value.map(arr => arr[0]).join(',');
-                formattedSInputs[key] = formattedValue;
-            } else {
-                formattedSInputs[key] = value;
+        if (selectedRequest.type === 'multi') {
+            options = js.options
+            correctOptions = js.correct_option
+            for (const [key, value] of Object.entries(options)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedOptions[key] = formattedValue;
+                } else {
+                    formattedOptions[key] = value;
+                }
+            }
+            for (const [key, value] of Object.entries(correctOptions)) {
+                if (Array.isArray(value)) {
+                    const formattedValue = value.map(arr => arr[0]).join(',');
+                    formattedCorrectOptions[key] = formattedValue;
+                } else {
+                    formattedCorrectOptions[key] = value;
+                }
             }
         }
     }
@@ -154,7 +178,7 @@ export const ARequest = () => {
             </Grid>
 
             <Grid item xs={8} sx={{ mt: 5 }}>
-                {selectedRequest != null && (
+                {selectedRequest != null && selectedRequest.type === 'codep' && (
                     <Grid container sx={{
                         bgcolor: 'secondary.main',
                     }}>
@@ -328,7 +352,126 @@ export const ARequest = () => {
                         </Grid>
 
                     </Grid>
+                )}
 
+                {selectedRequest != null && selectedRequest.type === 'multi' && (
+                    <Grid container sx={{
+                        bgcolor: 'secondary.main',
+                    }}>
+                        <Grid item xs={12} paddingX={5} sx={{ mt: '5vh' }}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 25 }} >
+                                Detalles del Problema
+                            </Typography>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{
+                            height: '65vh',
+                            overflowY: 'scroll',
+                            "&::-webkit-scrollbar": {
+                                width: 5,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "secondary.main",
+                                borderRadius: 2,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "appDark.scrollBar",
+                                borderRadius: 2,
+                            },
+                        }}>
+                            <Grid container spacing={0} paddingX={8}>
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Pregunta</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.question}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Número de Opciones</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.n_options}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Opciones</li>
+                                    </Typography>
+                                    {Object.entries(formattedOptions).map(([key, value]) => (
+                                        <div key={key}>
+                                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                                {value}
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Respuesta Correcta</li>
+                                    </Typography>
+                                    {Object.entries(formattedCorrectOptions).map(([key, value]) => (
+                                        <div key={key}>
+                                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                                {value}
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                        <li>Explicación</li>
+                                    </Typography>
+                                    <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                        {js.explanation}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container justifyContent='flex-end' columnSpacing={5} padding='5vh'>
+                                <Grid item>
+                                    <Button type="submit"
+                                        onClick={showModalApproveRequest}
+                                        sx={{
+                                            color: 'appDark.text',
+                                            bgcolor: 'transparent',
+                                            border: 0.5,
+                                            borderColor: 'appDark.box',
+                                            '&:hover': { bgcolor: 'appDark.adminButton', borderColor: 'transparent' },
+                                            borderRadius: 5,
+                                        }}>
+                                        Aceptar
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button type="submit"
+                                        onClick={showModalDeclineRequest}
+                                        sx={{
+                                            color: 'appDark.text',
+                                            bgcolor: 'transparent',
+                                            border: 0.5,
+                                            borderColor: 'appDark.box',
+                                            '&:hover': { bgcolor: 'appDark.adminButton', borderColor: 'transparent' },
+                                            borderRadius: 5,
+                                        }}>
+                                        Rechazar
+                                    </Button>
+                                </Grid>
+
+                            </Grid>
+
+                        </Grid>
+
+                    </Grid>
                 )}
             </Grid>
         </Grid >
