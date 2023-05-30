@@ -306,6 +306,11 @@ BEGIN
     ORDER BY attempt_date DESC
     LIMIT 1;
 
+    IF last_attempt_question IS NULL THEN
+        SET questionID = NewHWQuestionID(homework_id, student_id);
+        RETURN questionID;
+    END IF;
+
     IF last_attempt_status = 'PAS' THEN
         SET questionID = NewHWQuestionID(homework_id, student_id);
         RETURN questionID;
