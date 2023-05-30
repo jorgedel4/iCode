@@ -43,6 +43,26 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     const modulesDummy = ["For loops", "Condicionales", "Basics"]
 
+    /*File upload section */
+    let formatedInfo = ``;
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            const fileContent = event.target.result;
+            // console.log(fileContent); // Do something with the file content
+            // console.log(`{"${JSON.stringify(fileContent).slice(1, -1)}"}`)
+            const rawjson = `{"${JSON.stringify(fileContent).slice(1, -1)}"}`;
+            const format = rawjson.substring(9, rawjson.length - 7)
+            console.log("FORMAT", format)
+            formatedInfo = `{"${JSON.stringify(fileContent).slice(1, -1)}"}`
+        };
+        // console.log(file)
+
+        reader.readAsText(file);
+    };
+
     const questionTypes = ["codep", "multi"]
     const createQuestion = {
         qdescription: qdescription,
@@ -59,24 +79,28 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     //POST question request from JSON file
 
     const requestAQuestion = async () => {
+        // console.log("this is it",formatedInfo)
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
 
+
             mode: 'cors',
-            body: JSON.stringify({
-                "module": "M0000000000000000001",
-                "q_type": createQuestion.q_type,
-                "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
-                "created_by": createQuestion.created_by
-            })
-
-
+            body: JSON.stringify(
+                [
+                    {
+                        "module": "M0000000000000000001",
+                        "q_type": "codep",
+                        "info": format,
+                        "created_by": "L00000003"
+                    }
+                ]
+            )
         }
-        console.log(options)
-        fetch(`${riddleAPI}requestQuestion  `, options)
+        console.log(options.body)
+        fetch(`${riddleAPI}requestQuestion`, options)
             .then(response => {
                 if (response.status === 201) {
                     close();
@@ -324,20 +348,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     };
     /* Fin de test cases */
 
-    /*File upload section */
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = (event) => {
-            const fileContent = event.target.result;
-            console.log(fileContent); // Do something with the file content
-            console.log(JSON.stringify(fileContent))
-        };
-        // console.log(file)
-
-        reader.readAsText(file);
-    };
 
     return (
         <Modal
