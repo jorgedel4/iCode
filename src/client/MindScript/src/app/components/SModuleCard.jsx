@@ -40,7 +40,7 @@ export const SModuleCard = ({ module, index, group }) => {
                 const responseData = await response.json();
                 setQuestion(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 

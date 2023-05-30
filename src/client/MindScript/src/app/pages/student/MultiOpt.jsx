@@ -1,8 +1,14 @@
 import { Grid, Button, Typography } from '@mui/material'
 import { NavBar, QuestionsDropdown, OptionButton } from '../../components'
 import { getAuth } from "firebase/auth";
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const MultiOpt = () => {
+    const location = useLocation();
+    const data = location.state?.data;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+    let responseInfo;
 
     //Current user info
     const auth = getAuth();
@@ -20,7 +26,6 @@ export const MultiOpt = () => {
     const group = 'TC1028 (Gpo. 404)'
     const module = 'Variables'
     const qNumber = 'Pregunta #'
-    const qContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
     const pages = [
         { name: 'Home', route: '/student/home' },
@@ -40,12 +45,32 @@ export const MultiOpt = () => {
         'Pregunta #',
     ];
 
-    const options = [
-        'ABCDxggedfds',
-        'abcddvfbggb',
-        'AbCdfvfvdvdv',
-        'aBcDffgfffv'
-    ]
+    const [homework, setHomework] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
+                const responseData = await response.json();
+                setHomework(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, [data]);
+
+    if (homework.info !== undefined) {
+        responseInfo = JSON.parse(homework.info);
+    }
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -74,12 +99,16 @@ export const MultiOpt = () => {
 
                     {/* Question description */}
                     <Grid item xs={12} mt={5}>
-                        <Typography align='justify' sx={{ color: 'appDark.text', fontSize: 20 }}>{qContent}</Typography>
+                        <Typography align='justify' sx={{ color: 'appDark.text', fontSize: 20 }}>
+                            {responseInfo !== undefined && (
+                                responseInfo.question
+                            )}
+                        </Typography>
                     </Grid>
 
                     {/* Container with the options */}
                     <Grid container direction='row' justifyContent="center">
-                        {options.map((option, index) => (
+                        {responseInfo !== undefined && responseInfo.options.map((option, index) => (
                             <OptionButton key={index} option={option} />
                         ))}
                     </Grid>
