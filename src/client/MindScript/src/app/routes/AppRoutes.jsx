@@ -5,6 +5,9 @@ import { AManage } from "../pages";
 import { ASyllabus } from "../pages/admin/ASyllabus";
 import { PDashboard } from "../pages/professor/PDashboard";
 import { getAuth } from "firebase/auth";
+import { useState } from 'react';
+import { VariableContext } from "./VariableContext";
+
 
 export const AppRoutes = () => {
   const auth = getAuth();
@@ -16,9 +19,11 @@ export const AppRoutes = () => {
     schoolID = email.substring(0, 1).toUpperCase();
   }
 
+  const [params, setParams] = useState(null);
+
   const renderStudentRoutes = () => (
     <>
-      <Route path="/" element={<SProfile/>} />
+      <Route path="/" element={<SProfile />} />
       <Route path="student/home" element={<SHomePage />} />
       <Route path="student/modules" element={<SModulesPage />} />
       <Route path="student/modules/:group/:course" element={<SModulesPage />} />
@@ -32,7 +37,7 @@ export const AppRoutes = () => {
 
   const renderProfessorRoutes = () => (
     <>
-      <Route path="/" element={<PProfile/>} />
+      <Route path="/" element={<PProfile />} />
       <Route path="professor/home" element={<PHomePage />} />
       <Route path="professor/modules" element={<PModulesPage />} />
       <Route path="professor/modules/:group/:course" element={<PModulesPage />} />
@@ -56,10 +61,12 @@ export const AppRoutes = () => {
   );
 
   return (
-    <Routes>
-      {schoolID === "A" && renderStudentRoutes()}
-      {schoolID === "L" && renderProfessorRoutes()}
-      {schoolID === "S" && renderAdminRoutes()}
-    </Routes>
+    <VariableContext.Provider value={{ params, setParams }}>
+      <Routes>
+        {schoolID === "A" && renderStudentRoutes()}
+        {schoolID === "L" && renderProfessorRoutes()}
+        {schoolID === "S" && renderAdminRoutes()}
+      </Routes>
+    </VariableContext.Provider>
   );
 };
