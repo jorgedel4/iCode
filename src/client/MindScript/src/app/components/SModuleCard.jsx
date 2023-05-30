@@ -9,8 +9,6 @@ import { Link } from 'react-router-dom';
 
 export const SModuleCard = ({ module, index, group }) => {
 
-    const { params, setParams } = useContext(VariableContext);
-
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
@@ -51,10 +49,7 @@ export const SModuleCard = ({ module, index, group }) => {
         fetchData();
     }, []);
 
-    const val = { id: module.id, group: group, type: question.type };
     const handleClick = () => {
-        setParams(val);
-        localStorage.setItem('params', JSON.stringify(params));
     };
 
     return (
@@ -68,7 +63,14 @@ export const SModuleCard = ({ module, index, group }) => {
                 ':hover': !module.locked && { backgroundColor: 'secondary.main', opacity: 0.8 }
             }}
             >
-                <Link to={{pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : "", state:{data: val}} } style={{ textDecoration: 'none' }}>
+                <Link
+                    to={{
+                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                    }}
+                    state={{ data: { id: module.id, group: group, type: question.type } }}
+                    style={{ textDecoration: 'none' }}
+                >
+
                     <CardActionArea
                         onClick={handleClick}
                         disabled={module.locked ? true : false}
