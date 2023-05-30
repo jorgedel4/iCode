@@ -93,7 +93,7 @@ export const SModulesPage = () => {
                     modulesData.map((module, index) => (
                         <Grid item key={index} xs={12} md={4}>
                             {module.progress === 100? modulesData[index+1].locked=false : null}
-                            <SModuleCard module={module} index={index} />
+                            <SModuleCard module={module} index={index} group={params.group}/>
                         </Grid>
                     ))
                 :null}

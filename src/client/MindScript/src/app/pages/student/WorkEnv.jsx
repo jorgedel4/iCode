@@ -1,16 +1,27 @@
 import { Grid, Button, Typography, useTheme } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 
 export const WorkEnv = ({ onPrueba }) => {
+    const location = useLocation();
+    const data = location.state?.data;
 
+    const { params, setParams } = useContext(VariableContext);
+    useEffect(() => {
+        const storedVariable = localStorage.getItem('params');
+        if (storedVariable) {
+            setParams(JSON.parse(storedVariable));
+        }
+    }, []);
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-
+    console.log(data)
 
     const theme = useTheme();
     //Current user info
@@ -43,7 +54,7 @@ export const WorkEnv = ({ onPrueba }) => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=H0000000000000000001&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${params.id}&id_student=${schoolID}&id_group=${params.group}`, options);
                 const responseData = await response.json();
                 setHomework(responseData);
             } catch (error) {
@@ -52,7 +63,7 @@ export const WorkEnv = ({ onPrueba }) => {
         };
 
         fetchData();
-    }, []);
+    }, [params]);
 
     if (homework.info !== undefined) {
         responseInfo = JSON.parse(homework.info);
