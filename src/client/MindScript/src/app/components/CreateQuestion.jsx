@@ -12,9 +12,6 @@ import { UploadFile } from '@mui/icons-material'
 import { AddTestCasesOC } from './';
 import { AddMultiQ } from './';
 
-import { AddTestCasesOC } from './';
-import { AddMultiQ } from './';
-
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
     
