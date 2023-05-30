@@ -44,7 +44,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const modulesDummy = ["For loops", "Condicionales", "Basics"]
 
     /*File upload section */
-    let formatedInfo = ``;
+    const [formatedInfo, setJSONFormat] = useState("");
+    
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -53,15 +54,20 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             const fileContent = event.target.result;
             // console.log(fileContent); // Do something with the file content
             // console.log(`{"${JSON.stringify(fileContent).slice(1, -1)}"}`)
-            const rawjson = `{"${JSON.stringify(fileContent).slice(1, -1)}"}`;
-            const format = rawjson.substring(9, rawjson.length - 7)
-            console.log("FORMAT", format)
-            formatedInfo = `{"${JSON.stringify(fileContent).slice(1, -1)}"}`
+            setJSONFormat(fileContent)
+            // console.log("FORMAT", formated)
         };
         // console.log(file)
-
+        console.log("in",formatedInfo)
+        
         reader.readAsText(file);
+        
     };
+    console.log("out", formatedInfo)
+    const rawjson = `{"${JSON.stringify(formatedInfo).slice(1, -1)}"}`;
+    const formated = rawjson.substring(9, rawjson.length - 7)
+    console.log("formatedInfo", formated)
+    
 
     const questionTypes = ["codep", "multi"]
     const createQuestion = {
@@ -93,7 +99,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                     {
                         "module": "M0000000000000000001",
                         "q_type": "codep",
-                        "info": format,
+                        "info": (formatedInfo.slice(1, -1)),
                         "created_by": "L00000003"
                     }
                 ]
