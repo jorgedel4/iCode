@@ -7,12 +7,14 @@ import { useLocation } from 'react-router-dom';
 export const MultiOpt = () => {
     const location = useLocation();
     const data = location.state?.data;
+    const questionParams = location.state?.questionParams;
+    const questionInfo = JSON.parse(questionParams.info);
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid, responseInfo;
+    let schoolID, email, displayName, emailVerified, uid;
 
     if (user !== null) {
         // console.log("Student work env user info", user)
@@ -46,37 +48,6 @@ export const MultiOpt = () => {
         'Pregunta #',
     ];
 
-    const [homework, setHomework] = useState([]);
-
-    useEffect(() => {
-        if(data){
-            const options = {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
-                mode: 'cors',
-            }
-    
-            const fetchData = async () => {
-                try {
-                    const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
-                    const responseData = await response.json();
-                    setHomework(responseData);
-                } catch (error) {
-                    console.error(error);
-                }
-            };
-    
-            fetchData();
-        }
-    }, [data]);
-
-    if (homework.info !== undefined) {
-        responseInfo = JSON.parse(homework.info);
-    }
-
-
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
@@ -105,16 +76,16 @@ export const MultiOpt = () => {
                     {/* Question description */}
                     <Grid item xs={12} mt={5}>
                         <Typography align='justify' sx={{ color: 'appDark.text', fontSize: 20 }}>
-                            {responseInfo !== undefined && (
-                                responseInfo.question
+                            {questionInfo !== undefined && (
+                                questionInfo.question
                             )}
                         </Typography>
                     </Grid>
 
                     {/* Container with the options */}
                     <Grid container direction='row' justifyContent="center">
-                        {responseInfo !== undefined && responseInfo.options && responseInfo.options.length > 0 && (
-                            responseInfo.options.map((option, index) => (
+                        {questionInfo !== undefined && questionInfo.options && questionInfo.options.length > 0 && (
+                            questionInfo.options.map((option, index) => (
                                 <OptionButton key={index} option={option} />
                             ))
                         )}
@@ -122,10 +93,7 @@ export const MultiOpt = () => {
 
                     {/* Buttons section */}
                     <Grid container direction='row'>
-                        <Grid item xs={12} sm={8} md={9} lg={10} xl={11} mt={2} >
-                            <QuestionsDropdown questions={questions} qName={'Pregunta #'} />
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3} lg={2} xl={1} mt={2} align='right' >
+                        <Grid item xs={12} align='right' >
                             <Button
                                 sx={{
                                     color: 'appDark.text',

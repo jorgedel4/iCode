@@ -9,7 +9,8 @@ import { useLocation } from 'react-router-dom';
 
 export const WorkEnv = () => {
     const location = useLocation();
-    const data = location.state?.data;
+    const questionParams = location.state?.questionParams;
+    const questionInfo = JSON.parse(questionParams.info);
 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
@@ -18,7 +19,7 @@ export const WorkEnv = () => {
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid, responseInfo;
+    let schoolID, email, displayName, emailVerified, uid;
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
 
@@ -32,35 +33,6 @@ export const WorkEnv = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    //API para obtener la info de los grupos
-    const [homework, setHomework] = useState([]);
-    useEffect(() => {
-        if (data) {
-            const options = {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
-                mode: 'cors',
-            };
-
-            const fetchData = async () => {
-                try {
-                    const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
-                    const responseData = await response.json();
-                    setHomework(responseData);
-                } catch (error) {
-                    console.error(error);
-                }
-            };
-
-            fetchData();
-        }
-    }, [data]);
-    
-    if (homework.info !== undefined) {
-        responseInfo = JSON.parse(homework.info);
-    }
 
     const [progress, setProgress] = useState([]);
     useEffect(() => {
@@ -82,7 +54,7 @@ export const WorkEnv = () => {
         };
 
         fetchData();
-    }, []);
+    }, [progress]);
 
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
@@ -90,7 +62,7 @@ export const WorkEnv = () => {
     //Objeto para codeExec
     const hwData = {
         code: content,
-        id: homework.id_pregunta,
+        id: questionParams.id_pregunta,
     }
 
     //Request new question enpoint
@@ -171,8 +143,8 @@ export const WorkEnv = () => {
                                     borderRadius: 2,
                                 },
                             }}>
-                                {responseInfo !== undefined && (
-                                    responseInfo.description
+                                {questionInfo.description && questionInfo.description.length > 0 && (
+                                    questionInfo.description
                                 )}
                             </Typography>
                         </Grid>

@@ -47,9 +47,6 @@ export const SModuleCard = ({ module, index, group }) => {
         fetchData();
     }, []);
 
-    const handleClick = () => {
-    };
-
     return (
         <>
             <Card sx={{
@@ -65,12 +62,11 @@ export const SModuleCard = ({ module, index, group }) => {
                     to={{
                         pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                     }}
-                    state={{ data: { id: module.id, group: group, type: question.type } }}
+                    state={{ questionParams: question }}
                     style={{ textDecoration: 'none' }}
                 >
 
                     <CardActionArea
-                        onClick={handleClick}
                         disabled={module.locked ? true : false}
                     >
 
