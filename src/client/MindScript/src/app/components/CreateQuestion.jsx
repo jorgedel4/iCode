@@ -147,11 +147,16 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const formated = rawjson.substring(9, rawjson.length - 7)
     console.log("formatedInfo", formated)
 
+    function addBackslashToString(string) {
+        return string.replace(/"/g, '\\$&');
+    }
+      
 
     //POST - question request 
 
     const requestAQuestion = async () => {
         console.log(qtype)
+        var info = {}
 
         if (qtype === "multi") {
             const multiq = [];
@@ -166,8 +171,19 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 multiqC.push(tc.opcion)
             })
 
-            console.log("todas", multiq)
-            console.log("correctas", multiqC)
+            info = {
+                "module": qmodule,
+                "q_type": qtype,
+                "question": qdescription,
+                "n_options": multiq.length,
+                "options": multiq,
+                "correct_option": multiqC,
+                "explanation": qexplanation,
+                "created_by": schoolID,
+            }
+
+            console.log("info",info)
+
         } else {
             const hinputs = [];
             const houtputs = [];
@@ -183,12 +199,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 houtputs.push(tc.output);
             })
 
-            console.log("input visibles", sinputs)
-            console.log("input oculto", hinputs)
-
             sinputs.map((I, index) => {
                 const tmp = I.split("\n");
-                // console.log("njkdnasd", tmp)
                 sinputs[index] = tmp;
             })
             hinputs.map((I, index) => {
@@ -196,11 +208,49 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 hinputs[index] = tmp;
             })
 
-            console.log("input visibles", sinputs)
-            console.log("output visibles", soutputs)
-            console.log("input oculto", hinputs)
-            console.log("output oculto", houtputs)
+            xinfo = {
+                "module": qmodule,
+                "q_type": qtype,
+                "hinputs": hinputs,
+                "sinputs": sinputs,
+                "houtputs": houtputs,
+                "language": "python",
+                "soutputs": soutputs,
+                "timeoutSec": 10,
+                "description": qdescription,
+                "initialCode": "",
+                "forbiddenFunctions": ["sum"],
+                "created_by": schoolID,
+            }
+
+            console.log("info",info)
         }
+
+        // const options = {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+
+        //     mode: 'cors',
+        //     body: JSON.stringify({
+        //         "info": addBackslashToString(JSON.stringify(info))
+        //     })
+        // }
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+            mode: 'cors',
+            body: {
+                "info": JSON.stringify(info)
+            }
+        }
+
+        console.log(options)
 
 
         // const options = {
@@ -216,19 +266,18 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         //         "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
         //         "created_by": createQuestion.created_by
         //     })
-
-
         // }
-        // console.log(options)
-        // fetch(`${riddleAPI}requestQuestion  `, options)
-        //     .then(response => {
-        //         if (response.status === 201) {
-        //             close();
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
+
+        console.log(options)
+        fetch(`${riddleAPI}requestQuestion  `, options)
+            .then(response => {
+                if (response.status === 201) {
+                    close();
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
     };
 
 
@@ -237,7 +286,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     const [cMultiQ, setCMultiQ] = useState([]);
     const [testCasesS, setTestCaseS] = useState([]);
     const [testCasesH, setTestCaseH] = useState([]);
-    // const [testCasesInput, setInput] = useState([]);
 
     useEffect(() => {
         if (open) {
@@ -253,24 +301,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     }, [open]);
 
     /* Fin de test cases */
-
-
-    const handleUpload = (TC_1, TC_2) => {
-        const multiq = [];
-        const multiqC = [];
-
-        TC_1.map((tc) => {
-            multiq.push(tc.opcion)
-        })
-
-        TC_2.map((tc) => {
-            multiq.push(tc.opcion)
-            multiqC.push(tc.opcion)
-        })
-
-        console.log("todas", multiq)
-        console.log("correctas", multiqC)
-    }
 
     return (
         <Modal
@@ -541,21 +571,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         borderRadius: 2,
                                     },
                                 }}>
-
-                                    {/* <Grid item xs={5}>
-                                    <AddTestCasesOC open={open} changeTestCase={changeSinputs} type={"input"}/>
-                                </Grid> */}
-                                    {/* <Grid item xs={5}> */}
-                                    {/* <AddTestCasesOC open={open} changeTestCase={changeSTestCase} type={"output"}/> */}
-                                    {/* </Grid> */}
-                                    {/* {console.log("sinputs", sinputs)} */}
-                                    {/* {console.log("soutputs", sTestCases)} */}
-
-                                    {/* {testCases.map((testCase) => testCase.jsx)} */}
-
                                     <AddTestCases open={open} changeTestCase={setTestCaseS} />
-                                    {console.log("prueba de casos S", testCasesS)}
-
+                                    {/* {console.log("prueba de casos S", testCasesS)} */}
                                 </Grid>
 
                                 <Grid item xs={10}>
@@ -579,18 +596,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         borderRadius: 2,
                                     },
                                 }}>
-                                    {/* <Grid item xs={5}>
-                                    <AddTestCasesOC open={open} changeTestCase={changeHinputs} type={"input"}/>
-                                </Grid> */}
-                                    {/* <Grid item xs={5}> */}
-                                    {/* <AddTestCasesOC open={open} changeTestCase={changeHTestCase} type={"output"}/> */}
-                                    {/* </Grid> */}
-                                    {/* <AddTestCasesOC/> */}
-                                    {/* {console.log("hinputs", hinputs)}
-                                {console.log("houtputs", houtputs)} */}
-
                                     <AddTestCases open={open} changeTestCase={setTestCaseH} />
-                                    {console.log("prueba de casos H", testCasesH)}
+                                    {/* {console.log("prueba de casos H", testCasesH)} */}
                                 </Grid>
                             </>
 
