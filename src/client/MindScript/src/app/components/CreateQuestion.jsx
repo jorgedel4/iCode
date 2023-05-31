@@ -78,8 +78,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         fetchData();
     }, []);
 
-    const modulesDummy = ["For loops", "Condicionales", "Basics"]
-
     const questionTypes = ["codep", "multi"]
     const createQuestion = {
         qdescription: qdescription,
@@ -105,32 +103,83 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     //POST question request from JSON file
 
     const requestAQuestion = async () => {
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        console.log(qtype)
 
-            mode: 'cors',
-            body: JSON.stringify({
-                "module": "M0000000000000000001",
-                "q_type": createQuestion.q_type,
-                "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
-                "created_by": createQuestion.created_by
+        if (qtype === "multi") {
+            const multiq = [];
+            const multiqC = [];
+
+            multiQ.map((tc) => {
+                multiq.push(tc.opcion)
             })
 
+            cMultiQ.map((tc) => {
+                multiq.push(tc.opcion)
+                multiqC.push(tc.opcion)
+            })
 
+            console.log("todas", multiq)
+            console.log("correctas", multiqC)
+        } else {
+            const hinputs = [];
+            const houtputs = [];
+            const sinputs = [];
+            const soutputs = [];
+
+            testCasesS.map((tc) => {
+                sinputs.push(tc.input);
+                soutputs.push(tc.output);
+            })
+            testCasesH.map((tc) => {
+                hinputs.push(tc.input);
+                houtputs.push(tc.output);
+            })
+
+            console.log("input visibles", sinputs)
+            console.log("input oculto", hinputs)
+
+            sinputs.map((I, index) => {
+                const tmp = I.split("\n");
+                // console.log("njkdnasd", tmp)
+                sinputs[index] = tmp;
+            })
+            hinputs.map((I, index) => {
+                const tmp = I.split("\n");
+                hinputs[index] = tmp;
+            })
+
+            console.log("input visibles", sinputs)
+            console.log("output visibles", soutputs)
+            console.log("input oculto", hinputs)
+            console.log("output oculto", houtputs)
         }
-        console.log(options)
-        fetch(`${riddleAPI}requestQuestion  `, options)
-            .then(response => {
-                if (response.status === 201) {
-                    close();
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
+
+        // const options = {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+
+        //     mode: 'cors',
+        //     body: JSON.stringify({
+        //         "module": "M0000000000000000001",
+        //         "q_type": createQuestion.q_type,
+        //         "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
+        //         "created_by": createQuestion.created_by
+        //     })
+
+
+        // }
+        // console.log(options)
+        // fetch(`${riddleAPI}requestQuestion  `, options)
+        //     .then(response => {
+        //         if (response.status === 201) {
+        //             close();
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
     };
 
 
@@ -584,7 +633,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         borderRadius: 2,
                                     },
                                 }}>
-                                   <AddMultiQ open={open} changeMultiQ={setMultiQ} type={"output"}/> 
+                                   <AddMultiQ open={open} changeMultiQ={setMultiQ}/> 
                                    {/* {console.log("multi erroneas",wMultiQ)} */}
                                 </Grid>
                                 <Grid item xs={10}>
