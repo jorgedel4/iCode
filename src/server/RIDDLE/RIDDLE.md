@@ -74,91 +74,39 @@ HTTP/1.1 200 OK Content-Type: application/json
 ```
 
 _______________________________________________
-<h2 style="color:#65b891;">ENDPOINT para revisar progreso de una tarea</h2>
+### `/studentprogress`
+#### Descripcion
+Progreso de un estudiante de un modulo o tarea
 
-<h3 style="color:#0000FF;">/statusHomework</h3>
+#### Metodo de HTTP
+`GET`
 
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Solicitar el porcentaje de avance de una tarea para un estudiante dado
+#### Parametros
+(Mediante variables de url)
+* `student` (obligatorio): ID estudiante del que se desea consultar el progreso
+* `assignment` (obligatorio): ID del modulo o tarea del que se desea consultar el progreso
+* `group` (obligatorio para progreso de modulo): ID del grupo del modulo del que se desea ver el progreso 
 
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-GET
+#### Respuestas
+(En formato JSON) 
+| Campo            | Tipo                  | Descripcion                    |
+| ---------------- | --------------------- | ------------------------------ |
+| needed           | int                   | Numero de preguntas necesarias para terminar el modulo/tarea |
+| answered         | int                   | Numero de preguntas que se han contestado de ese modulo/tarea|
 
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el URL)
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8003/studentprogress?student=A01551955&assignment=M0000000000000000001&group=G000000001
 
-| Parametro    | Tipo      | Obligatorio                                  | Decripcion                                             |
-| :---------:  | :-------: | :------------------------------------------: | :----------------------------------------------------: |
-| id_student   | string    | si                                           | ID del estudiante al que se busca evaluar su avance en la tarea                  |
-| id_homework  | string    | si                                           | ID de la tarea a la que se referencia         | 
-
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-
-<p style= "font-weight: bold;">Peticion</p>
-GET 
-34.16.137.250:8003/statusHomework?id_student=A01551955&id_homework=H0000000000000000001
-
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-(En formato JSON)
-| Campo          | Tipo                  | Descripcion                                                                      |
-| -------------- | --------------------- | -------------------------------------------------------------------------------: |
-| needed         | int                   | Numero de preguntas necesarias para completar la tarea                           |
-| answered       | int                   | Numero de preguntas que han sido resuletas por el alumno para esa tarea          |
-
-HTTP/1.1 200 OK Content-Type: application/json
-``` json
-{
-    "needed": 5,
-    "answered": 0
-}
-```
-<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
-<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
-
-_______________________________________________
-<h3 style="color:#0000FF;">/statusModule</h3>
-
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Progreso de modulo de un estudiante
-
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-GET
-
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante variables de URL)
-
-| Parametro    | Tipo      | Obligatorio    | Decripcion                                    |
-| :---------:  | :-------: | :------------: | :-------------------------------------------: |
-| student      | string    | si             | Matricula del estudiante                      |
-| module       | string    | si             | ID del modulo del que se consulta el progreso | 
-| group        | string    | si             | ID del grupo del modulo                       | 
-
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-
-<p style= "font-weight: bold;">Peticion</p>
-GET 
-34.16.137.250:8003/statusModule?student=A01551955&module=M0000000000000000002&group=G000000001
-
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-(En formato JSON)
-| Campo          | Tipo                  | Descripcion                                                                      |
-| -------------- | --------------------- | -------------------------------------------------------------------------------: |
-| needed         | int                   | Numero de preguntas necesarias para completar el modulo                          |
-| answered       | int                   | Numero de preguntas que han sido resuletas por el alumno para ese modulo y grupo |
-
-HTTP/1.1 200 OK Content-Type: application/json
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
 ``` json
 {
     "needed": 3,
-    "answered": 0
+    "answered": 1
 }
 ```
-<p>"total" representa el total de preguntas con el que cuenta esa tarea</p>
-<p>"progress" representa la cantidad de preguntas de esa tarea resueltas con exito</p>
 
 _______________________________________________
 
