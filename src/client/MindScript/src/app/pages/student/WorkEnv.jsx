@@ -35,27 +35,29 @@ export const WorkEnv = () => {
     //API para obtener la info de los grupos
     const [homework, setHomework] = useState([]);
     useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
+        if (data) {
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                mode: 'cors',
+            };
+
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
+                    const responseData = await response.json();
+                    setHomework(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            fetchData();
         }
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
-                const responseData = await response.json();
-                setHomework(responseData);
-            } catch (error) {
-                // console.error(error);
-            }
-        };
-
-        fetchData();
     }, [data]);
-
+    
     if (homework.info !== undefined) {
         responseInfo = JSON.parse(homework.info);
     }

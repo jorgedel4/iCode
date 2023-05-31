@@ -8,20 +8,20 @@ export const MultiOpt = () => {
     const location = useLocation();
     const data = location.state?.data;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-    
-     //Current user info
-     const auth = getAuth();
-     const user = auth.currentUser;
-     let schoolID, email, displayName, emailVerified, uid, responseInfo;
- 
-     if (user !== null) {
-         // console.log("Student work env user info", user)
-         //Desestructuración de user
-         ({ email, displayName, emailVerified, uid } = user);
-         //Matrícula A00000000
-         schoolID = (user.email).substring(0, 9).toUpperCase();
-         // console.log("Matrícula ", schoolID)
-     }
+
+    //Current user info
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid, responseInfo;
+
+    if (user !== null) {
+        // console.log("Student work env user info", user)
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        //Matrícula A00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Matrícula ", schoolID)
+    }
 
 
     const group = 'TC1028 (Gpo. 404)'
@@ -47,27 +47,29 @@ export const MultiOpt = () => {
     ];
 
     const [homework, setHomework] = useState([]);
-    
+
     useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
-                const responseData = await response.json();
-                setHomework(responseData);
-            } catch (error) {
-                console.error(error);
+        if(data){
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                mode: 'cors',
             }
-        };
-
-        fetchData();
+    
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(`${riddleAPI}questions?id_assigment=${data.id}&id_student=${schoolID}&id_group=${data.group}`, options);
+                    const responseData = await response.json();
+                    setHomework(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+    
+            fetchData();
+        }
     }, [data]);
 
     if (homework.info !== undefined) {
@@ -111,9 +113,11 @@ export const MultiOpt = () => {
 
                     {/* Container with the options */}
                     <Grid container direction='row' justifyContent="center">
-                        {responseInfo !== undefined && responseInfo.options.map((option, index) => (
-                            <OptionButton key={index} option={option} />
-                        ))}
+                        {responseInfo !== undefined && responseInfo.options && responseInfo.options.length > 0 && (
+                            responseInfo.options.map((option, index) => (
+                                <OptionButton key={index} option={option} />
+                            ))
+                        )}
                     </Grid>
 
                     {/* Buttons section */}
