@@ -11,12 +11,16 @@ export const AddTestCases = ({open, changeTestCase}) => {
     const [testCasesInput, setInput] = useState([]);
 
     useEffect(() => {
+        // addTestCaseControl();
         if (open) {
-            addTestCaseControl();
-        } else {
             setTestCase([]);
             setInput([]);
-        }
+            addTestCaseControl();
+        } 
+        // else {
+        //     setTestCase([]);
+        //     setInput([]);
+        // }
     }, [open]);
 
     const handleTestCaseChangeI = (testCaseId, event) => {

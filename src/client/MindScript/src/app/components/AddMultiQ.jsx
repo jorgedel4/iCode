@@ -6,18 +6,23 @@ import FormControl from '@mui/material/FormControl';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export const AddMultiQ = ({open, changeMultiQ, type}) => {
+export const AddMultiQ = ({open, changeMultiQ}) => {
     const [multiQs, setMultiQ] = useState([]);
     const [multiQsInput, setInput] = useState([]);
 
     useEffect(() => {
+        // addMultiQControl();
         if (open) {
-            addMultiQControl();
-        } else {
             setMultiQ([]);
             setInput([]);
-        }
+            addMultiQControl();
+        } 
+        // else {
+        //     setMultiQ([]);
+        //     setInput([]);
+        // }
     }, [open]);
+
 
     //Para la seccion de input
     const handleMultiQChange = (multiQId, event) => {
@@ -135,12 +140,5 @@ export const AddMultiQ = ({open, changeMultiQ, type}) => {
         // changeMultiQ((prevMultiQs) => [...prevMultiQs, newMultiQ]);
     };
 
-    return (
-        // <Grid item xs={5}>
-        //     {console.log("test cases",multiQs)}
-        //     {multiQs.map((multiQ) => multiQ.jsx)}
-        //  </Grid>
-            (multiQs.map((multiQ) => multiQ.jsx))
-        
-    )
+    return multiQs.map((multiQ) => multiQ.jsx)
 }
