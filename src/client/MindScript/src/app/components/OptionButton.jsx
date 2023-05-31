@@ -18,6 +18,7 @@ export const OptionButton = ({ option }) => {
                     minWidth: '30vh',
                     minHeight: '7vh',
                     backgroundColor: selected ? theme.palette.appDark.adminButton : 'transparent',
+                    borderColor: selected ? 'transparent' : theme.palette.appDark.box,
                     '&:hover': {
                         backgroundColor: 'transparent'
                     }
