@@ -929,6 +929,79 @@ Content-Type: application/json
 ]
 ```
 
+---
+
+### `/grouphwstatus/{groupID}`
+#### Descripcion
+Estatus de las tareas de un grupo
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante variables de url)
+* `groupID` (obligatorio): ID del grupo del que se desea ver el estatus de sus tareas.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de estatus. Cada estatus contiene la información del estudiante y el progreso de cada tarea de dado grupo
+Estructura de estatus
+| Campo            | Tipo                  | Descripcion                    |
+| ---------------- | --------------------- | ------------------------------ |
+| nombre           | string                | Nombre completo del estudiante |
+| matricula        | string                | Matricula del estudiante       |
+| homework         | [ tarea ]             | Todas las tareas pertenecientes al grupo, junto con el estatus de cada una respecto al estudiante |
+
+Estructura de tarea
+| Campo            | Tipo                  | Descripcion                    |
+| ---------------- | --------------------- | ------------------------------ |
+| id               | string                | ID de la tarea                 |
+| name             | string                | Nombre de la tarea             |
+| status           | string                | Estatus de la tarea para ese estudiante. Las opciones son 'finished', 'not started' y 'started' |
+
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8002/grouphwstatus/G000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "nombre": "Adriana Fernandez Rojas",
+        "homework": [
+            {
+                "id": "H0000000000000000001",
+                "name": "Tarea 1: Condicionales",
+                "status": "not started"
+            },
+            {
+                "id": "H0000000000000000002",
+                "name": "Tarea 2: Condicionales",
+                "status": "not started"
+            }
+        ],
+        "matricula": "A01712734"
+    },
+    {
+        "nombre": "Karla Sanchez Olivares",
+        "homework": [
+            {
+                "id": "H0000000000000000001",
+                "name": "Tarea 1: Condicionales",
+                "status": "started"
+            },
+            {
+                "id": "H0000000000000000002",
+                "name": "Tarea 2: Condicionales",
+                "status": "not started"
+            }
+        ],
+        "matricula": "A01731511"
+    }
+]
+```
+
 
 ## Endpoints de actualizacion
 
