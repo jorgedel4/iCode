@@ -208,7 +208,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 hinputs[index] = tmp;
             })
 
-            xinfo = {
+            info = {
                 "module": qmodule,
                 "q_type": qtype,
                 "hinputs": hinputs,
@@ -244,10 +244,10 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 'Content-Type': 'application/json',
             },
 
-            mode: 'cors',
-            body: {
+            mode: 'no-cors',
+            body: JSON.stringify([{
                 "info": JSON.stringify(info)
-            }
+            }])
         }
 
         console.log(options)
@@ -268,7 +268,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         //     })
         // }
 
-        console.log(options)
+        // console.log(options)
         fetch(`${riddleAPI}requestQuestion  `, options)
             .then(response => {
                 if (response.status === 201) {
