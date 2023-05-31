@@ -6,7 +6,7 @@ import (
 
 func SecondsToTime(seconds int64) (string, error) {
 	if seconds < 0 {
-		return "", fmt.Errorf("El valor no puede ser negativo")
+		return "", fmt.Errorf("el valor no puede ser negativo")
 	}
 
 	hours := seconds / 3600
