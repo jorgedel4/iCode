@@ -6,6 +6,7 @@
 // ------------ # Imports region -----------------
 
 // Core components from MUI
+import { Grid, Button, Typography, useTheme } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
 import { useState, useEffect, useContext } from 'react';
@@ -33,8 +34,6 @@ export const WorkEnv = () => {
     const auth = getAuth();
     const user = auth.currentUser;
     let schoolID, email, displayName, emailVerified, uid;
-    const [timerValue, setTimerValue] = useState(0);
-    const [resetTimer, setResetTimer] = useState(false);
 
 
     if (user !== null) {
@@ -120,13 +119,6 @@ export const WorkEnv = () => {
     };
     const printsec = () => {
         console.log(timerValue)
-    }
-
-
-    //Objeto para codeExec esto debe de ir mas arriba?
-    const hwData = {
-        code: content,
-        id: homework.id_pregunta,
     }
 
     return (
