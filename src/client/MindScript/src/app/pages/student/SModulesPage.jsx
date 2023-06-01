@@ -1,38 +1,49 @@
-import { Grid } from '@mui/material'
-import { ModulesLayout } from "../../layout"
-import { SModuleCard } from '../../components'
+// --------------------------------------------------------------------
+// ** file="SModulesPage.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
+
+// ------------ # Imports region -----------------
+
+// Core components from MUI
 import { useState, useEffect } from 'react';
-import { getAuth } from "firebase/auth";
+import { Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { getAuth } from "firebase/auth";
+
+// MindScript Components
+import { ModulesLayout } from "../../layout";
+import { SModuleCard } from '../../components';
+
+// ------------ ## End Imports region ------------
 
 export const SModulesPage = () => {
-    let params = useParams()
+
+    // Initial States and Variables 
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-
-    const home = '/student/home'
+    let params = useParams()
+    const home = '/student/home' //remove?
     const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home
-
-    // console.log(useParams().group)
-
-    //Current user info
-    const auth = getAuth();
-    const user = auth.currentUser;
-    var schoolID;
-    if (user !== null) {
-        // console.log("Student modules user info", user)
-        //Desestructuración de user
-        const { email, displayName, emailVerified, uid } = user
-        //Matrícula A00000000
-        schoolID = (user.email).substring(0, 9).toUpperCase();
-        // console.log("Matrícula ", schoolID)
-    }
-
     const pages = [
         { name: 'Home', route: '/student/home' },
         { name: 'Profile', route: '/student/profile' },
     ]
+    // console.log(useParams().group)
 
-    //API para obtener los datos de las tarjeras de modulos
+    //Current user data
+    const auth = getAuth();
+    const user = auth.currentUser;
+    var schoolID;
+    if (user !== null) {
+        const { email, displayName, emailVerified, uid } = user
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Student modules user info", user)
+        // console.log("Matrícula ", schoolID)
+    }
+
+    // ------------ # API region ------------
+
+    //GET - Endpoint for obtaining module card data 
     const [modulesData, setModule] = useState([]);
     useEffect(() => {
         const options = {
@@ -43,7 +54,6 @@ export const SModulesPage = () => {
             mode: 'cors',
         }
 
-        // const group = "G000000001";
         const group = params.group;
 
         const fetchData = async () => {
@@ -52,14 +62,14 @@ export const SModulesPage = () => {
                 const responseData = await response.json();
                 setModule(responseData);
             } catch (error) {
-                // console.error(error);
+                console.error(error);
             }
         };
 
         fetchData();
     }, [modulesData]);
 
-    //API para obtener los datos de las tareas de la semana
+    //GET - Entopoint for obtaining homework data for the week
     const [homeworkData, setHomework] = useState([]);
     useEffect(() => {
         const options = {
@@ -69,8 +79,6 @@ export const SModulesPage = () => {
             },
             mode: 'cors',
         }
-
-        // const group = "G000000001";
         const group = params.group;
 
         const fetchData = async () => {
@@ -89,14 +97,15 @@ export const SModulesPage = () => {
     return (
         <ModulesLayout home={home} homeworkData={homeworkData} student={true} hwBTitle={'Asignaciones Faltantes'} groupName={groupName} pages={pages}>
             <Grid container columnSpacing={40} rowSpacing={5}>
+                {/* Displaying modules cards */}
                 {modulesData != null && modulesData != undefined ?
                     modulesData.map((module, index) => (
                         <Grid item key={index} xs={12} md={4}>
-                            {module.progress === 100? modulesData[index+1].locked=false : null}
-                            <SModuleCard module={module} index={index} group={params.group}/>
+                            {module.progress === 100 ? modulesData[index + 1].locked = false : null}
+                            <SModuleCard module={module} index={index} />
                         </Grid>
                     ))
-                :null}
+                    : null}
             </Grid>
         </ModulesLayout>
     )

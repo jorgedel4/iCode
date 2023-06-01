@@ -1,8 +1,16 @@
-import { Grid, Button, Typography } from '@mui/material'
-import { NavBar, QuestionsDropdown, OptionButton } from '../../components'
+// --------------------------------------------------------------------
+// ** file="MultiOpt.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
+
+// ------------ # Imports region ------------
+
+// Core components from MUI
+import { Button, Grid, Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { NavBar, OptionButton } from "../../components";
 
 export const MultiOpt = () => {
     const location = useLocation();
@@ -25,6 +33,8 @@ export const MultiOpt = () => {
         // console.log("Matrícula ", schoolID)
     }
 
+
+    // ------------ # API region ------------
 
     const group = 'TC1028 (Gpo. 404)'
     const module = 'Variables'

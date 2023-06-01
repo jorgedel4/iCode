@@ -1,84 +1,257 @@
-import { Grid, InputLabel, useTheme, useMediaQuery, Modal, FormControlLabel, OutlinedInput, Button, IconButton, Typography, MenuItem, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
-import { Add, Delete, LoopSharp } from '@mui/icons-material';
+// --------------------------------------------------------------------
+// ** file="CreateQuestion.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
 
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+// ------------ # Imports region -----------------
 
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useForm } from '../../hooks/useForm';
+// Core components from MUI
+import { useState, useEffect } from 'react';
+import { Button, FormControl, Grid, InputLabel, Modal, MenuItem, OutlinedInput, Select, Typography, useMediaQuery, useTheme, Alert } from '@mui/material'
 import { UploadFile } from '@mui/icons-material'
+
+// MindScript Components
+import { useForm } from '../../hooks/useForm';
+import { AddTestCases } from './';
+import { AddMultiQ } from './';
+
+// ------------ ## End Imports region ------------
 
 
 export const CreateQuestion = ({ open, close, schoolID }) => {
+
+    // Initial States and Variables 
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const containerWidth = isXLargeScreen ? '80vw' : isLargeScreen ? '90vw' : isMediumScreen ? '80vw' : '95vw';
 
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-    //Prueba
-    const checked = true;
 
-    //Description
-    const { qdescription, onInputChange } = useForm({
+    //Description and explanation text inputs
+    const { qdescription, qexplanation, onInputChange } = useForm({
         qdescription: '',
+        qexplanation: '',
     });
 
-    //Selector de curso 
+    //Moudle selector
     const [qmodule, setQModule] = useState('');
     const handleQModuleSelection = (event) => {
         setQModule(event.target.value);
-        console.log(qmodule)
+        // console.log(qmodule)
     };
 
-    //Selector de tipo de pregunta 
+    //Question type selector
     const [qtype, setQType] = useState('');
     const handleQTypeSelection = (event) => {
         setQType(event.target.value);
         console.log(qtype)
     };
 
-    const modulesDummy = ["For loops", "Condicionales", "Basics"]
+    //Course selector
+    const [course, setCourse] = useState('');
+    const handleCourseSelection = (event) => {
+        setCourse(event.target.value);
+    };
 
     const questionTypes = ["codep", "multi"]
-    const createQuestion = {
-        qdescription: qdescription,
-        module: "M0000000000000000001",
-        q_type: qtype,
-        info: "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        created_by: schoolID
 
-    }
-    // console.log(schoolID)
+    // ------------ # API region ------------
+
+    //GET - course information
+    const [coursesData, setCourseRequest] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}courses`, options);
+                const responseData = await response.json();
+                setCourseRequest(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
 
-    /*API region */
-    //POST question request from JSON file
+
+    //GET - modules information
+    const [modulesData, setModule] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            if (course) {
+                try {
+                    const response = await fetch(`${batmanAPI}coursemodules/${course}`, options);
+                    const responseData = await response.json();
+                    setModule(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+
+    let modules = [];
+    modulesData.map((module) => (
+        modules.push({
+            id: module.id,
+            name: module.name,
+            n_questions: 0,
+            checked: true,
+            key: module.id
+        })
+    ))
+
+
+
+    /*File upload section */
+    const [formatedInfo, setJSONFormat] = useState("");
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            const fileContent = event.target.result;
+            // console.log(fileContent); // Do something with the file content
+            // console.log(`{"${JSON.stringify(fileContent).slice(1, -1)}"}`)
+            setJSONFormat(fileContent)
+            // console.log("FORMAT", formated)
+        };
+        // console.log(file)
+
+        reader.readAsText(file);
+
+    };
+
+    // const rawjson = `{"${JSON.stringify(formatedInfo).slice(1, -1)}"}`;
+    // const formated = rawjson.substring(9, rawjson.length - 19)
+    // console.log("formatedInfo", formatedInfo)
+
+    //POST - question request 
+
+
 
     const requestAQuestion = async () => {
+        console.log(qtype)
+        var info = {}
+
+        if (qtype === "multi") {
+            const multiq = [];
+            const multiqC = [];
+
+            multiQ.map((tc) => {
+                multiq.push(tc.opcion)
+            })
+
+            cMultiQ.map((tc) => {
+                multiq.push(tc.opcion)
+                multiqC.push(tc.opcion)
+            })
+
+            info = {
+                "module": qmodule,
+                "q_type": qtype,
+                "question": qdescription,
+                "n_options": multiq.length,
+                "options": multiq,
+                "correct_option": multiqC,
+                "explanation": qexplanation,
+                "created_by": schoolID,
+            }
+
+        } else {
+            const hinputs = [];
+            const houtputs = [];
+            const sinputs = [];
+            const soutputs = [];
+
+            testCasesS.map((tc) => {
+                sinputs.push(tc.input);
+                soutputs.push(tc.output);
+            })
+            testCasesH.map((tc) => {
+                hinputs.push(tc.input);
+                houtputs.push(tc.output);
+            })
+
+            sinputs.map((I, index) => {
+                const tmp = I.split("\n");
+                sinputs[index] = tmp;
+            })
+            hinputs.map((I, index) => {
+                const tmp = I.split("\n");
+                hinputs[index] = tmp;
+            })
+
+            info = {
+                "module": qmodule,
+                "q_type": qtype,
+                "hinputs": hinputs,
+                "sinputs": sinputs,
+                "houtputs": houtputs,
+                "language": "python",
+                "soutputs": soutputs,
+                "timeoutSec": 10,
+                "description": qdescription,
+                "initialCode": "",
+                "forbiddenFunctions": ["sum"],
+                "created_by": schoolID,
+            }
+
+
+        }
+        let request = "";
+
+
+        if ((formatedInfo != "") && (qdescription == "" || qmodule == "" || qtype == "" || course == "")) {
+            let fileInfo = JSON.stringify(
+                formatedInfo
+            )
+            fileInfo = fileInfo.replace(/\\"info\\": {/g, '"info": "{')
+            fileInfo = fileInfo.replace(/}\\r\\n /g, '}"')
+            fileInfo = fileInfo.replace(/\\r\\n/g, '')
+            fileInfo = fileInfo.substring(1, fileInfo.length - 1)
+            console.log("fileInfo", fileInfo)
+            request = fileInfo
+        } else {
+            request = JSON.stringify([{"info": JSON.stringify(info)}])
+        }
+
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
 
-            mode: 'cors',
-            body: JSON.stringify({
-                "module": "M0000000000000000001",
-                "q_type": createQuestion.q_type,
-                "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
-                "created_by": createQuestion.created_by
-            })
-
-
+            mode: 'no-cors',
+            body: request
         }
-        console.log(options)
-        fetch(`${riddleAPI}requestQuestion  `, options)
+        console.log("options", options)
+        fetch(`${riddleAPI}requestQuestion`, options)
             .then(response => {
-                if (response.status === 201) {
+                console.log(response.status)
+                if (response.status === 200) {
                     close();
                 }
             })
@@ -88,256 +261,26 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
     };
 
 
-
-    //GET modules information
-    const [modulesData, setModule] = useState([]);
-    // useEffect(() => {
-    //     const options = {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //         mode: 'cors',
-    //     }
-
-    //     // let userID = "A01551955"
-    //     // let term = "current"
-
-    //     const fetchData = async () => {
-    //         if (course) {
-    //             try {
-    //                 const response = await fetch(`http://34.16.137.250:8002/coursemodules/${course}`, options);
-    //                 const responseData = await response.json();
-    //                 setModule(responseData);
-    //             } catch (error) {
-    //                 // console.error(error); .push({id:, n_questions: })
-    //             }
-    //         }
-    //     };
-    //     fetchData();
-    // }, [course]);
-
-    let modules = [];
-    // modulesData.map((module) => (
-    //     modules.push({
-    //         id: module.id,
-    //         name: module.name,
-    //         n_questions: 0,
-    //         checked: true
-    //     })
-    // ))
-
-    // //POST Create Homework
-
-
-
-    // console.log("POST Register Homework", createHomework)
-
-    /*end API region */
-
-
     /* Datos necesarios para la interfaz de los test cases */
-    //Para la seccion de input
-    const [testCases, setTestCase] = useState([]);
-    const [testCasesInput, setInput] = useState([]);
+    const [multiQ, setMultiQ] = useState([]);
+    const [cMultiQ, setCMultiQ] = useState([]);
+    const [testCasesS, setTestCaseS] = useState([]);
+    const [testCasesH, setTestCaseH] = useState([]);
 
     useEffect(() => {
         if (open) {
-            addTestCaseControl();
-        } else {
-            setTestCase([]);
-            setInput([]);
+            setTestCaseS([]);
+            setTestCaseH([]);
+            setCourse('');
+            setMultiQ([]);
+            setCMultiQ([]);
+            setQType('');
+            setQModule('');
+            setJSONFormat('');
         }
     }, [open]);
 
-    const handleTestCaseChangeI = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    console.log("ekedkwld", testCase)
-                    return {
-                        ...testCase,
-                        input: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const handleTestCaseChangeO = (testCaseId, event) => {
-        setTestCase((prevTestCases) => {
-            const updatedTestCases = prevTestCases.map((testCase) => {
-                if (testCase.key === testCaseId) {
-                    return {
-                        ...testCase,
-                        output: event.target.value,
-                    };
-                }
-                return testCase;
-            });
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const deleteTestCaseControl = (testCaseId) => {
-        setTestCase((prevTestCases) => {
-            if (prevTestCases.length === 1 && prevTestCases[0].key === testCaseId) {
-                return prevTestCases;
-            }
-
-            const updatedTestCases = prevTestCases.filter((testCase) => testCase.key !== testCaseId);
-
-            const updatedInputs = updatedTestCases.map((testCase) => testCase.input);
-            setInput(updatedInputs);
-
-            return updatedTestCases;
-        });
-    };
-
-    const addTestCaseControl = () => {
-        const id = Date.now();
-        const newTestCase = {
-            key: id,
-            jsx: (
-                <Grid item xs={12} key={id}>
-                    <Grid container alignItems="center" justifyContent="center">
-                        <Grid item xs={10}>
-                            <Grid container>
-                                <Grid item xs={6} sx={{ pr: 1 }}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}
-                                    >
-                                        <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Input
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Input"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeI(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={6} sx={{ pr: 1 }}>
-                                    <FormControl
-                                        sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', mt: 2 }}>
-                                        <InputLabel
-                                            required
-                                            sx={{
-                                                color: 'appDark.text',
-                                                '&.Mui-focused': {
-                                                    color: 'appDark.text',
-                                                },
-                                                height: 100
-                                            }}
-                                        >
-                                            Añadir Output
-                                        </InputLabel>
-                                        <OutlinedInput
-                                            type="input"
-                                            label="Nombre del Curso"
-                                            placeholder="Output"
-                                            multiline={true}
-                                            value={modules.input}
-                                            onChange={(event) => handleTestCaseChangeO(id, event)}
-                                            sx={{
-                                                color: 'appDark.text',
-                                                height: 100,
-                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color on hover
-                                                },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                    borderColor: 'appDark.box', //change border color when focused
-                                                },
-                                                '&.MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'transparent',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2} sx={{ mt: 2 }}>
-                            <Grid container align="center" justifyContent="space-around">
-                                <Grid item xs={7} sx={{ bgcolor: 'appDark.button', borderRadius: 2 }}>
-                                    <IconButton sx={{ color: 'appDark.icon' }} onClick={addTestCaseControl}>
-                                        <Add />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={7} sx={{ bgcolor: 'error.main', borderRadius: 2, mt: 2 }}>
-                                    <IconButton
-                                        sx={{ color: 'appDark.icon' }}
-                                        onClick={() => deleteTestCaseControl(id)}
-                                    >
-                                        <Delete />
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            ),
-        };
-
-        setTestCase((prevTestCases) => [...prevTestCases, newTestCase]);
-    };
     /* Fin de test cases */
-
-    /*File upload section */
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = (event) => {
-            const fileContent = event.target.result;
-            console.log(fileContent); // Do something with the file content
-            console.log(JSON.stringify(fileContent))
-        };
-        // console.log(file)
-
-        reader.readAsText(file);
-    };
 
     return (
         <Modal
@@ -396,6 +339,53 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                         },
                     }}>
 
+                        <Grid item xs={10}>
+                            <FormControl variant="filled" sx={{ mt: 3, width: '100%' }}>
+                                <InputLabel id="courseSelectorInputLabel"
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Curso</InputLabel>
+
+                                <Select
+                                    id="courseSelector"
+                                    value={course}
+                                    onChange={handleCourseSelection}
+                                    sx={{ borderRadius: 2, bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {coursesData.map((course) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={course.id}
+                                            value={course.id}
+                                        >
+                                            {course.id} {course.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
 
                         {/* Module Selector */}
                         <Grid item xs={10}>
@@ -425,7 +415,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         },
                                     }}
                                 >
-                                    {modulesDummy.map((module) => (
+                                    {modulesData.map((module) => (
                                         <MenuItem
                                             sx={{
                                                 color: "appDark.text",
@@ -434,13 +424,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                                     bgcolor: 'appDark.selectHover' //change label color
                                                 },
                                             }}
-                                            // key={module.id}
-                                            // value={module.id}
-                                            key={module}
-                                            value={module}
+                                            key={module.id}
+                                            value={module.id}
+                                        // key={module}
+                                        // value={module}
                                         >
-                                            {/* {module.id} {module.name} */}
-                                            {module}
+                                            {module.id} {module.name}
+                                            {/* {module} */}
                                         </MenuItem>
                                     ))}
 
@@ -537,32 +527,163 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             </Grid>
                         </Grid>
 
-                        {/* SelectorY - TestCases */}
-                        <Grid item xs={10}>
-                            <Typography variant="h1" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
-                                Casos de Prueba
-                            </Typography>
-                        </Grid>
+                        {qtype == 'codep' ?
+                            // SelectorY - TestCases para codigo
+                            <>
+                                <Grid item xs={10}>
+                                    <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                                        Caso de Prueba Visible
+                                    </Typography>
+                                </Grid>
 
-                        <Grid item xs={10} sx={{
-                            overflowY: 'scroll',
-                            height: '25vh',
-                            "&::-webkit-scrollbar": {
-                                width: 5,
-                            },
-                            "&::-webkit-scrollbar-track": {
-                                backgroundColor: "secondary.main",
-                                borderRadius: 2,
-                            },
-                            "&::-webkit-scrollbar-thumb": {
-                                backgroundColor: "appDark.scrollBar",
-                                borderRadius: 2,
-                            },
-                        }}>
-                            {/* {console.log("test cases",testCases)} */}
-                            {testCases.map((testCase) => testCase.jsx)}
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                    <AddTestCases open={open} changeTestCase={setTestCaseS} />
+                                    {/* {console.log("prueba de casos S", testCasesS)} */}
+                                </Grid>
 
-                        </Grid>
+                                <Grid item xs={10}>
+                                    <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                                        Caso de Prueba Oculto
+                                    </Typography>
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                    <AddTestCases open={open} changeTestCase={setTestCaseH} />
+                                    {/* {console.log("prueba de casos H", testCasesH)} */}
+                                </Grid>
+                            </>
+
+                            :
+                            null
+                        }
+                        {qtype == "multi" ?
+                            // SelectorY - TestCases para preguntas multpiles
+                            <>
+                                {/* Question explanation : after selecting an answer */}
+                                <Grid item xs={10} sx={{ mt: 2 }}>
+                                    <Grid container>
+                                        <FormControl sx={{ backgroundColor: 'appDark.bgBox', borderRadius: 2, width: '100%', height: 100 }}>
+                                            <InputLabel sx={{
+                                                color: 'appDark.text',
+                                                '&.Mui-focused': {
+                                                    color: 'appDark.text' //change label color
+                                                },
+                                                height: 100
+                                            }}>Explicación</InputLabel>
+                                            <OutlinedInput
+                                                type="input"
+                                                label="Explicación"
+                                                placeholder="Esta explicación se desplegará cuando una respuesta se haya enviado como retroalimentación."
+                                                multiline={true}
+                                                sx={{
+                                                    color: 'appDark.text',
+                                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                        borderColor: 'appDark.box', //change border color on hover
+                                                    },
+                                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                        borderColor: 'appDark.box', //change border color when focused
+                                                    },
+                                                    '&.MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'transparent',
+                                                        },
+                                                    },
+                                                    height: 100
+                                                }}
+                                                name='qexplanation'
+                                                value={qexplanation}
+                                                onChange={onInputChange}
+
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                                        Opciones Incorrectas
+                                    </Typography>
+
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                    <AddMultiQ open={open} changeMultiQ={setMultiQ} />
+                                    {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <Typography variant="h2" component="h2" sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 700, ml: 1, mt: 2 }}>
+                                        Opciones Correctas
+                                    </Typography>
+
+                                </Grid>
+
+                                <Grid container xs={10} align="center" justifyContent="space-around" sx={{
+                                    overflowY: 'scroll',
+                                    height: '25vh',
+                                    "&::-webkit-scrollbar": {
+                                        width: 5,
+                                    },
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "secondary.main",
+                                        borderRadius: 2,
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "appDark.scrollBar",
+                                        borderRadius: 2,
+                                    },
+                                }}>
+                                    <AddMultiQ open={open} changeMultiQ={setCMultiQ} />
+                                    {/* {console.log("multi erroneas",wMultiQ)} */}
+                                </Grid>
+
+
+                            </>
+                            :
+                            null
+                        }
+
+
 
                     </Grid>
                 </Grid>
@@ -603,7 +724,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             >
                                 <Grid container justifyContent="center" alignItems="center" align='center'>
                                     <Grid item xs={12} justifyContent="center">
-
                                         <UploadFile sx={{ color: 'appDark.icon', fontSize: 100, fontWeight: 80, my: 2 }} />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -612,6 +732,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                         </Typography>
                                     </Grid>
                                 </Grid>
+
 
                                 <input
                                     type="file"
@@ -622,6 +743,12 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 // onChange={(event) => console.log(event.target.files)}
                                 />
                             </Button>
+                            {/* //ESTA ES UNA CONDICIONAL IMPORTANTE */}
+                            {((formatedInfo != "") && (qdescription != "" || qmodule != "" || qtype != "" || course != ""))
+                                ? <><Alert severity="info">Actualmente existe un archivo seleccionado, elimine el archivo para hacer un inserción manual</Alert>
+                                    <Button onClick={console.log("lkfdjalsfdj")} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>Eliminar selección de archivo</Button></>
+                                : null
+                            }
 
                         </Grid>
 

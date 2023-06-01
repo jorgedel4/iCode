@@ -1,3 +1,11 @@
+// --------------------------------------------------------------------
+// ** file="SProfile.jsx" by="Isreales Solutions">
+// ** Copyright 2023 Isreales Solutions and its affiliates.
+// --------------------------------------------------------------------
+
+// ------------ # Imports region -----------------
+
+// Core components from MUI
 import { Grid, Button, Typography, useTheme } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
@@ -12,28 +20,31 @@ export const WorkEnv = () => {
     const questionParams = location.state?.questionParams;
     const questionInfo = JSON.parse(questionParams.info);
 
+    // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const theme = useTheme();
-    //Current user info
-    const auth = getAuth();
-    const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid;
+
+    //Timer States
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
 
+    // Current user data
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid;
+
 
     if (user !== null) {
-        // console.log("Student work env user info", user)
-        //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        //Matrícula A00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Student work env user info", user)
         // console.log("Matrícula ", schoolID)
     }
 
 
+    //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
     useEffect(() => {
         const options = {
@@ -43,9 +54,11 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
+        const homeworkID = "H0000000000000000001";
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=H0000000000000000001`, options);
+                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
             } catch (error) {
@@ -56,6 +69,9 @@ export const WorkEnv = () => {
         fetchData();
     }, [progress]);
 
+
+
+    //POST - Request for obtaining new question
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
@@ -65,7 +81,6 @@ export const WorkEnv = () => {
         id: questionParams.id_pregunta,
     }
 
-    //Request new question enpoint
     const requestNextQuestion = async () => {
         console.log("Next Question")
     }
@@ -182,8 +197,7 @@ export const WorkEnv = () => {
                     </Grid>
                     {/* Terminal*/}
                     <Grid item xs={12}
-                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}
-                    >
+                        sx={{ height: '39vh', bgcolor: 'secondary.main', mt: '1vh', padding: '1.5vh' }}>
                         <Grid container alignItems='center' sx={{ height: '4vh' }}>
                             <Grid item xs={10}>
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
@@ -193,6 +207,7 @@ export const WorkEnv = () => {
                             </Grid>
 
                         </Grid>
+                        {/* Displaying TestCases */}
                         {showComponent && (
                             <TestsTabs tests={fetchResponse} />
                         )}

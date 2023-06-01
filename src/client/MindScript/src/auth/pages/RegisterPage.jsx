@@ -22,23 +22,21 @@ import {
   MenuItem,
   OutlinedInput,
   Typography,
-  Select
+  Select,
 } from "@mui/material";
 
-import {
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 
 // MindScript Components
 import { useForm } from "../../hooks/useForm";
 import { AuthLayout } from "../layout/AuthLayout";
-import { useDispatch, useSelector } from "react-redux";
 import { startCreatingUserWithEmailPassword } from "../../store/auth";
 
 // ------------ ## End Imports region ------------
 
 export const RegisterPage = () => {
+
   // Initial States and Variables
   const batmanAPI = import.meta.env.VITE_APP_BATMAN;
   const dispatch = useDispatch();
@@ -50,14 +48,15 @@ export const RegisterPage = () => {
     event.preventDefault();
   };
 
-  const [campusList, setCampusList] = useState([]);
   //Campus Selector states
+  const [campusList, setCampusList] = useState([]);
   const [selectedCampus, setCampus] = useState("");
   const handleCampusSelection = (event) => {
     setCampus(event.target.value);
   };
 
   /*----------- AUTH region ------*/
+
   //formData es el objeto que estamos esperando (se rellena con los inputs)
   const formData = {
     displayName: "",
@@ -135,7 +134,7 @@ export const RegisterPage = () => {
 
   // ------------ # API region ------------
 
-  //Missing endpoint name
+  //GET - Campus list
   useEffect(() => {
     const options = {
       method: "GET",
@@ -157,7 +156,7 @@ export const RegisterPage = () => {
     fetchData();
   }, []);
 
-  //Missing endpoint name
+  //Registration request to DB endopoint
   const registrationRequest = async () => {
     const options = {
       method: "POST",
@@ -206,7 +205,6 @@ export const RegisterPage = () => {
     <AuthLayout title="Registro">
       <form onSubmit={onSubmit}>
         <Grid container justifyContent="center">
-
           {/* Name*/}
           <Grid item xs={6} md={6} xl={12} sx={{ mt: 1 }}>
             <FormControl
