@@ -221,15 +221,22 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
 
         }
+        let request = "";
 
-        let formatedInfo = JSON.stringify(
-            formatedInfo
-        )
-        formatedInfo = formatedInfo.replace(/\\"info\\": {/g, '"info": "{')
-        formatedInfo = formatedInfo.replace(/}\\r\\n /g, '}"')
-        formatedInfo = formatedInfo.replace(/\\r\\n/g, '')
-        formatedInfo = formatedInfo.substring(1, formatedInfo.length - 1)
-        console.log("formatedInfo",formatedInfo)
+
+        if ((formatedInfo != "") && (qdescription == "" || qmodule == "" || qtype == "" || course == "")) {
+            let fileInfo = JSON.stringify(
+                formatedInfo
+            )
+            fileInfo = fileInfo.replace(/\\"info\\": {/g, '"info": "{')
+            fileInfo = fileInfo.replace(/}\\r\\n /g, '}"')
+            fileInfo = fileInfo.replace(/\\r\\n/g, '')
+            fileInfo = fileInfo.substring(1, fileInfo.length - 1)
+            console.log("fileInfo", fileInfo)
+            request = fileInfo
+        } else {
+            request = JSON.stringify([{"info": JSON.stringify(info)}])
+        }
 
         const options = {
             method: 'POST',
@@ -238,11 +245,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             },
 
             mode: 'no-cors',
-            body: formatedInfo
-            
-            // body: JSON.stringify([{
-            //     "info": JSON.stringify(info)
-            // }])
+            body: request
         }
         console.log("options", options)
         fetch(`${riddleAPI}requestQuestion`, options)
@@ -743,7 +746,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             {/* //ESTA ES UNA CONDICIONAL IMPORTANTE */}
                             {((formatedInfo != "") && (qdescription != "" || qmodule != "" || qtype != "" || course != ""))
                                 ? <><Alert severity="info">Actualmente existe un archivo seleccionado, elimine el archivo para hacer un inserción manual</Alert>
-                                    <Button type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>Eliminar selección de archivo</Button></>
+                                    <Button onClick={console.log("lkfdjalsfdj")} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>Eliminar selección de archivo</Button></>
                                 : null
                             }
 
