@@ -8,30 +8,27 @@
 // Core components from MUI
 import { Button, Grid, Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
-
-// MindScript Components
-import { NavBar, OptionButton, QuestionsDropdown } from '../../components';
-
-// ------------ ## End Imports region ------------
-
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const MultiOpt = () => {
+    const location = useLocation();
+    const data = location.state?.data;
+    const questionParams = location.state?.questionParams;
+    const questionInfo = JSON.parse(questionParams.info);
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
-    // Initial States and Variables 
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
-    const pages = [
-        { name: 'Home', route: '/student/home' },
-        { name: 'Profile', route: '/student/profile' },
-    ]
-
-    //Current user data
+    //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
-    const schoolID = (user.email).substring(0, 9);
+    let schoolID, email, displayName, emailVerified, uid;
+
     if (user !== null) {
-        // Desestructuración de user
-        const { email, displayName, emailVerified, uid } = user
-        // console.log("Student home user info", user)
+        // console.log("Student work env user info", user)
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        //Matrícula A00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
 
@@ -41,7 +38,11 @@ export const MultiOpt = () => {
     const group = 'TC1028 (Gpo. 404)'
     const module = 'Variables'
     const qNumber = 'Pregunta #'
-    const qContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+
+    const pages = [
+        { name: 'Home', route: '/student/home' },
+        { name: 'Profile', route: '/student/profile' },
+    ]
 
     const questions = [
         'Pregunta 1',
@@ -55,18 +56,6 @@ export const MultiOpt = () => {
         'Pregunta 9',
         'Pregunta #',
     ];
-
-    const options = [
-        'ABCDxggedfds',
-        'abcddvfbggb',
-        'AbCdfvfvdvdv',
-        'aBcDffgfffv'
-    ]
-
-    // ------------ ## End API region -------
-
-    // ------- # Functions and Events region -------
-    // ---- ## End Functions and Events region -----
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -95,22 +84,25 @@ export const MultiOpt = () => {
 
                     {/* Question description */}
                     <Grid item xs={12} mt={5}>
-                        <Typography align='justify' sx={{ color: 'appDark.text', fontSize: 20 }}>{qContent}</Typography>
+                        <Typography align='justify' sx={{ color: 'appDark.text', fontSize: 20 }}>
+                            {questionInfo !== undefined && (
+                                questionInfo.question
+                            )}
+                        </Typography>
                     </Grid>
 
                     {/* Container with the options */}
                     <Grid container direction='row' justifyContent="center">
-                        {options.map((option, index) => (
-                            <OptionButton key={index} option={option} />
-                        ))}
+                        {questionInfo !== undefined && questionInfo.options && questionInfo.options.length > 0 && (
+                            questionInfo.options.map((option, index) => (
+                                <OptionButton key={index} option={option} />
+                            ))
+                        )}
                     </Grid>
 
                     {/* Buttons section */}
                     <Grid container direction='row'>
-                        <Grid item xs={12} sm={8} md={9} lg={10} xl={11} mt={2} >
-                            <QuestionsDropdown questions={questions} qName={'Pregunta #'} />
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3} lg={2} xl={1} mt={2} align='right' >
+                        <Grid item xs={12} align='right' >
                             <Button
                                 sx={{
                                     color: 'appDark.text',

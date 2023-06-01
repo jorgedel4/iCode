@@ -1,15 +1,51 @@
 import { Card, CardContent, CardActionArea, Typography, Grid, IconButton, LinearProgress } from '@mui/material'
 import { linearProgressClasses } from '@mui/material/LinearProgress';
 import { LockOutlined } from '@mui/icons-material'
-import * as React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
+import { Link } from 'react-router-dom';
 
+export const SModuleCard = ({ module, index, group }) => {
 
-export const SModuleCard = ({ module, index }) => {
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
     const color = index - (colors.length * parseInt(index / colors.length));
 
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid, responseInfo, path;
 
+    if (user !== null) {
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        //Matrícula A00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Matrícula ", schoolID)
+    }
+
+    const [question, setQuestion] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${module.id}&id_student=${schoolID}&id_group=${group}`, options);
+                const responseData = await response.json();
+                setQuestion(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -22,77 +58,83 @@ export const SModuleCard = ({ module, index }) => {
                 ':hover': !module.locked && { backgroundColor: 'secondary.main', opacity: 0.8 }
             }}
             >
-                <CardActionArea href={'/student/workenv'}
-                    onClick={() => {
-                        console.log("CardActionArea clicked")
+                <Link
+                    to={{
+                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                     }}
-                    disabled={module.locked ? true : false}
+                    state={{ questionParams: question }}
+                    style={{ textDecoration: 'none' }}
                 >
 
-                    <Grid container
-                        justifyContent="flex-end"
-                        alignContent="flex-end"
-                        sx={[
-                            {
-                                backgroundColor: `${colors[color]}`, height: 35
-                            },
-                            module.locked && {
-                                backgroundColor: "#6D7483", height: 35
-                            }
-                        ]}
+                    <CardActionArea
+                        disabled={module.locked ? true : false}
                     >
-                        <Grid item sx={{ mr: 1 }}>
-                            {/* <Typography fontSize={ 12 } sx={{ color: 'appDark.text' }} >Bloqueado el: { module.closeDate }</Typography> */}
-                        </Grid>
-                    </Grid>
 
-
-                    <CardContent sx={{ textAlign: "center" }}>
-
-
-                        {/* Si el usuario es estudiante, se muestra lo sigiente */}
-                        <Grid container justifyContent='flex-end'>
-                            <LockOutlined sx={[
-                                { color: 'secondary.main' },
-                                module.locked && { color: 'appDark.icon' }
-                            ]} />
-                        </Grid>
-
-                        <Typography sx={{ color: 'appDark.text', fontSize: 26, fontWeight: 405, mt: 2 }} >
-                            {module.name}
-                        </Typography>
-
-                        {/* Aqui va la barra con el progreso en caso de se un usuario alumno */}
                         <Grid container
-                            sx={{ mt: 3 }}
+                            justifyContent="flex-end"
+                            alignContent="flex-end"
+                            sx={[
+                                {
+                                    backgroundColor: `${colors[color]}`, height: 35
+                                },
+                                module.locked && {
+                                    backgroundColor: "#6D7483", height: 35
+                                }
+                            ]}
                         >
-                            <Grid item xs={10}>
-                                <LinearProgress
-                                    variant="determinate"
-                                    value={module.progress}
-                                    sx={{
-                                        mt: 1,
-                                        height: 10,
-                                        borderRadius: 5,
-                                        [`&.${linearProgressClasses.colorPrimary}`]: {
-                                            backgroundColor: 'appDark.progressBg',
-                                        },
-                                        [`& .${linearProgressClasses.bar}`]: {
-                                            borderRadius: 5,
-                                            backgroundColor: 'appDark.progressBar',
-                                        }
-                                    }}
-                                />
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Typography sx={{ color: 'appDark.text' }}>
-                                    {module.progress}%
-                                </Typography>
+                            <Grid item sx={{ mr: 1 }}>
+                                {/* <Typography fontSize={ 12 } sx={{ color: 'appDark.text' }} >Bloqueado el: { module.closeDate }</Typography> */}
                             </Grid>
                         </Grid>
-                    </CardContent>
-                </CardActionArea>
+
+
+                        <CardContent sx={{ textAlign: "center" }}>
+
+
+                            {/* Si el usuario es estudiante, se muestra lo sigiente */}
+                            <Grid container justifyContent='flex-end'>
+                                <LockOutlined sx={[
+                                    { color: 'secondary.main' },
+                                    module.locked && { color: 'appDark.icon' }
+                                ]} />
+                            </Grid>
+
+                            <Typography sx={{ color: 'appDark.text', fontSize: 26, fontWeight: 405, mt: 2 }} >
+                                {module.name}
+                            </Typography>
+
+                            {/* Aqui va la barra con el progreso en caso de se un usuario alumno */}
+                            <Grid container
+                                sx={{ mt: 3 }}
+                            >
+                                <Grid item xs={10}>
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={module.progress}
+                                        sx={{
+                                            mt: 1,
+                                            height: 10,
+                                            borderRadius: 5,
+                                            [`&.${linearProgressClasses.colorPrimary}`]: {
+                                                backgroundColor: 'appDark.progressBg',
+                                            },
+                                            [`& .${linearProgressClasses.bar}`]: {
+                                                borderRadius: 5,
+                                                backgroundColor: 'appDark.progressBar',
+                                            }
+                                        }}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Typography sx={{ color: 'appDark.text' }}>
+                                        {module.progress}%
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </CardActionArea>
+                </Link>
             </Card>
         </>
     )

@@ -200,6 +200,11 @@ export const PRequest = () => {
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            <Grid item xs={12} sx={{mt:5, height:'1vh'}}>
+                <Button href={'professor/home'} sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 14 }}>
+                    {'< Regresar'}
+                </Button>
+            </Grid>
 
             <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight, ml: 1 }}>
                 <Grid item xs={12} sm={6}>
@@ -334,7 +339,7 @@ export const PRequest = () => {
 
             <Grid item xs={4} sx={{
                 mt: 2,
-                height: '70vh',
+                height: '65vh',
                 overflowY: 'scroll',
                 "&::-webkit-scrollbar": {
                     width: 5,
@@ -392,7 +397,7 @@ export const PRequest = () => {
                         </Grid>
 
                         <Grid item xs={12} sx={{
-                            height: '65vh',
+                            height: '55vh',
                             overflowY: 'scroll',
                             "&::-webkit-scrollbar": {
                                 width: 5,
@@ -554,7 +559,7 @@ export const PRequest = () => {
                         </Grid>
 
                         <Grid item xs={12} sx={{
-                            height: '65vh',
+                            height: '55vh',
                             overflowY: 'scroll',
                             "&::-webkit-scrollbar": {
                                 width: 5,

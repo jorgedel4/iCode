@@ -7,21 +7,22 @@
 
 // Core components from MUI
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Button, Grid, Typography, useTheme } from '@mui/material'
+import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
+import { useState, useEffect, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
+import { useLocation } from 'react-router-dom';
 
-// MindScript Components
-import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
 
-// ------------ ## End Imports region ------------
-
-export const WorkEnv = ({ onPrueba }) => {
+export const WorkEnv = () => {
+    const location = useLocation();
+    const questionParams = location.state?.questionParams;
+    const questionInfo = JSON.parse(questionParams.info);
 
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
     const theme = useTheme();
 
     //Timer States
@@ -31,7 +32,11 @@ export const WorkEnv = ({ onPrueba }) => {
     // Current user data
     const auth = getAuth();
     const user = auth.currentUser;
-    let schoolID, email, displayName, emailVerified, uid, responseInfo;
+    let schoolID, email, displayName, emailVerified, uid;
+    const [timerValue, setTimerValue] = useState(0);
+    const [resetTimer, setResetTimer] = useState(false);
+
+
     if (user !== null) {
         ({ email, displayName, emailVerified, uid } = user);
         schoolID = (user.email).substring(0, 9).toUpperCase();
@@ -39,37 +44,6 @@ export const WorkEnv = ({ onPrueba }) => {
         // console.log("Matrícula ", schoolID)
     }
 
-    // ------------ # API region ------------
-
-    //GET - Obtaining student's groups information
-    const [homework, setHomework] = useState([]);
-    useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-            mode: 'cors',
-        }
-
-        const homeworkID = "H0000000000000000001";
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
-                const responseData = await response.json();
-                setHomework(responseData);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    if (homework.info !== undefined) {
-        responseInfo = JSON.parse(homework.info);
-    }
 
     //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
@@ -94,7 +68,7 @@ export const WorkEnv = ({ onPrueba }) => {
         };
 
         fetchData();
-    }, []);
+    }, [progress]);
 
 
 
@@ -102,6 +76,11 @@ export const WorkEnv = ({ onPrueba }) => {
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
+    //Objeto para codeExec
+    const hwData = {
+        code: content,
+        id: questionParams.id_pregunta,
+    }
 
     const requestNextQuestion = async () => {
         console.log("Next Question")
@@ -152,15 +131,17 @@ export const WorkEnv = ({ onPrueba }) => {
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
+            <Grid item xs={12}>
+                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                    {'< Regresar'}
+                </Button>
+            </Grid>
             <Grid item xs={4}>
                 <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
                     {/* Hw Description*/}
                     <Grid item xs={12}>
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
-                                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
-                                    {'< Regresar'}
-                                </Button>
                                 <Typography variant='h5' sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 20 }}>
                                     Descripción
                                 </Typography>
@@ -185,8 +166,8 @@ export const WorkEnv = ({ onPrueba }) => {
                                     borderRadius: 2,
                                 },
                             }}>
-                                {responseInfo !== undefined && (
-                                    responseInfo.description
+                                {questionInfo.description && questionInfo.description.length > 0 && (
+                                    questionInfo.description
                                 )}
                             </Typography>
                         </Grid>

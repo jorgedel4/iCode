@@ -306,6 +306,11 @@ BEGIN
     ORDER BY attempt_date DESC
     LIMIT 1;
 
+    IF last_attempt_question IS NULL THEN
+        SET questionID = NewHWQuestionID(homework_id, student_id);
+        RETURN questionID;
+    END IF;
+
     IF last_attempt_status = 'PAS' THEN
         SET questionID = NewHWQuestionID(homework_id, student_id);
         RETURN questionID;
@@ -441,60 +446,114 @@ DELIMITER ;
 
 
 
--- DELIMITER $$
--- CREATE FUNCTION HWStatus(
---     homework_id CHAR(20),
---     student_id CHAR(9)
--- )
--- END$$
--- DELIMITER ;
+DELIMITER $$
+CREATE FUNCTION hw_answeredQuestions(
+    homework_id CHAR(20),
+    student_id CHAR(9)
+) RETURNS INT
+BEGIN
+    DECLARE answered INT;
+
+    SELECT COUNT(*) INTO answered
+    FROM hw_questionAttempts
+    WHERE student = student_id
+    AND homework = homework_id
+    AND attempt_status = 'PAS';
+
+    RETURN answered;
+END$$
+DELIMITER ;
 
 
 
--- DELIMITER $$
--- CREATE FUNCTION StudentHomeworkStatus(
---     group_id CHAR(20),
---     student_id CHAR(9)
--- ) RETURNS JSON
--- BEGIN
---     DECLARE HWJSON JSON;
+DELIMITER $$
+CREATE FUNCTION HomeworkStatus(
+    homework_id CHAR(20),
+    student_id CHAR(9)
+) RETURNS VARCHAR(15)
+BEGIN
+    DECLARE needed INT;
+    DECLARE answered INT;
+    DECLARE result VARCHAR(15);
 
---     SELECT JSON_ARRAYAGG (
---         JSON_OBJECT (
---             'hw_name', h.hw_name,
---             'status', HWStatus(h.id_homework, student_id)
---         )
---     )
---     INTO HWJSON
---     FROM homework h
---     WHERE h.grupo = group_id;
--- END$$
--- DELIMITER ;
+    SET needed = hw_needed_questions(homework_id);
+    SET answered = hw_answeredQuestions(homework_id, student_id);
+
+    SET result = CASE
+        WHEN needed = answered THEN 'passed'
+        WHEN answered = 0 THEN 'not started'
+        ELSE 'started'
+    END;
+
+    RETURN result;
+END$$
+DELIMITER ;
 
 
 
--- DELIMITER $$
--- CREATE FUNCTION GroupHomeworkStatus(
---     group_id CHAR(20)
--- ) RETURNS JSON
--- BEGIN
---     DECLARE studentHWJSON JSON;
 
---     SELECT JSON_ARRAYAGG(
---         JSON_OBJECT (
---             'matricula', s.matricula,
---             'first_name', s.first_name,
---             'flast_name', s.flast_name,
---             'slast_name', s.slast_name,
---             'homework', 
---         )
---     )
---     INTO studentHWJSON
---     FROM enrollments e
---     JOIN students s ON e.student = s.matricula
---     WHERE e.grupo = group_id;
+DELIMITER $$
+CREATE FUNCTION GroupHomeworkStatus(
+    group_id CHAR(20)
+) RETURNS JSON
+BEGIN
+    DECLARE statusJSON JSON;
 
---     RETURN studentHWJSON;
--- END$$
--- DELIMITER ;
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'matricula', e.student,
+            'nombre', CONCAT(s.first_name, ' ', s.flast_name, ' ', s.slast_name),
+            'homework', (
+                SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'name', hw_name,
+                        'id', id_homework,
+                        'status', HomeworkStatus(id_homework, e.student)
+                    )
+                )
+                FROM homework
+                WHERE grupo = group_id
+            )
+        )
+    ) INTO statusJSON
+    FROM enrollments e
+    JOIN students s ON e.student = s.matricula
+    WHERE e.grupo = group_id;
 
+    RETURN statusJSON;
+END$$
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION GroupModulesStatus(
+    group_id CHAR(20)
+) RETURNS JSON
+BEGIN
+    DECLARE statusJSON JSON;
+
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'matricula', e.student,
+            'nombre', CONCAT(s.first_name, ' ', s.flast_name, ' ', s.slast_name),
+            'homework', (
+                SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'name', hw_name,
+                        'id', id_homework,
+                        'status', HomeworkStatus(id_homework, e.student)
+                    )
+                )
+                FROM homework
+                WHERE grupo = group_id
+            )
+        )
+    ) INTO statusJSON
+    FROM enrollments e
+    JOIN students s ON e.student = s.matricula
+    WHERE e.grupo = group_id;
+
+    RETURN statusJSON;
+END$$
+DELIMITER ;

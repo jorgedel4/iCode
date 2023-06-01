@@ -18,7 +18,7 @@ export const AppRoutes = () => {
 
   const renderStudentRoutes = () => (
     <>
-      <Route path="/" element={<SProfile/>} />
+      <Route path="/" element={<SProfile />} />
       <Route path="student/home" element={<SHomePage />} />
       <Route path="student/modules" element={<SModulesPage />} />
       <Route path="student/modules/:group/:course" element={<SModulesPage />} />
@@ -32,7 +32,7 @@ export const AppRoutes = () => {
 
   const renderProfessorRoutes = () => (
     <>
-      <Route path="/" element={<PProfile/>} />
+      <Route path="/" element={<PProfile />} />
       <Route path="professor/home" element={<PHomePage />} />
       <Route path="professor/modules" element={<PModulesPage />} />
       <Route path="professor/modules/:group/:course" element={<PModulesPage />} />
