@@ -61,6 +61,7 @@ func main() {
 	r.HandleFunc("/campus", read.Campus(mysqlDB)).Methods("GET")
 	r.HandleFunc("/grouphwstatus/{groupID}", read.GroupHWStatus(mysqlDB)).Methods("GET")
 	r.HandleFunc("/groupmodulestatus/{groupID}", read.GroupModuleStatus(mysqlDB)).Methods("GET")
+	r.HandleFunc("/groupmodulefailurerate/{groupID}", read.GroupModFailureRate(mysqlDB)).Methods("GET")
 
 	// Update operations
 	r.HandleFunc("/togglemodulestate", update.ModuleStatus(mysqlDB)).Methods("PATCH")

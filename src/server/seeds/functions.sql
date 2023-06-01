@@ -591,3 +591,67 @@ BEGIN
     RETURN statusJSON;
 END$$
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION ModuleFailureRate(
+    module_id CHAR(20),
+    group_id CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE total_attempts INT;
+    DECLARE failed_attempts INT;
+    DECLARE result INT;
+
+    SELECT COUNT(*) INTO total_attempts
+    FROM questionAttempts qa
+    JOIN questions q ON qa.question = q.id_question
+    WHERE qa.grupo = group_id
+    AND q.module = module_id;
+
+    SELECT COUNT(*) INTO failed_attempts
+    FROM questionAttempts qa
+    JOIN questions q ON qa.question = q.id_question
+    WHERE qa.grupo = group_id
+    AND q.module = module_id
+    AND qa.attempt_status = 'FAI';
+
+    IF total_attempts = 0 THEN
+        RETURN 0;
+    END IF;
+
+    SET result = ROUND((failed_attempts / total_attempts) * 100);
+
+    IF result IS NULL THEN
+        RETURN 0;
+    ELSE
+        RETURN result;
+    END IF;
+END$$
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+CREATE FUNCTION GroupModulesFailureRate(
+    group_id CHAR(20)
+) RETURNS JSON
+BEGIN
+    DECLARE statusJSON JSON;
+
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'module', m.nombre,
+            'id', m.id_module,
+            'failure_rate', ModuleFailureRate(m.id_module, group_id)
+        )
+    ) INTO statusJSON
+    FROM grupos g
+    JOIN modules m ON g.course = m.course
+    WHERE g.id_group = group_id;
+
+    RETURN statusJSON;
+END$$
+DELIMITER ;
