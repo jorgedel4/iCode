@@ -153,11 +153,9 @@ export const PDashboard = () => {
             <Grid item xs={12} sx={{ height: '80vh', mt: 5 }}>
                 <ResponsiveContainer width='100%' height='100%'>
                     <BarChart data={moduleProgress}>
-                        <CartesianGrid />
                         <XAxis dataKey="module" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
+                        <YAxis tickFormatter={(value) => `${value}%`} label={{ value: '% Completado', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip formatter={(value) => `${value}%`} />
                         <Bar dataKey="completion" fill={theme.palette.appDark.button} />
                     </BarChart>
                 </ResponsiveContainer>
