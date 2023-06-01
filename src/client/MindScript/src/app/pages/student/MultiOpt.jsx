@@ -10,6 +10,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { NavBar, OptionButton } from "../../components";
 
 export const MultiOpt = () => {
     const location = useLocation();
