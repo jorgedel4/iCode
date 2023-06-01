@@ -143,16 +143,14 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         reader.readAsText(file);
 
     };
-    const rawjson = `{"${JSON.stringify(formatedInfo).slice(1, -1)}"}`;
-    const formated = rawjson.substring(9, rawjson.length - 7)
-    console.log("formatedInfo", formated)
 
-    function addBackslashToString(string) {
-        return string.replace(/"/g, '\\$&');
-    }
-      
+    // const rawjson = `{"${JSON.stringify(formatedInfo).slice(1, -1)}"}`;
+    // const formated = rawjson.substring(9, rawjson.length - 19)
+    // console.log("formatedInfo", formatedInfo)
 
     //POST - question request 
+
+
 
     const requestAQuestion = async () => {
         console.log(qtype)
@@ -181,8 +179,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 "explanation": qexplanation,
                 "created_by": schoolID,
             }
-
-            console.log("info",info)
 
         } else {
             const hinputs = [];
@@ -223,20 +219,17 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                 "created_by": schoolID,
             }
 
-            console.log("info",info)
+
         }
 
-        // const options = {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-
-        //     mode: 'cors',
-        //     body: JSON.stringify({
-        //         "info": addBackslashToString(JSON.stringify(info))
-        //     })
-        // }
+        let formatedInfo = JSON.stringify(
+            formatedInfo
+        )
+        formatedInfo = formatedInfo.replace(/\\"info\\": {/g, '"info": "{')
+        formatedInfo = formatedInfo.replace(/}\\r\\n /g, '}"')
+        formatedInfo = formatedInfo.replace(/\\r\\n/g, '')
+        formatedInfo = formatedInfo.substring(1, formatedInfo.length - 1)
+        console.log("formatedInfo",formatedInfo)
 
         const options = {
             method: 'POST',
@@ -245,33 +238,17 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             },
 
             mode: 'no-cors',
-            body: JSON.stringify([{
-                "info": JSON.stringify(info)
-            }])
+            body: formatedInfo
+            
+            // body: JSON.stringify([{
+            //     "info": JSON.stringify(info)
+            // }])
         }
-
-        console.log(options)
-
-
-        // const options = {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-
-        //     mode: 'cors',
-        //     body: JSON.stringify({
-        //         "module": "M0000000000000000001",
-        //         "q_type": createQuestion.q_type,
-        //         "info": `{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"${createQuestion.qdescription}\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}`,
-        //         "created_by": createQuestion.created_by
-        //     })
-        // }
-
-        // console.log(options)
-        fetch(`${riddleAPI}requestQuestion  `, options)
+        console.log("options", options)
+        fetch(`${riddleAPI}requestQuestion`, options)
             .then(response => {
-                if (response.status === 201) {
+                console.log(response.status)
+                if (response.status === 200) {
                     close();
                 }
             })
