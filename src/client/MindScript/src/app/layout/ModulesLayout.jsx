@@ -2,8 +2,11 @@ import { Grid, Typography, List, IconButton, Button } from '@mui/material'
 import { DeleteOutline, DomainAddSharp, Edit } from '@mui/icons-material'
 import { NavBar, HomeworkBoard, SMHomeworkCard, Confirmation, EditHomework } from '../components'
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 
 export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
+    let params = useParams();
 
     //Importante para EditHomework
     const [editData, setData] = useState(null);
@@ -113,6 +116,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
                         <>
                             {/* <Grid item xs={12}> */}
                             <Button
+                                href = {`/professor/dashboard/${params.group}/${params.course}`}
                                 variant="contained"
                                 sx={{
                                     width: 400, bgcolor: 'appDark.button', mb: 1,

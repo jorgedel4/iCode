@@ -39,6 +39,7 @@ export const AppRoutes = () => {
       <Route path="professor/management" element={<PManage />} />
       <Route path="professor/management/:group/:course" element={<PManage />} />
       <Route path="professor/dashboard" element={<PDashboard />} />
+      <Route path="professor/dashboard/:group/:course" element={<PDashboard />} />
       <Route path="professor/profile" element={<PProfile />} />
       <Route path="professor/request" element={<PRequest />} />
       <Route path="auth/login" element={<PProfile />} />

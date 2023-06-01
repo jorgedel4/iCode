@@ -20,7 +20,7 @@ export const PManage = () => {
     setOpenRemoveStudent(false);
   }
 
-  //GET term information
+  //GET users information
   const [usersData, setUser] = useState([]);
   useEffect(() => {
     const options = {
@@ -31,17 +31,13 @@ export const PManage = () => {
       mode: 'cors',
     }
 
-
-    // let userID = "A01551955"
-    // let term = "current"
-
     const fetchData = async () => {
       try {
         const response = await fetch(`${batmanAPI}enrolledstudents/${params.group}`, options);
         const responseData = await response.json();
         setUser(responseData);
       } catch (error) {
-        // console.error(error);
+        console.error(error);
       }
     };
 
