@@ -43,6 +43,29 @@ export const PDashboard = () => {
         fetchData();
     }, []);
 
+    const [moduleProgress, setModuleProgress] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}groupmodulestatus/${params.group}`, options);
+                const responseData = await response.json();
+                setModuleProgress(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     let homeworkNames, columns, rows, dataFiltered;
@@ -120,15 +143,22 @@ export const PDashboard = () => {
                     <DataGrid disableColumnMenu disableHear rows={dataFiltered} columns={columns} theme={theme} sx={{ color: 'appDark.text', border: 0 }} />
                 )}
             </Grid>
-            <Grid item xs={12} sx={{ height: '90vh' }}>
+
+            <Grid item xs={12} sx={{ mt: 2, height: '1vh' }}>
+                <Typography sx={{ color: 'appDark.text', fontWeight: 500, fontSize: 25 }}>
+                    Progreso General en Modulos
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} sx={{ height: '80vh', mt: 5 }}>
                 <ResponsiveContainer width='100%' height='100%'>
-                    <BarChart data={gridStats}>
+                    <BarChart data={moduleProgress}>
                         <CartesianGrid />
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey="module" />
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="value" fill={theme.palette.appDark.button} />
+                        <Bar dataKey="completion" fill={theme.palette.appDark.button} />
                     </BarChart>
                 </ResponsiveContainer>
             </Grid>
