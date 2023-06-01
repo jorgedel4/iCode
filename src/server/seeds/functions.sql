@@ -527,6 +527,50 @@ DELIMITER ;
 
 
 DELIMITER $$
+CREATE FUNCTION GroupModuleCompletion(
+    group_id CHAR(20),
+    module_id CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE enrolled_students INT;
+    DECLARE needed_questions_per_student INT;
+    DECLARE needed_questions_for_group INT;
+    DECLARE total_answered_by_group INT;
+    DECLARE completion_percentage INT;
+
+    SELECT COUNT(*) INTO enrolled_students
+    FROM enrollments
+    WHERE grupo = group_id;
+
+    SELECT n_question INTO needed_questions_per_student
+    FROM moduleConfigs
+    WHERE module = module_id
+    AND grupo = group_id
+    LIMIT 1;
+
+    SET needed_questions_for_group = enrolled_students * needed_questions_per_student;
+
+    SELECT COUNT(*) INTO total_answered_by_group
+    FROM questionAttempts qa
+    JOIN questions q ON qa.question = q.id_question
+    WHERE grupo = group_id
+    AND attempt_status = 'PAS'
+    AND q.module = module_id;
+
+    SET completion_percentage = ROUND((total_answered_by_group / needed_questions_for_group) * 100);
+
+    IF completion_percentage IS NULL THEN
+        RETURN 0;
+    ELSE
+        RETURN completion_percentage;
+    END IF;
+END$$
+DELIMITER ;
+
+
+
+
+DELIMITER $$
 CREATE FUNCTION GroupModulesStatus(
     group_id CHAR(20)
 ) RETURNS JSON
@@ -535,24 +579,14 @@ BEGIN
 
     SELECT JSON_ARRAYAGG(
         JSON_OBJECT(
-            'matricula', e.student,
-            'nombre', CONCAT(s.first_name, ' ', s.flast_name, ' ', s.slast_name),
-            'homework', (
-                SELECT JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'name', hw_name,
-                        'id', id_homework,
-                        'status', HomeworkStatus(id_homework, e.student)
-                    )
-                )
-                FROM homework
-                WHERE grupo = group_id
-            )
+            'module', m.nombre,
+            'id', m.id_module,
+            'completion', GroupModuleCompletion(group_id, m.id_module)
         )
     ) INTO statusJSON
-    FROM enrollments e
-    JOIN students s ON e.student = s.matricula
-    WHERE e.grupo = group_id;
+    FROM grupos g
+    JOIN modules m ON g.course = m.course
+    WHERE g.id_group = group_id;
 
     RETURN statusJSON;
 END$$
