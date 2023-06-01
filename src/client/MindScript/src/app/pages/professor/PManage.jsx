@@ -76,7 +76,6 @@ export const PManage = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 100 : 150;
 
-  // const dataFiltered = filterData(searchQuery, data);
   const [nameQuery, setNameQuery] = useState("");
   const [idQuery, setIdQuery] = useState("");
 
