@@ -66,6 +66,29 @@ export const PDashboard = () => {
         fetchData();
     }, []);
 
+    const [failureRate, setFailureRate] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}groupmodulefailurerate/${params.group}`, options);
+                const responseData = await response.json();
+                setFailureRate(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [nameQuery, setNameQuery] = useState("");
     const [idQuery, setIdQuery] = useState("");
     let homeworkNames, columns, rows, dataFiltered;
@@ -138,50 +161,51 @@ export const PDashboard = () => {
                 </Grid>
 
             </Grid>
-            <Grid item xs={12} sx={{ color: 'appDark.text', bgcolor: 'appDark.bgBox', height: '70vh', mt: 2, borderRadius: 2, mt: 2 }}>
+            <Grid item xs={12} sx={{ color: 'appDark.text', bgcolor: 'appDark.bgBox', height: '70vh', mt: 2, borderRadius: 2 }}>
                 {Array.isArray(gridStats) && gridStats.length > 0 && (
                     <DataGrid disableColumnMenu disableHear rows={dataFiltered} columns={columns} theme={theme} sx={{ color: 'appDark.text', border: 0 }} />
                 )}
             </Grid>
 
-            <Grid item xs={12} sx={{ mt: 2, height: '1vh' }}>
-                <Typography sx={{ color: 'appDark.text', fontWeight: 500, fontSize: 25 }}>
-                    Progreso General en Modulos
-                </Typography>
+            <Grid item xs={12} md={6} sx={{ mt: 2}}>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Typography sx={{ color: 'appDark.text', fontWeight: 500, fontSize: 25 }}>
+                            Progreso General en Modulos
+                        </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ height: '80vh', mt: 5 }}>
+                        <ResponsiveContainer width='100%' height='100%'>
+                            <BarChart data={moduleProgress}>
+                                <XAxis dataKey="module" />
+                                <YAxis tickFormatter={(value) => `${value}%`} label={{ value: '% Completado', angle: -90, position: 'insideLeft' }} />
+                                <Tooltip formatter={(value) => `${value}%`} />
+                                <Bar dataKey="completion" fill={theme.palette.appDark.button} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Grid>
+                </Grid>
             </Grid>
 
-            <Grid item xs={12} sx={{ height: '80vh', mt: 5 }}>
-                <ResponsiveContainer width='100%' height='100%'>
-                    <BarChart data={moduleProgress}>
-                        <XAxis dataKey="module" />
-                        <YAxis tickFormatter={(value) => `${value}%`} label={{ value: '% Completado', angle: -90, position: 'insideLeft' }} />
-                        <Tooltip formatter={(value) => `${value}%`} />
-                        <Bar dataKey="completion" fill={theme.palette.appDark.button} />
-                    </BarChart>
-                </ResponsiveContainer>
-            </Grid>
-
-            <Grid item xs={12} sx={{ height: '90vh' }}>
-                <ResponsiveContainer width='100%' height='100%'>
-                    <PieChart>
-                        <Pie
-                            data={gridStats}
-                            dataKey='value'
-                            nameKey='name'
-                            cx='50%'
-                            cy='50%'
-                            outerRadius={150}
-                            fill={theme.palette.appDark.button}
-                            label
-                        >
-                            {gridStats.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Legend />
-                        <Tooltip />
-                    </PieChart>
-                </ResponsiveContainer>
+            <Grid item xs={12} md={6} sx={{ mt: 2}}>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Typography sx={{ color: 'appDark.text', fontWeight: 500, fontSize: 25 }}>
+                            Errores más Comunes
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sx={{ height: '80vh', mt: 5 }}>
+                        <ResponsiveContainer width='100%' height='100%'>
+                            <BarChart data={failureRate}>
+                                <XAxis dataKey="module" />
+                                <YAxis tickFormatter={(value) => `${value}%`} label={{ value: '% Error', angle: -90, position: 'insideLeft' }} />
+                                <Tooltip formatter={(value) => `${value}%`} />
+                                <Bar dataKey="failure_rate" fill={theme.palette.appDark.button} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
