@@ -6,59 +6,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 )
 
-// Recibe el string de .info completo toma solo lo necesario y devuelve el string a insertar en la DB
-func GetWithoutKeysMulti(input string) (string, error) {
-	var info structs.InfoStructMultiWithoutKeys
-	err := json.Unmarshal([]byte(input), &info)
-	if err != nil {
-		fmt.Println("Error al analizar el JSON:", err)
-	}
-
-	newInfo, err := json.Marshal(info)
-	if err != nil {
-		fmt.Println("Error al analizar el JSON:", err)
-	}
-	newInfoString := string(newInfo)
-	return newInfoString, err
-}
-
-//_____________________________________________________________
-
+// Obtener informacion y comprobacion de estructura de Info para CODEP
 func GetInfoMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) error {
-
-	//Llamo a la función GetInfoStructCodep para obtener la estructura con los datos
-	info, _ := GetInfoStructMulti(input)
-
-	//Crear el string de info a partir de todos los elementos restantes de info inicial
-	stringInfo, _ := GetWithoutKeysMulti(input)
-
-	//Check all the keys per question
-	err := CheckKeysInJSONMulti(input)
+	// Recibo el string de Info
+	//input = "{\"module\": \"M0000000000000000001\", \"q_type\": \"codep\", hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"], \"created_by\": \"L00000002\"}"
+	//Call the GetInfoStructCodep function to get the structure with the data.
+	err := GetInfoStructMulti(w, input, stmt)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 
-	fmt.Println("Todas las llaves están presentes en el JSON")
-
-	InsertQueryMulti(w, stringInfo, info, stmt)
 	return err
 }
 
-// Función para almacenar los valores del string en una estructura
-func GetInfoStructMulti(input string) (structs.InfoStructMulti, error) {
-	var info structs.InfoStructMulti
-	err := json.Unmarshal([]byte(input), &info)
-	if err != nil {
-		fmt.Println("Error al analizar el JSON:", err)
-	}
-	return info, err
-}
+// Function to storage the values from initial JSON in a structure
+func GetInfoStructMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) error {
 
-// FUnction to check that all the keys exists
-func CheckKeysInJSONMulti(input string) error {
 	// Deserializar JSON en un mapa
 	var data map[string]interface{}
 	err := json.Unmarshal([]byte(input), &data)
@@ -66,7 +32,10 @@ func CheckKeysInJSONMulti(input string) error {
 		return fmt.Errorf("error al deserializar el JSON: %v", err)
 	}
 
-	// Verificar si todas las llaves de InfoStructCodep están presentes en el mapa
+	clean := input
+	clener := EscapeForJSON(clean)
+
+	// Verificar si todas las llaves están presentes en el mapa
 	keys := make(map[string]bool)
 	keys["module"] = true
 	keys["q_type"] = true
@@ -83,13 +52,95 @@ func CheckKeysInJSONMulti(input string) error {
 		}
 	}
 
+	// Verificar que todas las llaves tengan un valor asignado
+	var info structs.InfoStructMulti
+	err = json.Unmarshal([]byte(clener), &info)
+	if err != nil {
+		return fmt.Errorf("error al analizar el JSON: %v", err)
+	}
+
+	value := reflect.ValueOf(info)
+	typeInfo := reflect.TypeOf(info)
+
+	for i := 0; i < value.NumField(); i++ {
+		field := value.Field(i)
+		fieldName := typeInfo.Field(i).Name
+
+		// Verificar que todas las llaves tengan un valor asignado, excepto forbiddenFunctions e initialCode
+		if fieldName != "InitialCode" {
+			switch field.Kind() {
+			case reflect.String:
+				if field.String() == "" || !field.IsValid() {
+					return fmt.Errorf("la llave '%s' no tiene un valor asignado", fieldName)
+				}
+			case reflect.Slice:
+				if field.Len() == 0 {
+					return fmt.Errorf("la llave '%s' no tiene un valor asignado", fieldName)
+				}
+			case reflect.Int:
+				if field.Int() == 0 {
+					return fmt.Errorf("la llave '%s' no tiene un valor asignado", fieldName)
+				}
+			}
+		}
+	}
+
+	// Validar la cantidad de opciones
+	if len(info.Options) != info.N_Options {
+		return fmt.Errorf("la cantidad de opciones no coincide con 'n_options'")
+	}
+
+	//Comprobar que correct_option se encuentre en options
+	if !isCorrectOptionValid(info.Correct_option, info.Options) {
+		return fmt.Errorf("'correct_option' no se encuentra en 'options'")
+	}
+
+	//Create info string from all remaining initial info elements
+	stringInfo, err := GetWithoutKeysMulti(clener)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return err
+	}
+
+	//Insert data in DB
+	err = InsertQueryMulti(w, stringInfo, info, stmt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return err
+	}
+
 	return nil
+}
+
+// Recibe el string de .info completo toma solo lo necesario y devuelve el string a insertar en la DB
+func GetWithoutKeysMulti(clener string) (string, error) {
+	var info structs.InfoStructMultiWithoutKeys
+	err := json.Unmarshal([]byte(clener), &info)
+	if err != nil {
+		return "", fmt.Errorf("error al analizar el JSON: %v", err)
+	}
+	newInfo, err := json.Marshal(info)
+	if err != nil {
+		return "", fmt.Errorf("error al analizar el JSON: %v", err)
+	}
+	newInfoString := string(newInfo)
+	return newInfoString, nil
+}
+
+// Check the existense of correct_option in options
+func isCorrectOptionValid(correctOption []string, options []string) bool {
+	for i, option := range options {
+		if option == correctOption[i] {
+			return true
+		}
+	}
+	return false
 }
 
 // Casos de prueba y seguridad para multi
 
-// Revisar que vengan todas las llaves
-// Revisar que todas las llaves tengan valores
+// (Completed) Revisar que vengan todas las llaves
+// (Completado) Revisar que todas las llaves tengan valores
 // Que no puedan inyectar condigo malcioso en los espacios
-// Comprobar que n_options coincida con la cantidad de elementos en el arreglo de options
-// revisar que correct_option exista en options
+// (completed) Comprobar que n_options coincida con la cantidad de elementos en el arreglo de options
+// (completed) revisar que correct_option exista en options
