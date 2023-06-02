@@ -64,8 +64,8 @@ type InfoStructCodepWithoutKeys struct {
 	Sinputs            [][]string `json:"sinputs"`
 	Soutputs           []string   `json:"soutputs"`
 	TimeoutSec         int        `json:"timeoutSec"`
-	ForbiddenFunctions []string   `json:"forbidden_functions"`
-	InitialCode        string     `json:"initial_code"`
+	ForbiddenFunctions []string   `json:"forbiddenFunctions"`
+	InitialCode        string     `json:"initialCode"`
 	Language           string     `json:"language"`
 }
 
