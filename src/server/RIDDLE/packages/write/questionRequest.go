@@ -12,7 +12,6 @@ import (
 /* Function to post questions */
 func RequestQuestion(mysqlDB *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		//Revisar el metodo
 		if r.Method != http.MethodPost {
@@ -33,6 +32,8 @@ func RequestQuestion(mysqlDB *sql.DB) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		//Query de inserciona la base de datos
 		baseQuery := "INSERT INTO questions(id_question,module, q_type, info, created_by, submittedOn, current_status) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -68,9 +69,14 @@ func RequestQuestion(mysqlDB *sql.DB) http.HandlerFunc {
 				}
 
 			} else {
-				break
+				http.Error(w, "Tipo de pregunta no válido", http.StatusBadRequest)
+				return
 			}
 
 		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.(http.Flusher).Flush()
+		w.(http.CloseNotifier).CloseNotify()
 	}
 }

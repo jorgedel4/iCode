@@ -1051,6 +1051,55 @@ Content-Type: application/json
 ]
 ```
 
+---
+
+### `/groupmodulefailurerate/{groupID}`
+#### Descripcion
+Porcentaje de fallo de cada modulo
+
+#### Metodo de HTTP
+`GET`
+
+#### Parametros
+(Mediante variables de url)
+* `groupID` (obligatorio): ID del grupo del que se desea ver el porcentaje de fallo de modulos.
+
+#### Respuestas
+(En formato JSON) Se regresa un arreglo de estatus. Cada estatus contiene la el nombre y ID de un modulo, al igual que el porcentaje de fallo
+Estructura de estatus
+| Campo              | Tipo                  | Descripcion                    |
+| ------------------ | --------------------- | ------------------------------ |
+| id                 | string                | ID del modulo                  |
+| module             | string                | Nombre del modulo              |
+| failure_rate       | int                   | Porcentaje de fallo            |
+
+#### Ejemplo
+**Peticion**
+GET 34.16.137.250:8002/groupmodulefailurerate/G000000001
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+[
+    {
+        "id": "M0000000000000000001",
+        "module": "Basics",
+        "failure_rate": 50
+    },
+    {
+        "id": "M0000000000000000002",
+        "module": "Conditionals",
+        "failure_rate": 0
+    },
+    {
+        "id": "M0000000000000000003",
+        "module": "For loops",
+        "failure_rate": 0
+    }
+]
+```
+
 ## Endpoints de actualizacion
 
 ### `/togglemodulestate`

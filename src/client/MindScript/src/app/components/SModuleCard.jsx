@@ -6,7 +6,6 @@ import { getAuth } from "firebase/auth";
 import { Link } from 'react-router-dom';
 
 export const SModuleCard = ({ module, index, group }) => {
-
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
@@ -60,7 +59,7 @@ export const SModuleCard = ({ module, index, group }) => {
             >
                 <Link
                     to={{
-                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                        pathname: question.type === 'codep' && !module.locked ? "/student/workenv" : question.type === 'multi' && !module.locked ? "/student/multiopt" : ""
                     }}
                     state={{ questionParams: question }}
                     style={{ textDecoration: 'none' }}

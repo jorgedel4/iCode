@@ -17,6 +17,7 @@ export const Theme = createTheme({
         },
         appDark: {
             text: '#FFF',
+            textBlack: '#000',
             box: '#FFF',
             bgBox: '#303645',
             icon: '#FFF',

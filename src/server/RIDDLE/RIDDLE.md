@@ -168,10 +168,7 @@ POST
 
 | Parametro    | Tipo      | Obligatorio                                  | Decripcion                                              |
 | :---------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| module       | string    | si                                           | ID del modulo al que pertenece la pregunta              |
-| q_type       | string    | si                                           | Tipo de pregunta a cargar                               | 
-| info         | string    | si                                           | String con info de toda la pregunta                     |
-| created_by   | string    | si                                           | ID del profesor que realiza la peticion                 |
+| info         | string    | si                                           | Informacion general de la pregunta, desde el modulo, q_type, created_by y la descripcion que implica cada tipo de pregunta             |
 
 <h3 style="color:#b5ffe1;">Respuesta</h3>
 En caso de que se haya creado la tarea de forma exitosa, se regresa unicamente un codigo HTTP 200 (Ok) Nota: Se agrega la pregunta a la tabla de questions, con un current_status de "PEN" para que el administrador pueda aceptar o rechazarla
@@ -188,10 +185,7 @@ Siempre se pide un arreglo de objetos de tipo JSON, en el caso de la interfaz en
 ```json
 [
     {
-        "module": "M0000000000000000001",
-        "q_type": "codep",
-        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        "created_by": "L00000003"
+        "info": "{\"module\": \"M0000000000000000001\", \r\n \"q_type\": \"multi\", \"question\": \"how do you show send text to the screen\", \"n_options\": 3, \"options\": [\"print\",\"show\",\"wuajaja\"], \"correct_option\": [\"print\",\"show\"], \"explanation\": \"print is a coloquial term in programming...\", \"created_by\": \"L00000002\"}"
     }
 ]
 ```
@@ -201,16 +195,10 @@ Cuando se cargan preguntas a traves de un archivo, desde el frontend se recibe u
 ```json
 [
     {
-        "module": "M0000000000000000001",
-        "q_type": "codep",
-        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        "created_by": "L00000003"
+        "info": "{\"module\": \"M0000000000000000001\", \"q_type\": \"codep\", \"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"PRIMERAgest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"], \"created_by\": \"L00000002\"}"
     },
     {
-        "module": "M0000000000000000001",
-        "q_type": "codep",
-        "info": "{\"hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"]}",
-        "created_by": "L00000003"
+        "info": "{\"module\": \"M0000000000000000001\", \r\n \"q_type\": \"multi\", \"question\": \"how do you show send text to the screen\", \"n_options\": 3, \"options\": [\"print\",\"show\",\"wuajaja\"], \"correct_option\": [\"print\",\"show\"], \"explanation\": \"print is a coloquial term in programming...\", \"created_by\": \"L00000002\"}"
     }
 ]
 ```

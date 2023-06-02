@@ -105,7 +105,7 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [homeworkData]);
 
     const homework = Object.entries(homeworkData)
 
