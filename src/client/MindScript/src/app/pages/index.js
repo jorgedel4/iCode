@@ -4,6 +4,8 @@ export * from './student/MultiOpt';
 export * from './student/SProfile';
 export * from './professor/PProfile';
 export * from './student/WorkEnv';
+export * from './student/FreeMode';
+export * from './student/FreeModeM';
 export * from './professor/PHomePage';
 export * from './professor/PManage';
 export * from './professor/PModulesPage';

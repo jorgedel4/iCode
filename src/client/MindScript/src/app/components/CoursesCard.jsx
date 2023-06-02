@@ -2,7 +2,7 @@ import { Card, CardContent, CardActionArea, Typography, Grid } from '@mui/materi
 import * as React from 'react';
 
 export const CoursesCard = ({ group, index, modules}) => {
-    const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
+    const colors = [ "#5EC1F3", "#55D16E", "#FACD34", "#C12C45" ]
     const color = index - (colors.length * parseInt(index / colors.length));
 
     return (

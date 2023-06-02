@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { SHomePage, SModulesPage, PHomePage, ARequest, PModulesPage, MultiOpt, PManage, PProfile, SProfile, PRequest } from "../pages";
+import { SHomePage, SModulesPage, PHomePage, ARequest, PModulesPage, MultiOpt, PManage, PProfile, SProfile, PRequest, FreeMode, FreeModeM } from "../pages";
 import { WorkEnv } from "../pages/student/WorkEnv";
 import { AManage } from "../pages";
 import { ASyllabus } from "../pages/admin/ASyllabus";
@@ -25,6 +25,8 @@ export const AppRoutes = () => {
       <Route path="student/workenv" element={<WorkEnv />} />
       <Route path="student/multiopt" element={<MultiOpt />} />
       <Route path="student/profile" element={<SProfile />} />
+      <Route path="student/freemode" element={<FreeMode />} />
+      <Route path="student/freemode/:course" element={<FreeModeM />} />
       <Route path="auth/login" element={<SProfile />} />
       <Route path="/*" element={<SHomePage />} />
     </>

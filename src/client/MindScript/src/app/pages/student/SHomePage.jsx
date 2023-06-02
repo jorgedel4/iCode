@@ -7,7 +7,7 @@
 
 // Core components from MUI
 import { useState, useEffect } from 'react';
-import { CardContent, CardActionArea, Grid, Typography } from '@mui/material';
+import { CardContent, CardActionArea, Grid, Typography, Card } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import { getAuth } from "firebase/auth";
 
@@ -153,6 +153,26 @@ export const SHomePage = () => {
                             </CardContent>
                         </CardActionArea>
                     </ActionButton>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                    <Card sx={{
+                        width: 300,
+                        height:246.5,
+                        backgroundColor: 'secondary.main',
+                        borderRadius: '12px',
+                        boxShadow: '5px 5px 0px 5px rgba(0, 0, 0, 0.1)',
+                        ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 } }}
+                    >
+                        <CardActionArea href={"freemode"}>
+                            <Grid sx={{ backgroundColor: "#C12C45", height: 40 }} />
+                            <CardContent sx={{ pt: 4, pb: 6, height: 208 }}>
+                                <Typography align='center'  xs={6} sx={{ color: 'appDark.text', fontSize: 30, fontWeight: 405, mt: 5 }} >
+                                    Modo de Práctica
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
                 </Grid>
 
                 {/* Displaying Group cards */}

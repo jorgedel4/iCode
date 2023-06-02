@@ -29,3 +29,5 @@ export * from './AddTestCasesIC';
 export * from './AddTestCasesOC';
 export * from './AddMultiQ';
 export * from './AddTestCases';
+export * from './PracticeCard';
+export * from './PracticeMCard';
