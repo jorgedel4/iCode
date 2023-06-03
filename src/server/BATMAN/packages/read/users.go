@@ -64,14 +64,23 @@ func Users(mysqlDB *sql.DB) http.HandlerFunc {
 
 		// Iterate over returned users and store them
 		users := make([]structs.User, 0)
-		
+
 		for rows.Next() {
 			var user structs.User
-			if err := rows.Scan(&user.ID, &user.Campus, &user.FirstName, &user.FLastName, &user.SLastName); err != nil {
-				http.Error(w, "Error reading results", http.StatusInternalServerError)
+			var sLastName sql.NullString // Use sql.NullString to handle null values
+
+			if err := rows.Scan(&user.ID, &user.Campus, &user.FirstName, &user.FLastName, &sLastName); err != nil {
+				http.Error(w, "Error retrieving users", http.StatusInternalServerError)
 				return
 			}
-			// Fix this later :)
+
+			// Check if sLastName is null
+			if sLastName.Valid {
+				user.SLastName = sLastName.String // Use the string value if it's not null
+			} else {
+				user.SLastName = "" // Set it to an empty string otherwise
+			}
+
 			user.Email = fmt.Sprintf("%s@tec.mx", user.ID)
 			users = append(users, user)
 		}
