@@ -712,7 +712,7 @@ Usarios que estan dados de alta en la plataforma
 
 #### Parametros
 (Mediante parametros de url)
-* `user_type` (obligatorio): Tipo de usuarios a buscar. 'all' para todos, 'student' para alumnos, 'professor' para profesores
+* `user_type` (obligatorio): Tipo de usuarios a buscar. 'all' para todos, 'student' para alumnos, 'professor' para profesores, 'admin' para administradores
 * `campus` (obligatorio): Campus de usuarios a buscar. 'all' para todos
 * `id` (obligatorio): ID usuario a buscar. 'all' para todos
 * `name` (obligatorio): Nombre del usuario a buscar. 'all' para todos
