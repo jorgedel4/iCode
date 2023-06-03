@@ -95,6 +95,29 @@ export const AManage = () => {
         fetchData();
     }, []);
 
+    const [adminData, setAdmin] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}users?user_type=admin&campus=all&id=all&name=all`, options);
+                const responseData = await response.json();
+                setAdmin(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const handlePatch = async (id) => {
         try {
             const options = {
@@ -185,9 +208,9 @@ export const AManage = () => {
     };
 
     useEffect(() => {
-        const filteredData = filterData(nameQuery, idQuery, campusQuery, buttonStudentSelected ? studentsData : buttonProfessorSelected ? professorsData : []);
+        const filteredData = filterData(nameQuery, idQuery, campusQuery, buttonStudentSelected ? studentsData : buttonProfessorSelected ? professorsData : buttonAdminSelected ? adminData : []);
         setFilter(filteredData);
-    }, [nameQuery, idQuery, campusQuery, buttonStudentSelected, buttonProfessorSelected, studentsData, professorsData]);
+    }, [nameQuery, idQuery, campusQuery, buttonStudentSelected, buttonProfessorSelected, buttonAdminSelected, studentsData, professorsData]);
 
     const handleButtonStudentClick = () => {
         setButtonStudentSelected(!buttonStudentSelected);
@@ -269,7 +292,7 @@ export const AManage = () => {
             <NavBar pages={pages} />
             <Confirmation open={openDeleteUser} close={closeModalDeleteUser} handleFunction={handleDelete} id={editData} confirmationText="¿Está seguro que desea eliminar este usuario?" confirmationTextButton="Eliminar" />
 
-            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight}}>
+            <Grid container columnSpacing={1} alignItems='center' justifyContent='space-around' sx={{ bgcolor: 'secondary.main', mt: 5, borderRadius: 2, height: containerHeight }}>
                 <Grid item xs={12} sm={4} lg={3}>
                     <SearchBar searchQuery={nameQuery} name={'Nombre'} placeholder={'Jorge Delgado'} setSearchQuery={setNameQuery} />
                 </Grid>
