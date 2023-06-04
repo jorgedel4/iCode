@@ -18,9 +18,9 @@ import { useLocation } from 'react-router-dom';
 export const WorkEnv = () => {
     const location = useLocation();
     const questionParams = location.state?.questionParams;
-    const homeworkIdParams = location.state?.homeworkData;
+    const homeworkIdParams = location.state?.homeworkData.hw_id;
     const questionInfo = JSON.parse(questionParams.info);
-    // console.log("work", hwidParams)
+    // console.log("work", homeworkIdParams)
 
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
@@ -60,9 +60,11 @@ export const WorkEnv = () => {
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
+                // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkID}&group=G000000001`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
+                // console.log(progress)
             } catch (error) {
                 // console.error(error);
             }
@@ -87,6 +89,8 @@ export const WorkEnv = () => {
     const requestNextQuestion = async () => {
         console.log("Next Question")
     }
+
+    //POST - to codeExec
 
     const handleEditorDidMount = async () => {
 
@@ -206,7 +210,7 @@ export const WorkEnv = () => {
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
                             </Grid>
                             <Grid item xs={2} align='right'>
-                                <Typography sx={{ color: 'appDark.text' }}>{progress.progress}/{progress.total}</Typography>
+                                <Typography sx={{ color: 'appDark.text' }}>{progress.answered}/{progress.needed}</Typography>
                             </Grid>
 
                         </Grid>

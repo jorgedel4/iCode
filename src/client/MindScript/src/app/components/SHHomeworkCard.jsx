@@ -120,7 +120,7 @@ export const SHHomeworkCard = ({ data, index }) => {
                                     to={{
                                         pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                                     }}
-                                    state={{ questionParams: question, homeworkData: homework.hw_id }}
+                                    state={{ questionParams: question, homeworkData: homework }}
                                     style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                                 >
                                     <ListItemButton>
