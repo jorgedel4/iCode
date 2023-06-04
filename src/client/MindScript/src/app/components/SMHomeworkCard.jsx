@@ -115,25 +115,25 @@ export const SMHomeworkCard = ({ data, index }) => {
                     component="div"
                     disablePadding
                 >
-                    <Link
-                        to={{
-                            pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
-                        }}
-                        state={{ questionParams: question }}
-                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                    >
 
-                        {data.map((homework, indexH) => (
-                            <Grid container key={indexH}>
-                                <ListItem disablePadding>
+                    {data.map((homework, indexH) => (
+                        <Grid container key={indexH}>
+                            <ListItem disablePadding>
+                                <Link
+                                    to={{
+                                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                                    }}
+                                    state={{ questionParams: question, homeworkData: homework }}
+                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                >
                                     <ListItemButton>
                                         <ListItemText sx={{ pl: 4 }} primary={homework.hw_name} />
                                     </ListItemButton>
-                                </ListItem>
-                            </Grid>
+                                </Link>
+                            </ListItem>
+                        </Grid>
 
-                        ))}
-                    </Link>
+                    ))}
 
                 </List>
             </Collapse>
