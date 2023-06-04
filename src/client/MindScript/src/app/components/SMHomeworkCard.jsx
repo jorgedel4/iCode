@@ -60,8 +60,8 @@ export const SMHomeworkCard = ({ data, index }) => {
 
         const fetchData = () => {
             try {
-                if(hwIds.length > 0){
-                    hwIds.forEach(async(id) => {
+                if (hwIds.length > 0) {
+                    hwIds.forEach(async (id) => {
                         const response = await fetch(`${riddleAPI}questions?id_assigment=${id}&id_student=${schoolID}`, options);
                         const responseData = await response.json();
                         setQuestion(responseData);
@@ -120,7 +120,7 @@ export const SMHomeworkCard = ({ data, index }) => {
                             pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                         }}
                         state={{ questionParams: question }}
-                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack}}
+                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                     >
 
                         {data.map((homework, indexH) => (

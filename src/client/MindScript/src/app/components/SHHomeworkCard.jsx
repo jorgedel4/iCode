@@ -1,9 +1,23 @@
-import { Card, Collapse, List, ListItem, ListItemButton, ListItemText, Typography, Grid, IconButton } from '@mui/material'
-import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import * as React from 'react';
+import { Card, Collapse, List, ListItem, ListItemButton, ListItemText, Typography, Grid, useTheme } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
 
 export const SHHomeworkCard = ({ data, index }) => {
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+    const auth = getAuth();
+    const theme = useTheme();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid, responseInfo, path;
 
+    if (user !== null) {
+        //Desestructuración de user
+        ({ email, displayName, emailVerified, uid } = user);
+        //Matrícula A00000000
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Matrícula ", schoolID)
+    }
     //Array de los dias de la semana
     const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
 
@@ -16,11 +30,47 @@ export const SHHomeworkCard = ({ data, index }) => {
         today = today - 7;
     }
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleClick = () => {
         setOpen(!open);
     };
+
+    const hwIds = [];
+    if (Array.isArray(data) && data.length > 0) {
+        data.forEach((hwData) => {
+            if (hwData.hasOwnProperty('hw_id')) {
+                hwIds.push(hwData.hw_id);
+            }
+        });
+    }
+
+    const [question, setQuestion] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = () => {
+            try {
+                if (hwIds.length > 0) {
+                    hwIds.forEach(async (id) => {
+                        const response = await fetch(`${riddleAPI}questions?id_assigment=${id}&id_student=${schoolID}`, options);
+                        const responseData = await response.json();
+                        setQuestion(responseData);
+                    })
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
 
     return (
@@ -63,25 +113,32 @@ export const SHHomeworkCard = ({ data, index }) => {
                     component="div"
                     disablePadding
                 >
+                    <Link
+                        to={{
+                            pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                        }}
+                        state={{ questionParams: question }}
+                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                    >
+                        {data.map((homework, indexH) => (
+                            <Grid container key={indexH}>
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                    >
 
-                    {data.map((homework, indexH) => (
-                        <Grid container key={indexH}>
-                            <ListItem disablePadding>
-                                <ListItemButton 
-                                >
+                                        <Grid sx={{ borderRadius: '12px', backgroundColor: '#6D7483', mr: 2 }} >
+                                            <Typography sx={{ color: 'appDark.text', mx: 2 }}>{homework.group_id}</Typography>
+                                        </Grid>
 
-                                    <Grid sx={{ borderRadius: '12px', backgroundColor: '#6D7483', mr: 2 }} >
-                                        <Typography sx={{ color: 'appDark.text', mx: 2 }}>{homework.group_id}</Typography>
-                                    </Grid>
+                                        <ListItemText
+                                            sx={{ pl: 4 }} primary={homework.hw_name} />
 
-                                    <ListItemText 
-                                        sx={{ pl: 4 }} primary={homework.hw_name} />
+                                    </ListItemButton>
+                                </ListItem>
+                            </Grid>
 
-                                </ListItemButton>
-                            </ListItem>
-                        </Grid>
-
-                    ))}
+                        ))}
+                    </Link>
 
                 </List>
             </Collapse>
