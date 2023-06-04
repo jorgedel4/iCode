@@ -113,18 +113,17 @@ export const SHHomeworkCard = ({ data, index }) => {
                     component="div"
                     disablePadding
                 >
-                    <Link
-                        to={{
-                            pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
-                        }}
-                        state={{ questionParams: question }}
-                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                    >
-                        {data.map((homework, indexH) => (
-                            <Grid container key={indexH}>
-                                <ListItem disablePadding>
-                                    <ListItemButton
-                                    >
+                    {data.map((homework, indexH) => (
+                        <Grid container key={indexH}>
+                            <ListItem disablePadding>
+                                <Link
+                                    to={{
+                                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                                    }}
+                                    state={{ questionParams: question, homeworkData: homework.hw_id }}
+                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                >
+                                    <ListItemButton>
 
                                         <Grid sx={{ borderRadius: '12px', backgroundColor: '#6D7483', mr: 2 }} >
                                             <Typography sx={{ color: 'appDark.text', mx: 2 }}>{homework.group_id}</Typography>
@@ -134,11 +133,11 @@ export const SHHomeworkCard = ({ data, index }) => {
                                             sx={{ pl: 4 }} primary={homework.hw_name} />
 
                                     </ListItemButton>
-                                </ListItem>
-                            </Grid>
+                                </Link>
+                            </ListItem>
+                        </Grid>
 
-                        ))}
-                    </Link>
+                    ))}
 
                 </List>
             </Collapse>

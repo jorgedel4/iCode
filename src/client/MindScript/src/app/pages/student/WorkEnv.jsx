@@ -18,7 +18,9 @@ import { useLocation } from 'react-router-dom';
 export const WorkEnv = () => {
     const location = useLocation();
     const questionParams = location.state?.questionParams;
+    const homeworkIdParams = location.state?.homeworkData;
     const questionInfo = JSON.parse(questionParams.info);
+    // console.log("work", hwidParams)
 
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
@@ -54,7 +56,7 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        const homeworkID = "H0000000000000000001";
+        const homeworkID = homeworkIdParams;
 
         const fetchData = async () => {
             try {
@@ -75,6 +77,7 @@ export const WorkEnv = () => {
     const [content, setContent] = useState('');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
+
     //Objeto para codeExec
     const hwData = {
         code: content,

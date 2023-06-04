@@ -13,11 +13,12 @@ import { useLocation } from 'react-router-dom';
 import { NavBar, OptionButton } from "../../components";
 
 export const MultiOpt = () => {
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+
     const location = useLocation();
     const data = location.state?.data;
     const questionParams = location.state?.questionParams;
     const questionInfo = JSON.parse(questionParams.info);
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     //Current user info
     const auth = getAuth();
@@ -25,11 +26,9 @@ export const MultiOpt = () => {
     let schoolID, email, displayName, emailVerified, uid;
 
     if (user !== null) {
-        // console.log("Student work env user info", user)
-        //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        //Matrícula A00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Student work env user info", user)
         // console.log("Matrícula ", schoolID)
     }
 
@@ -64,10 +63,11 @@ export const MultiOpt = () => {
 
             {/* Button to return to modules */}
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
-                <Button sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 16 }}>
-                    {'<' + group}
+                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                    {'< Regresar a ' + group}
                 </Button>
             </Grid>
+
 
             <Grid item xs={12}>
                 <Typography fontWeight={900} fontSize={18} sx={{ color: 'appDark.text' }}>
