@@ -11,8 +11,6 @@ import (
 
 // Obtener informacion y comprobacion de estructura de Info para CODEP
 func GetInfoMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) error {
-	// Recibo el string de Info
-	//input = "{\"module\": \"M0000000000000000001\", \"q_type\": \"codep\", hinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"sinputs\": [[\"4\", \"3\", \"1\", \"9\", \"2\"], [\"2\", \"0\", \"7\"]], \"houtputs\": [\"9\", \"7\"], \"language\": \"python\", \"soutputs\": [\"9\", \"7\"], \"timeoutSec\": 10, \"description\": \"create a sefunction that returns the biggest number\", \"initialCode\": \"\", \"forbiddenFunctions\": [\"sum\"], \"created_by\": \"L00000002\"}"
 	//Call the GetInfoStructCodep function to get the structure with the data.
 	err := GetInfoStructMulti(w, input, stmt)
 	if err != nil {
@@ -32,8 +30,8 @@ func GetInfoStructMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 		return fmt.Errorf("error al deserializar el JSON: %v", err)
 	}
 
-	clean := input
-	clener := EscapeForJSON(clean)
+	/* clean := input
+	clener := EscapeForJSON(clean) */
 
 	// Verificar si todas las llaves están presentes en el mapa
 	keys := make(map[string]bool)
@@ -54,7 +52,7 @@ func GetInfoStructMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 
 	// Verificar que todas las llaves tengan un valor asignado
 	var info structs.InfoStructMulti
-	err = json.Unmarshal([]byte(clener), &info)
+	err = json.Unmarshal([]byte(input), &info)
 	if err != nil {
 		return fmt.Errorf("error al analizar el JSON: %v", err)
 	}
@@ -96,7 +94,7 @@ func GetInfoStructMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 	}
 
 	//Create info string from all remaining initial info elements
-	stringInfo, err := GetWithoutKeysMulti(clener)
+	stringInfo, err := GetWithoutKeysMulti(input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return err
@@ -113,9 +111,9 @@ func GetInfoStructMulti(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 }
 
 // Recibe el string de .info completo toma solo lo necesario y devuelve el string a insertar en la DB
-func GetWithoutKeysMulti(clener string) (string, error) {
+func GetWithoutKeysMulti(input string) (string, error) {
 	var info structs.InfoStructMultiWithoutKeys
-	err := json.Unmarshal([]byte(clener), &info)
+	err := json.Unmarshal([]byte(input), &info)
 	if err != nil {
 		return "", fmt.Errorf("error al analizar el JSON: %v", err)
 	}

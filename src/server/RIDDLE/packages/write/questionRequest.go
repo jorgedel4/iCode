@@ -72,8 +72,8 @@ func RequestQuestion(mysqlDB *sql.DB) http.HandlerFunc {
 				http.Error(w, "Tipo de pregunta no válido", http.StatusBadRequest)
 				return
 			}
-
 		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.(http.Flusher).Flush()

@@ -32,8 +32,8 @@ func GetInfoStructCodep(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 		return fmt.Errorf("error al deserializar el JSON: %v", err)
 	}
 
-	clean := input
-	clener := EscapeForJSON(clean)
+	/* clean := input
+	clener := EscapeForJSON(clean) */
 
 	// Verificar si todas las llaves están presentes en el mapa
 	keys := make(map[string]bool)
@@ -58,7 +58,7 @@ func GetInfoStructCodep(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 
 	// Verificar que todas las llaves tengan un valor asignado
 	var info structs.InfoStructCodep
-	err = json.Unmarshal([]byte(clener), &info)
+	err = json.Unmarshal([]byte(input), &info)
 	if err != nil {
 		return fmt.Errorf("error al analizar el JSON: %v", err)
 	}
@@ -90,7 +90,7 @@ func GetInfoStructCodep(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 	}
 
 	//Create info string from all remaining initial info elements
-	stringInfo, err := GetWithoutKeysCodep(clener)
+	stringInfo, err := GetWithoutKeysCodep(input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return err
@@ -106,9 +106,9 @@ func GetInfoStructCodep(w http.ResponseWriter, input string, stmt *sql.Stmt) err
 }
 
 // Recibe el string de .info completo toma solo lo necesario y devuelve el string a insertar en la DB
-func GetWithoutKeysCodep(clener string) (string, error) {
+func GetWithoutKeysCodep(input string) (string, error) {
 	var info structs.InfoStructCodepWithoutKeys
-	err := json.Unmarshal([]byte(clener), &info)
+	err := json.Unmarshal([]byte(input), &info)
 	if err != nil {
 		fmt.Println("Error al analizar el JSON:", err)
 	}
