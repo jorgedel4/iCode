@@ -100,7 +100,7 @@ export const SModulesPage = () => {
                 {/* Displaying modules cards */}
                 {modulesData != null && modulesData != undefined ?
                     modulesData.map((module, index) => (
-                        <Grid item key={index} xs={12} md={4}>
+                        <Grid item key={index} xs={12} md={4} align='center'>
                             {module.progress === 100 ? modulesData[index + 1].locked = false : null}
                             <SModuleCard module={module} index={index} />
                         </Grid>

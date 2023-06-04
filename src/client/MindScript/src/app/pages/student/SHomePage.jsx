@@ -142,7 +142,7 @@ export const SHomePage = () => {
             <CourseRegister open={openModalRegister} close={closeModalRegister} setCount={setCount} count={count} />
 
             <Grid container columnSpacing={40} rowSpacing={5}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} align='center'>
                     <ActionButton >
                         <CardActionArea onClick={showModalRegister} sx={{ height: 207, textAlign: "center" }}>
                             <CardContent sx={{ pt: 4, pb: 6 }}>
@@ -155,7 +155,7 @@ export const SHomePage = () => {
                     </ActionButton>
                 </Grid>
 
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} align='center'>
                     <Card sx={{
                         width: 300,
                         height:246.5,
@@ -177,7 +177,7 @@ export const SHomePage = () => {
 
                 {/* Displaying Group cards */}
                 {groupsData.map((group, index) => (
-                    <Grid key={index} item xs={12} md={4}>
+                    <Grid key={index} item xs={12} md={4} align='center'>
                         <CoursesCard group={group} index={index} modules={modules} />
                     </Grid>
                 ))}
