@@ -1,26 +1,35 @@
 // --------------------------------------------------------------------
-// ** file="SProfile.jsx" by="Isreales Solutions">
+// ** file="WorkEnv.jsx" by="Isreales Solutions">
 // ** Copyright 2023 Isreales Solutions and its affiliates.
 // --------------------------------------------------------------------
 
 // ------------ # Imports region -----------------
 
 // Core components from MUI
-import { Grid, Button, Typography, useTheme } from '@mui/material'
+import { Grid, Button, Typography, useTheme, Alert } from '@mui/material'
 import * as React from 'react';
 import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
 import { useState, useEffect, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 import { useLocation } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
+import ConfettiExplosion from 'react-confetti-explosion';
 
 export const WorkEnv = () => {
     const location = useLocation();
-    const questionParams = location.state?.questionParams;
-    const homeworkIdParams = location.state?.homeworkData.hw_id;
-    const questionInfo = JSON.parse(questionParams.info);
-    // console.log("work", homeworkIdParams)
+    let questionParams = location.state?.questionParams;
+    const homeworkParams = location.state?.homeworkData;
+    let questionInfo = JSON.parse(questionParams.info);
+    let questionId = questionParams.id_pregunta;
+    let questionDescription = questionInfo.description
+    // console.log("work", questionId)
+    const [questionid, setQuestionId] = useState(`${questionId}`);
+    const [questiondes, setQuestionDes] = useState(`${questionDescription}`);
+    // console.log("questionInfo", questionInfo)
+    // console.log("questioninfo", questioninfo.description)
+    // console.log("questiondes", questiondes)
+
 
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
@@ -45,6 +54,9 @@ export const WorkEnv = () => {
         // console.log("Matrícula ", schoolID)
     }
 
+    //Feedback
+    const [isExploding, setIsExploding] = useState(false);
+
 
     //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
@@ -56,12 +68,13 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        const homeworkID = homeworkIdParams;
+        const homeworkID = homeworkParams.hw_id;
+        const group = homeworkParams.group_id;
 
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkID}&group=G000000001`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkID}&group=${group}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -71,13 +84,14 @@ export const WorkEnv = () => {
         };
 
         fetchData();
-    }, [progress]);
+    }, [progress]); //porque esta aqui?
 
 
 
     //POST - Request for obtaining new question
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState('#Type your question here');
     const [fetchResponse, setResponse] = useState([]);
+    // console.log(fetchResponse);
     const [showComponent, setShowComponent] = useState(false);
 
     //Objeto para codeExec
@@ -86,11 +100,61 @@ export const WorkEnv = () => {
         id: questionParams.id_pregunta,
     }
 
-    const requestNextQuestion = async () => {
-        console.log("Next Question")
+    const onClickNextQuestion = () => {
+        console.log("click on next")
+        if (fetchResponse.passed) {
+            <Link
+                to={{
+                    pathname: newquestion.type === 'codep' ? "/student/workenv" : newquestion.type === 'multi' ? "/student/multiopt" : ""
+                }}
+                state={{ questionParams: newquestion, homeworkData: homeworkParams }}
+                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+            ></Link>
+            console.log("valid next question")
+            setShowComponent(false)
+            setResponse([])
+            setContent('#Type your question here')
+            requestNextQuestion();
+        }
+
     }
 
-    //POST - to codeExec
+    const [newquestion, setNewQuestion] = useState([]);
+    const requestNextQuestion = async () => {
+        console.log("Next Question loading")
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+        const homeworkID = homeworkParams.hw_id;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
+                const responseData = await response.json();
+                setNewQuestion(responseData)
+                setQuestionId( responseData.id_pregunta)
+                setQuestionDes( JSON.parse(responseData.info).description)
+                
+                console.log("requestNextQuestion", responseData)
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+
+        fetchData();
+    }
+
+    const handlePrevDelete = (id) => {
+        setId(prevData => [...prevData, id]);
+        return setModule(prevData => prevData.filter(module => module.id !== id));
+    }
+
+    //POST - to codeExec get testcases and 
 
     const handleEditorDidMount = async () => {
 
@@ -125,11 +189,23 @@ export const WorkEnv = () => {
 
     };
     const printsec = () => {
-        console.log(timerValue)
+        console.log("completed in", timerValue)
     }
 
+
+
     return (
+
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
+            {isExploding &&
+                <ConfettiExplosion sx={{
+                    align: "center",
+                    force: 0.8,
+                    duration: 3000,
+                    particleCount: 80,
+                    width: 1600,
+                }} />
+            }
             <Grid item xs={12}>
                 <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar'}
@@ -165,8 +241,8 @@ export const WorkEnv = () => {
                                     borderRadius: 2,
                                 },
                             }}>
-                                {questionInfo.description && questionInfo.description.length > 0 && (
-                                    questionInfo.description
+                                {questiondes && questiondes.length > 0 && (
+                                    questiondes + "   " + questionid
                                 )}
                             </Typography>
                         </Grid>
@@ -174,13 +250,15 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={requestNextQuestion} variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                            <Button onClick={onClickNextQuestion}
+                                variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
                                 Siguiente Pregunta
                             </Button>
                         </Grid>
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={() => { handleEditorDidMount(); printsec(); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+
+                            <Button onClick={() => { handleEditorDidMount(); printsec(); setIsExploding(true) }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
                                 Submit
                             </Button>
 
@@ -218,6 +296,7 @@ export const WorkEnv = () => {
                         {showComponent && (
                             <TestsTabs tests={fetchResponse} />
                         )}
+
 
                     </Grid>
                 </Grid>
