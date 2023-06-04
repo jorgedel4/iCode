@@ -126,6 +126,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     /*File upload section */
     const [formatedInfo, setJSONFormat] = useState("");
+    const [fileUploaded, setFileUploaded] = useState(false);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -135,7 +136,8 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             const fileContent = event.target.result;
             // console.log(fileContent); // Do something with the file content
             // console.log(`{"${JSON.stringify(fileContent).slice(1, -1)}"}`)
-            setJSONFormat(fileContent)
+            setJSONFormat(fileContent);
+            setFileUploaded(true);
             // console.log("FORMAT", formated)
         };
         // console.log(file)
@@ -277,6 +279,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             setQType('');
             setQModule('');
             setJSONFormat('');
+            setFileUploaded(false);
         }
     }, [open]);
 
@@ -291,6 +294,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         setQType('');
         setQModule('');
         setJSONFormat('');
+        setFileUploaded(false);
     }
 
     return (
@@ -725,10 +729,10 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                                 sx={{
                                     width: "30vw",
                                     height: "30vh",
-                                    backgroundColor: 'secondary.main',
+                                    backgroundColor: fileUploaded ? 'appDark.adminButton' : 'secondary.main',
                                     borderRadius: '10px',
                                     boxShadow: '5px 5px 5px 5px rgba(0.1, 0.1, 0.1, 0.1)',
-                                    ':hover': { backgroundColor: 'secondary.main', opacity: 0.9 }
+                                    ':hover': {backgroundColor: fileUploaded ? 'appDark.adminButton' : 'secondary.main'}
                                 }}
                             >
                                 <Grid container justifyContent="center" alignItems="center" align='center'>

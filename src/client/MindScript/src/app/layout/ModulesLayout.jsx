@@ -53,7 +53,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
                 <Grid container justifyContent='flex-end'>
 
                     {/* <Grid item xs={-12}> */}
-                    <HomeworkBoard xs={-1}>
+                    <HomeworkBoard>
                         <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
 
                         <List>
