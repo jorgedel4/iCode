@@ -87,7 +87,7 @@ export const PModulesPage = () => {
         fetchData();
     }, []);
 
-    const handleDelete = async (id) => {
+    const handleDeleteHw = async (id) => {
         try {
             const options = {
                 method: 'DELETE',
@@ -109,10 +109,30 @@ export const PModulesPage = () => {
             console.error(error);
         }
     };
+
+    const handleDeleteGroup = async (id) => {
+        try {
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+
+            };
+            console.log(id)
+            const response = await fetch(`${batmanAPI}group/${id}`, options);
+            window.location.href = '/professor/home';
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const homework = Object.values(homeworkData)
 
     return (
-        <ModulesLayout home={home} homeworkData={homework} handleDelete={handleDelete} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
+        <ModulesLayout home={home} homeworkData={homework} handleDeleteHw={handleDeleteHw} handleDeleteGroup={handleDeleteGroup} student={false} hwBTitle={'Asignaciones'} groupName={groupName} pages={pages} modules={modulesData}>
             <Grid container columnSpacing={40} rowSpacing={5}>
                 <Grid item xs={12} md={4} align='center'>
 

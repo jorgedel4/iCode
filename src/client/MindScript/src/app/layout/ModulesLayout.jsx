@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 
-export const ModulesLayout = ({ children, home, homeworkData, handleDelete, student, hwBTitle, groupName, pages, modules }) => {
+export const ModulesLayout = ({ children, home, homeworkData, handleDeleteHw, handleDeleteGroup, student, hwBTitle, groupName, pages, modules }) => {
     let params = useParams();
 
     //Importante para EditHomework
@@ -27,10 +27,18 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
         setOpenDeleteHomework(false);
     }
 
-    
+    //Funciones para abrir la modal de Eliminar tarea
+    const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
+    const showModalDeleteGroup = () => { setOpenDeleteGroup(true); }
+    const closeModalDeleteGroup = () => {
+        setOpenDeleteGroup(false);
+    }
+
     return (
         <Grid container padding={5} spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
+            < Confirmation open={openDeleteGroup} close={closeModalDeleteGroup} id={params.group} confirmationText="¿Esta seguro que desea eliminar este grupo?" handleFunction={handleDeleteGroup} confirmationTextButton="Eliminar" />
+
 
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={home} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 16 }}>
@@ -103,7 +111,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
 
 
                                     < EditHomework open={openEditHomework} close={closeModalEditHomework} editData={editData} modules={modules} />
-                                    < Confirmation open={openDeleteHomework} close={closeModalDeleteHomework} id={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleFunction={handleDelete} confirmationTextButton="Eliminar" />
+                                    < Confirmation open={openDeleteHomework} close={closeModalDeleteHomework} id={editData} confirmationText="¿Esta seguro que desea eliminar esta tarea?" handleFunction={handleDeleteHw} confirmationTextButton="Eliminar" />
 
                                 </>
                             }
@@ -116,7 +124,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
                         <>
                             {/* <Grid item xs={12}> */}
                             <Button
-                                href = {`/professor/dashboard/${params.group}/${params.course}`}
+                                href={`/professor/dashboard/${params.group}/${params.course}`}
                                 variant="contained"
                                 sx={{
                                     width: 400, bgcolor: 'appDark.button', mb: 1,
@@ -130,12 +138,13 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDelete, stud
 
                             <Button
                                 variant='contained'
+                                onClick={showModalDeleteGroup}
                                 sx={{
                                     width: 400, bgcolor: 'appDark.button', mb: 1,
                                     ':hover': { bgcolor: 'appDark.button', opacity: 0.8 }
                                 }}
                             >
-                                Mandar Preguntas
+                                Borrar Grupo
                             </Button>
                             {/* </Grid> */}
                         </>
