@@ -8,27 +8,25 @@
 // Core components from MUI
 import { Grid, Button, Typography, useTheme, Alert } from '@mui/material'
 import * as React from 'react';
-import { QuestionsDropdown, TestsTabs, Timer } from '../../components';
+import { TestsTabs, Timer } from '../../components';
 import { useState, useEffect, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import ConfettiExplosion from 'react-confetti-explosion';
 
 export const WorkEnv = () => {
     const location = useLocation();
     let questionParams = location.state?.questionParams;
-    const homeworkParams = location.state?.homeworkData;
-    let questionInfo = JSON.parse(questionParams.info);
+    const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
+    const questionInfo = JSON.parse(questionParams.info);
+
+    const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
-    let questionDescription = questionInfo.description
-    // console.log("work", questionId)
+
+    //Estados para cambiar la descripción
     const [questionid, setQuestionId] = useState(`${questionId}`);
-    const [questiondes, setQuestionDes] = useState(`${questionDescription}`);
-    // console.log("questionInfo", questionInfo)
-    // console.log("questioninfo", questioninfo.description)
-    // console.log("questiondes", questiondes)
+    const [questiondes, setQuestionDes] = useState(`${questionDescription}`); //para manejar las descripciones de las siguientes preguntas
 
 
     // Initial States and Variables 
@@ -54,7 +52,7 @@ export const WorkEnv = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    //Feedback
+    //Feedback confetti
     const [isExploding, setIsExploding] = useState(false);
 
 
@@ -91,7 +89,6 @@ export const WorkEnv = () => {
     //POST - Request for obtaining new question
     const [content, setContent] = useState('#Type your question here');
     const [fetchResponse, setResponse] = useState([]);
-    // console.log(fetchResponse);
     const [showComponent, setShowComponent] = useState(false);
 
     //Objeto para codeExec
@@ -103,14 +100,7 @@ export const WorkEnv = () => {
     const onClickNextQuestion = () => {
         console.log("click on next")
         if (fetchResponse.passed) {
-            <Link
-                to={{
-                    pathname: newquestion.type === 'codep' ? "/student/workenv" : newquestion.type === 'multi' ? "/student/multiopt" : ""
-                }}
-                state={{ questionParams: newquestion, homeworkData: homeworkParams }}
-                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-            ></Link>
-            console.log("valid next question")
+            console.log("Valid next question")
             setShowComponent(false)
             setResponse([])
             setContent('#Type your question here')
@@ -119,7 +109,7 @@ export const WorkEnv = () => {
 
     }
 
-    const [newquestion, setNewQuestion] = useState([]);
+    //POST - Request for obtaining new question ------------
     const requestNextQuestion = async () => {
         console.log("Next Question loading")
         const options = {
@@ -133,12 +123,14 @@ export const WorkEnv = () => {
 
         const fetchData = async () => {
             try {
+                //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
                 const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
-                setNewQuestion(responseData)
-                setQuestionId( responseData.id_pregunta)
-                setQuestionDes( JSON.parse(responseData.info).description)
-                
+
+                //changing question description
+                setQuestionId(responseData.id_pregunta)
+                setQuestionDes(JSON.parse(responseData.info).description)
+
                 console.log("requestNextQuestion", responseData)
             } catch (error) {
                 console.error(error);
@@ -149,13 +141,7 @@ export const WorkEnv = () => {
         fetchData();
     }
 
-    const handlePrevDelete = (id) => {
-        setId(prevData => [...prevData, id]);
-        return setModule(prevData => prevData.filter(module => module.id !== id));
-    }
-
     //POST - to codeExec get testcases and 
-
     const handleEditorDidMount = async () => {
 
         const options = {
