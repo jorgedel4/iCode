@@ -28,7 +28,6 @@ export const WorkEnv = () => {
     const [questionid, setQuestionId] = useState(`${questionId}`);
     const [questiondes, setQuestionDes] = useState(`${questionDescription}`); //para manejar las descripciones de las siguientes preguntas
 
-
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
