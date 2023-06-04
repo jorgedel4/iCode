@@ -235,7 +235,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             console.log("fileInfo", fileInfo)
             request = fileInfo
         } else {
-            request = JSON.stringify([{"info": JSON.stringify(info)}])
+            request = JSON.stringify([{ "info": JSON.stringify(info) }])
         }
 
         const options = {
@@ -282,6 +282,17 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     /* Fin de test cases */
 
+    const handleDeleteFiles = () => {
+        setTestCaseS([]);
+        setTestCaseH([]);
+        setCourse('');
+        setMultiQ([]);
+        setCMultiQ([]);
+        setQType('');
+        setQModule('');
+        setJSONFormat('');
+    }
+
     return (
         <Modal
             id="Modal prrona Crear Pregunta"
@@ -292,7 +303,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
         >
             <Grid container
                 id="Grid container Crear Pregunta"
-                justifyContent='space-between'
                 sx={{
                     bgcolor: 'secondary.main',
                     borderRadius: 2,
@@ -707,10 +717,9 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             },
                         }}>
 
-                        <Grid item xs={10} alignContent="center" justifyContent="center">
+                        <Grid item xs={10} align='center' >
 
                             <Button xs={12}
-                                alignContent="center"
                                 variant="contained"
                                 component="label"
                                 sx={{
@@ -746,7 +755,7 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
                             {/* //ESTA ES UNA CONDICIONAL IMPORTANTE */}
                             {((formatedInfo != "") && (qdescription != "" || qmodule != "" || qtype != "" || course != ""))
                                 ? <><Alert severity="info">Actualmente existe un archivo seleccionado, elimine el archivo para hacer un inserción manual</Alert>
-                                    <Button onClick={console.log("lkfdjalsfdj")} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>Eliminar selección de archivo</Button></>
+                                    <Button onClick={handleDeleteFiles} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>Eliminar selección de archivo</Button></>
                                 : null
                             }
 
@@ -757,20 +766,19 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
                 </Grid>
 
-                <Grid container justifyContent='center' sx={{ mx: 5.5, mb: 2 }}>
-                    <Grid item xs={6} id="cancelar" >
-
-                        <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
-                            Cancelar
-                        </Button>
+                <Grid item xs={12}>
+                    <Grid container justifyContent='space-around' align='center' sx={{ mb: 2 }}>
+                        <Grid item xs={6} id="cancelar" >
+                            <Button onClick={close} type="submit" variant="contained" sx={{ backgroundColor: 'appDark.button', borderRadius: 2 }}>
+                                Cancelar
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6} id="crear tarea" >
+                            <Button type="submit" onClick={requestAQuestion} variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
+                                Enviar solicitud
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6} id="crear tarea" align="right">
-
-                        <Button type="submit" onClick={requestAQuestion} variant="contained" sx={{ backgroundColor: 'appDark.adminButton', borderRadius: 2 }}>
-                            Enviar solicitud
-                        </Button>
-                    </Grid>
-
                 </Grid>
             </Grid>
 
