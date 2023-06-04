@@ -16,9 +16,18 @@ export const MultiOpt = () => {
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const location = useLocation();
-    const data = location.state?.data;
     const questionParams = location.state?.questionParams;
+    const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
+    console.log(homeworkParams)
     const questionInfo = JSON.parse(questionParams.info);
+
+    const questionDescription = questionInfo.description //primera descripción
+    let questionId = questionParams.id_pregunta;
+
+    //Estados para cambiar la descripción
+    const [questionid, setQuestionId] = useState(`${questionId}`);
+    const [questiondes, setQuestionDes] = useState(`${questionDescription}`); //para manejar las descripciones de las siguientes preguntas
+
 
     //Current user info
     const auth = getAuth();
@@ -34,8 +43,13 @@ export const MultiOpt = () => {
 
 
     // ------------ # API region ------------
-
-    const group = 'TC1028 (Gpo. 404)'
+    
+    const group = "G000001"
+    if(homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined){
+        const homeworkID = homeworkParams.hw_id;
+        const group = "G000001";
+    }
+    // const group = homeworkParams.group_id
     const module = 'Variables'
     const qNumber = 'Pregunta #'
 
@@ -44,18 +58,6 @@ export const MultiOpt = () => {
         { name: 'Profile', route: '/student/profile' },
     ]
 
-    const questions = [
-        'Pregunta 1',
-        'Pregunta 2',
-        'Pregunta 3',
-        'Pregunta 4',
-        'Pregunta 5',
-        'Pregunta 6',
-        'Pregunta 7',
-        'Pregunta 8',
-        'Pregunta 9',
-        'Pregunta #',
-    ];
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>

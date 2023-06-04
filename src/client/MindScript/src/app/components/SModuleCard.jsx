@@ -16,11 +16,14 @@ export const SModuleCard = ({ module, index, group }) => {
     let schoolID, email, displayName, emailVerified, uid, responseInfo, path;
 
     if (user !== null) {
-        //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        //Matrícula A00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
+    }
+
+    const homework = {
+        group_id: "G00001",
+        hw_id: "000"
     }
 
     const [question, setQuestion] = useState([]);
@@ -61,7 +64,7 @@ export const SModuleCard = ({ module, index, group }) => {
                     to={{
                         pathname: question.type === 'codep' && !module.locked ? "/student/workenv" : question.type === 'multi' && !module.locked ? "/student/multiopt" : ""
                     }}
-                    state={{ questionParams: question }}
+                    state={{ questionParams: question, homeworkData: homework }}
                     style={{ textDecoration: 'none' }}
                 >
 

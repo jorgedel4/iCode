@@ -32,7 +32,6 @@ export const WorkEnv = () => {
     // Initial States and Variables 
     const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-
     const theme = useTheme();
 
     //Timer States
@@ -66,8 +65,10 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        const homeworkID = homeworkParams.hw_id;
-        const group = homeworkParams.group_id;
+        if(homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined){
+            const homeworkID = homeworkParams.hw_id;
+            const group = homeworkParams.group_id;
+        }
 
         const fetchData = async () => {
             try {
@@ -87,7 +88,7 @@ export const WorkEnv = () => {
 
 
     //POST - Request for obtaining new question
-    const [content, setContent] = useState('#Type your question here');
+    const [content, setContent] = useState('#Type your answer here');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
 
