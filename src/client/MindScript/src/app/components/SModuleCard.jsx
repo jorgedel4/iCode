@@ -21,11 +21,6 @@ export const SModuleCard = ({ module, index, group }) => {
         // console.log("Matrícula ", schoolID)
     }
 
-    const homework = {
-        group_id: "G00001",
-        hw_id: "000"
-    }
-
     const [question, setQuestion] = useState([]);
     useEffect(() => {
         const options = {
@@ -64,7 +59,7 @@ export const SModuleCard = ({ module, index, group }) => {
                     to={{
                         pathname: question.type === 'codep' && !module.locked ? "/student/workenv" : question.type === 'multi' && !module.locked ? "/student/multiopt" : ""
                     }}
-                    state={{ questionParams: question, homeworkData: homework }}
+                    state={{ questionParams: question, moduleData: {id: module.id, group: group} }}
                     style={{ textDecoration: 'none' }}
                 >
 

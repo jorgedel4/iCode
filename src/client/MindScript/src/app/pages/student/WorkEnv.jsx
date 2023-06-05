@@ -14,11 +14,13 @@ import Editor from '@monaco-editor/react';
 import { getAuth } from "firebase/auth";
 import { useLocation } from 'react-router-dom';
 import ConfettiExplosion from 'react-confetti-explosion';
+import { Link } from 'react-router-dom';
 
 export const WorkEnv = () => {
     const location = useLocation();
     let questionParams = location.state?.questionParams;
-    const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
+    let homeworkParams = location.state?.homeworkParams;
+    // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
     const questionInfo = JSON.parse(questionParams.info);
 
     const questionDescription = questionInfo.description //primera descripción
@@ -64,10 +66,10 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        if(homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined){
-            const homeworkID = homeworkParams.hw_id;
-            const group = homeworkParams.group_id;
-        }
+        // if (homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined) {
+        //     const homeworkID = homeworkParams.hw_id;
+        //     const group = homeworkParams.group_id;
+        // }
 
         const fetchData = async () => {
             try {
@@ -97,16 +99,22 @@ export const WorkEnv = () => {
         id: questionParams.id_pregunta,
     }
 
-    const onClickNextQuestion = () => {
+    let nextQuestion;
+    const onClickNextQuestion = async () => {
         console.log("click on next")
         if (fetchResponse.passed) {
             console.log("Valid next question")
             setShowComponent(false)
             setResponse([])
             setContent('#Type your question here')
-            requestNextQuestion();
+            try {
+                const question = await requestNextQuestion();
+                nextQuestion = question;
+                // console.log(nextQuestion);
+            } catch (error) {
+                console.error(error);
+            }
         }
-
     }
 
     //POST - Request for obtaining new question ------------
@@ -123,22 +131,15 @@ export const WorkEnv = () => {
 
         const fetchData = async () => {
             try {
-                //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
                 const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
-
-                //changing question description
-                setQuestionId(responseData.id_pregunta)
-                setQuestionDes(JSON.parse(responseData.info).description)
-
-                console.log("requestNextQuestion", responseData)
+                return responseData;
             } catch (error) {
                 console.error(error);
+                throw error;
             }
-        };
-
-
-        fetchData();
+        }
+        return fetchData();
     }
 
     //POST - to codeExec get testcases and 
@@ -236,15 +237,28 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={onClickNextQuestion}
-                                variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
-                                Siguiente Pregunta
-                            </Button>
+                            {nextQuestion && (
+                                <Link
+                                    to={{
+                                        pathname: nextQuestion !== undefined && nextQuestion.type === 'codep' ? "/student/workenv" : nextQuestion !== undefined && nextQuestion.type === 'multi' ? "/student/multiopt" : ""
+                                    }}
+                                    state={{ questionParams: nextQuestion }}
+                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                >
+                                    <Button onClick={async () => {
+                                        // await onClickNextQuestion();
+                                        console.log(nextQuestion);
+                                    }}
+                                        variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                                        Siguiente Pregunta
+                                    </Button>
+                                </Link>
+                            )}
                         </Grid>
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleEditorDidMount(); printsec(); setIsExploding(true) }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+                            <Button onClick={() => { handleEditorDidMount(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
                                 Submit
                             </Button>
 

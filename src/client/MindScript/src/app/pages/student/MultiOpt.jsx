@@ -23,7 +23,7 @@ export const MultiOpt = () => {
 
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 
-    const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
+    const moduleParams = location.state?.moduleData; //hw data (id, name, group, etc)
     const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
 
     // console.log("questionInfo", questionInfo)
@@ -48,11 +48,11 @@ export const MultiOpt = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    let group = "";
-    let homeworkID = "";
-    if (homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined) {
-        group = homeworkParams.group_id
-        homeworkID = homeworkParams.hw_id;
+    let group;
+    let moduleId;
+    if (moduleParams.hw_id != undefined && moduleParams.group_id != undefined) {
+        group = moduleParams.group;
+        moduleId = moduleParams.id;
     }
 
     // ------------ # API region ------------
@@ -71,7 +71,7 @@ export const MultiOpt = () => {
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkID}&group=${group}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${moduleId}&group=${group}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -107,7 +107,7 @@ export const MultiOpt = () => {
         const fetchData = async () => {
             try {
                 //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${moduleId}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
 
                 //changing question description
