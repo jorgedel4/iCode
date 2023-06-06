@@ -45,8 +45,7 @@ func main() {
 
 	//Write operations
 	r.HandleFunc("/requestQuestion", write.RequestQuestion(mysqlDB)).Methods("POST")
-	r.HandleFunc("/modQuestionAttempt", write.ModQuestAttempt(mysqlDB)).Methods("POST")
-	r.HandleFunc("/hwQuestionAttempt", write.HwQuestionAttempt(mysqlDB)).Methods("POST")
+	r.HandleFunc("/submitAttempt/{questionType}", write.SubmitAttempt(mysqlDB)).Methods("POST")
 
 	//Update operations
 	r.HandleFunc("/aproveQuestionRequest/{questionID}", update.UpdateStatus(mysqlDB)).Methods("PATCH")

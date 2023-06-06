@@ -77,3 +77,32 @@ type InfoStructMultiWithoutKeys struct {
 	Correct_option []string `json:"correct_option"`
 	Explanation    string   `json:"explanation"`
 }
+
+type SubmitAttemptReq struct {
+	QuestionID  string   `json:"question"`
+	AssigmentID string   `json:"assignment"`
+	AttemptTime int64    `json:"attempt_time"`
+	StudentID   string   `json:"student"`
+	GroupID     string   `json:"group"`
+	Answers     []string `json:"answers"`
+	Code        string   `json:"code"`
+}
+
+type MultiChoiceResult struct {
+	Passed      bool   `json:"passed"`
+	Explanation string `json:"explanation"`
+}
+
+type CodeExecReq struct {
+	Code       string `json:"code"`
+	QuestionID string `json:"id"`
+}
+
+type CodeExecResponse struct {
+	Error        string                   `json:"error"`
+	ShownTests   []map[string]interface{} `json:"shownTests"`
+	ShownPassed  int                      `json:"shownPassed"`
+	ShownFailed  int                      `json:"shownFailed"`
+	HiddenTests  map[string]int           `json:"hiddenTests"`
+	Passed       bool                     `json:"passed"`
+}

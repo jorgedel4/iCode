@@ -209,101 +209,118 @@ HTTP/1.1 200 Ok
 
 Esto indica que la pregunta ha sio cargada a la base de datos dentro de la tabla de questions con un status de PEN para su aprovacion o rechazo por el administrador.
 _____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Tarea</h2>
+### `/submitAttempt/{questionType}`
+#### Descripcion
+Evalua la respuesta dada para un problema y registra el intento del estudiante (en caso de no ser modo libre)
 
-<h3 style="color:#0000FF;">/hwQuestionAttempt</h3>
+#### Metodo de HTTP
+`POST`
 
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Carga de intentos de preguntas de tareas
+#### Parametros
+(Mediante variables de url)
+* `questionType` (obligatorio): Tipo de pregunta a evaluar. 'code' para programacion, 'mutipleChoice' para opcion multiple
 
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-POST
+(Mediante body request)
+| Campo                                                             | Tipo                  | Descripcion                   |
+| ----------------------------------------------------------------- | --------------------- | ----------------------------- |
+| attempt_time (obligatorio, con excepcion de modo libre)           | int                   | Segundos que le tomo al estudiante resolver el problema |
+| assignment (obligatorio)                                          | string                | ID del modulo o tarea         |
+| group (obligatorio para modulo, con excepcion de modo libre)      | string                | ID del grupo                  |
+| question (obligatorio)                                            | string                | ID de la pregunta contestada  |
+| student (obligatorio, con excepcion de modo libre)                | string                | Matricula del estudiante      |
+| code (obligatorio si tipo de pregunta es de programacion)         | string                | Codigo hecho por el estudiante|
+| answers (obligatorio si tipo de pregunta es de opcion multiple)   | [ string ]            | Respuestas seleccioandas      |
 
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el Body)
-student, homework, question, attempt_status
+#### Respuestas
+* Para preguntas de opcion multiple
+(En formato JSON)
+| Campo                 | Tipo                  | Descripcion               |
+| --------------------- | --------------------- | ------------------------- |
+| passed                | bool                  | Indicador de si pasó o no |
+| explanation           | string                | Explicación de la pregunta (si esta contiene alguna)|
 
-| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
-| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
-| homework         | string    | si                                           | ID de la tarea desde la que se hace la peticion         | 
-| question         | string    | si                                           | ID de la pregunta que se intenta                        |
-| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
-| attempt_time     | int64     | si                                           | Tiempo en segundos que le toma al estudiante realizar la pregunta|
-
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de que el intento de la pregunta de una tarea se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de hw_questionAtempts.
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
-
-
-POST
-Peticion POST 34.125.0.99:8003/hwQuestionAttempt Content-Type: application/json 
-
-```json
-{
-    "student": "A01731511",
-    "homework": "H0000000000000000002",
-    "question": "CQ000000000000000002",
-    "attempt_status": "PAS",
-    "attempt_time": 1568
-}
-```
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
-
-HTTP/1.1 200 Ok
-
-_____________________________________________________
-<h2 style="color:#65b891;">ENDPOINT carga de intento de pregunta de Modulo</h2>
-
-<h3 style="color:#0000FF;">/modQuestionAttempt</h3>
-
-<h3 style="color:#b5ffe1;">Descripción</h3>
-Carga de intentos de preguntas de Modulos
-
-<h3 style="color:#b5ffe1;">Metodo de HTTP</h3>
-POST
-
-<h3 style="color:#b5ffe1;">Parámetros</h3>
-(Mediante el Body)
-student, grupo, question, attempt_status
-
-| Parametro        | Tipo      | Obligatorio                                  | Decripcion                                              |
-| :-------------:  | :-------: | :------------------------------------------: | :-----------------------------------------------------: |
-| student          | string    | si                                           | ID del estudiante que pide preguntas                    |
-| grupo            | string    | si                                           | ID del grupo                                            | 
-| question         | string    | si                                           | ID de la pregunta que se intenta                        |
-| attempt_status   | string    | si                                           | status del intento de la pregunta ("PAS", "FAI")        |
-| attempt_time     | int64     | si                                           | Tiempo en segundos que le toma al estudiante realizar la pregunta|
-
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-En caso de que el intento de la pregunta de un modulo se registre de manera exitosa, se regresa unicamente un codigo HTTP 201 (Created) Nota: Se agrega el intento de la pregunta a la tabla de questionAtempts.
-
-<h3 style="color:#b5ffe1;">Ejemplo</h3>
-<p style= "font-weight: bold;">Peticion</p>
+* Para preguntas de programacion
+(En formato JSON)
+| Campo          | Tipo                       | Descripcion                                                                                 |
+| -------------- | ---------------------      | -----------------------------------------------------------------                           |
+| error          | string                     | Error generado al ejecutar el código, en caso de que no hayan errores es un string vacio    |
+| shownTests     | [ map[ string ]string/bool ] | Casos de prueba visibles                                                                    |
+| shownPassed    | int                        | Numero de casos de pruebas visibles que pasaron                                             |
+| shownFailed    | int                        | Numero de casos de pruebas visibles que fallaron                                            |
+| hiddenTests    | map[ string ]int             | Cantidad de casos de prueba no visibles que pasaron y fallaron                              |
+| passed         | bool                       | Un booleano que indica si todas las pruebas (tanto las mostradas como las ocultas) pasaron. |
 
 
-POST
-Peticion POST 34.125.0.99:8003/modQuestionAttempt Content-Type: application/json 
+#### Ejemplos
+##### Opcion multiple
+**Peticion**
+POST 34.16.137.250:8003/submitAttempt/multipleChoice
 
 ```json
 {
-    "student": "A01731511",
-    "grupo": "G000000003",
     "question": "CQ000000000000000002",
-    "attempt_status": "PAS",
-    "attempt_time": 1568
+    "assignment": "M0000000000000000001",
+    "student": "A01551955",
+    "attempt_time": 12,
+    "group": "G000000001",
+    "answers": ["3"]
 }
 ```
 
-<h3 style="color:#b5ffe1;">Respuesta</h3>
-<p style= "font-weight: bold;">Respuesta</p>
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+{
+    "passed": true,
+    "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
+}
+```
 
-HTTP/1.1 200 Ok
+##### Programacion
+**Peticion**
+POST 34.16.137.250:8003/submitAttempt/code
+
+```json
+{
+    "question": "CQ000000000000000001",
+    "assignment": "M0000000000000000001",
+    "student": "A01551955",
+    "group": "G000000001",
+    "attempt_time": 12,
+    "code": "n = int(input())\nprint(n * n)"
+}
+```
+
+**Respuesta**
+HTTP/1.1 200 OK
+Content-Type: application/json
+``` json
+{
+    "error": "",
+    "shownTests": [
+        {
+            "expected": "9",
+            "got": "9",
+            "input": "3",
+            "passed": true
+        },
+        {
+            "expected": "36",
+            "got": "36",
+            "input": "6",
+            "passed": true
+        }
+    ],
+    "shownPassed": 2,
+    "shownFailed": 0,
+    "hiddenTests": {
+        "failed": 0,
+        "passed": 2
+    },
+    "passed": true
+}
+```
 
 
 <h1 style="color:#B5FFE1;">ENDPOINTS de Actualización</h1>
