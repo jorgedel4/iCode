@@ -23,10 +23,10 @@ export const MultiOpt = () => {
 
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 
-    const moduleParams = location.state?.moduleData; //hw data (id, name, group, etc)
+    const moduleParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
     const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
 
-    console.log("homeworkData", moduleParams)
+    // console.log("moduleParams", moduleParams)
     const questionDescription = questionInfo.question //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -34,6 +34,7 @@ export const MultiOpt = () => {
     const [questionid, setQuestionId] = useState(`${questionId}`);
     const [questiondes, setQuestionDes] = useState(questionDescription); //para manejar las descripciones de las siguientes preguntas
     const [fetchResponse, setResponse] = useState([]);
+    const [fetchAttemptResponse, setAttemptResponse] = useState([]);
 
 
     //Current user info
@@ -58,11 +59,7 @@ export const MultiOpt = () => {
     //     group = moduleParams.group;
     //     moduleId = moduleParams.id;
     // }
-    const dummy = {
-        hw_id : "H000001"
-    }
 
-console.log(moduleParams)
 
     // ------------ # API region ------------
 
@@ -80,7 +77,7 @@ console.log(moduleParams)
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${dummy.hw_id}&group=${group}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${moduleParams.hw_id}&group=${moduleParams.group_id}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -93,16 +90,16 @@ console.log(moduleParams)
     }, [progress]); //porque esta aqui?
 
 
-
     // const group = homeworkParams.group_id
     const module = questionInfo.module
-    const qNumber = "Pregunta #"+progress.answered
+    const qNumber = "Pregunta #" + progress.answered
 
     const pages = [
         { name: 'Home', route: '/student/home' },
         { name: 'Profile', route: '/student/profile' },
     ]
 
+    //GET next question information
     const onClickNextQuestion = async () => {
         console.log("Next Question loading")
         const options = {
@@ -121,7 +118,7 @@ console.log(moduleParams)
 
                 //changing question description
                 console.log(responseData) //id_pregunta, info and type
-                setResponse(responseData)
+                setResponse(responseData) //informacion siguiente pregunta
 
                 // setQuestionId(responseData.id_pregunta)
                 // setQuestionDes(JSON.parse(responseData.info).description)
@@ -136,7 +133,47 @@ console.log(moduleParams)
         fetchData();
     }
 
+    //POST - to codeExec get testcases and register attempt
+    const submitAttemp = async () => {
+        console.log(homeworkParams.hw_id)
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+            mode: 'no-cors',
+            body: JSON.stringify({
+
+                "question": "CQ000000000000000002",
+                "assignment": "M0000000000000000001",
+                "student": "A01551955",
+                "attempt_time": 12,
+                "group": "G000000001",
+                "answers": ["3"]
+
+            })
+        }
+
+        fetch(`${riddleAPI}submitAttempt/multi`, options)
+            .then(response => {
+                console.log(response)
+                // setResetTimer(true);
+                return response.json()
+            })
+            .then(json => {
+                setAttemptResponse(json) //fetchResponse for code (passed, explanation)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+    };
+
     const handleSubmission = async () => {
+        //llamada al post para verificar hay que hacerle un await para que primero haga el attempt check y luego la de onclicknextquestion
+        submitAttemp()
         // if(passed){
         onClickNextQuestion()
         // }else{
@@ -144,6 +181,8 @@ console.log(moduleParams)
         // }
 
     }
+
+
 
     // ------------ # End API region ------------
 
@@ -163,7 +202,7 @@ console.log(moduleParams)
 
             <Grid item xs={12}>
                 <Typography fontWeight={900} fontSize={18} sx={{ color: 'appDark.text' }}>
-                Módulo: { module}
+                    Módulo: {module}
                 </Typography>
             </Grid>
 

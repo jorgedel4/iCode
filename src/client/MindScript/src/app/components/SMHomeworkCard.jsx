@@ -13,9 +13,7 @@ export const SMHomeworkCard = ({ data, index }) => {
     let schoolID, email, displayName, emailVerified, uid, responseInfo, path;
 
     if (user !== null) {
-        //Desestructuración de user
         ({ email, displayName, emailVerified, uid } = user);
-        //Matrícula A00000000
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
@@ -123,7 +121,7 @@ export const SMHomeworkCard = ({ data, index }) => {
                                     to={{
                                         pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                                     }}
-                                    state={{ questionParams: question, moduleData: homework }}
+                                    state={{ questionParams: question, homeworkParams: homework }}
                                     style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                                 >
                                     <ListItemButton>

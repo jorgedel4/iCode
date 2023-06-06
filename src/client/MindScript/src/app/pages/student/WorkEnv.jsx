@@ -142,9 +142,8 @@ export const WorkEnv = () => {
         return fetchData();
     }
 
-    //POST - to codeExec get testcases and 
+    //POST - to codeExec get testcases and register attempt
     const handleEditorDidMount = async () => {
-        console.log(homeworkParams.hw_id)
 
         const options = {
             method: 'POST',
@@ -178,7 +177,7 @@ export const WorkEnv = () => {
         //for code questions only
         fetch(`${riddleAPI}submitAttempt/code`, options)
             .then(response => {
-                console.log(response)
+                // console.log(response)
                 // setResetTimer(true);
                 return response.json()
             })
@@ -191,6 +190,7 @@ export const WorkEnv = () => {
             })
 
     };
+
     const printsec = () => {
         console.log("completed in", timerValue)
     }
