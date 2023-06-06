@@ -74,7 +74,7 @@ export const WorkEnv = () => {
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkID}&group=${group}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkParams.hw_id}&group=${homeworkParams.group_id}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -91,7 +91,7 @@ export const WorkEnv = () => {
     //POST - Request for obtaining new question
     const [content, setContent] = useState('#Type your answer here');
     const [fetchResponse, setResponse] = useState([]);
-    const [showComponent, setShowComponent] = useState(false);
+    const [showComponent, setShowComponent] = useState(false); //tests component
 
     //Objeto para codeExec
     const hwData = {
@@ -144,6 +144,7 @@ export const WorkEnv = () => {
 
     //POST - to codeExec get testcases and 
     const handleEditorDidMount = async () => {
+        console.log(homeworkParams.hw_id)
 
         const options = {
             method: 'POST',
@@ -153,21 +154,36 @@ export const WorkEnv = () => {
             },
             mode: 'no-cors',
             body: JSON.stringify({
+
+                "question": questionid,
+                "assignment": homeworkParams.hw_id,
+                "student": schoolID,
+                "attempt_time": timerValue,
+                "group": homeworkParams.group_id,
+                //si es multi lleva answers
+                // "answers": ["3"]
+                //si es code lleva code
+                "code": content,
+               
                 // "id": "test/test/2",
                 // "code": "def smallest(a, b):\n\treturn a if a < b else b"
-                "id": hwData.id,
-                "code": hwData.code
+                // "id": hwData.id,
+                // "code": hwData.code
             })
         }
 
-        fetch(`${codeAPI}exec`, options)
+        //for multi questions only
+        // fetch(`${riddleAPI}submitAttempt/multi`, options)
+
+        //for code questions only
+        fetch(`${riddleAPI}submitAttempt/code`, options)
             .then(response => {
-                // console.log(response)
-                setResetTimer(true);
+                console.log(response)
+                // setResetTimer(true);
                 return response.json()
             })
             .then(json => {
-                setResponse(json)
+                setResponse(json) //fetchResponse for code (error, showntests, hiddentests,shownPassed,shownFailed, passed)
                 setShowComponent(true)
             })
             .catch(error => {

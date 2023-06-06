@@ -26,7 +26,7 @@ export const MultiOpt = () => {
     const moduleParams = location.state?.moduleData; //hw data (id, name, group, etc)
     const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
 
-    // console.log("questionInfo", questionInfo)
+    console.log("homeworkData", moduleParams)
     const questionDescription = questionInfo.question //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -50,10 +50,19 @@ export const MultiOpt = () => {
 
     let group;
     let moduleId;
-    if (moduleParams.hw_id != undefined && moduleParams.group_id != undefined) {
-        group = moduleParams.group;
-        moduleId = moduleParams.id;
+    // if (moduleParams.hw_id != undefined && moduleParams.group_id != undefined) {
+    //     group = moduleParams.group;
+    //     moduleId = moduleParams.id;
+    // }
+    // if (home.hw_id != undefined && moduleParams.group_id != undefined) {
+    //     group = moduleParams.group;
+    //     moduleId = moduleParams.id;
+    // }
+    const dummy = {
+        hw_id : "H000001"
     }
+
+console.log(moduleParams)
 
     // ------------ # API region ------------
 
@@ -71,7 +80,7 @@ export const MultiOpt = () => {
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${moduleId}&group=${group}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${dummy.hw_id}&group=${group}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
