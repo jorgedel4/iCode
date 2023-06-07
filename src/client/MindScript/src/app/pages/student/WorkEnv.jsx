@@ -23,13 +23,14 @@ export const WorkEnv = () => {
     //esto puede venir de SHHomeworkCard, SMHomeworkCard, SModuleCard
     let questionParams = location.state?.questionParams;
     let homeworkParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
-    const assParams = location.state?.homeworkParams; //hw data (id, name, group, etc) //si es módulo trae id y group
+    const assParams = location.state?.assParams; //hw data (id, name, group, etc) //si es módulo trae id y group
     // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, course, etc)
 
     // console.log("assassement params", assParams)
     const questionInfo = JSON.parse(questionParams.info);
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
+    let nextQuestion;
 
     //Estados para cambiar la descripción
     const [questionid, setQuestionId] = useState(`${questionId}`);
@@ -101,19 +102,12 @@ export const WorkEnv = () => {
     }, [progress]); //porque esta aqui?
 
 
-
     //POST - Request for obtaining new question
     const [content, setContent] = useState('#Type your answer here');
     const [fetchResponse, setResponse] = useState([]);
     const [showComponent, setShowComponent] = useState(false); //tests component
 
-    //Objeto para codeExec
-    const hwData = {
-        code: content,
-        id: questionParams.id_pregunta,
-    }
 
-    let nextQuestion;
     const onClickNextQuestion = async () => {
         console.log("click on next")
         if (fetchResponse.passed) {
@@ -141,11 +135,10 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        const homeworkID = homeworkParams.hw_id;
-
+    
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
                 return responseData;
             } catch (error) {
@@ -157,7 +150,7 @@ export const WorkEnv = () => {
     }
 
     //POST - to codeExec get testcases and register attempt
-    const handleEditorDidMount = async () => {
+    const handleCodeSubmit = async () => {
 
         const options = {
             method: 'POST',
@@ -177,9 +170,6 @@ export const WorkEnv = () => {
 
             })
         }
-
-        //for multi questions only
-        // fetch(`${riddleAPI}submitAttempt/multi`, options)
 
         //for code questions only
         fetch(`${riddleAPI}submitAttempt/code`, options)
@@ -263,7 +253,8 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            {nextQuestion && (
+                            {fetchResponse.passed ? requestNextQuestion() : null}
+                            {fetchResponse.passed && (
                                 <Link
                                     to={{
                                         pathname: nextQuestion !== undefined && nextQuestion.type === 'codep' ? "/student/workenv" : nextQuestion !== undefined && nextQuestion.type === 'multi' ? "/student/multiopt" : ""
@@ -284,7 +275,7 @@ export const WorkEnv = () => {
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleEditorDidMount(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+                            <Button onClick={() => { handleCodeSubmit(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
                                 Submit
                             </Button>
 

@@ -113,7 +113,7 @@ export const SHHomeworkCard = ({ data, index }) => {
                     component="div"
                     disablePadding
                 >
-                    {data.map((homework, indexH) => (
+                    {data.map((homework, indexH) => ( 
                         <Grid container key={indexH}>
                             <ListItem disablePadding>
                                 <Link

@@ -18,15 +18,15 @@ import { async } from "@firebase/util";
 export const MultiOpt = () => {
     const theme = useTheme();
     //que necesitamos aqui? si es para tarea necesitamos la tarea y el grupo
-    //si es para módulo el nombre del 
+    //si es para módulo el id del modulo y el grupo
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 
-    const moduleParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
+    const assParams = location.state?.homeworkParams; //moduledata (id, group)
+    
+    // console.log("assParams", assParams)
     const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
-
-    // console.log("moduleParams", moduleParams)
     const questionDescription = questionInfo.question //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -34,14 +34,12 @@ export const MultiOpt = () => {
     const [questionid, setQuestionId] = useState(`${questionId}`);
     const [questiondes, setQuestionDes] = useState(questionDescription); //para manejar las descripciones de las siguientes preguntas
     const [fetchResponse, setResponse] = useState([]);
-    const [fetchAttemptResponse, setAttemptResponse] = useState([]);
-
+    const [fetchAttemptResponse, setAttemptResponse] = useState([]); //explanation y si paso o no
 
     //Current user info
     const auth = getAuth();
     const user = auth.currentUser;
     let schoolID, email, displayName, emailVerified, uid;
-
     if (user !== null) {
         ({ email, displayName, emailVerified, uid } = user);
         schoolID = (user.email).substring(0, 9).toUpperCase();
@@ -49,17 +47,18 @@ export const MultiOpt = () => {
         // console.log("Matrícula ", schoolID)
     }
 
-    let group;
-    let moduleId;
-    // if (moduleParams.hw_id != undefined && moduleParams.group_id != undefined) {
-    //     group = moduleParams.group;
-    //     moduleId = moduleParams.id;
-    // }
-    // if (home.hw_id != undefined && moduleParams.group_id != undefined) {
-    //     group = moduleParams.group;
-    //     moduleId = moduleParams.id;
-    // }
+    let assid;
+    let assgroup;
 
+    if (assParams.hw_id && assParams.group_id) {
+        assid = assParams.hw_id;
+        assgroup = assParams.group_id;
+    }
+    //Esto es para modulo
+    if (assParams.id && assParams.group) {
+        assid = assParams.id;
+        assgroup = assParams.group;
+    }
 
     // ------------ # API region ------------
 
