@@ -3,7 +3,7 @@ import { linearProgressClasses } from '@mui/material/LinearProgress';
 import { LockOutlined } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { Link } from 'react-router-dom';
+import { Link,useParams } from 'react-router-dom';
 
 export const SModuleCard = ({ module, index, group }) => {
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
@@ -21,6 +21,10 @@ export const SModuleCard = ({ module, index, group }) => {
         // console.log("Matrícula ", schoolID)
     }
 
+    let params = useParams()
+    // console.log(params.group)
+    
+
     const [question, setQuestion] = useState([]);
     useEffect(() => {
         const options = {
@@ -30,7 +34,7 @@ export const SModuleCard = ({ module, index, group }) => {
             },
             mode: 'cors',
         }
-
+        
         const fetchData = async () => {
             try {
                 const response = await fetch(`${riddleAPI}questions?id_assigment=${module.id}&id_student=${schoolID}&id_group=${group}`, options);
@@ -55,11 +59,12 @@ export const SModuleCard = ({ module, index, group }) => {
                 ':hover': !module.locked && { backgroundColor: 'secondary.main', opacity: 0.8 }
             }}
             >
+    
                 <Link
                     to={{
                         pathname: question.type === 'codep' && !module.locked ? "/student/workenv" : question.type === 'multi' && !module.locked ? "/student/multiopt" : ""
                     }}
-                    state={{ questionParams: question, homeworkParams: {id: module.id, group: group} }}
+                    state={{ questionParams: question, homeworkParams: {id: module.id, group: params.group} }} //cambiar a hw_id?
                     style={{ textDecoration: 'none' }}
                 >
 
