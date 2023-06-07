@@ -6,23 +6,28 @@
 // ------------ # Imports region -----------------
 
 // Core components from MUI
-import { Grid, Button, Typography, useTheme, Alert } from '@mui/material'
 import * as React from 'react';
-import { TestsTabs, Timer } from '../../components';
+import { Alert, Button, Grid, Typography, useTheme } from '@mui/material'
 import { useState, useEffect, useContext } from 'react';
-import Editor from '@monaco-editor/react';
+import { Link, useLocation } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
-import { useLocation } from 'react-router-dom';
+import Editor from '@monaco-editor/react';
+
+// MindScript Components
 import ConfettiExplosion from 'react-confetti-explosion';
-import { Link } from 'react-router-dom';
+import { TestsTabs, Timer } from '../../components';
+
 
 export const WorkEnv = () => {
     const location = useLocation();
+    //esto puede venir de SHHomeworkCard, SMHomeworkCard, SModuleCard
     let questionParams = location.state?.questionParams;
-    let homeworkParams = location.state?.homeworkParams;
-    // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, etc)
-    const questionInfo = JSON.parse(questionParams.info);
+    let homeworkParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
+    const assParams = location.state?.homeworkParams; //hw data (id, name, group, etc) //si es módulo trae id y group
+    // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, course, etc)
 
+    // console.log("assassement params", assParams)
+    const questionInfo = JSON.parse(questionParams.info);
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -35,6 +40,11 @@ export const WorkEnv = () => {
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     const theme = useTheme();
 
+    // const homeworkID = homeworkParams.hw_id;
+    // const group = homeworkParams.group_id;
+    let assid = "";
+    let assgroup = "";
+
     //Timer States
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
@@ -43,18 +53,17 @@ export const WorkEnv = () => {
     const auth = getAuth();
     const user = auth.currentUser;
     let schoolID, email, displayName, emailVerified, uid;
-
-
     if (user !== null) {
         ({ email, displayName, emailVerified, uid } = user);
         schoolID = (user.email).substring(0, 9).toUpperCase();
-        // console.log("Student work env user info", user)
         // console.log("Matrícula ", schoolID)
     }
 
     //Feedback confetti
     const [isExploding, setIsExploding] = useState(false);
 
+
+    // -------------------- # API region --------------------------
 
     //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
@@ -66,15 +75,20 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        // if (homeworkParams.hw_id != undefined && homeworkParams.group_id != undefined) {
-        //     const homeworkID = homeworkParams.hw_id;
-        //     const group = homeworkParams.group_id;
-        // }
+        if (assParams.hw_id && assParams.group_id) {
+            assid = assParams.hw_id;
+            assgroup = assParams.group_id;
+        }
+        //Esto es para modulo
+        if (assParams.id && assParams.group) {
+            assid = assParams.id;
+            assgroup = assParams.group;
+        }
 
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${homeworkParams.hw_id}&group=${homeworkParams.group_id}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${assid}&group=${assgroup}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -159,15 +173,8 @@ export const WorkEnv = () => {
                 "student": schoolID,
                 "attempt_time": timerValue,
                 "group": homeworkParams.group_id,
-                //si es multi lleva answers
-                // "answers": ["3"]
-                //si es code lleva code
                 "code": content,
-               
-                // "id": "test/test/2",
-                // "code": "def smallest(a, b):\n\treturn a if a < b else b"
-                // "id": hwData.id,
-                // "code": hwData.code
+
             })
         }
 
@@ -191,10 +198,12 @@ export const WorkEnv = () => {
 
     };
 
+    // -------------------- ## End API region ------------------
+
+
     const printsec = () => {
         console.log("completed in", timerValue)
     }
-
 
 
     return (
@@ -216,7 +225,7 @@ export const WorkEnv = () => {
             </Grid>
             <Grid item xs={4}>
                 <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
-                    {/* Hw Description*/}
+                    {/* Question Description*/}
                     <Grid item xs={12}>
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
@@ -224,6 +233,7 @@ export const WorkEnv = () => {
                                     Descripción
                                 </Typography>
                             </Grid>
+
                             <Grid item align='right' xs={12} md={2}>
                                 <Timer setTimerValue={setTimerValue} resetTimer={resetTimer} setResetTimer={setResetTimer} />
                             </Grid>

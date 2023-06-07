@@ -7,7 +7,7 @@
 
 // Core components from MUI
 import { useState, useEffect } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
 
