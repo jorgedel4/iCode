@@ -6,13 +6,16 @@
 // ------------ # Imports region ------------
 
 // Core components from MUI
-import { Button, Grid, Typography, useTheme } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useTheme } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavBar, OptionButton } from "../../components";
 import { Link } from 'react-router-dom';
 import { async } from "@firebase/util";
+
+// MindScript Components
+import { TestsTabs, Timer } from '../../components';
 
 
 export const MultiOpt = () => {
@@ -35,6 +38,12 @@ export const MultiOpt = () => {
     const [questiondes, setQuestionDes] = useState(questionDescription); //para manejar las descripciones de las siguientes preguntas
     const [fetchResponse, setResponse] = useState([]);
     const [fetchAttemptResponse, setAttemptResponse] = useState([]); //explanation y si paso o no
+
+    const [responseHardcode, setResponseHardcode] = useState([]); //se debe de borrar
+
+    //Timer States
+    const [timerValue, setTimerValue] = useState(0);
+    const [resetTimer, setResetTimer] = useState(false);
 
     //Current user info
     const auth = getAuth();
@@ -60,11 +69,42 @@ export const MultiOpt = () => {
         assgroup = assParams.group;
     }
 
+    //Estado y funcion para guardar las opciones seleccionadas
+    const [results, setResult] = useState([]);
+
+    const changeSelected = (value, selected) => {
+        if (selected) {
+            results.push(value);
+        } else {
+            const index = results.indexOf(value);
+            results.splice(index, 1);
+        }
+    }
+
+    //Estados y funciones necesarias para el dialogo con retro
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+      const handleClose = () => {
+        setOpen(false);
+    };
+
     // ------------ # API region ------------
 
     //GET - Obtaining student's homework progress
     const [progress, setProgress] = useState([]);
     useEffect(() => {
+        setResult([]); //Aqui se inicializa el valir de results para que no se inicialice simpre que se renderiza la pagina
+        setResponseHardcode(
+                {
+                    "passed": true,
+                    "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
+                }
+        )
+
         const options = {
             method: 'GET',
             headers: {
@@ -76,7 +116,7 @@ export const MultiOpt = () => {
         const fetchData = async () => {
             try {
                 // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
-                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${moduleParams.hw_id}&group=${moduleParams.group_id}`, options);
+                const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${assid}&group=${assgroup}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
                 // console.log(progress)
@@ -86,11 +126,12 @@ export const MultiOpt = () => {
         };
 
         fetchData();
-    }, [progress]); //porque esta aqui?
+    }, []);
+    // console.log("progress",progress)
 
 
     // const group = homeworkParams.group_id
-    const module = questionInfo.module
+    const module = questionInfo.module //esto no se puede porque no existe
     const qNumber = "Pregunta #" + progress.answered
 
     const pages = [
@@ -112,7 +153,7 @@ export const MultiOpt = () => {
         const fetchData = async () => {
             try {
                 //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${moduleId}&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options);
                 const responseData = await response.json();
 
                 //changing question description
@@ -134,7 +175,7 @@ export const MultiOpt = () => {
 
     //POST - to codeExec get testcases and register attempt
     const submitAttemp = async () => {
-        console.log(homeworkParams.hw_id)
+        console.log(assid)
 
         const options = {
             method: 'POST',
@@ -143,19 +184,31 @@ export const MultiOpt = () => {
 
             },
             mode: 'no-cors',
+            // body: JSON.stringify({
+
+            //     "question": "CQ000000000000000002",
+            //     "assignment": "M0000000000000000001",
+            //     "student": "A01551955",
+            //     "attempt_time": 12,
+            //     "group": "G000000001",
+            //     "answers": ["3"]
+
+            // })
             body: JSON.stringify({
 
-                "question": "CQ000000000000000002",
-                "assignment": "M0000000000000000001",
-                "student": "A01551955",
-                "attempt_time": 12,
-                "group": "G000000001",
-                "answers": ["3"]
+                "question": questionId,
+                "assignment": assid,
+                "student": schoolID,
+                "attempt_time": timerValue,
+                "group": assgroup,
+                "answers": results
 
             })
         }
 
-        fetch(`${riddleAPI}submitAttempt/multi`, options)
+        console.log("body", options.body)
+
+        fetch(`${riddleAPI}submitAttempt/multipleChoice`, options)
             .then(response => {
                 console.log(response)
                 // setResetTimer(true);
@@ -171,13 +224,14 @@ export const MultiOpt = () => {
     };
 
     const handleSubmission = async () => {
-        //llamada al post para verificar hay que hacerle un await para que primero haga el attempt check y luego la de onclicknextquestion
+        console.log("resultado",results) //se borra
         submitAttemp()
-        // if(passed){
-        onClickNextQuestion()
-        // }else{
-        //     console.log("show explanation??")
-        // }
+        // console.log("respuesta", fetchAttemptResponse) //se bora
+        console.log("dasdasd",responseHardcode)
+        if (responseHardcode.passed) {
+            onClickNextQuestion()
+        }
+        setOpen(true)
 
     }
 
@@ -194,20 +248,29 @@ export const MultiOpt = () => {
             {/* Button to return to modules */}
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
                 <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
-                    {'< Regresar a ' + group}
+                    {'< Regresar a ' + assgroup}
                 </Button>
             </Grid>
 
+            <Grid container direction='row'>
+                {/* Tal vez aqui se pone el progreso */}
+                <Grid item xs={6}>
+                    <Typography fontWeight={900} fontSize={18} sx={{ color: 'appDark.text' }}>
+                        Módulo: {module} {/* esto no se puede porque no existe */}
+                    </Typography>
+                </Grid>
 
-            <Grid item xs={12}>
-                <Typography fontWeight={900} fontSize={18} sx={{ color: 'appDark.text' }}>
-                    Módulo: {module}
-                </Typography>
+                <Grid item xs={6} align='right' sx={{ color: 'appDark.text' }}>
+                    <Timer setTimerValue={setTimerValue} resetTimer={resetTimer} setResetTimer={setResetTimer} />
+                </Grid>
             </Grid>
 
             {/* Inside card */}
             <Grid item xs={12} sx={{ mt: 2, bgcolor: 'secondary.main', borderRadius: 1 }}>
-                <Grid container padding={5} direction="column" justifyContent="center" alignItems="center">
+                <Grid sx={{ mt: 2, ml: 2 }}>
+                    <Typography sx={{ color: 'appDark.text' }}>{progress.answered}/{progress.needed}</Typography>
+                </Grid>
+                <Grid container padding={4} direction="column" justifyContent="center" alignItems="center">
                     {/* Question name */}
                     <Grid item xs={12} >
                         <Typography sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 25 }}>{qNumber}</Typography>
@@ -226,14 +289,14 @@ export const MultiOpt = () => {
                     <Grid container direction='row' justifyContent="center">
                         {questionInfo !== undefined && questionInfo.options && questionInfo.options.length > 0 && (
                             questionInfo.options.map((option, index) => (
-                                <OptionButton key={index} option={option} />
+                                <OptionButton key={index} option={option} changeSelected={changeSelected} />
                             ))
                         )}
                     </Grid>
 
                     {/* Buttons section */}
                     <Grid container direction='row'>
-                        <Grid item xs={12} align='right' >
+                        <Grid item xs={12} align='right' sx={{ mt: 5 }} >
 
                             <Button
                                 onClick={() => { handleSubmission(); }}
@@ -243,22 +306,54 @@ export const MultiOpt = () => {
                                     fontWeight: 900,
                                     ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 }
                                 }}>
-                                {/* {fetchResponse != undefined && fetchResponse != null
-                                    ? < Link
-                                        to={{
-                                            pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
-                                        }}
-                                        state={{ questionParams: fetchResponse, homeworkData: homeworkParams }}
-                                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                                    />
-                                    : null
-                                } */}
                                 {'Entregar'}
                             </Button>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: { bgcolor: 'primary.main', color: 'appDark.text' }
+                }}
+            >
+                <DialogTitle align='center'>
+                    {responseHardcode.passed ? "Correcto" : "Incorrecto"}
+                </DialogTitle>
+                <DialogContent>
+                <DialogContentText
+                    sx={{ color: 'appDark.text' }}
+                 >
+                    {responseHardcode.passed ? responseHardcode.explanation : null}
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                {responseHardcode.passed ?
+
+                    fetchResponse != undefined && fetchResponse != null
+                        ? < Link
+                            to={{
+                                pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                            }}
+                            state={{ questionParams: fetchResponse, assParams: assParams }}
+                            style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                        >
+                            <Button autoFocus sx={{ color: 'success.main' }}>
+                                {"Siguiente Pregunta"}
+                            </Button>
+                        </Link>
+                        : null
+                :
+                    <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
+                        Volver a Intentar
+                    </Button>
+                }
+                </DialogActions>
+            </Dialog>
+
         </Grid >
     )
 }
