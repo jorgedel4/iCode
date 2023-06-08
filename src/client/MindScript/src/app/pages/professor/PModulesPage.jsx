@@ -1,5 +1,5 @@
 import { Card, CardContent, CardActionArea, Grid, Typography } from '@mui/material'
-import { PersonSearchOutlined } from '@mui/icons-material'
+import { PersonSearchOutlined, AssessmentOutlined } from '@mui/icons-material'
 import { ModulesLayout } from "../../layout"
 import { PModuleCard } from '../../components'
 import { useState, useEffect } from 'react';
@@ -151,6 +151,30 @@ export const PModulesPage = () => {
                                 <PersonSearchOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
                                 <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
                                     Gestión de Alumnos
+                                </Typography>
+
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={4} align='center'>
+
+                    <Card sx={{
+                        width: 260,
+                        height: 190,
+                        backgroundColor: 'secondary.main',
+                        borderRadius: '12px',
+                        boxShadow: '5px 5px 0px 5px rgba(0, 0, 0, 0.1)',
+                        ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 }
+                    }}
+                    >
+                        <CardActionArea component={Link} to={`/professor/dashboard/${params.group}/${params.course}`} sx={{ height: 207, textAlign: "center", alignItems: "center" }}>
+                            <CardContent sx={{ pt: 4, pb: 6 }}>
+
+                                <AssessmentOutlined sx={{ color: 'appDark.icon', fontSize: 60, mt: 2 }} />
+                                <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
+                                    Avances y Progresos
                                 </Typography>
 
                             </CardContent>

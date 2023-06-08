@@ -2,7 +2,7 @@ import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/ma
 import { HomeLayout } from '../../layout/HomeLayout';
 import { Link } from 'react-router-dom';
 import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components'
-import { AddCircleOutline, NoteAddOutlined, UploadFile } from '@mui/icons-material'
+import { AddCircleOutline, NoteAddOutlined, QuizOutlined, ChecklistOutlined } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
@@ -158,9 +158,9 @@ export const PHomePage = () => {
                         <ActionButton >
                             <CardActionArea onClick={showModalCreateQuestion} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
-                                    <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
+                                    <QuizOutlined sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
                                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
-                                        Mandar Solicitud
+                                        Crear Pregunta
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
@@ -172,9 +172,9 @@ export const PHomePage = () => {
                             <Link to='/professor/request' style={{ textDecoration: 'none' }}>
                                 <CardActionArea sx={{ height: 207, textAlign: "center" }}>
                                     <CardContent sx={{ pt: 4, pb: 6 }}>
-                                        <UploadFile sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
+                                        <ChecklistOutlined sx={{ color: 'appDark.icon', fontSize: 60, fontWeight: 100, mt: 2 }} />
                                         <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 405 }} >
-                                            Ver Solicitudes
+                                            Ver Estatus de Pregunta
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>
