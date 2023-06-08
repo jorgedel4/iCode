@@ -68,7 +68,7 @@ export const SModuleCard = ({ module, index, group }) => {
                     to={{
                         pathname: question.type === 'codep' && !module.locked ? "/student/workenv" : question.type === 'multi' && !module.locked ? "/student/multiopt" : ""
                     }}
-                    state={{ questionParams: question, homeworkParams: {id: module.id, group: params.group} }} //cambiar a hw_id?
+                    state={{ questionParams: question, homeworkParams: {id: module.id, group: params.group} }} //cambiar a hw_id? ass
                     style={{ textDecoration: 'none' }}
                 >
 
