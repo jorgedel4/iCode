@@ -61,8 +61,17 @@ export const WorkEnv = () => {
 
     //Feedback confetti
     const [isExploding, setIsExploding] = useState(false);
-
-
+    
+    
+    if (assParams.hw_id && assParams.group_id) {
+        assid = assParams.hw_id;
+        assgroup = assParams.group_id;
+    }
+    //Esto es para modulo
+    if (assParams.id && assParams.group) {
+        assid = assParams.id;
+        assgroup = assParams.group;
+    }
     // -------------------- # API region --------------------------
 
     //GET - Obtaining student's homework progress
@@ -74,15 +83,6 @@ export const WorkEnv = () => {
                 'Accept': 'application/json',
             },
             mode: 'cors',
-        }
-        if (assParams.hw_id && assParams.group_id) {
-            assid = assParams.hw_id;
-            assgroup = assParams.group_id;
-        }
-        //Esto es para modulo
-        if (assParams.id && assParams.group) {
-            assid = assParams.id;
-            assgroup = assParams.group;
         }
 
         const fetchData = async () => {
@@ -141,11 +141,11 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        const homeworkID = homeworkParams.hw_id;
+        // const homeworkID = homeworkParams.hw_id;
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${homeworkID}&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}`, options);
                 const responseData = await response.json();
                 return responseData;
             } catch (error) {
@@ -158,7 +158,6 @@ export const WorkEnv = () => {
 
     //POST - to codeExec get testcases and register attempt
     const handleEditorDidMount = async () => {
-
         const options = {
             method: 'POST',
             headers: {
@@ -167,16 +166,15 @@ export const WorkEnv = () => {
             },
             mode: 'no-cors',
             body: JSON.stringify({
-
                 "question": questionid,
-                "assignment": homeworkParams.hw_id,
+                "assignment": assid,
                 "student": schoolID,
                 "attempt_time": timerValue,
-                "group": homeworkParams.group_id,
+                "group": assgroup,
                 "code": content,
-
             })
         }
+        console.log(options.body)
 
         //for multi questions only
         // fetch(`${riddleAPI}submitAttempt/multi`, options)

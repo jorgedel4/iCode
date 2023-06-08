@@ -47,6 +47,10 @@ export const SModuleCard = ({ module, index, group }) => {
 
         fetchData();
     }, []);
+    
+    if(module.progress === 100){
+        module.locked = true;
+    }
 
     return (
         <>
