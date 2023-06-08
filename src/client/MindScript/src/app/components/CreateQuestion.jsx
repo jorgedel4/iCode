@@ -146,9 +146,6 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
 
     };
 
-    // const rawjson = `{"${JSON.stringify(formatedInfo).slice(1, -1)}"}`;
-    // const formated = rawjson.substring(9, rawjson.length - 19)
-    // console.log("formatedInfo", formatedInfo)
 
     //POST - question request 
 
@@ -162,13 +159,13 @@ export const CreateQuestion = ({ open, close, schoolID }) => {
             const multiq = [];
             const multiqC = [];
 
-            multiQ.map((tc) => {
-                multiq.push(tc.opcion)
-            })
-
             cMultiQ.map((tc) => {
                 multiq.push(tc.opcion)
                 multiqC.push(tc.opcion)
+            })
+
+            multiQ.map((tc) => {
+                multiq.push(tc.opcion)
             })
 
             info = {
