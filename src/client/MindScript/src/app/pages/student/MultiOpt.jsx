@@ -27,7 +27,7 @@ export const MultiOpt = () => {
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 
     const assParams = location.state?.homeworkParams; //moduledata (id, group)
-    
+
     // console.log("assParams", assParams)
     const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
     const questionDescription = questionInfo.question //primera descripción
@@ -38,8 +38,6 @@ export const MultiOpt = () => {
     const [questiondes, setQuestionDes] = useState(questionDescription); //para manejar las descripciones de las siguientes preguntas
     const [fetchResponse, setResponse] = useState([]);
     const [fetchAttemptResponse, setAttemptResponse] = useState([]); //explanation y si paso o no
-
-    const [responseHardcode, setResponseHardcode] = useState([]); //se debe de borrar
 
     //Timer States
     const [timerValue, setTimerValue] = useState(0);
@@ -88,8 +86,8 @@ export const MultiOpt = () => {
     const handleClickOpen = () => {
         setOpen(true);
     };
-    
-      const handleClose = () => {
+
+    const handleClose = () => {
         setOpen(false);
     };
 
@@ -100,10 +98,10 @@ export const MultiOpt = () => {
     useEffect(() => {
         setResult([]); //Aqui se inicializa el valir de results para que no se inicialice simpre que se renderiza la pagina
         // setResponseHardcode(
-                // {
-                //     "passed": true,
-                //     "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
-                // }
+        // {
+        //     "passed": true,
+        //     "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
+        // }
         // )
 
         const options = {
@@ -156,27 +154,29 @@ export const MultiOpt = () => {
                 //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
                 const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options);
                 const responseData = await response.json();
+                console.log(response)
 
                 //changing question description
-                console.log(responseData) //id_pregunta, info and type
+                //ESTO NO ESTA REGRESANDO AAAAA
                 setResponse(responseData) //informacion siguiente pregunta
-
+                
                 // setQuestionId(responseData.id_pregunta)
                 // setQuestionDes(JSON.parse(responseData.info).description)
-
+                
                 console.log("requestNextQuestion", responseData)
             } catch (error) {
                 console.error(error);
             }
         };
-
-
+        
+        
         fetchData();
     }
+    // console.log("response data", fetchResponse) //id_pregunta, info and type
 
     //POST - to codeExec get testcases and register attempt
     const submitAttemp = async () => {
-        console.log(assid)
+        // console.log(assid, assgroup, schoolID)
 
         const options = {
             method: 'POST',
@@ -222,12 +222,14 @@ export const MultiOpt = () => {
             })
 
     };
+    // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
     const handleSubmission = async () => {
-        console.log("resultado",results) //se borra
+        console.log("resultado", results) //se borra
         submitAttemp()
         // console.log("respuesta", fetchAttemptResponse) //se bora
-        console.log("dasdasd",fetchAttemptResponse)
+        console.log("fetchAttemptResponse", fetchAttemptResponse)
+        
         if (fetchAttemptResponse.passed) {
             onClickNextQuestion()
         }
@@ -324,33 +326,34 @@ export const MultiOpt = () => {
                     {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
                 </DialogTitle>
                 <DialogContent>
-                <DialogContentText
-                    sx={{ color: 'appDark.text' }}
-                 >
-                    {fetchAttemptResponse.passed ? fetchAttemptResponse.explanation : null}
-                </DialogContentText>
+                    <DialogContentText
+                        sx={{ color: 'appDark.text' }}
+                    >
+                        {fetchAttemptResponse.passed ? fetchAttemptResponse.explanation : null}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                {fetchAttemptResponse.passed ?
+                    {fetchAttemptResponse.passed ?
+                        console.log("passed?",fetchResponse) &&
 
-                    fetchResponse != undefined && fetchResponse != null
-                        ? < Link
-                            to={{
-                                pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
-                            }}
-                            state={{ questionParams: fetchResponse, homeworkParams: assParams }}
-                            style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                        >
-                            <Button autoFocus sx={{ color: 'success.main' }}>
-                                {"Siguiente Pregunta"}
-                            </Button>
-                        </Link>
-                        : null
-                :
-                    <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
-                        Volver a Intentar
-                    </Button>
-                }
+                        fetchResponse != undefined && fetchResponse != null
+                            ? < Link
+                                to={{
+                                    pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                                }}
+                                state={{ questionParams: fetchResponse, homeworkParams: assParams }}
+                                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                            >
+                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                    {"Siguiente Pregunta"}
+                                </Button>
+                            </Link>
+                            : null
+                        :
+                        <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
+                            Volver a Intentar
+                        </Button>
+                    }
                 </DialogActions>
             </Dialog>
 
