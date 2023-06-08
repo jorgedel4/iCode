@@ -68,6 +68,7 @@ export const MultiOpt = () => {
         assid = assParams.id;
         assgroup = assParams.group;
     }
+    // console.log(assid, assgroup)
 
     //Estado y funcion para guardar las opciones seleccionadas
     const [results, setResult] = useState([]);
@@ -98,12 +99,12 @@ export const MultiOpt = () => {
     const [progress, setProgress] = useState([]);
     useEffect(() => {
         setResult([]); //Aqui se inicializa el valir de results para que no se inicialice simpre que se renderiza la pagina
-        setResponseHardcode(
-                {
-                    "passed": true,
-                    "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
-                }
-        )
+        // setResponseHardcode(
+                // {
+                //     "passed": true,
+                //     "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
+                // }
+        // )
 
         const options = {
             method: 'GET',
@@ -206,11 +207,10 @@ export const MultiOpt = () => {
             })
         }
 
-        console.log("body", options.body)
+        // console.log("body", options.body)
 
         fetch(`${riddleAPI}submitAttempt/multipleChoice`, options)
             .then(response => {
-                console.log(response)
                 // setResetTimer(true);
                 return response.json()
             })
@@ -227,8 +227,8 @@ export const MultiOpt = () => {
         console.log("resultado",results) //se borra
         submitAttemp()
         // console.log("respuesta", fetchAttemptResponse) //se bora
-        console.log("dasdasd",responseHardcode)
-        if (responseHardcode.passed) {
+        console.log("dasdasd",fetchAttemptResponse)
+        if (fetchAttemptResponse.passed) {
             onClickNextQuestion()
         }
         setOpen(true)
@@ -321,24 +321,24 @@ export const MultiOpt = () => {
                 }}
             >
                 <DialogTitle align='center'>
-                    {responseHardcode.passed ? "Correcto" : "Incorrecto"}
+                    {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
                 </DialogTitle>
                 <DialogContent>
                 <DialogContentText
                     sx={{ color: 'appDark.text' }}
                  >
-                    {responseHardcode.passed ? responseHardcode.explanation : null}
+                    {fetchAttemptResponse.passed ? fetchAttemptResponse.explanation : null}
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                {responseHardcode.passed ?
+                {fetchAttemptResponse.passed ?
 
                     fetchResponse != undefined && fetchResponse != null
                         ? < Link
                             to={{
                                 pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
                             }}
-                            state={{ questionParams: fetchResponse, assParams: assParams }}
+                            state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                             style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                         >
                             <Button autoFocus sx={{ color: 'success.main' }}>

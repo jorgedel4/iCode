@@ -7,7 +7,7 @@
 
 // Core components from MUI
 import * as React from 'react';
-import { Alert, Button, Grid, Typography, useTheme } from '@mui/material'
+import { Alert, Button,Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useTheme } from '@mui/material'
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
@@ -23,7 +23,7 @@ export const WorkEnv = () => {
     //esto puede venir de SHHomeworkCard, SMHomeworkCard, SModuleCard
     let questionParams = location.state?.questionParams;
     let homeworkParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
-    const assParams = location.state?.assParams; //hw data (id, name, group, etc) //si es módulo trae id y group
+    const assParams = location.state?.homeworkParams; //hw data (id, name, group, etc) //si es módulo trae id y group
     // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, course, etc)
 
     // console.log("assassement params", assParams)
@@ -73,6 +73,8 @@ export const WorkEnv = () => {
         assid = assParams.id;
         assgroup = assParams.group;
     }
+    // console.log(assid, assgroup)
+
     // -------------------- # API region --------------------------
 
     //GET - Obtaining student's homework progress
@@ -168,6 +170,7 @@ export const WorkEnv = () => {
                 "code": content,
             })
         }
+        console.log(options.body)
 
         //for code questions only
         fetch(`${riddleAPI}submitAttempt/code`, options)
@@ -251,7 +254,7 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            {fetchResponse.passed ? requestNextQuestion() : null}
+                            {/* {fetchResponse.passed ? requestNextQuestion() : null} */}
                             {fetchResponse.passed && (
                                 <Link
                                     to={{
@@ -316,6 +319,47 @@ export const WorkEnv = () => {
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: { bgcolor: 'primary.main', color: 'appDark.text' }
+                }}
+            >
+                <DialogTitle align='center'>
+                    {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
+                </DialogTitle>
+                <DialogContent>
+                <DialogContentText
+                    sx={{ color: 'appDark.text' }}
+                 >
+                    {fetchAttemptResponse.passed ? fetchAttemptResponse.explanation : null}
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                {fetchAttemptResponse.passed ?
+
+                    fetchResponse != undefined && fetchResponse != null
+                        ? < Link
+                            to={{
+                                pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                            }}
+                            state={{ questionParams: fetchResponse, homeworkParams: assParams }}
+                            style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                        >
+                            <Button autoFocus sx={{ color: 'success.main' }}>
+                                {"Siguiente Pregunta"}
+                            </Button>
+                        </Link>
+                        : null
+                :
+                    <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
+                        Volver a Intentar
+                    </Button>
+                }
+                </DialogActions>
+            </Dialog>
         </Grid>
     )
 }
