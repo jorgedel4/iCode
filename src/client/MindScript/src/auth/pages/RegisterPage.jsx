@@ -77,7 +77,7 @@ export const RegisterPage = () => {
       "Ingresa tu matrícula o nómina",
     ], //deben ser los mismos nombres del objeto del formulario
     email: [
-      (value) => value.includes("@tec.mx"),
+      (value) => (value.includes("@tec.mx") && value.includes(id)),
       "Debes entrar con tu correo institucional",
     ], //deben ser los mismos nombres del objeto del formulario
     password: [
