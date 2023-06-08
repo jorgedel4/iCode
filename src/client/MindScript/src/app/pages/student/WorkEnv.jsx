@@ -138,7 +138,7 @@ export const WorkEnv = () => {
     // }
 
     //GET - next question information ------------
-    const onClickNextQuestion = async () => {
+    const onClickNextQuestion = () => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -206,7 +206,7 @@ export const WorkEnv = () => {
     // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
 
-    const handleSubmission = async () => {
+    const handleSubmission = () => {
         submitAttemp()
         // console.log("respuesta", fetchAttemptResponse) //se bora
         if (fetchAttemptResponse.passed) {

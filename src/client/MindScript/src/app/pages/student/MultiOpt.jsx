@@ -139,7 +139,7 @@ export const MultiOpt = () => {
     ]
 
     //GET next question information
-    const onClickNextQuestion = async () => {
+    const onClickNextQuestion =  () => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -170,7 +170,7 @@ export const MultiOpt = () => {
         };
         
         
-        fetchData();
+       return fetchData();
     }
     // console.log("response data", fetchResponse) //id_pregunta, info and type
 
@@ -224,7 +224,7 @@ export const MultiOpt = () => {
     };
     // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
-    const handleSubmission = async () => {
+    const handleSubmission =  () => {
         console.log("resultado", results) //se borra
         submitAttemp()
         // console.log("respuesta", fetchAttemptResponse) //se bora
