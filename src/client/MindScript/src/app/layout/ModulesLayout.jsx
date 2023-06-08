@@ -123,16 +123,6 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDeleteHw, ha
                     {!student ?
                         <>
                             {/* <Grid item xs={12}> */}
-                            <Button
-                                href={`/professor/dashboard/${params.group}/${params.course}`}
-                                variant="contained"
-                                sx={{
-                                    width: 400, bgcolor: 'appDark.button', mb: 1,
-                                    ':hover': { bgcolor: 'appDark.button', opacity: 0.8 }
-                                }}
-                            >
-                                Avances y Progresos
-                            </Button>
                             {/* </Grid> */}
                             {/* <Grid item xs={12}> */}
 
