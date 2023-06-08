@@ -1,16 +1,21 @@
 import { ToggleButton, Grid, useTheme } from '@mui/material';
 import { useState } from 'react';
 
-export const OptionButton = ({ option }) => {
+export const OptionButton = ({ option, changeSelected }) => {
     const theme = useTheme();
     const [selected, setSelected] = useState(false);
+
+    const handleChange = () => {
+        setSelected(!selected);
+        changeSelected(option, !selected);
+    };
 
     return (
         <Grid item align='center' xs={12} sm={6} mt={4}>
             <ToggleButton
                 value='check'
                 selected={selected}
-                onChange={() => { setSelected(!selected) }}
+                onChange={handleChange}
                 style={{
                     color: theme.palette.appDark.text,
                     fontWeight: 900,

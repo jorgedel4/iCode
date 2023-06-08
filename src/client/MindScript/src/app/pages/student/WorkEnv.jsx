@@ -7,7 +7,7 @@
 
 // Core components from MUI
 import * as React from 'react';
-import { Alert, Button, Grid, Typography, useTheme } from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useTheme } from '@mui/material'
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
@@ -19,32 +19,44 @@ import { TestsTabs, Timer } from '../../components';
 
 
 export const WorkEnv = () => {
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+    const theme = useTheme();
+
     const location = useLocation();
     //esto puede venir de SHHomeworkCard, SMHomeworkCard, SModuleCard
-    let questionParams = location.state?.questionParams;
-    let homeworkParams = location.state?.homeworkParams; //hw data (id, name, group, etc)
-    const assParams = location.state?.assParams; //hw data (id, name, group, etc) //si es módulo trae id y group
-    // const homeworkParams = location.state?.homeworkData; //hw data (id, name, group, course, etc)
+    const questionParams = location.state?.questionParams;
+    const assParams = location.state?.homeworkParams; //hw data (id, name, group, etc) //si es módulo trae id y group
 
     // console.log("assassement params", assParams)
     const questionInfo = JSON.parse(questionParams.info);
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
-    let nextQuestion;
+
+
+    // Initial States and Variables 
+    let assid = "";
+    let assgroup = "";
 
     //Estados para cambiar la descripción
     const [questionid, setQuestionId] = useState(`${questionId}`);
     const [questiondes, setQuestionDes] = useState(`${questionDescription}`); //para manejar las descripciones de las siguientes preguntas
 
-    // Initial States and Variables 
-    const codeAPI = import.meta.env.VITE_APP_CODEEXEC;
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
-    const theme = useTheme();
+    const [content, setContent] = useState('#Type your answer here');
+    const [fetchResponse, setResponse] = useState([]);
+    const [fetchAttemptResponse, setAttemptResponse] = useState([]);
+    const [showComponent, setShowComponent] = useState(false); //tests component
 
-    // const homeworkID = homeworkParams.hw_id;
-    // const group = homeworkParams.group_id;
-    let assid = "";
-    let assgroup = "";
+    //Estados y funciones necesarias para el dialogo con retro
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
 
     //Timer States
     const [timerValue, setTimerValue] = useState(0);
@@ -63,6 +75,19 @@ export const WorkEnv = () => {
     //Feedback confetti
     const [isExploding, setIsExploding] = useState(false);
 
+    //Esto es para tarea
+    if (assParams.hw_id && assParams.group_id) {
+        assid = assParams.hw_id;
+        assgroup = assParams.group_id;
+    }
+    //Esto es para modulo
+    if (assParams.id && assParams.group) {
+        assid = assParams.id;
+        assgroup = assParams.group;
+    }
+    // console.log(assid, assgroup)
+
+
 
     // -------------------- # API region --------------------------
 
@@ -76,19 +101,9 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-        if (assParams.hw_id && assParams.group_id) {
-            assid = assParams.hw_id;
-            assgroup = assParams.group_id;
-        }
-        //Esto es para modulo
-        if (assParams.id && assParams.group) {
-            assid = assParams.id;
-            assgroup = assParams.group;
-        }
 
         const fetchData = async () => {
             try {
-                // const response = await fetch(`${riddleAPI}statusHomework?id_student=${schoolID}&id_homework=${homeworkID}`, options);
                 const response = await fetch(`${riddleAPI}studentprogress?student=${schoolID}&assignment=${assid}&group=${assgroup}`, options);
                 const responseData = await response.json();
                 setProgress(responseData);
@@ -103,30 +118,27 @@ export const WorkEnv = () => {
 
 
     //POST - Request for obtaining new question
-    const [content, setContent] = useState('#Type your answer here');
-    const [fetchResponse, setResponse] = useState([]);
-    const [showComponent, setShowComponent] = useState(false); //tests component
 
 
-    const onClickNextQuestion = async () => {
-        console.log("click on next")
-        if (fetchResponse.passed) {
-            console.log("Valid next question")
-            setShowComponent(false)
-            setResponse([])
-            setContent('#Type your question here')
-            try {
-                const question = await requestNextQuestion();
-                nextQuestion = question;
-                // console.log(nextQuestion);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    }
+    // const onClickNextQuestion = async () => {
+    //     console.log("click on next")
+    //     if (fetchResponse.passed) {
+    //         console.log("Valid next question")
+    //         setShowComponent(false)
+    //         setResponse([])
+    //         setContent('#Type your question here')
+    //         try {
+    //             const question = await requestNextQuestion();
+    //             nextQuestion = question;
+    //             // console.log(nextQuestion);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+    // }
 
-    //POST - Request for obtaining new question ------------
-    const requestNextQuestion = async () => {
+    //GET - next question information ------------
+    const onClickNextQuestion = () => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -135,11 +147,16 @@ export const WorkEnv = () => {
             },
             mode: 'cors',
         }
-    
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}`, options);
+                // const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}`, options);
+                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options);
                 const responseData = await response.json();
+
+                //changing question description
+                console.log("requestNextQuestion", responseData)//id_pregunta, info and type
+                setResponse(responseData) //informacion siguiente pregunta
                 return responseData;
             } catch (error) {
                 console.error(error);
@@ -150,7 +167,7 @@ export const WorkEnv = () => {
     }
 
     //POST - to codeExec get testcases and register attempt
-    const handleCodeSubmit = async () => {
+    const submitAttemp = async () => {
 
         const options = {
             method: 'POST',
@@ -160,18 +177,16 @@ export const WorkEnv = () => {
             },
             mode: 'no-cors',
             body: JSON.stringify({
-
                 "question": questionid,
-                "assignment": homeworkParams.hw_id,
+                "assignment": assid,
                 "student": schoolID,
                 "attempt_time": timerValue,
-                "group": homeworkParams.group_id,
+                "group": assgroup,
                 "code": content,
-
             })
         }
+        // console.log("body", options.body)
 
-        //for code questions only
         fetch(`${riddleAPI}submitAttempt/code`, options)
             .then(response => {
                 // console.log(response)
@@ -179,7 +194,8 @@ export const WorkEnv = () => {
                 return response.json()
             })
             .then(json => {
-                setResponse(json) //fetchResponse for code (error, showntests, hiddentests,shownPassed,shownFailed, passed)
+                setAttemptResponse(json) //fetchAttemptResponse for code (error, showntests, hiddentests,shownPassed,shownFailed, passed)
+                console.log("fetchAttemptResponse",fetchAttemptResponse)
                 setShowComponent(true)
             })
             .catch(error => {
@@ -187,9 +203,22 @@ export const WorkEnv = () => {
             })
 
     };
+    // console.log("fetchAttemptResponse", fetchAttemptResponse)
+
+
+    const handleSubmission = () => {
+        submitAttemp()
+        // console.log("respuesta", fetchAttemptResponse) //se bora
+        if (fetchAttemptResponse.passed) {
+            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
+
+            onClickNextQuestion()
+        }
+        setOpen(true)
+
+    }
 
     // -------------------- ## End API region ------------------
-
 
     const printsec = () => {
         console.log("completed in", timerValue)
@@ -197,7 +226,6 @@ export const WorkEnv = () => {
 
 
     return (
-
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
             {isExploding &&
                 <ConfettiExplosion sx={{
@@ -253,29 +281,16 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            {fetchResponse.passed ? requestNextQuestion() : null}
-                            {fetchResponse.passed && (
-                                <Link
-                                    to={{
-                                        pathname: nextQuestion !== undefined && nextQuestion.type === 'codep' ? "/student/workenv" : nextQuestion !== undefined && nextQuestion.type === 'multi' ? "/student/multiopt" : ""
-                                    }}
-                                    state={{ questionParams: nextQuestion }}
-                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                                >
-                                    <Button onClick={async () => {
-                                        // await onClickNextQuestion();
-                                        console.log(nextQuestion);
-                                    }}
-                                        variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
-                                        Siguiente Pregunta
-                                    </Button>
-                                </Link>
-                            )}
+                            <Button onClick={ () => {
+                            }}
+                                variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                                Siguiente Pregunta
+                            </Button>
                         </Grid>
 
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleCodeSubmit(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
                                 Submit
                             </Button>
 
@@ -311,13 +326,48 @@ export const WorkEnv = () => {
                         </Grid>
                         {/* Displaying TestCases */}
                         {showComponent && (
-                            <TestsTabs tests={fetchResponse} />
+                            <TestsTabs tests={fetchAttemptResponse} />
                         )}
 
 
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: { bgcolor: 'primary.main', color: 'appDark.text' }
+                }}
+            >
+                <DialogTitle align='center'>
+                    {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
+                </DialogTitle>
+                <DialogActions>
+                    {fetchAttemptResponse.passed ?
+
+                        fetchResponse != undefined && fetchResponse != null
+                            // ? <Typography>{fetchResponse.info}</Typography>
+                            ? < Link
+                                to={{
+                                    pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                                }}
+                                state={{ questionParams: fetchResponse, homeworkParams: assParams }}
+                                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                            >
+                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                    {"Siguiente Pregunta"}
+                                </Button>
+                            </Link>
+                            : null
+                        :
+                        <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
+                            Volver a Intentar
+                        </Button>
+                    }
+                </DialogActions>
+            </Dialog>
         </Grid>
     )
 }

@@ -1,7 +1,7 @@
 import { Grid, InputLabel, Modal, Button, Typography, MenuItem, useTheme, useMediaQuery } from '@mui/material'
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+import { getAuth } from "firebase/auth";
 import { useState, useEffect } from 'react';
 
 import { CounterCell } from './CounterCell';
@@ -17,6 +17,16 @@ export const CreateGroup = ({ open, close }) => {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [rows, setRows] = useState([]);
+
+    // Current user data
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let schoolID, email, displayName, emailVerified, uid;
+    if (user !== null) {
+        ({ email, displayName, emailVerified, uid } = user);
+        schoolID = (user.email).substring(0, 9).toUpperCase();
+        // console.log("Matrícula ", schoolID)
+    }
 
     // callback function to update rows variable
     const handleUpdateRows = (updatedRows) => {
@@ -111,7 +121,7 @@ export const CreateGroup = ({ open, close }) => {
     const registerGroup = {
         course_id: selectedCourse,
         term_id: selectedTerm,
-        professor_id: "L00000001",
+        professor_id: schoolID,
         modules_confs: rows,
     }
     // console.log(registerGroup)
