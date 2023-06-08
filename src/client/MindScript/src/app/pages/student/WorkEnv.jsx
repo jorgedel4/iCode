@@ -138,7 +138,7 @@ export const WorkEnv = () => {
     // }
 
     //GET - next question information ------------
-    const onClickNextQuestion = () => {
+    const onClickNextQuestion = async () => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -148,22 +148,18 @@ export const WorkEnv = () => {
             mode: 'cors',
         }
 
-        const fetchData = async () => {
-            try {
-                // const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}`, options);
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options);
-                const responseData = await response.json();
-
-                //changing question description
-                console.log("requestNextQuestion", responseData)//id_pregunta, info and type
-                setResponse(responseData) //informacion siguiente pregunta
-                return responseData;
-            } catch (error) {
-                console.error(error);
-                throw error;
-            }
-        }
-        return fetchData();
+        fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options)
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(responseData => {
+                setResponse(responseData);
+                console.log("requestNextQuestion", responseData)
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     //POST - to codeExec get testcases and register attempt
@@ -189,13 +185,13 @@ export const WorkEnv = () => {
 
         fetch(`${riddleAPI}submitAttempt/code`, options)
             .then(response => {
-                // console.log(response)
+                console.log(response)
                 // setResetTimer(true);
                 return response.json()
             })
             .then(json => {
                 setAttemptResponse(json) //fetchAttemptResponse for code (error, showntests, hiddentests,shownPassed,shownFailed, passed)
-                console.log("fetchAttemptResponse",fetchAttemptResponse)
+                console.log("fetchAttemptResponse", fetchAttemptResponse)
                 setShowComponent(true)
             })
             .catch(error => {
@@ -206,17 +202,20 @@ export const WorkEnv = () => {
     // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
 
-    const handleSubmission = () => {
-        submitAttemp()
+    const handleSubmission = async () => {
+        await submitAttemp();
+        // handleAttemptResponse();
         // console.log("respuesta", fetchAttemptResponse) //se bora
-        if (fetchAttemptResponse.passed) {
-            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
-
-            onClickNextQuestion()
-        }
-        setOpen(true)
 
     }
+
+    useEffect(() => {
+        if (fetchAttemptResponse.passed) {
+            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
+            onClickNextQuestion()
+            setOpen(true)
+        }
+    }, [fetchAttemptResponse]);
 
     // -------------------- ## End API region ------------------
 
@@ -281,7 +280,7 @@ export const WorkEnv = () => {
 
                     <Grid container alignItems='flex-end'>
                         <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={ () => {
+                            <Button onClick={() => {
                             }}
                                 variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
                                 Siguiente Pregunta
@@ -346,7 +345,6 @@ export const WorkEnv = () => {
                 </DialogTitle>
                 <DialogActions>
                     {fetchAttemptResponse.passed ?
-
                         fetchResponse != undefined && fetchResponse != null
                             // ? <Typography>{fetchResponse.info}</Typography>
                             ? < Link

@@ -139,7 +139,7 @@ export const MultiOpt = () => {
     ]
 
     //GET next question information
-    const onClickNextQuestion =  () => {
+    const onClickNextQuestion = async() => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -149,28 +149,18 @@ export const MultiOpt = () => {
             mode: 'cors',
         }
 
-        const fetchData = async () => {
-            try {
-                //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
-                const response = await fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options);
-                const responseData = await response.json();
-                console.log(response)
-
-                //changing question description
-                //ESTO NO ESTA REGRESANDO AAAAA
-                setResponse(responseData) //informacion siguiente pregunta
-                
-                // setQuestionId(responseData.id_pregunta)
-                // setQuestionDes(JSON.parse(responseData.info).description)
-                
+        //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
+        fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options)
+            .then(response => {
+                return response.json();
+            })
+            .then(responseData => {
+                setResponse(responseData);
                 console.log("requestNextQuestion", responseData)
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        
-        
-       return fetchData();
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
     // console.log("response data", fetchResponse) //id_pregunta, info and type
 
@@ -224,18 +214,18 @@ export const MultiOpt = () => {
     };
     // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
-    const handleSubmission =  () => {
-        console.log("resultado", results) //se borra
-        submitAttemp()
+    const handleSubmission = async() => {
+        await submitAttemp();
         // console.log("respuesta", fetchAttemptResponse) //se bora
-        console.log("fetchAttemptResponse", fetchAttemptResponse)
         
-        if (fetchAttemptResponse.passed) {
-            onClickNextQuestion()
-        }
-        setOpen(true)
-
     }
+    useEffect(() => {
+        if (fetchAttemptResponse.passed) {
+            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
+            onClickNextQuestion()
+            setOpen(true)
+        }
+    }, [fetchAttemptResponse]);
 
 
 
@@ -334,9 +324,9 @@ export const MultiOpt = () => {
                 </DialogContent>
                 <DialogActions>
                     {fetchAttemptResponse.passed ?
-                        console.log("passed?",fetchResponse) &&
+                        // console.log("passed?", fetchResponse) &&
 
-                        fetchResponse != undefined && fetchResponse != null
+                            fetchResponse != undefined && fetchResponse != null
                             ? < Link
                                 to={{
                                     pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
