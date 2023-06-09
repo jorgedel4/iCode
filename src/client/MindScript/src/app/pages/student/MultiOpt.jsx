@@ -20,6 +20,11 @@ import { TestsTabs, Timer } from '../../components';
 
 export const MultiOpt = () => {
     const theme = useTheme();
+    const [componentKey, setComponentKey] = useState(0);
+    const handleNewQuestion = () => {
+        // Increment the key value to force a rerender of the component
+        setComponentKey(prevKey => prevKey + 1);
+    };
     //que necesitamos aqui? si es para tarea necesitamos la tarea y el grupo
     //si es para módulo el id del modulo y el grupo
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
@@ -71,7 +76,6 @@ export const MultiOpt = () => {
         assgroup = assParams.group;
         asscourse = assParams.course;
     }
-    console.log(asscourse)
 
     //Estado y funcion para guardar las opciones seleccionadas
     const [results, setResult] = useState([]);
@@ -102,12 +106,6 @@ export const MultiOpt = () => {
     const [progress, setProgress] = useState([]);
     useEffect(() => {
         setResult([]); //Aqui se inicializa el valir de results para que no se inicialice simpre que se renderiza la pagina
-        // setResponseHardcode(
-        // {
-        //     "passed": true,
-        //     "explanation": "The add() function takes two parameters and returns their sum. Calling add(3, 4) will return 7."
-        // }
-        // )
 
         const options = {
             method: 'GET',
@@ -161,6 +159,7 @@ export const MultiOpt = () => {
             })
             .then(responseData => {
                 setResponse(responseData);
+                setQuestionDes(JSON.parse(responseData.info).description)
                 console.log("requestNextQuestion", responseData)
             })
             .catch(error => {
@@ -180,16 +179,7 @@ export const MultiOpt = () => {
 
             },
             mode: 'no-cors',
-            // body: JSON.stringify({
 
-            //     "question": "CQ000000000000000002",
-            //     "assignment": "M0000000000000000001",
-            //     "student": "A01551955",
-            //     "attempt_time": 12,
-            //     "group": "G000000001",
-            //     "answers": ["3"]
-
-            // })
             body: JSON.stringify({
 
                 "question": questionId,
@@ -230,15 +220,16 @@ export const MultiOpt = () => {
             onClickNextQuestion()
             setOpen(true)
         }
+
     }, [fetchAttemptResponse]);
-
-
-
-    // ------------ # End API region ------------
-
-    if (progress.answered === progress.needed) {
-        window.location.href = `/student/modules/${assgroup}/${asscourse}`
+    
+    if (progress.answered !== undefined && progress.needed !== undefined) {
+        if(progress.answered === progress.needed - 1 && fetchAttemptResponse.passed){
+            window.location.href = `/student/modules/${assgroup}/${asscourse}`
+        }
     }
+    // ------------ # End API region ------------
+    // console.log(progress.answered, progress.needed)
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -338,10 +329,11 @@ export const MultiOpt = () => {
                                 to={{
                                     pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
                                 }}
+                                key={componentKey}
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                <Button autoFocus onClick={handleNewQuestion} sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>

@@ -19,6 +19,11 @@ import { TestsTabs, Timer } from '../../components';
 
 
 export const WorkEnv = () => {
+    const [componentKey, setComponentKey] = useState(0);
+    const handleNewQuestion = () => {
+        // Increment the key value to force a rerender of the component
+        setComponentKey(prevKey => prevKey + 1);
+    };
     const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     const theme = useTheme();
 
@@ -81,7 +86,7 @@ export const WorkEnv = () => {
         assid = assParams.hw_id;
         assgroup = assParams.group_id;
         asscourse = assParams.course_id;
-        
+
     }
     //Esto es para modulo
     if (assParams.id && assParams.group) {
@@ -121,25 +126,6 @@ export const WorkEnv = () => {
     }, [progress]); //porque esta aqui?
 
 
-    //POST - Request for obtaining new question
-
-
-    // const onClickNextQuestion = async () => {
-    //     console.log("click on next")
-    //     if (fetchResponse.passed) {
-    //         console.log("Valid next question")
-    //         setShowComponent(false)
-    //         setResponse([])
-    //         setContent('#Type your question here')
-    //         try {
-    //             const question = await requestNextQuestion();
-    //             nextQuestion = question;
-    //             // console.log(nextQuestion);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-    // }
 
     //GET - next question information ------------
     const onClickNextQuestion = async () => {
@@ -227,6 +213,12 @@ export const WorkEnv = () => {
         console.log("completed in", timerValue)
     }
 
+    // console.log(progress.answered, progress.needed)
+    if (progress.answered !== undefined && progress.needed !== undefined) {
+        if(progress.answered === progress.needed - 1 && fetchAttemptResponse.passed){
+            window.location.href = `/student/modules/${assgroup}/${asscourse}`
+        }
+    }
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
@@ -355,10 +347,11 @@ export const WorkEnv = () => {
                                 to={{
                                     pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
                                 }}
+                                key={componentKey}
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                <Button autoFocus onClick={handleNewQuestion} sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>
