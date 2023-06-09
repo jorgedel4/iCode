@@ -56,17 +56,22 @@ export const MultiOpt = () => {
 
     let assid;
     let assgroup;
+    let asscourse;
 
-    if (assParams.hw_id && assParams.group_id) {
+    //Esto es para tarea
+    if (assParams.hw_id && assParams.group_id && assParams.course_id) {
         assid = assParams.hw_id;
         assgroup = assParams.group_id;
+        asscourse = assParams.course_id;
+
     }
     //Esto es para modulo
     if (assParams.id && assParams.group) {
         assid = assParams.id;
         assgroup = assParams.group;
+        asscourse = assParams.course;
     }
-    // console.log(assid, assgroup)
+    console.log(asscourse)
 
     //Estado y funcion para guardar las opciones seleccionadas
     const [results, setResult] = useState([]);
@@ -139,7 +144,7 @@ export const MultiOpt = () => {
     ]
 
     //GET next question information
-    const onClickNextQuestion = async() => {
+    const onClickNextQuestion = async () => {
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -214,10 +219,10 @@ export const MultiOpt = () => {
     };
     // console.log("fetchAttemptResponse", fetchAttemptResponse)
 
-    const handleSubmission = async() => {
+    const handleSubmission = async () => {
         await submitAttemp();
         // console.log("respuesta", fetchAttemptResponse) //se bora
-        
+
     }
     useEffect(() => {
         if (fetchAttemptResponse.passed) {
@@ -231,7 +236,9 @@ export const MultiOpt = () => {
 
     // ------------ # End API region ------------
 
-
+    if (progress.answered === progress.needed) {
+        window.location.href = `/student/modules/${assgroup}/${asscourse}`
+    }
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -239,7 +246,7 @@ export const MultiOpt = () => {
 
             {/* Button to return to modules */}
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
-                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                <Button href={`/student/modules/${assgroup}/${asscourse}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar a ' + assgroup}
                 </Button>
             </Grid>
@@ -326,7 +333,7 @@ export const MultiOpt = () => {
                     {fetchAttemptResponse.passed ?
                         // console.log("passed?", fetchResponse) &&
 
-                            fetchResponse != undefined && fetchResponse != null
+                        fetchResponse != undefined && fetchResponse != null
                             ? < Link
                                 to={{
                                     pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""

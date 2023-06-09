@@ -36,6 +36,7 @@ export const WorkEnv = () => {
     // Initial States and Variables 
     let assid = "";
     let assgroup = "";
+    let asscourse = "";
 
     //Estados para cambiar la descripción
     const [questionid, setQuestionId] = useState(`${questionId}`);
@@ -76,16 +77,19 @@ export const WorkEnv = () => {
     const [isExploding, setIsExploding] = useState(false);
 
     //Esto es para tarea
-    if (assParams.hw_id && assParams.group_id) {
+    if (assParams.hw_id && assParams.group_id && assParams.course_id) {
         assid = assParams.hw_id;
         assgroup = assParams.group_id;
+        asscourse = assParams.course_id;
+        
     }
     //Esto es para modulo
     if (assParams.id && assParams.group) {
         assid = assParams.id;
         assgroup = assParams.group;
+        asscourse = assParams.course;
     }
-    // console.log(assid, assgroup)
+    // console.log(asscourse)
 
 
 
@@ -236,7 +240,7 @@ export const WorkEnv = () => {
                 }} />
             }
             <Grid item xs={12}>
-                <Button href={'student/home'} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                <Button href={`/student/modules/${assgroup}/${asscourse}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar'}
                 </Button>
             </Grid>
