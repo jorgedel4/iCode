@@ -120,12 +120,12 @@ export function CounterCell({ data, onUpdateRows }) {
                     columnGap: 1,
 
                   }}
-                  value={counts[module.name] || 0}
+                  value={counts[module.name] || 1}
                   exclusive
                   onChange={(event, value) => handleToggle(module, value)}
                 >
                   <Typography sx={{ mb: "2px" }}>
-                    {counts[module.name] || 0}
+                    {counts[module.name] || 1}
                   </Typography>
                   <ToggleButtonGroup
                     sx={{
@@ -138,7 +138,7 @@ export function CounterCell({ data, onUpdateRows }) {
                       flexDirection: 'column',
 
                     }}
-                    value={counts[module.name] || 0}
+                    value={counts[module.name] || 1}
                     exclusive
                     onChange={(event, value) => handleToggle(module, value)}
                   >
