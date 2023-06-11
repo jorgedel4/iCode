@@ -51,7 +51,6 @@ export function AddModuleCourse({ open, close, course, onAddModule }) {
             };
 
             const response = await fetch(`${batmanAPI}modules`, options);
-            console.log(response)
             if (response.ok) {
                 close();
                 const courseData = {
@@ -175,13 +174,13 @@ export function AddModuleCourse({ open, close, course, onAddModule }) {
 
     return (
         <Modal
-            id="Modal prrona Crear Tarea"
+            id="Modal add Module"
             open={open}
             onClose={close}
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                id="Grid container Editar Materia"
+                id="Grid container Add Module"
                 justifyContent='center'
                 sx={{
                     bgcolor: 'secondary.main',
@@ -274,9 +273,15 @@ export function AddModuleCourse({ open, close, course, onAddModule }) {
                                 borderRadius: 2,
                             },
                         }}>
-                            {modules.map((module) => module.jsx)}
 
+                            {modules.map((module) => (
+                                <Grid key={module.key}>
+                                    {module.jsx}
+                                </Grid>
+                            ))}
                         </Grid>
+
+
                     </Grid>
 
 

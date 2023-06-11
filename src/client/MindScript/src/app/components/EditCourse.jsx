@@ -172,7 +172,7 @@ export const EditCourse = ({ open, close, params }) => {
         setNewCourseName(params?.name || '');
         setId([params?.id] || []);
         setError(null);
-    }, [params?.name, params?.id]);
+    }, [params?.name, params?.id, open]);
 
     return (
         <>
@@ -224,7 +224,7 @@ export const EditCourse = ({ open, close, params }) => {
                                         label="Nombre del Curso"
                                         placeholder="Pensamiento Computacional"
                                         value={newCourseName}
-                                        onChange={(e) => setNewCourseName(e.target.value)}
+                                        onChange={(e) => setNewCourseName(e.target.value.replace(/\b\w/g, (c) => c.toUpperCase()))}
                                         sx={{
                                             color: 'appDark.text',
                                             '&:hover .MuiOutlinedInput-notchedOutline': {
