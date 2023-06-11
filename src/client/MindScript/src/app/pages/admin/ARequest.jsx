@@ -148,7 +148,7 @@ export const ARequest = () => {
     return (
         <Grid container padding={3} spacing={0} columnSpacing={1} sx={{ height: '100vh', bgcolor: 'primary.main' }}>
             <NavBar pages={pages} />
-            < Confirmation open={openDeclineRequest} close={closeModalDeclineRequest} id={selected} confirmationText="¿Esta seguro que desea eliminar esta solicitud?" handleFunction={handleDecline} confirmationTextButton="Eliminar" />
+            < Confirmation open={openDeclineRequest} close={closeModalDeclineRequest} id={selected} confirmationText="¿Esta seguro que desea rechazar esta solicitud?" handleFunction={handleDecline} confirmationTextButton="Rechazar" />
             < Confirmation open={openApproveRequest} close={closeModalApproveRequest} id={selected} confirmationText="¿Esta seguro que desea aceptar esta solicitud?" handleFunction={handleApprove} confirmationTextButton="Aceptar" />
 
             <Grid item xs={4} sx={{
