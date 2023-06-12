@@ -10,7 +10,7 @@ export const HomeLayout = ({ children, homeworkData, student=false, hwBTitle, ho
                 { children }
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={5} xl={4} sx={{mt:5}}>
-                <Grid container justifyContent='flex-end'>
+                <Grid container justifyContent='center'>
                     <HomeworkBoard>
                         <Typography sx={{ fontSize: 20, fontWeight: 500, pt: 5, pb: 3 }}>{hwBTitle}</Typography>
 
