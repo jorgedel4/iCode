@@ -119,13 +119,13 @@ export const PHomePage = () => {
                 <CreateHomework open={openCreateHomework} close={closeModalCreateHomework} />
                 <CreateQuestion open={openCreateQuestion} close={closeModalCreateQuestion} schoolID={schoolID} />
 
-                <Grid container columnSpacing={40} rowSpacing={5}>
+                <Grid container columnSpacing={5} rowSpacing={5}>
 
                     <Grid item md={12} xs={12} >
                         <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Acciones</Typography>
                     </Grid>
 
-                    <Grid item xs={12} md={4} align='center'>
+                    <Grid item xs={12} lg={6} xl={4} align='center'>
                         <ActionButton >
                             <CardActionArea onClick={showModal} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
@@ -140,7 +140,7 @@ export const PHomePage = () => {
                         </ActionButton>
                     </Grid>
 
-                    <Grid item xs={12} md={4} align='center'>
+                    <Grid item xs={12} lg={6} xl={4} align='center'>
 
                         <ActionButton >
                             <CardActionArea onClick={showModalCreateHomework} sx={{ height: 207, textAlign: "center" }}>
@@ -154,7 +154,7 @@ export const PHomePage = () => {
                         </ActionButton>
                     </Grid>
 
-                    <Grid item xs={12} md={4} align='center'>
+                    <Grid item xs={12} lg={6} xl={4} align='center'>
                         <ActionButton >
                             <CardActionArea onClick={showModalCreateQuestion} sx={{ height: 207, textAlign: "center" }}>
                                 <CardContent sx={{ pt: 4, pb: 6 }}>
@@ -167,7 +167,7 @@ export const PHomePage = () => {
                         </ActionButton>
                     </Grid>
 
-                    <Grid item xs={12} md={4} align='center'>
+                    <Grid item xs={12} lg={6} xl={4} align='center'>
                         <ActionButton >
                             <Link to='/professor/request' style={{ textDecoration: 'none' }}>
                                 <CardActionArea sx={{ height: 207, textAlign: "center" }}>
@@ -187,7 +187,7 @@ export const PHomePage = () => {
                     </Grid>
 
                     {groupsData.map((group, index) => (
-                        <Grid key={index} item xs={12} md={4} align='center' sx={{ pb: 5, pl: 5 }}>
+                        <Grid key={index} item xs={12} lg={6} xl={4} align='center' sx={{ pb: 5, pl: 5 }}>
                             <CoursesCard group={group} index={index} modules={modules} />
                         </Grid>
                     ))}

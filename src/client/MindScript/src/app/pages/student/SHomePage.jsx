@@ -141,8 +141,11 @@ export const SHomePage = () => {
             {/* Modales */}
             <CourseRegister open={openModalRegister} close={closeModalRegister} setCount={setCount} count={count} />
 
-            <Grid container columnSpacing={40} rowSpacing={5}>
-                <Grid item xs={12} md={4} align='center'>
+            <Grid container columnSpacing={5} rowSpacing={5} justifyContent='space-between'>
+                <Grid item xs={12} >
+                    <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Acciones</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6} xl={4} align='center'>
                     <ActionButton >
                         <CardActionArea onClick={showModalRegister} sx={{ height: 207, textAlign: "center" }}>
                             <CardContent sx={{ pt: 4, pb: 6 }}>
@@ -155,19 +158,34 @@ export const SHomePage = () => {
                     </ActionButton>
                 </Grid>
 
-                <Grid item xs={12} md={4} align='center'>
+                <Grid item xs={12}>
+                    <Grid container sx={{ bgcolor: '#f00' }}>
+
+                        <Grid item xs={12} md={6}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} align='right'>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Seleccionar Periodo</Typography>
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+
+                <Grid item xs={12} lg={6} xl={4} align='center'>
                     <Card sx={{
                         width: 300,
-                        height:246.5,
+                        height: 246.5,
                         backgroundColor: 'secondary.main',
                         borderRadius: '12px',
                         boxShadow: '5px 5px 0px 5px rgba(0, 0, 0, 0.1)',
-                        ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 } }}
+                        ':hover': { backgroundColor: 'secondary.main', opacity: 0.8 }
+                    }}
                     >
                         <CardActionArea href={"freemode"}>
                             <Grid sx={{ backgroundColor: "#C12C45", height: 40 }} />
                             <CardContent sx={{ pt: 4, pb: 6, height: 208 }}>
-                                <Typography align='center'  xs={6} sx={{ color: 'appDark.text', fontSize: 30, fontWeight: 405, mt: 5 }} >
+                                <Typography align='center' xs={6} sx={{ color: 'appDark.text', fontSize: 30, fontWeight: 405, mt: 5 }} >
                                     Modo de Práctica
                                 </Typography>
                             </CardContent>
@@ -177,7 +195,7 @@ export const SHomePage = () => {
 
                 {/* Displaying Group cards */}
                 {groupsData.map((group, index) => (
-                    <Grid key={index} item xs={12} md={4} align='center'>
+                    <Grid key={index} item xs={12} lg={6} xl={4} align='center'>
                         <CoursesCard group={group} index={index} modules={modules} />
                     </Grid>
                 ))}
