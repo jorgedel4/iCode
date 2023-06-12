@@ -101,8 +101,8 @@ export const SModulesPage = () => {
                 {modulesData != null && modulesData != undefined ?
                     modulesData.map((module, index) => (
                         <Grid item key={index} xs={12} md={4} align='center'>
-                            {module.progress === 100 && module[-1] !== module[index] ? (
-                                module[index + 1].progress < 100 ? (
+                            {module.progress === 100 && module !== modulesData[modulesData.length - 1] ? (
+                                modulesData[index + 1].progress < 100 ? (
                                     modulesData[index + 1].locked = false
                                 ) : null
                             ) : null}
