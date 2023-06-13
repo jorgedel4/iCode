@@ -12,8 +12,6 @@ import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { Handshake } from '@mui/icons-material';
-
 
 export const CreateHomework = ({ open, close }) => {
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
@@ -27,9 +25,6 @@ export const CreateHomework = ({ open, close }) => {
         ({ email, displayName, emailVerified, uid } = user);
         schoolID = (email).substring(0, 9).toUpperCase();
     }
-
-    //Prueba
-    const checked = true;
 
 
     //Nombre de la tarea
@@ -99,9 +94,9 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
-    
 
-    // Filtrar los grupos al momento de crear tarea
+
+    // Filtrar los grupos al momento de crear tarea y llevar el control del checkbox
     const [groups, setGroups] = useState([]);
 
     useEffect(() => {
@@ -148,16 +143,20 @@ export const CreateHomework = ({ open, close }) => {
         fetchData();
     }, [course]);
 
-    let modules = [];
-    modulesData.map((module) => (
-        modules.push({
+    // Filtrar los modulos al momento de crear tarea y llevar el control del checkbox
+    const [modules, setModules] = useState([]);
+
+    useEffect(() => {
+        const updatedModules = modulesData.map((module) => ({
             id: module.id,
             name: module.name,
             n_questions: 0,
             checked: true,
             key: module.id
-        })
-    ))
+        }));
+
+        setModules(updatedModules);
+    }, [modulesData]);
 
     // //POST Create Homework
 
@@ -472,7 +471,7 @@ export const CreateHomework = ({ open, close }) => {
                             <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
                             {groups.map((group, index) => (
                                 group.id_course == course
-                                    ? <GroupHomework key={group.id_group} group={group} handleGroupSelection= {() => handleGroupSelection(index)}/>
+                                    ? <GroupHomework key={group.id_group} group={group} handleGroupSelection={() => handleGroupSelection(index)} />
                                     : null
                             ))}
 
