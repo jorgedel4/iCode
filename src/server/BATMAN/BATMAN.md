@@ -957,7 +957,7 @@ Estructura de tarea
 | ---------------- | --------------------- | ------------------------------ |
 | id               | string                | ID de la tarea                 |
 | name             | string                | Nombre de la tarea             |
-| status           | string                | Estatus de la tarea para ese estudiante. Las opciones son 'finished', 'not started' y 'started' |
+| status           | string                | Estatus de la tarea para ese estudiante. Las opciones son 'passed', 'not started' y 'started' |
 
 #### Ejemplo
 **Peticion**
