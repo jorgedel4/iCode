@@ -19,7 +19,7 @@ func CourseModules(mysqlDB *sql.DB) http.HandlerFunc {
 		courseID := mux.Vars(r)["courseID"]
 
 		// Query to get the course's modules
-		query := `SELECT id_module, nombre
+		query := `SELECT id_module, nombre, MaxModuleQuestions(id_module)
 		FROM modules
 		WHERE course = ?`
 
@@ -35,7 +35,7 @@ func CourseModules(mysqlDB *sql.DB) http.HandlerFunc {
 		// Iterate over all of the returned modules and store them
 		for rows.Next() {
 			var result structs.CourseModule
-			err = rows.Scan(&result.ID, &result.Name)
+			err = rows.Scan(&result.ID, &result.Name, &result.AvailableQuestions)
 			if err != nil {
 				http.Error(w, "Error reading results", http.StatusInternalServerError)
 				return

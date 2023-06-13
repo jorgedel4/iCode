@@ -655,3 +655,18 @@ BEGIN
     RETURN statusJSON;
 END$$
 DELIMITER ;
+
+
+DELIMITER $$
+CREATE FUNCTION MaxModuleQuestions (
+    module_id CHAR(20)
+) RETURNS INT
+BEGIN
+    DECLARE modCount INT;
+
+    SELECT COUNT(*) INTO modCount FROM questions
+    WHERE module = module_id;
+
+    RETURN modCount;
+END$$
+DELIMITER ;
