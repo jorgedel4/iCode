@@ -87,7 +87,6 @@ export const CourseRegister = ({ open, close, setCount, count }) => {
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
             <Grid container
-                xs={8} md={6} lg={5}
                 id="Grid container Unirse curso"
                 justifyContent='center'
                 sx={{
