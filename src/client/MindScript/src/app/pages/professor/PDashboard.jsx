@@ -106,7 +106,7 @@ export const PDashboard = () => {
                 width: 200,
                 renderCell: (params) => {
                     const homeworkStatus = params.row[homeworkName];
-                    return homeworkStatus === 'not started' ? <Block sx={{ color: 'appDark.rejected' }} /> : homeworkStatus === 'started' ? <Pending sx={{ color: 'appDark.pending' }} /> : homeworkStatus === 'finished' ? <CheckCircle sx={{ color: 'appDark.approved' }} /> : null;
+                    return homeworkStatus === 'not started' ? <Block sx={{ color: 'appDark.rejected' }} /> : homeworkStatus === 'started' ? <Pending sx={{ color: 'appDark.pending' }} /> : homeworkStatus === 'passed' ? <CheckCircle sx={{ color: 'appDark.approved' }} /> : null;
                 },
                 flex: 2, align: 'center', headerAlign: 'center'
             })),
@@ -116,7 +116,7 @@ export const PDashboard = () => {
                 maxWidth: 90,
                 renderCell: (params) => {
                     const homeworkStatuses = Object.values(params.row).slice(3);
-                    const finishedCount = homeworkStatuses.filter(status => status === 'finished').length;
+                    const finishedCount = homeworkStatuses.filter(status => status === 'passed').length;
                     const totalCount = homeworkStatuses.length;
                     return `${finishedCount}/${totalCount}`;
                 },
