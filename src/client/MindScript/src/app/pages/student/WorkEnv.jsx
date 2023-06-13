@@ -224,10 +224,15 @@ export const WorkEnv = () => {
 
     // console.log(progress.answered, progress.needed)
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if (progress.answered === progress.needed && fetchAttemptResponse.passed) {
+        if (progress.answered === progress.needed) {
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
+
+    const handleOnClick = () => {
+        handleClose();
+    }
+    console.log(fetchResponse)
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
@@ -360,7 +365,7 @@ export const WorkEnv = () => {
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                <Button autoFocus onClick={handleOnClick} sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>

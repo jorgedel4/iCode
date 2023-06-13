@@ -136,7 +136,7 @@ export const MultiOpt = () => {
         };
 
         fetchData();
-    }, []);
+    }, [progress]);
     // console.log("progress",progress)
 
 
@@ -233,12 +233,16 @@ export const MultiOpt = () => {
     }, [fetchAttemptResponse]);
     
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if(progress.answered === progress.needed && fetchAttemptResponse.passed){
+        if(progress.answered === progress.needed){
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
     // ------------ # End API region ------------
     // console.log(progress.answered, progress.needed)
+
+    const handleOnClick = () => {
+        handleClose();
+    }
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>
@@ -342,7 +346,7 @@ export const MultiOpt = () => {
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus sx={{ color: 'success.main' }}>
+                                <Button autoFocus onClick={handleOnClick} sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>
