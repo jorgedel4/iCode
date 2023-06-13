@@ -88,7 +88,7 @@ export const PHomePage = () => {
         };
 
         fetchData();
-    }, [selectedTerm]);
+    }, [selectedTerm, groupsData]);
 
 
     //Funciones para abrir la modal de Crear Curso

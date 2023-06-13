@@ -141,7 +141,7 @@ export const SHomePage = () => {
         };
 
         fetchData();
-    }, [selectedTerm]);
+    }, [selectedTerm, groupsData]);
 
     //GET - Obtaining weekly homework data
     const [homeworkData, setHomework] = useState([]);
