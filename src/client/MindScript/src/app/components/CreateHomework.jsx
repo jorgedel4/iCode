@@ -12,6 +12,7 @@ import { GroupHomework } from './GroupHomework';
 import { AddModuleHomework } from './AddModuleHomework';
 import { useEffect } from 'react';
 import { getAuth } from "firebase/auth";
+import { Handshake } from '@mui/icons-material';
 
 
 export const CreateHomework = ({ open, close }) => {
@@ -29,6 +30,7 @@ export const CreateHomework = ({ open, close }) => {
 
     //Prueba
     const checked = true;
+
 
     //Nombre de la tarea
     const [hwname, setHw] = useState('');
@@ -97,16 +99,29 @@ export const CreateHomework = ({ open, close }) => {
         };
         fetchData();
     }, [course]);
+    
 
-    let groups = [];
-    groupsData.map((group) => (
-        groups.push({
+    // Filtrar los grupos al momento de crear tarea
+    const [groups, setGroups] = useState([]);
+
+    useEffect(() => {
+        const updatedGroups = groupsData.map((group) => ({
             id_group: group.id_group,
             id_course: group.id_course,
             course_name: group.course_name,
-            checked: true
-        })
-    ))
+            checked: true,
+        }));
+
+        setGroups(updatedGroups);
+    }, [groupsData]);
+
+    const handleGroupSelection = (index) => {
+        setGroups((prevGroups) => {
+            const updatedGroups = [...prevGroups];
+            updatedGroups[index].checked = !updatedGroups[index].checked;
+            return updatedGroups;
+        });
+    };
 
     //GET modules information
     const [modulesData, setModule] = useState([]);
@@ -166,14 +181,14 @@ export const CreateHomework = ({ open, close }) => {
                 })
                 : null
         ))
-        console.log(requestGroups)
+        console.log(requestModules)
         groups.map((group) => (
             (group.checked && (group.id_course === course))
                 ? requestGroups.push(
                     group.id_group)
                 : null
         ))
-        console.log(requestModules)
+        console.log(requestGroups)
 
         const options = {
             method: 'POST',
@@ -455,9 +470,9 @@ export const CreateHomework = ({ open, close }) => {
                                 borderRadius: 2,
                             }}>
                             <Typography sx={{ ml: 2, mt: 2 }}>Grupos</Typography>
-                            {groups.map((group) => (
+                            {groups.map((group, index) => (
                                 group.id_course == course
-                                    ? <GroupHomework key={group.id_group} group={group} />
+                                    ? <GroupHomework key={group.id_group} group={group} handleGroupSelection= {() => handleGroupSelection(index)}/>
                                     : null
                             ))}
 

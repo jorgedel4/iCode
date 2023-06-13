@@ -8,15 +8,10 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { useState } from 'react';
 import { AddModuleHomework } from '../components/AddModuleHomework';
 
-export const GroupHomework = ({ group }) => {
+export const GroupHomework = ({ group, handleGroupSelection }) => {
 
     //Datos que son necesarios para la checklist
-    const [checked, setChecked] = useState(true);
-
-    const handleChange = () => {
-        setChecked(!checked);
-    };
-
+    const {checked} = group;
     return (
         <Grid container justifyContent="space-between" alignItems='center' >
             <Grid item xs={8} >
@@ -26,7 +21,7 @@ export const GroupHomework = ({ group }) => {
                         value="end"
                         control={<Checkbox
                             checked={checked}
-                            onClick={handleChange}
+                            onClick={handleGroupSelection}
                             sx={{
                                 ml: 2,
                                 color: 'appDark.icon',
