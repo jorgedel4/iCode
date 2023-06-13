@@ -190,7 +190,7 @@ export const SHomePage = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container alignItems='center'>
+                    <Grid container>
 
                         <Grid item xs={8}>
                             <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
