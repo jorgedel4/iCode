@@ -90,12 +90,12 @@ export const MultiOpt = () => {
 
     const changeSelected = (value, selected) => {
         if (selected) {
-            results.push(value);
+            setResult(prevResults => [...prevResults, value]);
         } else {
-            const index = results.indexOf(value);
-            results.splice(index, 1);
+            setResult(prevResults => prevResults.filter(option => option !== value));
         }
-    }
+    };
+
 
     //Estados y funciones necesarias para el dialogo con retro
     const [open, setOpen] = useState(false);
@@ -152,6 +152,7 @@ export const MultiOpt = () => {
 
     //GET next question information
     const onClickNextQuestion = async () => {
+        setResult([]);
         console.log("Next Question loading")
         const options = {
             method: 'GET',
@@ -231,9 +232,9 @@ export const MultiOpt = () => {
         }
 
     }, [fetchAttemptResponse]);
-    
+
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if(progress.answered === progress.needed){
+        if (progress.answered === progress.needed) {
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
@@ -241,8 +242,15 @@ export const MultiOpt = () => {
     // console.log(progress.answered, progress.needed)
 
     const handleOnClick = () => {
+        setResult([]);
+        setResetTimer(true);
         handleClose();
     }
+
+    useEffect(() => {
+        setQuestionDes(questionDescription);
+        setQuestionId(questionId);
+    }, [fetchResponse, questionDescription, questionId])
 
     return (
         <Grid container direction='column' padding={5} sx={{ minHeight: '100vh', bgcolor: 'primary.main' }}>

@@ -231,8 +231,15 @@ export const WorkEnv = () => {
 
     const handleOnClick = () => {
         handleClose();
+        setShowComponent(false);
+        setResetTimer(true);
+        setContent('#Type your answer here');
     }
-    console.log(fetchResponse)
+    
+    useEffect(() => {
+        setQuestionDes(questionDescription);
+        setQuestionId(questionId);
+    }, [fetchResponse, questionDescription, questionId])
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
