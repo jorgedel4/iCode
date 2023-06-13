@@ -78,7 +78,7 @@ func Groups(mysqlDB *sql.DB) http.HandlerFunc {
 		default:
 			{
 				termSelector = "g.term = ?"
-				values = append(values, req.ID)
+				values = append(values, req.Term)
 			}
 		}
 
