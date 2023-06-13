@@ -55,6 +55,8 @@ func Terms(mysqlDB *sql.DB) http.HandlerFunc {
 			terms = append(terms, term)
 		}
 
+		terms = append(terms, structs.Term{ID: "current", Name: "Current"}, structs.Term{ID: "all", Name: "All"})
+
 		// Encode terms slice into JSON
 		termsJSON, err := json.Marshal(terms)
 		if err != nil {
