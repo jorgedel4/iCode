@@ -132,7 +132,7 @@ export const SHomePage = () => {
         };
 
         fetchData();
-    }, [groupsData, selectedTerm]);
+    }, [selectedTerm]);
 
     //GET - Obtaining weekly homework data
     const [homeworkData, setHomework] = useState([]);
@@ -234,7 +234,7 @@ export const SHomePage = () => {
                                             key={term.name}
                                             value={term.id}
                                         >
-                                            {term.id} {term.name}
+                                            {term.name}
                                         </MenuItem>
                                     ))}
 
