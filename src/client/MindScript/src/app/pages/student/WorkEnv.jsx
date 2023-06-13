@@ -230,12 +230,12 @@ export const WorkEnv = () => {
     }
 
     const handleOnClick = () => {
-        handleClose();
+        setAttemptResponse([]);
         setShowComponent(false);
         setResetTimer(true);
         setContent('#Type your answer here');
     }
-    
+
     useEffect(() => {
         setQuestionDes(questionDescription);
         setQuestionId(questionId);
@@ -295,19 +295,34 @@ export const WorkEnv = () => {
                         </Grid>
                     </Grid>
 
-                    <Grid container alignItems='flex-end'>
-                        <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
-                            <Button onClick={() => {
-                            }}
-                                variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
-                                Siguiente Pregunta
-                            </Button>
-                        </Grid>
+                    <Grid container justifyContent='space-between' alignItems='flex-end'>
+                        {fetchAttemptResponse.passed ?
+                            fetchResponse != undefined && fetchResponse != null
+                                // ? <Typography>{fetchResponse.info}</Typography>
+                                ? < Link
+                                    to={{
+                                        pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                                    }}
+                                    key={componentKey}
+                                    state={{ questionParams: fetchResponse, homeworkParams: assParams }}
+                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                >
+                                    <Grid item xs={6} align='center' sx={{ mb: 2 }}>
+                                        <Button onClick={handleOnClick}
+                                            variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                                            Siguiente
+                                        </Button>
+                                    </Grid>
 
-                        <Grid item xs={12} md={6} align='center' sx={{ mb: 2 }}>
+                                </Link>
+                                : null
+                            : null
+                        }
+
+                        <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mb: 2 }}>
 
                             <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
-                                Submit
+                                Entregar
                             </Button>
 
                         </Grid>
@@ -358,25 +373,15 @@ export const WorkEnv = () => {
                 }}
             >
                 <DialogTitle align='center'>
-                    {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
+                    {fetchAttemptResponse.passed ? "Respuesta Correcta" : "Respuesta Incorrecta"}
                 </DialogTitle>
                 <DialogActions>
                     {fetchAttemptResponse.passed ?
-                        fetchResponse != undefined && fetchResponse != null
-                            // ? <Typography>{fetchResponse.info}</Typography>
-                            ? < Link
-                                to={{
-                                    pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
-                                }}
-                                key={componentKey}
-                                state={{ questionParams: fetchResponse, homeworkParams: assParams }}
-                                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                            >
-                                <Button autoFocus onClick={handleOnClick} sx={{ color: 'success.main' }}>
-                                    {"Siguiente Pregunta"}
-                                </Button>
-                            </Link>
-                            : null
+
+                        <Button autoFocus onClick={handleClose} sx={{ color: 'success.main' }}>
+                            Cerrar
+                        </Button>
+
                         :
                         <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
                             Volver a Intentar

@@ -306,8 +306,30 @@ export const MultiOpt = () => {
                     </Grid>
 
                     {/* Buttons section */}
-                    <Grid container direction='row'>
-                        <Grid item xs={12} align='right' sx={{ mt: 5 }} >
+                    <Grid container direction='row' justifyContent='space-between'>
+                        {fetchAttemptResponse.passed ?
+                            fetchResponse != undefined && fetchResponse != null
+                                // ? <Typography>{fetchResponse.info}</Typography>
+                                ? < Link
+                                    to={{
+                                        pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
+                                    }}
+                                    key={componentKey}
+                                    state={{ questionParams: fetchResponse, homeworkParams: assParams }}
+                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                >
+                                    <Grid item xs={6} align='center' sx={{ mt: 5 }}>
+                                        <Button onClick={handleOnClick}
+                                            variant="contained" sx={{ backgroundColor: 'appDark.adminButton' }}>
+                                            Siguiente
+                                        </Button>
+                                    </Grid>
+
+                                </Link>
+                                : null
+                            : null
+                        }
+                        <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mt: 5 }} >
 
                             <Button
                                 onClick={() => { handleSubmission(); }}
@@ -317,7 +339,7 @@ export const MultiOpt = () => {
                                     fontWeight: 900,
                                     ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 }
                                 }}>
-                                {'Entregar'}
+                                Entregar
                             </Button>
                         </Grid>
                     </Grid>
@@ -343,24 +365,12 @@ export const MultiOpt = () => {
                 </DialogContent>
                 <DialogActions>
                     {fetchAttemptResponse.passed ?
-                        // console.log("passed?", fetchResponse) &&
 
-                        fetchResponse != undefined && fetchResponse != null
-                            ? < Link
-                                to={{
-                                    pathname: fetchResponse.type === 'codep' ? "/student/workenv" : fetchResponse.type === 'multi' ? "/student/multiopt" : ""
-                                }}
-                                key={componentKey}
-                                state={{ questionParams: fetchResponse, homeworkParams: assParams }}
-                                style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                            >
-                                <Button autoFocus onClick={handleOnClick} sx={{ color: 'success.main' }}>
-                                    {"Siguiente Pregunta"}
-                                </Button>
-                            </Link>
-                            : null
+                        <Button autoFocus onClick={handleClose} sx={{ color: 'success.main' }}>
+                            Cerrar
+                        </Button>
                         :
-                        <Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
+                        < Button onClick={handleClose} autoFocus sx={{ color: 'error.main' }}>
                             Volver a Intentar
                         </Button>
                     }
