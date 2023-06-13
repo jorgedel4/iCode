@@ -42,6 +42,7 @@ export const WorkEnv = () => {
     let assid = "";
     let assgroup = "";
     let asscourse = "";
+    let asstype = "";
 
     //Estados para cambiar la descripción
     const [questionid, setQuestionId] = useState(`${questionId}`);
@@ -86,13 +87,21 @@ export const WorkEnv = () => {
         assid = assParams.hw_id;
         assgroup = assParams.group_id;
         asscourse = assParams.course_id;
-
+        asstype = 'tarea';
     }
     //Esto es para modulo
     if (assParams.id && assParams.group) {
         assid = assParams.id;
         assgroup = assParams.group;
         asscourse = assParams.course;
+        asstype = 'modulo';
+    }
+
+    //Esto es para modo libre
+    if (assParams.fm_id) {
+        assid = assParams.fm_id;
+        asscourse = assParams.course;
+        asstype = 'libre';
     }
     // console.log(asscourse)
 
@@ -215,7 +224,7 @@ export const WorkEnv = () => {
 
     // console.log(progress.answered, progress.needed)
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if(progress.answered === progress.needed - 1 && fetchAttemptResponse.passed){
+        if (progress.answered === progress.needed - 1 && fetchAttemptResponse.passed) {
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
@@ -232,7 +241,7 @@ export const WorkEnv = () => {
                 }} />
             }
             <Grid item xs={12}>
-                <Button href={`/student/modules/${assgroup}/${asscourse}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                <Button href={asstype == 'tarea' || asstype == 'modulo' ? `/student/modules/${assgroup}/${asscourse}` : `/student/home`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar'}
                 </Button>
             </Grid>

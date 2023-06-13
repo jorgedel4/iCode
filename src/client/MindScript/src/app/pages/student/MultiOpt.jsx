@@ -62,19 +62,27 @@ export const MultiOpt = () => {
     let assid;
     let assgroup;
     let asscourse;
+    let asstype;
 
     //Esto es para tarea
     if (assParams.hw_id && assParams.group_id && assParams.course_id) {
         assid = assParams.hw_id;
         assgroup = assParams.group_id;
         asscourse = assParams.course_id;
-
+        asstype = 'tarea';
     }
     //Esto es para modulo
     if (assParams.id && assParams.group) {
         assid = assParams.id;
         assgroup = assParams.group;
         asscourse = assParams.course;
+        asstype = 'modulo';
+    }
+    //Esto es para modo libre
+    if (assParams.fm_id) {
+        assid = assParams.fm_id;
+        asscourse = assParams.course;
+        asstype = 'libre';
     }
 
     //Estado y funcion para guardar las opciones seleccionadas
@@ -237,7 +245,7 @@ export const MultiOpt = () => {
 
             {/* Button to return to modules */}
             <Grid item xs={12} sx={{ mt: 4, height: '24px' }}>
-                <Button href={`/student/modules/${assgroup}/${asscourse}`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
+                <Button href={asstype == 'tarea' || asstype == 'modulo' ? `/student/modules/${assgroup}/${asscourse}` : `/student/home`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar a ' + assgroup}
                 </Button>
             </Grid>

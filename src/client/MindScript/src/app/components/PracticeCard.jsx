@@ -3,7 +3,7 @@ import { linearProgressClasses } from '@mui/material/LinearProgress';
 import { LockOutlined } from '@mui/icons-material'
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export const PracticeCard = ({ module, index }) => {
 
@@ -23,6 +23,8 @@ export const PracticeCard = ({ module, index }) => {
         schoolID = (user.email).substring(0, 9).toUpperCase();
         // console.log("Matrícula ", schoolID)
     }
+    let params = useParams()
+
 
     const [question, setQuestion] = useState([]);
     useEffect(() => {
@@ -46,6 +48,7 @@ export const PracticeCard = ({ module, index }) => {
 
         fetchData();
     }, []);
+    console.log(question)
 
     return (
         <>
@@ -62,7 +65,7 @@ export const PracticeCard = ({ module, index }) => {
                     to={{
                         pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
                     }}
-                    state={{ questionParams: question }}
+                    state={{ questionParams: question, homeworkParams: { fm_id: module.id, course: params.course } }}
                     style={{ textDecoration: 'none' }}
                 >
 

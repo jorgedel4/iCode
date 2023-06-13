@@ -5,7 +5,7 @@ export const PracticeMCard = ({ course, index }) => {
     const colors = [ "#5EC1F3", "#55D16E", "#FACD34", "#C12C45" ]
     const color = index - (colors.length * parseInt(index / colors.length));
 
-    console.log("la info si se paso",course)
+    // console.log("la info si se paso",course)
 
     return (
         <Card sx={{
