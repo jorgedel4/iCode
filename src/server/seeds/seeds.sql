@@ -55,6 +55,7 @@ INSERT INTO admins VALUES
 
 INSERT INTO students VALUES
     ("A01551955", "PUE", "Jorge", "Delgado", "Morales"),
+    ("A01423294", "PUE", "Isra", "Perez", "Ontiveros"),
     ("A01731511", "PUE", "Karla", "Sanchez", "Olivares"),
     ("A00157831", "PUE", "Jose", "Cardoza", "Mendez"),
     ("A08787803", "PUE", "Maria", "Ortiz", "Reyes"),

@@ -142,7 +142,8 @@ export const MultiOpt = () => {
 
     // const group = homeworkParams.group_id
     const module = questionInfo.module //esto no se puede porque no existe
-    const qNumber = "Pregunta #" + progress.answered
+    const nQuestion = progress.answered + 1;
+    const qNumber = "Pregunta #" + nQuestion
 
     const pages = [
         { name: 'Home', route: '/student/home' },
@@ -232,7 +233,7 @@ export const MultiOpt = () => {
     }, [fetchAttemptResponse]);
     
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if(progress.answered === progress.needed - 1 && fetchAttemptResponse.passed){
+        if(progress.answered === progress.needed && fetchAttemptResponse.passed){
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
@@ -341,7 +342,7 @@ export const MultiOpt = () => {
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus onClick={handleNewQuestion} sx={{ color: 'success.main' }}>
+                                <Button autoFocus sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>

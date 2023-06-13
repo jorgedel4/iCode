@@ -224,7 +224,7 @@ export const WorkEnv = () => {
 
     // console.log(progress.answered, progress.needed)
     if (progress.answered !== undefined && progress.needed !== undefined) {
-        if (progress.answered === progress.needed - 1 && fetchAttemptResponse.passed) {
+        if (progress.answered === progress.needed && fetchAttemptResponse.passed) {
             window.location.href = `/student/modules/${assgroup}/${asscourse}`
         }
     }
@@ -360,7 +360,7 @@ export const WorkEnv = () => {
                                 state={{ questionParams: fetchResponse, homeworkParams: assParams }}
                                 style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
                             >
-                                <Button autoFocus onClick={handleNewQuestion} sx={{ color: 'success.main' }}>
+                                <Button autoFocus sx={{ color: 'success.main' }}>
                                     {"Siguiente Pregunta"}
                                 </Button>
                             </Link>
