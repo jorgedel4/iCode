@@ -34,7 +34,9 @@ export const MultiOpt = () => {
     const assParams = location.state?.homeworkParams; //moduledata (id, group)
 
     // console.log("assParams", assParams)
-    const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
+    // const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
+    const questionInfo = questionParams.info ? JSON.parse(questionParams.info) : {};
+
     const questionDescription = questionInfo.question //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -226,28 +228,33 @@ export const MultiOpt = () => {
     }
     useEffect(() => {
         if (fetchAttemptResponse.passed) {
-            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
-            onClickNextQuestion()
-            setOpen(true)
+            console.log("fetchAttemptResponse handle", fetchAttemptResponse);
+            setOpen(true);
+            onClickNextQuestion();
         }
 
     }, [fetchAttemptResponse]);
 
-    if (progress.answered !== undefined && progress.needed !== undefined) {
-        if (progress.answered === progress.needed) {
-            window.location.href = `/student/modules/${assgroup}/${asscourse}`
-        }
-    }
     // ------------ # End API region ------------
     // console.log(progress.answered, progress.needed)
-
+    const [isHandleOnClickCalled, setIsHandleOnClickCalled] = useState(false);
     const handleOnClick = () => {
+        setIsHandleOnClickCalled(true);
         setResult([]);
+        setAttemptResponse([]);
         setResetTimer(true);
-        handleClose();
     }
 
     useEffect(() => {
+        if (progress.answered !== undefined && progress.needed !== undefined && isHandleOnClickCalled) {
+            if (progress.answered === progress.needed) {
+                window.location.href = `/student/modules/${assgroup}/${asscourse}`;
+            }
+        }
+    }, [isHandleOnClickCalled, progress]);
+
+    useEffect(() => {
+        setIsHandleOnClickCalled(false);
         setQuestionDes(questionDescription);
         setQuestionId(questionId);
     }, [fetchResponse, questionDescription, questionId])
@@ -332,7 +339,8 @@ export const MultiOpt = () => {
                         <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mt: 5 }} >
 
                             <Button
-                                onClick={() => { handleSubmission(); }}
+                                onClick={handleSubmission}
+                                disabled={fetchAttemptResponse.passed}
                                 sx={{
                                     color: 'appDark.text',
                                     bgcolor: 'appDark.button',

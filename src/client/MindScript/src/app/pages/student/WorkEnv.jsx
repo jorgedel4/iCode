@@ -33,7 +33,9 @@ export const WorkEnv = () => {
     const assParams = location.state?.homeworkParams; //hw data (id, name, group, etc) //si es módulo trae id y group
 
     // console.log("assassement params", assParams)
-    const questionInfo = JSON.parse(questionParams.info);
+    // const questionInfo = JSON.parse(questionParams.info);
+    const questionInfo = questionParams.info ? JSON.parse(questionParams.info) : {};
+
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
 
@@ -210,9 +212,9 @@ export const WorkEnv = () => {
 
     useEffect(() => {
         if (fetchAttemptResponse.passed) {
-            console.log("fetchAttemptResponse handle", fetchAttemptResponse)
-            onClickNextQuestion()
-            setOpen(true)
+            console.log("fetchAttemptResponse handle", fetchAttemptResponse);
+            setOpen(true);
+            onClickNextQuestion();
         }
     }, [fetchAttemptResponse]);
 
@@ -223,20 +225,25 @@ export const WorkEnv = () => {
     }
 
     // console.log(progress.answered, progress.needed)
-    if (progress.answered !== undefined && progress.needed !== undefined) {
-        if (progress.answered === progress.needed) {
-            window.location.href = `/student/modules/${assgroup}/${asscourse}`
-        }
-    }
-
+    const [isHandleOnClickCalled, setIsHandleOnClickCalled] = useState(false);
     const handleOnClick = () => {
         setAttemptResponse([]);
+        setIsHandleOnClickCalled(true);
         setShowComponent(false);
         setResetTimer(true);
         setContent('#Type your answer here');
     }
 
     useEffect(() => {
+        if (progress.answered !== undefined && progress.needed !== undefined && isHandleOnClickCalled) {
+            if (progress.answered === progress.needed) {
+                window.location.href = `/student/modules/${assgroup}/${asscourse}`;
+            }
+        }
+    }, [isHandleOnClickCalled, progress]);
+
+    useEffect(() => {
+        setIsHandleOnClickCalled(false);
         setQuestionDes(questionDescription);
         setQuestionId(questionId);
     }, [fetchResponse, questionDescription, questionId])
@@ -321,7 +328,7 @@ export const WorkEnv = () => {
 
                         <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} variant="contained" sx={{ backgroundColor: 'appDark.button' }}>
+                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} disabled={fetchAttemptResponse.passed} sx={{ backgroundColor: 'appDark.button', ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 } }}>
                                 Entregar
                             </Button>
 
