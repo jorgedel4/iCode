@@ -17,8 +17,9 @@ type ModuleStudent struct {
 }
 
 type CourseModule struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	AvailableQuestions int    `json:"available_questions"`
 }
 
 type ModuleConf struct {

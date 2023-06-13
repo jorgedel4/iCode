@@ -903,6 +903,7 @@ Modulos de un grupo
 | ---------------- | --------------------- | ----------------------------- |
 | id               | string                | ID del modulo                 |
 | name             | string                | Nombre del modulo             |
+| coursemodules    | int                   | Numero de preguntas disponibles |
 
 
 #### Ejemplo
