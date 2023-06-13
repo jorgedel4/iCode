@@ -328,7 +328,7 @@ export const WorkEnv = () => {
 
                         <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} disabled={fetchAttemptResponse.passed} sx={{ backgroundColor: 'appDark.button', ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 } }}>
+                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} disabled={fetchAttemptResponse.passed} sx={{ color: 'appDark.text', backgroundColor: 'appDark.button', ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 } }}>
                                 Entregar
                             </Button>
 
