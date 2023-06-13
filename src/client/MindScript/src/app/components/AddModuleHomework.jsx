@@ -51,11 +51,20 @@ export function AddModuleHomework({ module }) {
     };
 
     //Datos que son necesarios para la checklist (en el futuro)
-    const [checked, setChecked] = React.useState(module.checked);
+    const [checked, setChecked] = React.useState(true);
 
     const handleChange = () => {
         setChecked(!checked);
         module.checked = !checked;
+        if(!module.checked){
+            setCounts((prevCounts) => {
+                return {
+                    ...prevCounts,
+                    [module.name]: 0,
+                    [module.n_questions]: counts[module.name]
+                };
+            })
+        }
     };
 
   
