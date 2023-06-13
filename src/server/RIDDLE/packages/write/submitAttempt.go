@@ -35,7 +35,7 @@ func SubmitAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 		}
 
 		// Check for required arguments
-		if req.QuestionID == "" || req.AssigmentID == "" || (req.Code == "" && req.Answers == nil) {
+		if req.QuestionID == "" || (req.Code == "" && req.Answers == nil) {
 			http.Error(w, "Missing required argument(s)", http.StatusBadRequest)
 			return
 		}
@@ -73,7 +73,7 @@ func SubmitAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 			}
 
 			// Not free mode, must register attempt
-			if req.StudentID != "" {
+			if req.StudentID != "" && req.AssigmentID != "" {
 				if req.AssigmentID[0] == 'H' {
 					var attemptRegisterReq structs.HwQuestionAttempt
 					if passed {
@@ -162,7 +162,7 @@ func SubmitAttempt(mysqlDB *sql.DB) http.HandlerFunc {
 				return
 			}
 
-			if req.StudentID != "" {
+			if req.StudentID != "" && req.AssigmentID != ""{
 				if req.AssigmentID[0] == 'H' {
 					var attemptRegisterReq structs.HwQuestionAttempt
 					if ceResponse.Passed {
