@@ -12,7 +12,7 @@ export const PHomePage = () => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
-    const [selectedTerm, setSelectedTerm] = useState('current');
+    const [selectedTerm, setSelectedTerm] = useState('');
 
     //Current user info
     const auth = getAuth();
@@ -53,7 +53,7 @@ export const PHomePage = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [termsData]);
 
     //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);
@@ -67,6 +67,15 @@ export const PHomePage = () => {
         }
 
         const fetchData = async () => {
+            if (selectedTerm.length === 0) {
+                try {
+                    const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=current`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
             if (selectedTerm) {
                 try {
                     const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${selectedTerm}`, options);

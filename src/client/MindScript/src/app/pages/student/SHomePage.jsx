@@ -27,7 +27,7 @@ export const SHomePage = () => {
         { name: 'Home', route: '/student/home' },
         { name: 'Profile', route: '/student/profile' },
     ]
-    const [selectedTerm, setSelectedTerm] = useState('current');
+    const [selectedTerm, setSelectedTerm] = useState('');
 
     //Navigate to
     //remove?
@@ -106,7 +106,7 @@ export const SHomePage = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [termsData]);
 
     //GET - group information
     const [groupsData, setGroup] = useState([]);
@@ -120,6 +120,15 @@ export const SHomePage = () => {
         }
 
         const fetchData = async () => {
+            if (selectedTerm.length === 0) {
+                try {
+                    const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=current`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
             if(selectedTerm){
                 try {
                     const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${selectedTerm}`, options);
