@@ -7,9 +7,11 @@
 
 // Core components from MUI
 import { useState, useEffect } from 'react';
-import { CardContent, CardActionArea, Grid, Typography, Card } from '@mui/material';
+import { CardContent, CardActionArea, Grid, Typography, Card, InputLabel, MenuItem } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import { getAuth } from "firebase/auth";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 // MindScript Components
 import { HomeLayout } from '../../layout/HomeLayout';
@@ -25,6 +27,8 @@ export const SHomePage = () => {
         { name: 'Home', route: '/student/home' },
         { name: 'Profile', route: '/student/profile' },
     ]
+    const [selectedTerm, setSelectedTerm] = useState('current');
+
     //Navigate to
     //remove?
     const modules = "/student/modules"
@@ -81,6 +85,29 @@ export const SHomePage = () => {
         }
     }
 
+    //GET - Obtaining terms
+    const [termsData, setTerm] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}terms`, options);
+                const responseData = await response.json();
+                setTerm(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
     //GET - group information
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
@@ -92,20 +119,20 @@ export const SHomePage = () => {
             mode: 'cors',
         }
 
-        let term = "all"
-
         const fetchData = async () => {
-            try {
-                const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
-                const responseData = await response.json();
-                setGroup(responseData);
-            } catch (error) {
-                console.error(error);
+            if(selectedTerm){
+                try {
+                    const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${selectedTerm}`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         };
 
         fetchData();
-    }, [groupsData]);
+    }, [groupsData, selectedTerm]);
 
     //GET - Obtaining weekly homework data
     const [homeworkData, setHomework] = useState([]);
@@ -134,6 +161,10 @@ export const SHomePage = () => {
     // ------------ ## End API region -------
 
     // ------- # Functions and Events region -------
+    const handleTermSelection = (event) => {
+        const value = event.target.value;
+        setSelectedTerm(value);
+    };
     // ---- ## End Functions and Events region -----
 
     return (
@@ -159,14 +190,56 @@ export const SHomePage = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Grid container sx={{ bgcolor: '#f00' }}>
+                    <Grid container alignItems='center'>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={8}>
                             <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
                         </Grid>
 
-                        <Grid item xs={12} md={6} align='right'>
-                            <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Seleccionar Periodo</Typography>
+                        <Grid item xs={4}>
+                            <FormControl fullWidth variant="filled">
+                                <InputLabel
+                                    sx={{
+                                        color: 'appDark.text',
+                                        '&:hover': {
+                                            color: 'appDark.text' //change label color
+                                        },
+                                        '&.Mui-focused': {
+                                            color: 'appDark.text' //change label color
+                                        }
+                                    }}
+                                >Periodo</InputLabel>
+
+                                <Select
+                                    value={selectedTerm}
+                                    onChange={handleTermSelection}
+                                    sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                bgcolor: 'appDark.bgBox',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {termsData.map((term) => (
+                                        <MenuItem
+                                            sx={{
+                                                color: "appDark.text",
+                                                bgcolor: 'appDark.bgBox',
+                                                '&:hover': {
+                                                    bgcolor: 'appDark.selectHover' //change label color
+                                                },
+                                            }}
+                                            key={term.name}
+                                            value={term.id}
+                                        >
+                                            {term.id} {term.name}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
                         </Grid>
                     </Grid>
 
