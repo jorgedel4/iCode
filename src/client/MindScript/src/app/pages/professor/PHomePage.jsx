@@ -1,8 +1,10 @@
-import { Grid, useTheme, Typography, CardContent, CardActionArea } from '@mui/material'
+import { Grid, useTheme, Typography, CardContent, CardActionArea, InputLabel, MenuItem } from '@mui/material'
 import { HomeLayout } from '../../layout/HomeLayout';
 import { Link } from 'react-router-dom';
-import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components'
-import { AddCircleOutline, NoteAddOutlined, QuizOutlined, ChecklistOutlined } from '@mui/icons-material'
+import { CoursesCard, ActionButton, CreateGroup, CreateHomework, CreateQuestion } from '../../components';
+import { AddCircleOutline, NoteAddOutlined, QuizOutlined, ChecklistOutlined } from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
@@ -10,6 +12,7 @@ export const PHomePage = () => {
     const theme = useTheme();
     const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
+    const [selectedTerm, setSelectedTerm] = useState('current');
 
     //Current user info
     const auth = getAuth();
@@ -29,6 +32,29 @@ export const PHomePage = () => {
         { name: 'Profile', route: '/professor/profile' },
     ]
 
+    //GET - Obtaining terms
+    const [termsData, setTerm] = useState([]);
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        }
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${batmanAPI}terms`, options);
+                const responseData = await response.json();
+                setTerm(responseData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
     //API para obtener la info de los grupos
     const [groupsData, setGroup] = useState([]);
     useEffect(() => {
@@ -40,21 +66,20 @@ export const PHomePage = () => {
             mode: 'cors',
         }
 
-        // let userID = "L00000001"
-        let term = "all"
-
         const fetchData = async () => {
-            try {
-                const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${term}`, options);
-                const responseData = await response.json();
-                setGroup(responseData);
-            } catch (error) {
-                // console.error(error);
+            if (selectedTerm) {
+                try {
+                    const response = await fetch(`${batmanAPI}groups?id=${schoolID}&term=${selectedTerm}`, options);
+                    const responseData = await response.json();
+                    setGroup(responseData);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         };
 
         fetchData();
-    }, []);
+    }, [selectedTerm]);
 
 
     //Funciones para abrir la modal de Crear Curso
@@ -108,6 +133,11 @@ export const PHomePage = () => {
     }, []);
 
     const homework = Object.entries(homeworkData)
+
+    const handleTermSelection = (event) => {
+        const value = event.target.value;
+        setSelectedTerm(value);
+    };
 
     return (
         <Grid container justifyContent='center' alignItems='center'>
@@ -182,8 +212,60 @@ export const PHomePage = () => {
                         </ActionButton>
                     </Grid>
 
-                    <Grid item md={12} xs={12} >
-                        <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
+                    <Grid item xs={12}>
+                        <Grid container>
+
+                            <Grid item xs={8}>
+                                <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Grupos Existentes</Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <FormControl fullWidth variant="filled">
+                                    <InputLabel
+                                        sx={{
+                                            color: 'appDark.text',
+                                            '&:hover': {
+                                                color: 'appDark.text' //change label color
+                                            },
+                                            '&.Mui-focused': {
+                                                color: 'appDark.text' //change label color
+                                            }
+                                        }}
+                                    >Periodo</InputLabel>
+
+                                    <Select
+                                        value={selectedTerm}
+                                        onChange={handleTermSelection}
+                                        sx={{ borderRadius: "10px", bgcolor: 'appDark.bgBox', color: 'appDark.text', svg: { color: 'appDark.text' } }}
+                                        MenuProps={{
+                                            PaperProps: {
+                                                sx: {
+                                                    bgcolor: 'appDark.bgBox',
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        {termsData.map((term) => (
+                                            <MenuItem
+                                                sx={{
+                                                    color: "appDark.text",
+                                                    bgcolor: 'appDark.bgBox',
+                                                    '&:hover': {
+                                                        bgcolor: 'appDark.selectHover' //change label color
+                                                    },
+                                                }}
+                                                key={term.name}
+                                                value={term.id}
+                                            >
+                                                {term.name}
+                                            </MenuItem>
+                                        ))}
+
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+
                     </Grid>
 
                     {groupsData.map((group, index) => (
