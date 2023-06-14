@@ -12,6 +12,8 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavBar, OptionButton } from "../../components";
 import { Link } from 'react-router-dom';
+import ConfettiExplosion from 'react-confetti-explosion';
+
 import { async } from "@firebase/util";
 
 // MindScript Components
@@ -51,6 +53,10 @@ export const MultiOpt = () => {
     //Timer States
     const [timerValue, setTimerValue] = useState(0);
     const [resetTimer, setResetTimer] = useState(false);
+
+
+    //Feedback confetti
+    const [isExploding, setIsExploding] = useState(false);
 
     //Current user info
     const auth = getAuth();
@@ -184,7 +190,7 @@ export const MultiOpt = () => {
     // console.log("response data", fetchResponse) //id_pregunta, info and type
     let bootyCall = "";
     let bodyOddy = {}
-    
+
     if (asstype === "tarea" || asstype === "modulo") {
 
         bodyOddy = {
@@ -201,12 +207,12 @@ export const MultiOpt = () => {
     }
     if (asstype === "libre") {
         bodyOddy = {
-            
+
             "question": questionId,
             "answers": results,
-            
+
         }
-        bootyCall =`${riddleAPI}freemodequestion/${assid}`
+        bootyCall = `${riddleAPI}freemodequestion/${assid}`
     }
 
 
@@ -253,6 +259,7 @@ export const MultiOpt = () => {
         if (fetchAttemptResponse.passed) {
             console.log("fetchAttemptResponse handle", fetchAttemptResponse);
             setOpen(true);
+            setIsExploding(true);
             onClickNextQuestion();
         }
 
@@ -384,7 +391,16 @@ export const MultiOpt = () => {
                 PaperProps={{
                     sx: { bgcolor: 'primary.main', color: 'appDark.text' }
                 }}
-            >
+                >
+                {isExploding &&
+                    <ConfettiExplosion sx={{
+                        align: "center",
+                        force: 0.8,
+                        duration: 3000,
+                        particleCount: 80,
+                        width: 1600,
+                    }} />
+                }
                 <DialogTitle align='center'>
                     {fetchAttemptResponse.passed ? "Correcto" : "Incorrecto"}
                 </DialogTitle>

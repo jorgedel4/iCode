@@ -235,6 +235,7 @@ export const WorkEnv = () => {
         if (fetchAttemptResponse.passed) {
             console.log("fetchAttemptResponse handle", fetchAttemptResponse);
             setOpen(true);
+            setIsExploding(true);
             onClickNextQuestion();
         }
     }, [fetchAttemptResponse]);
@@ -271,15 +272,7 @@ export const WorkEnv = () => {
 
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
-            {isExploding &&
-                <ConfettiExplosion sx={{
-                    align: "center",
-                    force: 0.8,
-                    duration: 3000,
-                    particleCount: 80,
-                    width: 1600,
-                }} />
-            }
+
             <Grid item xs={12}>
                 <Button href={asstype == 'tarea' || asstype == 'modulo' ? `/student/modules/${assgroup}/${asscourse}` : `/student/home`} sx={{ color: 'appDark.link', fontWeight: 900, fontSize: 14 }}>
                     {'< Regresar'}
@@ -349,7 +342,7 @@ export const WorkEnv = () => {
 
                         <Grid item xs={fetchAttemptResponse.passed ? 6 : 12} align='right' sx={{ mb: 2 }}>
 
-                            <Button onClick={() => { handleSubmission(); printsec(); setIsExploding(true); }} disabled={fetchAttemptResponse.passed} sx={{ color: 'appDark.text', backgroundColor: 'appDark.button', ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 } }}>
+                            <Button onClick={() => { handleSubmission(); printsec(); }} disabled={fetchAttemptResponse.passed} sx={{ color: 'appDark.text', backgroundColor: 'appDark.button', ':hover': { backgroundColor: 'appDark.button', opacity: 0.7 } }}>
                                 Entregar
                             </Button>
 
@@ -400,7 +393,17 @@ export const WorkEnv = () => {
                     sx: { bgcolor: 'primary.main', color: 'appDark.text' }
                 }}
             >
+
                 <DialogTitle align='center'>
+                    {isExploding &&
+                        <ConfettiExplosion sx={{
+                            align: "center",
+                            force: 0.8,
+                            duration: 3000,
+                            particleCount: 80,
+                            width: 1600,
+                        }} />
+                    }
                     {fetchAttemptResponse.passed ? "Respuesta Correcta" : "Respuesta Incorrecta"}
                 </DialogTitle>
                 <DialogActions>
