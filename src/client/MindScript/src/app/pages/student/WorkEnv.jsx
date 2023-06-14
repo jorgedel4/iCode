@@ -430,11 +430,6 @@ export const WorkEnv = () => {
                             </Grid>
                         ))}
 
-
-
-
-
-
                         <Grid item xs={12}>
                             <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
                                 Tiempo Máximo de Ejecución
@@ -503,7 +498,7 @@ export const WorkEnv = () => {
                                 <Typography fontSize={20} sx={{ color: 'appDark.text' }}>Casos de Prueba</Typography>
                             </Grid>
                             <Grid item xs={2} align='right'>
-                                <Typography sx={{ color: 'appDark.text' }}>{progress.answered}/{progress.needed}</Typography>
+                                <Typography sx={{ color: 'appDark.text' }}>Progreso: {progress.answered}/{progress.needed}</Typography>
                             </Grid>
 
                         </Grid>
