@@ -53,6 +53,8 @@ export const EditHomework = ({ open, close, editData, modules }) => {
                     module: module.id,
                     // module_name: module.name,
                     n_questions: module.n_questions,
+                    available_question: 3,
+
                 })
                 : null
         ))

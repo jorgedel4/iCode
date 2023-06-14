@@ -18,21 +18,24 @@ export function CounterCell({ data, onUpdateRows }) {
   const [rowsData, setRowData] = useState({});
 
   const handleToggle = (module, value) => {
+    console.log("afskjdhfakjsd", module)
     setCounts((prevCounts) => {
       const currentCount = prevCounts[module.name] || 0;
-      if (value === "up") {
-        return {
-          ...prevCounts,
-          [module.name]: currentCount + 1,
-        };
-      } else if (value === "down" && currentCount > 0) {
+       if (value === "down" && currentCount > 0) {
         return {
           ...prevCounts,
           [module.name]: currentCount - 1,
           // [module.name]: currentCount - 1,
 
         };
-      } else {
+      } else if (value === "up" && currentCount < module.available_questions) {
+        return {
+          ...prevCounts,
+          [module.name]: currentCount + 1,
+          // [module.name]: currentCount - 1,
+
+        };
+      }else {
         return prevCounts;
       }
     });

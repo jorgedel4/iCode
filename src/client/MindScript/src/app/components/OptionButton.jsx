@@ -1,5 +1,5 @@
 import { ToggleButton, Grid, useTheme } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const OptionButton = ({ option, changeSelected }) => {
     const theme = useTheme();
@@ -9,6 +9,10 @@ export const OptionButton = ({ option, changeSelected }) => {
         setSelected(!selected);
         changeSelected(option, !selected);
     };
+    useEffect(() => {
+        setSelected(false);
+
+    }, [option])
 
     return (
         <Grid item align='center' xs={12} sm={6} mt={4}>

@@ -79,6 +79,7 @@ export const PHHomeworkCard = ({ data }) => {
             };
             console.log(id)
             const response = await fetch(`${batmanAPI}homework/${id}`, options);
+            console.log("PHOHMOMEE", response)
             setModule(prevData => prevData.filter(hw => hw.id !== id));
             return response;
 
@@ -88,6 +89,7 @@ export const PHHomeworkCard = ({ data }) => {
         }
     };
 
+    // console.log("PHHHOMEWORD", modulesData)
 
     return (
 

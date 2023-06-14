@@ -10,6 +10,7 @@ export const ModulesLayout = ({ children, home, homeworkData, handleDeleteHw, ha
 
     //Importante para EditHomework
     const [editData, setData] = useState(null);
+    // console.log("ModulesLayout", modules)
 
     //Funciones para abrir la modal de Crear TAREA
     const [openEditHomework, setOpenEditHomework] = useState(false);

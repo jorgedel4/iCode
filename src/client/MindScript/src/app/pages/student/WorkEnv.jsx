@@ -35,7 +35,7 @@ export const WorkEnv = () => {
     // console.log("assassement params", assParams)
     // const questionInfo = JSON.parse(questionParams.info);
     const questionInfo = questionParams.info ? JSON.parse(questionParams.info) : {};
-    console.log(questionInfo)
+    // console.log(questionInfo)
 
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;

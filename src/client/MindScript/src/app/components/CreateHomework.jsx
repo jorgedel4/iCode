@@ -152,7 +152,8 @@ export const CreateHomework = ({ open, close }) => {
             name: module.name,
             n_questions: 0,
             checked: true,
-            key: module.id
+            key: module.id,
+            available_questions: module.available_questions
         }));
 
         setModules(updatedModules);

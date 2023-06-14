@@ -181,7 +181,7 @@ export const MultiOpt = () => {
             .then(responseData => {
                 setResponse(responseData);
                 setQuestionDes(JSON.parse(responseData.info).description)
-                console.log("requestNextQuestion", responseData)
+                // console.log("requestNextQuestion", responseData)
             })
             .catch(error => {
                 console.log(error);

@@ -19,9 +19,10 @@ export function AddModuleHomework({ module }) {
     const [counts, setCounts] = useState({});
 
     const handleToggle = (module, value) => {
+        
         setCounts((prevCounts) => {
             const currentCount = prevCounts[module.name] || 0;
-            if (value === "up") {
+            if (value === "up" && currentCount < module.available_questions) {
                 return {
                     ...prevCounts,
                     [module.name]: currentCount + 1,
