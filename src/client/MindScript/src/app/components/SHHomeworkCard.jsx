@@ -1,4 +1,5 @@
 import { Card, Collapse, List, ListItem, ListItemButton, ListItemText, Typography, Grid, useTheme } from '@mui/material';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -113,27 +114,27 @@ export const SHHomeworkCard = ({ data, index }) => {
                     component="div"
                     disablePadding
                 >
-                    {data.map((homework, indexH) => ( 
+                    {data.map((homework, indexH) => (
                         <Grid container key={indexH}>
                             <ListItem disablePadding>
-                                <Link
-                                    to={{
-                                        pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
-                                    }}
-                                    state={{ questionParams: question, homeworkParams: homework}}
-                                    style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
-                                >
-                                    <ListItemButton>
+                                {homework.done < homework.needed
+                                    ? <Link
+                                        to={{
+                                            pathname: question.type === 'codep' ? "/student/workenv" : question.type === 'multi' ? "/student/multiopt" : ""
+                                        }}
+                                        state={{ questionParams: question, homeworkParams: homework }}
+                                        style={{ textDecoration: 'none', color: theme.palette.appDark.textBlack }}
+                                    >
+                                        <ListItemButton>
+                                            <ListItemText sx={{ pl: 4 }} primary={homework.hw_name} />
 
-                                        <Grid sx={{ borderRadius: '12px', backgroundColor: '#6D7483', mr: 2 }} >
-                                            <Typography sx={{ color: 'appDark.text', mx: 2 }}>{homework.group_id}</Typography>
-                                        </Grid>
+                                        </ListItemButton>
+                                    </Link>
 
-                                        <ListItemText
-                                            sx={{ pl: 4 }} primary={homework.hw_name} />
-
-                                    </ListItemButton>
-                                </Link>
+                                    : <ListItemButton disabled={true}>
+                                        <ListItemText sx={{ pl: 4 }} primary={homework.hw_name} />
+                                        < CheckCircleOutlineRoundedIcon sx={{ width: 20, color: "success.main" }} />
+                                    </ListItemButton>}
                             </ListItem>
                         </Grid>
 

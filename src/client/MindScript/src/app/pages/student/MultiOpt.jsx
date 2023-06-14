@@ -183,7 +183,6 @@ export const MultiOpt = () => {
     }
     // console.log("response data", fetchResponse) //id_pregunta, info and type
     let bootyCall = "";
-
     let bodyOddy = {}
     
     if (asstype === "tarea" || asstype === "modulo") {
