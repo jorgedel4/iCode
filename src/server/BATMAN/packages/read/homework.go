@@ -100,7 +100,7 @@ func Homework(mysqlDB *sql.DB) http.HandlerFunc {
 			{
 				for rows.Next() {
 					var result structs.HWStudent
-					if err := rows.Scan(&result.HW_ID, &result.HW_Name, &result.CourseID, &result.CourseName, &result.GroupID, &result.Opening, &result.Closing, &result.Needed, &result.Done); err != nil {
+					if err := rows.Scan(&result.HW_ID, &result.HW_Name, &result.CourseID, &result.CourseName, &result.GroupID, &result.Opening, &result.Closing, &result.Done, &result.Needed); err != nil {
 						http.Error(w, "Error reading results", http.StatusInternalServerError)
 						return
 					}
