@@ -1,5 +1,5 @@
-import { Brightness6, LogoutOutlined } from '@mui/icons-material'
-import { AppBar, Button, Toolbar, IconButton, Grid, Typography, Menu, MenuItem, useMediaQuery } from '@mui/material';
+import { LogoutOutlined } from '@mui/icons-material'
+import { AppBar, Button, Toolbar, IconButton, Grid, Menu, MenuItem, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -81,10 +81,6 @@ export const NavBar = ({ drawerWidth = 240, pages }) => {
                                         </Button>
                                     </Grid>
                                 )}
-
-                                <IconButton sx={{ color: 'appDark.icon', ml: 1 }}>
-                                    <Brightness6 />
-                                </IconButton>
 
                                 <IconButton onClick={onLogout} sx={{ color: 'appDark.icon', ml: 1 }}>
                                     <LogoutOutlined />

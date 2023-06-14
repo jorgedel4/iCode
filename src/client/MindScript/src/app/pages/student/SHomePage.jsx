@@ -181,7 +181,7 @@ export const SHomePage = () => {
             {/* Modales */}
             <CourseRegister open={openModalRegister} close={closeModalRegister} setCount={setCount} count={count} />
 
-            <Grid container columnSpacing={5} rowSpacing={5} justifyContent='space-between'>
+            <Grid container columnSpacing={5} rowSpacing={5}>
                 <Grid item xs={12} >
                     <Typography sx={{ color: 'appDark.text', fontSize: 20, fontWeight: 500 }} >Acciones</Typography>
                 </Grid>
