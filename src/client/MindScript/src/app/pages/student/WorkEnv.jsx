@@ -330,7 +330,7 @@ export const WorkEnv = () => {
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
                                 <Typography variant='h5' sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 20 }}>
-                                    Pregunta {progress.answered}
+                                    Pregunta {progress.answered + 1}
                                 </Typography>
                             </Grid>
 
