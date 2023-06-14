@@ -149,7 +149,7 @@ export const WorkEnv = () => {
             mode: 'cors',
         }
 
-        fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options)
+        fetch(bootyCall, options)
             .then(response => {
                 console.log(response);
                 return response.json();
@@ -163,12 +163,13 @@ export const WorkEnv = () => {
             })
     }
 
-    let body = {}
+    let bootyCall = "";
+    let bodyOddy = {}
     if (asstype === "tarea" || asstype === "modulo") {
 
-        body = {
+        bodyOddy = {
 
-            "question": questionId,
+            "question": questionid,
             "assignment": assid,
             "student": schoolID,
             "attempt_time": timerValue,
@@ -176,14 +177,18 @@ export const WorkEnv = () => {
             "code": content,
 
         }
+        bootyCall = `${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`
+
     }
-    if (asstype === "tarea" || asstype === "modulo") {
-        body = {
+    if (asstype === "libre") {
+        bodyOddy = {
 
             "question": questionId,
             "code": content,
 
         }
+        bootyCall = `${riddleAPI}freemodequestion/${assid}`
+
     }
 
     //POST - to codeExec get testcases and register attempt
@@ -196,16 +201,9 @@ export const WorkEnv = () => {
 
             },
             mode: 'no-cors',
-            body: JSON.stringify({
-                "question": questionid,
-                "assignment": assid,
-                "student": schoolID,
-                "attempt_time": timerValue,
-                "group": assgroup,
-                "code": content,
-            })
+            body: JSON.stringify(bodyOddy)
         }
-        // console.log("body", options.body)
+        console.log("body", options.body)
 
         fetch(`${riddleAPI}submitAttempt/code`, options)
             .then(response => {

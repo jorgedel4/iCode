@@ -34,6 +34,7 @@ export const MultiOpt = () => {
     const assParams = location.state?.homeworkParams; //moduledata (id, group)
     const [rerenderFlag, setFlag] = useState(false)
 
+
     // console.log("assParams", assParams)
     // const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
     const questionInfo = questionParams.info ? JSON.parse(questionParams.info) : {};
@@ -167,7 +168,7 @@ export const MultiOpt = () => {
         }
 
         //mas adeltnte aqui debe de ir un if para ver si es una tarea o un módulo 
-        fetch(`${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`, options)
+        fetch(`${bootyCall}`, options)
             .then(response => {
                 return response.json();
             })
@@ -181,6 +182,34 @@ export const MultiOpt = () => {
             })
     }
     // console.log("response data", fetchResponse) //id_pregunta, info and type
+    let bootyCall = "";
+
+    let bodyOddy = {}
+    
+    if (asstype === "tarea" || asstype === "modulo") {
+
+        bodyOddy = {
+
+            "question": questionid,
+            "assignment": assid,
+            "student": schoolID,
+            "attempt_time": timerValue,
+            "group": assgroup,
+            "answers": results,
+
+        }
+        bootyCall = `${riddleAPI}questions?id_assigment=${assid}&id_student=${schoolID}&id_group=${assgroup}`
+    }
+    if (asstype === "libre") {
+        bodyOddy = {
+            
+            "question": questionId,
+            "answers": results,
+            
+        }
+        bootyCall =`${riddleAPI}freemodequestion/${assid}`
+    }
+
 
     //POST - to codeExec get testcases and register attempt
     const submitAttemp = async () => {
@@ -195,16 +224,7 @@ export const MultiOpt = () => {
             },
             mode: 'no-cors',
 
-            body: JSON.stringify({
-
-                "question": questionId,
-                "assignment": assid,
-                "student": schoolID,
-                "attempt_time": timerValue,
-                "group": assgroup,
-                "answers": results
-
-            })
+            body: JSON.stringify(bodyOddy)
         }
 
         console.log("body", options.body)
