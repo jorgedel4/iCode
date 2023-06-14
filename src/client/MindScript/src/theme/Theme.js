@@ -20,6 +20,7 @@ export const Theme = createTheme({
             textBlack: '#000',
             box: '#FFF',
             bgBox: '#303645',
+            bgHwBox: '#374E5E',
             icon: '#FFF',
             link: '#FFF',
             button: '#FF6B00',
