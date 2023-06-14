@@ -71,45 +71,7 @@ export const FreeModeM = () => {
 
     // console.log("modulesData", modulesData)
 
-    //Esto se borra cuando las APIs para obtener los modulos esten listas
-    // const modulesData = [
-    //     {
-    //         "id": "M0000000000000000001",
-    //         "name": "Basics"
-    //     },
-    //     {
-    //         "id": "M0000000000000000002",
-    //         "name": "Conditionals"
-    //     },
-    //     {
-    //         "id": "M0000000000000000003",
-    //         "name": "For loops"
-    //     },
-    //     {
-    //         "id": "M0000000000000000004",
-    //         "name": "Atributos"
-    //     },
-    //     {
-    //         "id": "M0000000000000000005",
-    //         "name": "Metodos"
-    //     },
-    //     {
-    //         "id": "M0000000000000000006",
-    //         "name": "Polimorfismo"
-    //     },
-    //     {
-    //         "id": "M0000000000000000007",
-    //         "name": "Complejidades"
-    //     },
-    //     {
-    //         "id": "M0000000000000000008",
-    //         "name": "Busqueda binaria"
-    //     },
-    //     {
-    //         "id": "M0000000000000000009",
-    //         "name": "Arbol binario"
-    //     }
-    // ]
+
 
     return (
         <FreeModeLayout backPage={"Cursos de modo práctica"} backURL={freemode}>

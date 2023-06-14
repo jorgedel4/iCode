@@ -163,6 +163,29 @@ export const WorkEnv = () => {
             })
     }
 
+    let body = {}
+    if (asstype === "tarea" || asstype === "modulo") {
+
+        body = {
+
+            "question": questionId,
+            "assignment": assid,
+            "student": schoolID,
+            "attempt_time": timerValue,
+            "group": assgroup,
+            "code": content,
+
+        }
+    }
+    if (asstype === "tarea" || asstype === "modulo") {
+        body = {
+
+            "question": questionId,
+            "code": content,
+
+        }
+    }
+
     //POST - to codeExec get testcases and register attempt
     const submitAttemp = async () => {
 

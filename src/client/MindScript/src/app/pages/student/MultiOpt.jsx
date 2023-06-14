@@ -32,6 +32,7 @@ export const MultiOpt = () => {
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 
     const assParams = location.state?.homeworkParams; //moduledata (id, group)
+    const [rerenderFlag, setFlag] = useState(false)
 
     // console.log("assParams", assParams)
     // const questionInfo = JSON.parse(questionParams.info); //options, question, n_options, explanation, correct option, options
@@ -138,11 +139,12 @@ export const MultiOpt = () => {
         };
 
         fetchData();
-    }, [progress]);
+    }, [rerenderFlag]); // progress
     // console.log("progress",progress)
 
 
     // const group = homeworkParams.group_id
+    // console.log("assParams", assParams)
     const module = questionInfo.module //esto no se puede porque no existe
     const nQuestion = progress.answered + 1;
     const qNumber = "Pregunta #" + nQuestion
@@ -183,6 +185,7 @@ export const MultiOpt = () => {
     //POST - to codeExec get testcases and register attempt
     const submitAttemp = async () => {
         // console.log(assid, assgroup, schoolID)
+        // console.log("results", results)
 
         const options = {
             method: 'POST',
@@ -204,7 +207,7 @@ export const MultiOpt = () => {
             })
         }
 
-        // console.log("body", options.body)
+        console.log("body", options.body)
 
         fetch(`${riddleAPI}submitAttempt/multipleChoice`, options)
             .then(response => {
@@ -212,6 +215,7 @@ export const MultiOpt = () => {
                 return response.json()
             })
             .then(json => {
+                console.log("ñam ñam", json)
                 setAttemptResponse(json) //fetchResponse for code (passed, explanation)
             })
             .catch(error => {
@@ -243,6 +247,7 @@ export const MultiOpt = () => {
         setResult([]);
         setAttemptResponse([]);
         setResetTimer(true);
+        setFlag(true);
     }
 
     useEffect(() => {
@@ -285,8 +290,8 @@ export const MultiOpt = () => {
 
             {/* Inside card */}
             <Grid item xs={12} sx={{ mt: 2, bgcolor: 'secondary.main', borderRadius: 1 }}>
-                <Grid sx={{ mt: 2, ml: 2 }}>
-                    <Typography sx={{ color: 'appDark.text' }}>{progress.answered}/{progress.needed}</Typography>
+                <Grid sx={{ mt: 2, mx: 2 }} align="right">
+                    <Typography justify={"center"} sx={{ color: 'appDark.text' }}>Progreso: {progress.answered}/{progress.needed}</Typography>
                 </Grid>
                 <Grid container padding={4} direction="column" justifyContent="center" alignItems="center">
                     {/* Question name */}
