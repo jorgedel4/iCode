@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
-	"fmt"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -14,10 +14,15 @@ import (
 )
 
 func main() {
-	// Loading env variables (.env file)
-	err := godotenv.Load()
+
+	curDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		log.Println(err)
+	}
+	// Loading env variables (.env file)
+	err = godotenv.Load(curDir + "/codeExec/.env")
+	if err != nil {
+		log.Fatalf(err.Error(), err)
 		return
 	}
 

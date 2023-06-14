@@ -17,10 +17,14 @@ import (
 
 func main() {
 
-	// Loading env variables (.env file) with GodoTenv library
-	err := godotenv.Load(".env")
+	curDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		log.Println(err)
+	}
+	// Loading env variables (.env file)
+	err = godotenv.Load(curDir + "/riddle/.env")
+	if err != nil {
+		log.Fatalf(err.Error(), err)
 		return
 	}
 
