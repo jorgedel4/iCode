@@ -7,7 +7,7 @@
 
 // Core components from MUI
 import * as React from 'react';
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useTheme } from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useTheme, Box } from '@mui/material'
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
@@ -35,6 +35,7 @@ export const WorkEnv = () => {
     // console.log("assassement params", assParams)
     // const questionInfo = JSON.parse(questionParams.info);
     const questionInfo = questionParams.info ? JSON.parse(questionParams.info) : {};
+    console.log(questionInfo)
 
     const questionDescription = questionInfo.description //primera descripción
     let questionId = questionParams.id_pregunta;
@@ -269,6 +270,35 @@ export const WorkEnv = () => {
         setQuestionId(questionId);
     }, [fetchResponse, questionDescription, questionId])
 
+    const formattedSInputs = {};
+    const formattedSOutputs = {};
+
+    if (questionInfo !== null && questionInfo !== undefined) {
+
+        for (const [key, value] of Object.entries(questionInfo.sinputs)) {
+            if (Array.isArray(value)) {
+                const formattedValue = value.map(arr => arr[0]).join(',');
+                formattedSInputs[key] = formattedValue;
+            } else {
+                formattedSInputs[key] = value;
+            }
+        }
+
+        for (const [key, value] of Object.entries(questionInfo.soutputs)) {
+            if (Array.isArray(value)) {
+                const formattedValue = value.map(arr => arr[0]).join(',');
+                formattedSOutputs[key] = formattedValue;
+            } else {
+                formattedSOutputs[key] = value;
+            }
+        }
+    }
+
+    const homeworkExamples = {
+        sinputs: formattedSInputs,
+        soutputs: formattedSOutputs
+    }
+
     return (
         <Grid container padding={3} justifyContent='center' alignContent='center' spacing={0} sx={{ minHeight: '100vh', bgcolor: 'primary.main', color: 'appDark.text' }}>
             {isExploding &&
@@ -285,42 +315,143 @@ export const WorkEnv = () => {
                     {'< Regresar'}
                 </Button>
             </Grid>
-            <Grid item xs={4}>
-                <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text', height: '90vh' }}>
+
+            <Grid item xs={4} sx={{
+                overflowY: 'scroll',
+                height: '90vh',
+                "&::-webkit-scrollbar": {
+                    width: 5,
+                },
+                "&::-webkit-scrollbar-track": {
+                    backgroundColor: "secondary.main",
+                    borderRadius: 2,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "appDark.scrollBar",
+                    borderRadius: 2,
+                },
+            }}>
+                <Grid container px={2} justifyContent='start' sx={{ bgcolor: 'secondary.main', color: 'appDark.text' }}>
                     {/* Question Description*/}
                     <Grid item xs={12}>
                         <Grid container py={2} alignItems='center'>
                             <Grid item xs={12} md={10}>
                                 <Typography variant='h5' sx={{ color: 'appDark.text', fontWeight: 900, fontSize: 20 }}>
-                                    Descripción
+                                    Pregunta {progress.answered}
                                 </Typography>
                             </Grid>
 
                             <Grid item align='right' xs={12} md={2}>
                                 <Timer setTimerValue={setTimerValue} resetTimer={resetTimer} setResetTimer={setResetTimer} />
                             </Grid>
+
                         </Grid>
                         <Grid item xs={12} >
-                            <Typography textAlign='justify' sx={{
-                                overflowY: 'scroll',
-                                height: '45vh',
-                                "&::-webkit-scrollbar": {
-                                    width: 5,
-                                },
-                                "&::-webkit-scrollbar-track": {
-                                    backgroundColor: "secondary.main",
-                                    borderRadius: 2,
-                                },
-                                "&::-webkit-scrollbar-thumb": {
-                                    backgroundColor: "appDark.scrollBar",
-                                    borderRadius: 2,
-                                },
-                            }}>
+                            <Typography textAlign='justify' sx={{ color: 'appDark.text', fontSize: 15 }}>
                                 {questiondes && questiondes.length > 0 && (
                                     questiondes + "   " + questionid
                                 )}
                             </Typography>
                         </Grid>
+                        {/* Prueba */}
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                Lenguaje
+                            </Typography>
+                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                {questionInfo.language}
+                            </Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                Funciones Prohibidas
+                            </Typography>
+                            {questionInfo.forbiddenFunctions.length > 0 ?
+                                <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                    {questionInfo.forbiddenFunctions}
+                                </Typography>
+                                :
+                                <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                    No hay funciones prohibidas
+                                </Typography>
+                            }
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                Código Inicial
+                            </Typography>
+                            {questionInfo.initialCode.length > 0 ?
+                                <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                    {questionInfo.initialCode}
+                                </Typography>
+                                :
+                                <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                    No hay código inicial
+                                </Typography>
+                            }
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                Casos Públicos
+                            </Typography>
+                        </Grid>
+
+                        {Object.entries(homeworkExamples.sinputs).map(([key, value]) => (
+                            <Grid item xs={12} key={key}>
+                                <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                    {`Caso ${parseInt(key, 10) + 1}`}
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <Box
+                                        sx={{
+                                            bgcolor: 'appDark.bgHwBox',
+                                            borderRadius: 3,
+                                            padding: '3px 12px',
+                                            marginLeft: 2,
+                                            marginTop: 1,
+                                        }}
+                                    >
+                                        <Typography sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                            Input: {value}
+                                        </Typography>
+                                    </Box>
+                                    <Box
+                                        sx={{
+                                            bgcolor: 'appDark.bgHwBox',
+                                            borderRadius: 3,
+                                            padding: '3px 12px',
+                                            marginTop: 1,
+                                            marginLeft: 2,
+                                            alignSelf: 'flex-start',
+                                        }}
+                                    >
+                                        <Typography sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                            Output: {homeworkExamples.soutputs[key]}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Grid>
+                        ))}
+
+
+
+
+
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: 'appDark.text', fontSize: 18, mt: '2vh' }}>
+                                Tiempo Máximo de Ejecución
+                            </Typography>
+                            <Typography paddingX={3} sx={{ color: 'appDark.text', fontSize: 15 }}>
+                                {questionInfo.timeoutSec} seg
+                            </Typography>
+                        </Grid>
+
+                        {/* Fin Prueba */}
                     </Grid>
 
                     <Grid container justifyContent='space-between' alignItems='flex-end'>
