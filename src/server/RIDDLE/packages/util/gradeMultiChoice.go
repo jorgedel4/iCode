@@ -10,5 +10,5 @@ func GradeMultiChoice(correctOptions []string, givenAnswers []string) bool {
 			return false
 		}
 	}
-	return true
+	return (len(correctOptions) != 0)
 }
