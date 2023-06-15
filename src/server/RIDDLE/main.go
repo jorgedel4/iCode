@@ -16,13 +16,8 @@ import (
 )
 
 func main() {
-
-	curDir, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-	}
 	// Loading env variables (.env file)
-	err = godotenv.Load(curDir + "/riddle/.env")
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf(err.Error(), err)
 		return
