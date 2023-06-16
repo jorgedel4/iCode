@@ -8,7 +8,7 @@ import { CounterCell } from './CounterCell';
 
 export const CreateGroup = ({ open, close }) => {
     const theme = useTheme();
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));

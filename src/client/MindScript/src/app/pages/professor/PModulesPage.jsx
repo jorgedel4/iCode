@@ -8,7 +8,7 @@ import { useParams, Link } from 'react-router-dom';
 
 export const PModulesPage = () => {
     let params = useParams()
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const home = '/professor/home'
     const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home

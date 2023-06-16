@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { NavBar, RequestCard, Confirmation } from '../../components'
 
 export const ARequest = () => {
-    const batmanAPI = `http://localhost:8002/`
-    const riddleAPI = `http://localhost:8003/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const pages = [
         { name: 'Gestion de Usuarios', route: '/admin/management' },

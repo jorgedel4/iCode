@@ -5,7 +5,7 @@ import { useState } from 'react';
 import * as React from 'react';
 
 export const PHHomeworkCard = ({ data }) => {
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
 
     //Importante para EditHomework

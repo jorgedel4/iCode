@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 
 export function AddModuleCourse({ open, close, course, onAddModule }) {
     const theme = useTheme();
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));

@@ -29,7 +29,7 @@ export const MultiOpt = () => {
     };
     //que necesitamos aqui? si es para tarea necesitamos la tarea y el grupo
     //si es para módulo el id del modulo y el grupo
-    const riddleAPI = `http://localhost:8003/`
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const location = useLocation();
     const questionParams = location.state?.questionParams; //objeto: id_pregunta,info, type 

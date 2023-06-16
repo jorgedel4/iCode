@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { EditModuleNQ } from './EditModuleNQ';
 
 export const PModuleCard = ({ module, index, group }) => {
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
     const color = index - (colors.length * parseInt(index / colors.length));

@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
 export const SHHomeworkCard = ({ data, index }) => {
-    const riddleAPI = `http://localhost:8003/`
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     const auth = getAuth();
     const theme = useTheme();
     const user = auth.currentUser;

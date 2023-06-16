@@ -20,7 +20,7 @@ import { SModuleCard } from '../../components';
 export const SModulesPage = () => {
 
     // Initial States and Variables 
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
     let params = useParams()
     const home = '/student/home' //remove?
     const groupName = (params.course + ' (Gpo. ID ' + params.group + ')') //El nombren se debe de sacar desde la pagina home

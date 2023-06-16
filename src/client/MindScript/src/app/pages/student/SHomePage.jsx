@@ -22,7 +22,7 @@ import { ActionButton, CoursesCard, CourseRegister } from '../../components';
 export const SHomePage = () => {
 
     // Initial States and Variables 
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
     const pages = [
         { name: 'Home', route: '/student/home' },
         { name: 'Profile', route: '/student/profile' },

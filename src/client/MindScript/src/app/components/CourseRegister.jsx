@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
 
 
 export const CourseRegister = ({ open, close, setCount, count }) => {
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     //Current user info
     const auth = getAuth();

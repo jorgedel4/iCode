@@ -10,7 +10,7 @@ import { getAuth } from "firebase/auth";
 
 export const PHomePage = () => {
     const theme = useTheme();
-    const batmanAPI = `http://localhost:8002/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
 
     const [selectedTerm, setSelectedTerm] = useState('');
 

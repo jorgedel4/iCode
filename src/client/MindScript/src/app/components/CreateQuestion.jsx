@@ -21,8 +21,8 @@ import { AddMultiQ } from './';
 export const CreateQuestion = ({ open, close, schoolID }) => {
 
     // Initial States and Variables 
-    const batmanAPI = `http://localhost:8002/`
-    const riddleAPI = `http://localhost:8003/`
+    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
 
     const theme = useTheme();
     const isXLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));

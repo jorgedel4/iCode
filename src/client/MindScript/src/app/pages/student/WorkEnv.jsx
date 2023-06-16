@@ -24,7 +24,7 @@ export const WorkEnv = () => {
         // Increment the key value to force a rerender of the component
         setComponentKey(prevKey => prevKey + 1);
     };
-    const riddleAPI = `http://localhost:8003/`
+    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
     const theme = useTheme();
 
     const location = useLocation();

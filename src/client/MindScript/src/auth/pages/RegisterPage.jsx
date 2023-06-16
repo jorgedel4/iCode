@@ -38,7 +38,7 @@ import { startCreatingUserWithEmailPassword } from "../../store/auth";
 export const RegisterPage = () => {
 
   // Initial States and Variables
-  const batmanAPI = `http://localhost:8002/`
+  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
   const dispatch = useDispatch();
 
   //Toogle show password content
