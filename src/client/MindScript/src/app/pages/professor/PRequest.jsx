@@ -4,7 +4,7 @@ import { NavBar, RequestCard, SearchBar } from '../../components'
 import { getAuth } from "firebase/auth";
 
 export const PRequest = () => {
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
     const theme = useTheme();
 
     // Api region

@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
 import { Link, useParams } from 'react-router-dom';
 
 export const SModuleCard = ({ module, index, group }) => {
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+    const riddleAPI = `http://localhost:8003/`
 
     const colors = ["#C12C45", "#5EC1F3", "#55D16E", "#FACD34"]
     const color = index - (colors.length * parseInt(index / colors.length));

@@ -7,7 +7,7 @@ import { useForm } from '../../hooks/useForm';
 
 export const EditModuleNQ = ({ open, close, moduleData, group }) => {
     const theme = useTheme();
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
 
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));

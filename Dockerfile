@@ -23,4 +23,4 @@ RUN yarn run build
 EXPOSE 5173
 
 # Comando para ejecutar la aplicación React
-CMD ["yarn", "dev"]
+CMD ["yarn", "run", "vite", "--host", "0.0.0.0"]

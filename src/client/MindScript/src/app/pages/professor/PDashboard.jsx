@@ -9,7 +9,7 @@ import { Block, Pending, CheckCircle } from '@mui/icons-material';
 export const PDashboard = () => {
     const theme = useTheme();
     let params = useParams();
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const containerHeight = isLargeScreen ? 60 : isMediumScreen ? 60 : 100;

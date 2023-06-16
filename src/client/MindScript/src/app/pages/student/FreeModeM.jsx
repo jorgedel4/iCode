@@ -20,7 +20,7 @@ import { FreeModeLayout } from '../../layout';
 
 export const FreeModeM = () => {
     // Initial States and Variables 
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
     let params = useParams()
     const freemode = '/student/freemode' //remove?
     const pages = [

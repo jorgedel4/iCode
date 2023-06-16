@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 import { CreateCourse } from '../../components/CreateCourse';
 
 export const ASyllabus = () => {
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
     
     // Api region
 

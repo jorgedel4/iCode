@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 
 
 export const SMHomeworkCard = ({ data, index }) => {
-    const riddleAPI = import.meta.env.VITE_APP_RIDDLE;
+    const riddleAPI = `http://localhost:8003/`
     const auth = getAuth();
     const theme = useTheme();
     const user = auth.currentUser;

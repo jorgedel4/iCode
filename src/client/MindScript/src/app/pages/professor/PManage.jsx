@@ -7,7 +7,7 @@ import { useParams, Link } from 'react-router-dom';
 
 
 export const PManage = () => {
-  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+  const batmanAPI = `http://localhost:8002/`
   let params = useParams();
 
 

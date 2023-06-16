@@ -13,8 +13,6 @@ services:
       - batman
       - riddle
       - database
-    volumes:
-      - front:/MindScript
 
   database:
     image: mysql:latest
@@ -67,4 +65,3 @@ services:
 
 volumes:
   data:
-  front:

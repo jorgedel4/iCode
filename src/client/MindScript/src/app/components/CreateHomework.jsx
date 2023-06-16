@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 
 export const CreateHomework = ({ open, close }) => {
-    const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+    const batmanAPI = `http://localhost:8002/`
 
     //Current user info
     const auth = getAuth();

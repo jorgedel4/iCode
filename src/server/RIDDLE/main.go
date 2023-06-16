@@ -16,23 +16,23 @@ import (
 )
 
 func main() {
+	curDir, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+
 	// Loading env variables (.env file)
-	err := godotenv.Load()
+	err = godotenv.Load(curDir + "/riddle/.env")
 	if err != nil {
 		log.Fatalf(err.Error(), err)
 		return
 	}
 
 	// MySQL connection
-	mysqlDB, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_IP"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
+	mysqlDB, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(icodedocker-database-1:%s)/%s?parseTime=true", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DBNAME")))
 	if err != nil {
 		log.Fatal("Error connecting to MySQL:", err)
 	}
-	defer func() {
-		if err = mysqlDB.Close(); err != nil {
-			log.Fatal("Error disconnecting from MySQL:", err)
-		}
-	}()
 
 	// Creating router and defining routing functions
 	r := mux.NewRouter()

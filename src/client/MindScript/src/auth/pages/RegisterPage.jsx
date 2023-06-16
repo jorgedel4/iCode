@@ -38,7 +38,7 @@ import { startCreatingUserWithEmailPassword } from "../../store/auth";
 export const RegisterPage = () => {
 
   // Initial States and Variables
-  const batmanAPI = import.meta.env.VITE_APP_BATMAN;
+  const batmanAPI = `http://localhost:8002/`
   const dispatch = useDispatch();
 
   //Toogle show password content
@@ -173,7 +173,7 @@ export const RegisterPage = () => {
       }),
     };
     console.log(options);
-    fetch("http://34.16.137.250:8002/registeruser", options)
+    fetch(`${batmanAPI}registeruser`, options)
       .then((response) => {
         // console.log("createHomeworkRequest", response)
         if (response.status === 201) {
